@@ -1,0 +1,162 @@
+{
+  "name": "hamming_distance",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "string"
+    },
+    {
+      "name": "b",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "negative",
+      "input": {
+        "a": "",
+        "b": ""
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "f6dcb64f-03b0-4b60-81b1-3c9dbf47e887",
+        "description": "empty strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "A",
+        "b": "A"
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "54681314-eee2-439a-9db0-b0636c656156",
+        "description": "single letter identical strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "G",
+        "b": "T"
+      },
+      "expected": 1,
+      "source_case": {
+        "uuid": "294479a3-a4c8-478f-8d63-6209815a827b",
+        "description": "single letter different strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "GGACTGAAATCTG",
+        "b": "GGACTGAAATCTG"
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "9aed5f34-5693-4344-9b31-40c692fb5592",
+        "description": "long identical strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "GGACGGATTCTG",
+        "b": "AGGACGGATTCT"
+      },
+      "expected": 9,
+      "source_case": {
+        "uuid": "cd2273a5-c576-46c8-a52b-dee251c3e6e5",
+        "description": "long different strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "",
+        "b": ""
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "f6dcb64f-03b0-4b60-81b1-3c9dbf47e887",
+        "description": "empty strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "A",
+        "b": "A"
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "54681314-eee2-439a-9db0-b0636c656156",
+        "description": "single letter identical strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "G",
+        "b": "T"
+      },
+      "expected": 1,
+      "source_case": {
+        "uuid": "294479a3-a4c8-478f-8d63-6209815a827b",
+        "description": "single letter different strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "GGACTGAAATCTG",
+        "b": "GGACTGAAATCTG"
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "9aed5f34-5693-4344-9b31-40c692fb5592",
+        "description": "long identical strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "GGACGGATTCTG",
+        "b": "AGGACGGATTCT"
+      },
+      "expected": 9,
+      "source_case": {
+        "uuid": "cd2273a5-c576-46c8-a52b-dee251c3e6e5",
+        "description": "long different strands",
+        "property": "distance",
+        "file": "problem-specifications/exercises/hamming/canonical-data.json"
+      }
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "hamming",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/hamming",
+    "license": "MIT"
+  }
+}

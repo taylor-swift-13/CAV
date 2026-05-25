@@ -1,0 +1,120 @@
+{
+  "name": "add_binary_strings",
+  "return_type": "string",
+  "params": [
+    {
+      "name": "a",
+      "type": "string"
+    },
+    {
+      "name": "b",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": "11",
+        "b": "1"
+      },
+      "expected": "100"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "1010",
+        "b": "1011"
+      },
+      "expected": "10101"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "0",
+        "b": "0"
+      },
+      "expected": "0"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "1111",
+        "b": "1"
+      },
+      "expected": "10000"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "11",
+        "b": "1"
+      },
+      "expected": "100",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "1010",
+        "b": "1011"
+      },
+      "expected": "10101",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "0",
+        "b": "0"
+      },
+      "expected": "0",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "1111",
+        "b": "1"
+      },
+      "expected": "10000",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "11",
+        "b": "1"
+      },
+      "expected": "100",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "1010",
+        "b": "1011"
+      },
+      "expected": "10101",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "add-binary",
+    "url": "https://leetcode.com/problems/add-binary/",
+    "license": "local rewrite"
+  }
+}

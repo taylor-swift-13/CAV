@@ -1,0 +1,120 @@
+{
+  "name": "missing_number_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "nums": "3,0,1"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "nums": "0,1"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "nums": ""
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "nums": "0,1,2,3"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "nums": "3,0,1"
+      },
+      "expected": 2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "nums": "0,1"
+      },
+      "expected": 2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "nums": ""
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "nums": "0,1,2,3"
+      },
+      "expected": 4,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "nums": "3,0,1"
+      },
+      "expected": 2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "nums": "0,1"
+      },
+      "expected": 2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "missing-number",
+    "url": "https://leetcode.com/problems/missing-number/",
+    "license": "local rewrite"
+  }
+}

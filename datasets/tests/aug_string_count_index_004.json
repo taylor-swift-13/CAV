@@ -1,0 +1,92 @@
+{
+  "name": "aug_string_count_index_004",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "negative",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc123"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abracadabra"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "zzzza"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a_b-c!"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "leetcode"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AAaa11"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "mississippi"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "xyz"
+      },
+      "expected": 0
+    }
+  ],
+  "augment": {
+    "parent_dataset": "internal",
+    "parent_problem": "string_count_char",
+    "variant_kind": "fixed-character-count-index-scan",
+    "constants": {
+      "i": 4,
+      "char": "e",
+      "implementation_strategy": "index-scan"
+    }
+  }
+}

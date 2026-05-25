@@ -1,0 +1,106 @@
+{
+  "name": "max_parentheses_depth",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(1+(2*3)+((8)/4))+1"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(1)+((2))+(((3)))"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "1+2"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "((()))"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(1+(2*3)+((8)/4))+1"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(1)+((2))+(((3)))"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "1+2"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "((()))"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(1+(2*3)+((8)/4))+1"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(1)+((2))+(((3)))"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "maximum-nesting-depth-of-the-parentheses",
+    "url": "https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/",
+    "license": "local rewrite"
+  }
+}

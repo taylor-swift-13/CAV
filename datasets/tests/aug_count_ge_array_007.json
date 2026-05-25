@@ -1,0 +1,92 @@
+{
+  "name": "aug_count_ge_array_007",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "negative",
+      "input": {
+        "nums": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "6,-3"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-6,2,-5"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "-1,7,0,-5"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "4,-5,5,0,-3"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-8,0,-7,5,2,1"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "2"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "7,-2"
+      },
+      "expected": 1
+    }
+  ],
+  "augment": {
+    "parent_dataset": "internal",
+    "parent_problem": "array_count_between",
+    "variant_kind": "threshold-count-ge-array-backed",
+    "constants": {
+      "i": 7,
+      "threshold": -1,
+      "implementation_strategy": "array-backed"
+    }
+  }
+}

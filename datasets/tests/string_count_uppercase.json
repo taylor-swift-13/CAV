@@ -1,0 +1,83 @@
+{
+  "name": "string_count_uppercase",
+  "function": "string_count_uppercase",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "ABC"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC123z"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "lower"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "ABC"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC123z"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "lower"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "ABC"
+      },
+      "expected": 3
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "digit_sum",
+  "function": "digit_sum",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 999
+      },
+      "expected": 27
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 999
+      },
+      "expected": 27
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 999
+      },
+      "expected": 27
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    }
+  ]
+}

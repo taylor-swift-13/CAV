@@ -1,0 +1,103 @@
+{
+  "name": "string_replace_spaces_underscore",
+  "function": "string_replace_spaces_underscore",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "s",
+      "type": "mut_c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "mutations": {
+        "s": ""
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a b c"
+      },
+      "mutations": {
+        "s": "a_b_c"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "nospace"
+      },
+      "mutations": {
+        "s": "nospace"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "  lead"
+      },
+      "mutations": {
+        "s": "__lead"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "mutations": {
+        "s": ""
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a b c"
+      },
+      "mutations": {
+        "s": "a_b_c"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "nospace"
+      },
+      "mutations": {
+        "s": "nospace"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "  lead"
+      },
+      "mutations": {
+        "s": "__lead"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "mutations": {
+        "s": ""
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "a b c"
+      },
+      "mutations": {
+        "s": "a_b_c"
+      }
+    }
+  ]
+}

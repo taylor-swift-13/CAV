@@ -1,0 +1,5725 @@
+{
+  "source": "Combined internal, external, and augment algorithm datasets",
+  "style": "HumanEval-like single-function tasks",
+  "languages": [
+    "c",
+    "java",
+    "rust"
+  ],
+  "requirements": [
+    "single function",
+    "standard library only",
+    "shared tests"
+  ],
+  "problems": [
+    {
+      "name": "abs_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "function": "abs_value"
+    },
+    {
+      "name": "add_binary_strings",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "name": "b",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "add-binary",
+        "url": "https://leetcode.com/problems/add-binary/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "add_digits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "num",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "add-digits",
+        "url": "https://leetcode.com/problems/add-digits/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "add_two",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "function": "add_two"
+    },
+    {
+      "name": "apple_purchase_total",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "count",
+          "type": "int"
+        },
+        {
+          "name": "price",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "Luogu",
+        "slug": "P5703",
+        "url": "https://www.luogu.com.cn/problem/P5703",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "arithmetic_series",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "d",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "arithmetic_series"
+    },
+    {
+      "name": "armstrong_number",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "Exercism",
+        "slug": "armstrong-numbers",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/armstrong-numbers",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "array_add",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "b",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_add"
+    },
+    {
+      "name": "array_adjacent_diff",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_adjacent_diff"
+    },
+    {
+      "name": "array_all_even",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_all_even"
+    },
+    {
+      "name": "array_all_less_than_k",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "function": "array_all_less_than_k"
+    },
+    {
+      "name": "array_all_positive",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_all_positive"
+    },
+    {
+      "name": "array_all_zero",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_all_zero"
+    },
+    {
+      "name": "array_any_equal_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "function": "array_any_equal_sum"
+    },
+    {
+      "name": "array_any_negative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_any_negative"
+    },
+    {
+      "name": "array_any_zero",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_any_zero"
+    },
+    {
+      "name": "array_clamp_nonnegative",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_clamp_nonnegative"
+    },
+    {
+      "name": "array_contains",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "function": "array_contains"
+    },
+    {
+      "name": "array_copy_even",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_copy_even"
+    },
+    {
+      "name": "array_copy_positive",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_copy_positive"
+    },
+    {
+      "name": "array_count_between",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "lo",
+          "type": "int"
+        },
+        {
+          "name": "hi",
+          "type": "int"
+        }
+      ],
+      "function": "array_count_between"
+    },
+    {
+      "name": "array_count_distinct_sorted",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_distinct_sorted"
+    },
+    {
+      "name": "array_count_even",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_even"
+    },
+    {
+      "name": "array_count_greater_than_k",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "function": "array_count_greater_than_k"
+    },
+    {
+      "name": "array_count_increasing_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_increasing_steps"
+    },
+    {
+      "name": "array_count_negative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_negative"
+    },
+    {
+      "name": "array_count_nonzero",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_nonzero"
+    },
+    {
+      "name": "array_count_odd",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_odd"
+    },
+    {
+      "name": "array_count_transitions",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_transitions"
+    },
+    {
+      "name": "array_count_zero",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_count_zero"
+    },
+    {
+      "name": "array_equal",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "b",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_equal"
+    },
+    {
+      "name": "array_fill_value",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_fill_value"
+    },
+    {
+      "name": "array_find_last_equal",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "function": "array_find_last_equal"
+    },
+    {
+      "name": "array_first",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_first"
+    },
+    {
+      "name": "array_first_negative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_first_negative"
+    },
+    {
+      "name": "array_first_peak",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_first_peak"
+    },
+    {
+      "name": "array_has_adjacent_equal",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_has_adjacent_equal"
+    },
+    {
+      "name": "array_increment",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_increment"
+    },
+    {
+      "name": "array_index_of_max",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_index_of_max"
+    },
+    {
+      "name": "array_index_of_min",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_index_of_min"
+    },
+    {
+      "name": "array_init",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_init"
+    },
+    {
+      "name": "array_intersection_count_sorted",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_intersection_count_sorted"
+    },
+    {
+      "name": "array_is_sorted_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "array-sorted",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "array_is_strictly_increasing",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_is_strictly_increasing"
+    },
+    {
+      "name": "array_last",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_last"
+    },
+    {
+      "name": "array_last_positive",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_last_positive"
+    },
+    {
+      "name": "array_longest_nonnegative_run",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_longest_nonnegative_run"
+    },
+    {
+      "name": "array_max",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_max"
+    },
+    {
+      "name": "array_min",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_min"
+    },
+    {
+      "name": "array_min_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "array-min",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "array_move_zeroes_to_end",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_move_zeroes_to_end"
+    },
+    {
+      "name": "array_negate",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_negate"
+    },
+    {
+      "name": "array_none_zero",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_none_zero"
+    },
+    {
+      "name": "array_pairwise_sum",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "b",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_pairwise_sum"
+    },
+    {
+      "name": "array_prefix_max",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_prefix_max"
+    },
+    {
+      "name": "array_product_small",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_product_small"
+    },
+    {
+      "name": "array_remove_value_to_output",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_remove_value_to_output"
+    },
+    {
+      "name": "array_replace_k",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        },
+        {
+          "name": "old_k",
+          "type": "int"
+        },
+        {
+          "name": "new_k",
+          "type": "int"
+        }
+      ],
+      "function": "array_replace_k"
+    },
+    {
+      "name": "array_replace_negative_zero",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_replace_negative_zero"
+    },
+    {
+      "name": "array_reverse_in_place",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_reverse_in_place"
+    },
+    {
+      "name": "array_scale",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_scale"
+    },
+    {
+      "name": "array_second_largest",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_second_largest"
+    },
+    {
+      "name": "array_sign",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "array_sign"
+    },
+    {
+      "name": "array_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_sum"
+    },
+    {
+      "name": "array_sum_abs",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_sum_abs"
+    },
+    {
+      "name": "array_sum_even_indices",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_sum_even_indices"
+    },
+    {
+      "name": "array_sum_nonnegative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_sum_nonnegative"
+    },
+    {
+      "name": "array_sum_positive",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "array_sum_positive"
+    },
+    {
+      "name": "array_swap_ends",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "array_swap_ends"
+    },
+    {
+      "name": "aug_all_multiple_array_003",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_all_even",
+        "variant_kind": "fixed-divisibility-all-array-backed",
+        "constants": {
+          "i": 3,
+          "mod": 5,
+          "implementation_strategy": "array-backed"
+        }
+      }
+    },
+    {
+      "name": "aug_all_multiple_stream_003",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_all_even",
+        "variant_kind": "fixed-divisibility-all-streaming-no-array",
+        "constants": {
+          "i": 3,
+          "mod": 5,
+          "implementation_strategy": "streaming-no-array"
+        }
+      }
+    },
+    {
+      "name": "aug_count_ge_array_000",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_count_between",
+        "variant_kind": "threshold-count-ge-array-backed",
+        "constants": {
+          "i": 0,
+          "threshold": -8,
+          "implementation_strategy": "array-backed"
+        }
+      }
+    },
+    {
+      "name": "aug_count_ge_array_007",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_count_between",
+        "variant_kind": "threshold-count-ge-array-backed",
+        "constants": {
+          "i": 7,
+          "threshold": -1,
+          "implementation_strategy": "array-backed"
+        }
+      }
+    },
+    {
+      "name": "aug_count_ge_stream_000",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_count_between",
+        "variant_kind": "threshold-count-ge-streaming-no-array",
+        "constants": {
+          "i": 0,
+          "threshold": -8,
+          "implementation_strategy": "streaming-no-array"
+        }
+      }
+    },
+    {
+      "name": "aug_count_ge_stream_007",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_count_between",
+        "variant_kind": "threshold-count-ge-streaming-no-array",
+        "constants": {
+          "i": 7,
+          "threshold": -1,
+          "implementation_strategy": "streaming-no-array"
+        }
+      }
+    },
+    {
+      "name": "aug_count_le_array_005",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_count_between",
+        "variant_kind": "threshold-count-le-array-backed",
+        "constants": {
+          "i": 5,
+          "threshold": -4,
+          "implementation_strategy": "array-backed"
+        }
+      }
+    },
+    {
+      "name": "aug_first_ge_array_001",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "find_first_equal",
+        "variant_kind": "first-index-ge-array-backed",
+        "constants": {
+          "i": 1,
+          "threshold": -5,
+          "implementation_strategy": "array-backed"
+        }
+      }
+    },
+    {
+      "name": "aug_first_ge_stream_001",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "find_first_equal",
+        "variant_kind": "first-index-ge-streaming-no-array",
+        "constants": {
+          "i": 1,
+          "threshold": -5,
+          "implementation_strategy": "streaming-no-array"
+        }
+      }
+    },
+    {
+      "name": "aug_last_le_array_006",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "array_find_last_equal",
+        "variant_kind": "last-index-le-array-backed",
+        "constants": {
+          "i": 6,
+          "threshold": 1,
+          "implementation_strategy": "array-backed"
+        }
+      }
+    },
+    {
+      "name": "aug_string_count_index_004",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "string_count_char",
+        "variant_kind": "fixed-character-count-index-scan",
+        "constants": {
+          "i": 4,
+          "char": "e",
+          "implementation_strategy": "index-scan"
+        }
+      }
+    },
+    {
+      "name": "aug_string_count_ptr_004",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "string_count_char",
+        "variant_kind": "fixed-character-count-pointer-walk",
+        "constants": {
+          "i": 4,
+          "char": "e",
+          "implementation_strategy": "pointer-walk"
+        }
+      }
+    },
+    {
+      "name": "aug_sum_prefix_array_002",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "prefix_sum",
+        "variant_kind": "fixed-prefix-sum-array-backed",
+        "constants": {
+          "i": 2,
+          "limit": 2,
+          "implementation_strategy": "array-backed"
+        }
+      }
+    },
+    {
+      "name": "aug_sum_prefix_stream_002",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "augment": {
+        "parent_dataset": "internal",
+        "parent_problem": "prefix_sum",
+        "variant_kind": "fixed-prefix-sum-streaming-no-array",
+        "constants": {
+          "i": 2,
+          "limit": 2,
+          "implementation_strategy": "streaming-no-array"
+        }
+      }
+    },
+    {
+      "name": "balanced_string_split_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "split-a-string-in-balanced-strings",
+        "url": "https://leetcode.com/problems/split-a-string-in-balanced-strings/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "best_stock_profit_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "prices",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "best-time-to-buy-and-sell-stock",
+        "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "binary_search",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "function": "binary_search"
+    },
+    {
+      "name": "binary_search_first",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "function": "binary_search_first"
+    },
+    {
+      "name": "binary_search_last",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "function": "binary_search_last"
+    },
+    {
+      "name": "bubble_sort",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "bubble_sort"
+    },
+    {
+      "name": "clamp_int",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "lo",
+          "type": "int"
+        },
+        {
+          "name": "hi",
+          "type": "int"
+        }
+      ],
+      "function": "clamp_int"
+    },
+    {
+      "name": "climb_stairs",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "climbStairs"
+    },
+    {
+      "name": "collatz_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "Exercism",
+        "slug": "collatz-conjecture",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/collatz-conjecture",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "contains_duplicate_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "contains-duplicate",
+        "url": "https://leetcode.com/problems/contains-duplicate/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "copy_array",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "src",
+          "type": "int_array"
+        },
+        {
+          "name": "dst",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "copy_array"
+    },
+    {
+      "name": "count_asterisks_between_bars",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-asterisks",
+        "url": "https://leetcode.com/problems/count-asterisks/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "count_digits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "count_digits"
+    },
+    {
+      "name": "count_divisors",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "count_divisors"
+    },
+    {
+      "name": "count_equal_to_k",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "function": "count_equal_to_k"
+    },
+    {
+      "name": "count_good_pairs_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-good-pairs",
+        "url": "https://leetcode.com/problems/number-of-good-pairs/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "count_multiples",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "function": "count_multiples"
+    },
+    {
+      "name": "count_odds_interval",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "low",
+          "type": "int"
+        },
+        {
+          "name": "high",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-odd-numbers-in-an-interval-range",
+        "url": "https://leetcode.com/problems/count-odd-numbers-in-an-interval-range/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "count_positive",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "count_positive"
+    },
+    {
+      "name": "count_set_bits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "count_set_bits"
+    },
+    {
+      "name": "decode_xored_array_csv",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "encoded",
+          "type": "string"
+        },
+        {
+          "name": "first",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "decode-xored-array",
+        "url": "https://leetcode.com/problems/decode-xored-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "defang_ip_address",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "address",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "defanging-an-ip-address",
+        "url": "https://leetcode.com/problems/defanging-an-ip-address/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "digit_product",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "digit_product"
+    },
+    {
+      "name": "digit_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "digit_sum"
+    },
+    {
+      "name": "double_nonnegative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "double_nonnegative"
+    },
+    {
+      "name": "factorial",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "fac"
+    },
+    {
+      "name": "fb_array_count_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "tuplex",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "value",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountTuplex.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_distinct_pair_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountPairs.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_even_xor_pair_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindEvenPair.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_first_even",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FirstEven.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_fixed_point",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindFixedPoint.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_frequency_smallest",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "arr",
+          "type": "int_array"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FrequencyOfSmallest.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_frequency_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/Frequency.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_inversion_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetInvCount.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_largest_positive",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "array",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/LargestPos.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_max_subarray_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "size",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/MaxSubArraySum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_min_swaps_like",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindMinSwaps.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_negative_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "array",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/NegCount.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_odd_length_subarray_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/OddLengthSum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_odd_occurrence_scan",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetOddOccurrence.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_odd_xor_pair_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindOddPair.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_pair_xor_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/PairOrSum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_peak_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindPeak.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_range_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "int_array"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumRangeList.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_second_rise_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetGcd.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_single_in_pairs",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/Search.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_subarray_product_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumOfSubarrayProd.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_array_sum_even_even_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumEvenAndEvenIndex.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_average_even_upto",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/AverageEven.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_average_odd_upto",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/AverageOdd.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_binomial_coefficient",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/BinomialCoeff.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_cal_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CalSum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_catalan_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "num",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CatalanNumber.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_common_divisor_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/NumCommDiv.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_cube_sum_difference",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/Difference.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_digit_sum_simple",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumDigits.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_centered_hexagonal_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CenteredHexagonalNumber.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_cube_sum_series",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "number",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumSeries.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_decagonal_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/IsNumDecagonal.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_digit_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountDigit.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_divisor_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/Divisor.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_even_fourth_power_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/EvenPowerSum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_hamming_distance_bits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n1",
+          "type": "int"
+        },
+        {
+          "name": "n2",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/HammingDistance.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_max_mod_remainder_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindMaxVal.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_next_perfect_square",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/NextPerfectSquare.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_nonagonal_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/IsNonagonal.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_nth_fraction_digit",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "p",
+          "type": "int"
+        },
+        {
+          "name": "q",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindNthDigit.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_octagonal_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/IsOctagonal.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_odd_days_mod_week",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/OddDays.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_permutation_coefficient",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/PermutationCoefficient.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_proper_divisor_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "number",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumDiv.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_round_down_multiple",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/RoundNum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_set_bit_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountNum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_set_odd_bit_positions",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/EvenBitSetNumber.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_toggle_even_bit_positions",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/EvenBitToggleNumber.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_easy_unset_bit_count_upto",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountUnsetBits.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_even_binomial_coeff_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/EvenBinomialCoeffSum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_factorial_last_two_digits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/LastTwoDigits.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_first_digit_factorial",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FirstDigit.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_first_set_bit_position",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetFirstSetBitPos.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_jacobsthal_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/JacobsthalNum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_largest_prime_factor",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/MaxPrimeFactors.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_last_digit_product_range",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/ComputeLastDigit.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_lcm",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/Lcm.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_lucas_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindLucas.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_divisor_count_to_abs_bound",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindDivisor.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_factor_pair_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountFac.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_jacobsthal_lucas",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/JacobsthalLucas.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_modular_inverse_square_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "p",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/ModularInverse.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_ncr_mod",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "r",
+          "type": "int"
+        },
+        {
+          "name": "p",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/NcrModP.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_nth_non_multiple_in_range",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "l",
+          "type": "int"
+        },
+        {
+          "name": "r",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountNo.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_paint_fence_ways",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountNoOfWays.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_position_plus_offset",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "value",
+          "type": "int"
+        },
+        {
+          "name": "offset",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetPosition.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_product_remainder",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "lens",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindRemainder.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_set_leftmost_unset_bit",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SetLeftMostUnsetBit.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_more_smallest_missing_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "left",
+          "type": "int"
+        },
+        {
+          "name": "right",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SmallestMissing.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_next_power_of_two",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/NextPowerOf2.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_pell_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetPell.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_prime_divisor_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/Sum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_big_difference",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/BigDiff.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_equalize_min_ops",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/MinOps.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_first_occurrence",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindFirstOccurrence.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_insertion_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/LeftInsertion.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_last_occurrence",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindLastOccurrence.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_lateral_surface_special",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "l",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/LateralsurfaceCube.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_max_box_volume",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/MaxVolume.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_min_of_three",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/MinOfThree.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_missing_sequence_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "ar",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindMissing.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_odd_then_even_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetNumber.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_pair_sum_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/GetPairsCount.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_rectangle_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "radius",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountRectangles.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_search_rotation_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindRotationCount.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_smallest_divisor",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SmallestDivisor.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_smallest_multiple",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SmallestMultiple.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_sqrt_root",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "num",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SqrtRoot.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_sum_even_factors",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/Sumoffactors.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_sum_even_range",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "l",
+          "type": "int"
+        },
+        {
+          "name": "r",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumEven.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_sum_odd_factors",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumOfOddFactors.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_sum_odd_range",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "l",
+          "type": "int"
+        },
+        {
+          "name": "r",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumInRange.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_tiling_count_ways",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountWays.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fibonacci",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "fibonacci"
+    },
+    {
+      "name": "fibonacci_mod",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "mod",
+          "type": "int"
+        }
+      ],
+      "function": "fibonacci_mod"
+    },
+    {
+      "name": "final_value_after_operations",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "operations",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "final-value-of-variable-after-performing-operations",
+        "url": "https://leetcode.com/problems/final-value-of-variable-after-performing-operations/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "find_first_equal",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "function": "find_first_equal"
+    },
+    {
+      "name": "first_unique_char_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "first-unique-character-in-a-string",
+        "url": "https://leetcode.com/problems/first-unique-character-in-a-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_array_all_nonnegative_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "array-all-nonnegative",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_array_max_abs_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "array-max-abs",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_array_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "array-sum",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_count_positive_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "count-positive",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_digit_sum_string",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "string-digit-sum",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_reverse_ascii",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "string-reverse",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_string_count_letter_a",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "string-count-char",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_string_count_lowercase",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "string-count-lowercase",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "formal_string_has_space",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "FormalBench",
+        "slug": "string-has-space",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "gcd_iterative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "function": "gcd_iterative"
+    },
+    {
+      "name": "gcd_positive",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "name": "goal_parser_interpret",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "command",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "goal-parser-interpretation",
+        "url": "https://leetcode.com/problems/goal-parser-interpretation/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "hamming_distance",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "name": "b",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "Exercism",
+        "slug": "hamming",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/hamming",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "house_robber",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "house_robber"
+    },
+    {
+      "name": "insertion_sort",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "insertion_sort"
+    },
+    {
+      "name": "integer_sqrt_floor",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "sqrtx",
+        "url": "https://leetcode.com/problems/sqrtx/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "is_between_inclusive",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "lo",
+          "type": "int"
+        },
+        {
+          "name": "hi",
+          "type": "int"
+        }
+      ],
+      "function": "is_between_inclusive"
+    },
+    {
+      "name": "is_even",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "name": "is_multiple",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "function": "is_multiple"
+    },
+    {
+      "name": "is_prime_simple",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "is_prime_simple"
+    },
+    {
+      "name": "is_sorted_nondecreasing",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "is_sorted_nondecreasing"
+    },
+    {
+      "name": "is_subsequence_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "t",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "is-subsequence",
+        "url": "https://leetcode.com/problems/is-subsequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "jewels_and_stones_ascii",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "jewels",
+          "type": "string"
+        },
+        {
+          "name": "stones",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "jewels-and-stones",
+        "url": "https://leetcode.com/problems/jewels-and-stones/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "last_digit",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "last_digit"
+    },
+    {
+      "name": "lcm_simple",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "function": "lcm_simple"
+    },
+    {
+      "name": "leap_year",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "year",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "Exercism",
+        "slug": "leap",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/leap",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "length_of_last_word",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "length-of-last-word",
+        "url": "https://leetcode.com/problems/length-of-last-word/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "longest_increasing_run",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "longest_increasing_run"
+    },
+    {
+      "name": "lower_bound",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "function": "lower_bound"
+    },
+    {
+      "name": "majority_candidate",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "majority_candidate"
+    },
+    {
+      "name": "majority_element_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "majority-element",
+        "url": "https://leetcode.com/problems/majority-element/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "max_abs_two",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "function": "max_abs_two"
+    },
+    {
+      "name": "max_consecutive_ones_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "bits",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "max-consecutive-ones",
+        "url": "https://leetcode.com/problems/max-consecutive-ones/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "max_of_three",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "int"
+        }
+      ],
+      "function": "max_of_three"
+    },
+    {
+      "name": "max_of_two",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "function": "max_of_two"
+    },
+    {
+      "name": "max_parentheses_depth",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-nesting-depth-of-the-parentheses",
+        "url": "https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "max_subarray_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "function": "max_subarray_sum"
+    },
+    {
+      "name": "maximum_69_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "num",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-69-number",
+        "url": "https://leetcode.com/problems/maximum-69-number/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "merge_sorted_arrays",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "merge_sorted_arrays"
+    },
+    {
+      "name": "merge_sorted_lists_csv",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "name": "b",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "merge-two-sorted-lists",
+        "url": "https://leetcode.com/problems/merge-two-sorted-lists/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "merge_strings_alternately_ascii",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "word1",
+          "type": "string"
+        },
+        {
+          "name": "word2",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "merge-strings-alternately",
+        "url": "https://leetcode.com/problems/merge-strings-alternately/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "middle_node_value_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "list",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "middle-of-the-linked-list",
+        "url": "https://leetcode.com/problems/middle-of-the-linked-list/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "min_cost_two_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "cost",
+          "type": "int_array"
+        }
+      ],
+      "function": "min_cost_two_steps"
+    },
+    {
+      "name": "min_of_three",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "int"
+        }
+      ],
+      "function": "min_of_three"
+    },
+    {
+      "name": "missing_number_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "missing-number",
+        "url": "https://leetcode.com/problems/missing-number/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "move_zeroes_csv",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "move-zeroes",
+        "url": "https://leetcode.com/problems/move-zeroes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "number_properties_bits",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "Luogu",
+        "slug": "P5710",
+        "url": "https://www.luogu.com.cn/problem/P5710",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "number_steps_reduce_zero",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "num",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-steps-to-reduce-a-number-to-zero",
+        "url": "https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "palindrome_number",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "palindrome-number",
+        "url": "https://leetcode.com/problems/palindrome-number/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "partition_nonnegative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "partition_nonnegative"
+    },
+    {
+      "name": "pivot_index_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-pivot-index",
+        "url": "https://leetcode.com/problems/find-pivot-index/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "plus_one_digits",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "digits",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "plus-one",
+        "url": "https://leetcode.com/problems/plus-one/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "power_nonnegative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "base",
+          "type": "int"
+        },
+        {
+          "name": "exp",
+          "type": "int"
+        }
+      ],
+      "function": "power_nonnegative"
+    },
+    {
+      "name": "power_of_two",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "power-of-two",
+        "url": "https://leetcode.com/problems/power-of-two/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "prefix_sum",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "out",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "prefix_sum"
+    },
+    {
+      "name": "remove_duplicates_sorted",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "remove_duplicates_sorted"
+    },
+    {
+      "name": "remove_element_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "val",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "remove-element",
+        "url": "https://leetcode.com/problems/remove-element/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "restore_string_by_indices",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "indices",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "shuffle-string",
+        "url": "https://leetcode.com/problems/shuffle-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "reverse_copy",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "src",
+          "type": "int_array"
+        },
+        {
+          "name": "dst",
+          "type": "out_int_array"
+        }
+      ],
+      "function": "reverse_copy"
+    },
+    {
+      "name": "reverse_digits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "reverse_digits"
+    },
+    {
+      "name": "reverse_fixed_decimal",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "Luogu",
+        "slug": "P5705",
+        "url": "https://www.luogu.com.cn/problem/P5705",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "reverse_list_csv",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "list",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "reverse-linked-list",
+        "url": "https://leetcode.com/problems/reverse-linked-list/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "reverse_vowels_ascii",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "reverse-vowels-of-a-string",
+        "url": "https://leetcode.com/problems/reverse-vowels-of-a-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "richest_customer_wealth_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "accounts",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "richest-customer-wealth",
+        "url": "https://leetcode.com/problems/richest-customer-wealth/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "rna_transcription",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "dna",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "Exercism",
+        "slug": "rna-transcription",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/rna-transcription",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "rotate_left_by_one",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "rotate_left_by_one"
+    },
+    {
+      "name": "running_sum_csv",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "running-sum-of-1d-array",
+        "url": "https://leetcode.com/problems/running-sum-of-1d-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "scrabble_score",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "word",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "Exercism",
+        "slug": "scrabble-score",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/scrabble-score",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "search_insert_position_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "search-insert-position",
+        "url": "https://leetcode.com/problems/search-insert-position/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "selection_sort",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "selection_sort"
+    },
+    {
+      "name": "sentence_is_pangram_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "sentence",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "check-if-the-sentence-is-pangram",
+        "url": "https://leetcode.com/problems/check-if-the-sentence-is-pangram/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "set_zero",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "mut_int_array"
+        }
+      ],
+      "function": "set_zero"
+    },
+    {
+      "name": "sign_of_product_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "sign-of-the-product-of-an-array",
+        "url": "https://leetcode.com/problems/sign-of-the-product-of-an-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "single_number_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "single-number",
+        "url": "https://leetcode.com/problems/single-number/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "square_nonnegative",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "square_nonnegative"
+    },
+    {
+      "name": "string_all_digits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_all_digits"
+    },
+    {
+      "name": "string_all_lowercase",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_all_lowercase"
+    },
+    {
+      "name": "string_all_uppercase",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_all_uppercase"
+    },
+    {
+      "name": "string_any_lowercase",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_any_lowercase"
+    },
+    {
+      "name": "string_collapse_spaces",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "out",
+          "type": "out_c_string"
+        }
+      ],
+      "function": "string_collapse_spaces"
+    },
+    {
+      "name": "string_contains_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_contains_char"
+    },
+    {
+      "name": "string_copy",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "src",
+          "type": "c_string"
+        },
+        {
+          "name": "dst",
+          "type": "out_c_string"
+        }
+      ],
+      "function": "string_copy"
+    },
+    {
+      "name": "string_copy_prefix",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "src",
+          "type": "c_string"
+        },
+        {
+          "name": "dst",
+          "type": "out_c_string"
+        }
+      ],
+      "function": "string_copy_prefix"
+    },
+    {
+      "name": "string_count_alnum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_alnum"
+    },
+    {
+      "name": "string_count_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_count_char"
+    },
+    {
+      "name": "string_count_digits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_digits"
+    },
+    {
+      "name": "string_count_hash",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_hash"
+    },
+    {
+      "name": "string_count_lowercase",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_lowercase"
+    },
+    {
+      "name": "string_count_not_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_count_not_char"
+    },
+    {
+      "name": "string_count_punctuation",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_punctuation"
+    },
+    {
+      "name": "string_count_spaces",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_spaces"
+    },
+    {
+      "name": "string_count_uppercase",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_uppercase"
+    },
+    {
+      "name": "string_count_vowels",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_vowels"
+    },
+    {
+      "name": "string_count_words_simple",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_count_words_simple"
+    },
+    {
+      "name": "string_ends_with_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_ends_with_char"
+    },
+    {
+      "name": "string_equal",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "c_string"
+        },
+        {
+          "name": "b",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_equal"
+    },
+    {
+      "name": "string_fill_char",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        },
+        {
+          "name": "s",
+          "type": "out_c_string"
+        }
+      ],
+      "function": "string_fill_char"
+    },
+    {
+      "name": "string_find_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_find_char"
+    },
+    {
+      "name": "string_find_last_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_find_last_char"
+    },
+    {
+      "name": "string_first_char",
+      "return_type": "char",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_first_char"
+    },
+    {
+      "name": "string_has_digit",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_has_digit"
+    },
+    {
+      "name": "string_has_double_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_has_double_char"
+    },
+    {
+      "name": "string_is_empty",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_is_empty"
+    },
+    {
+      "name": "string_is_palindrome",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_is_palindrome"
+    },
+    {
+      "name": "string_last_char",
+      "return_type": "char",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_last_char"
+    },
+    {
+      "name": "string_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        }
+      ],
+      "function": "string_length"
+    },
+    {
+      "name": "string_remove_char_to_output",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "out",
+          "type": "out_c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_remove_char_to_output"
+    },
+    {
+      "name": "string_replace_char",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "s",
+          "type": "mut_c_string"
+        },
+        {
+          "name": "old_c",
+          "type": "char"
+        },
+        {
+          "name": "new_c",
+          "type": "char"
+        }
+      ],
+      "function": "string_replace_char"
+    },
+    {
+      "name": "string_replace_spaces_underscore",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "s",
+          "type": "mut_c_string"
+        }
+      ],
+      "function": "string_replace_spaces_underscore"
+    },
+    {
+      "name": "string_reverse_copy",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "src",
+          "type": "c_string"
+        },
+        {
+          "name": "dst",
+          "type": "out_c_string"
+        }
+      ],
+      "function": "string_reverse_copy"
+    },
+    {
+      "name": "string_set_a",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "s",
+          "type": "mut_c_string"
+        }
+      ],
+      "function": "string_set_a"
+    },
+    {
+      "name": "string_starts_with",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_starts_with"
+    },
+    {
+      "name": "string_starts_with_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "c_string"
+        },
+        {
+          "name": "c",
+          "type": "char"
+        }
+      ],
+      "function": "string_starts_with_char"
+    },
+    {
+      "name": "string_to_lower_ascii",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "s",
+          "type": "mut_c_string"
+        }
+      ],
+      "function": "string_to_lower_ascii"
+    },
+    {
+      "name": "string_to_upper_ascii",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "s",
+          "type": "mut_c_string"
+        }
+      ],
+      "function": "string_to_upper_ascii"
+    },
+    {
+      "name": "string_trim_last_char",
+      "return_type": "void",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "s",
+          "type": "mut_c_string"
+        }
+      ],
+      "function": "string_trim_last_char"
+    },
+    {
+      "name": "substring_index_ascii",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "haystack",
+          "type": "string"
+        },
+        {
+          "name": "needle",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-the-index-of-the-first-occurrence-in-a-string",
+        "url": "https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "subtract_product_and_sum_digits",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "subtract-the-product-and-sum-of-digits-of-an-integer",
+        "url": "https://leetcode.com/problems/subtract-the-product-and-sum-of-digits-of-an-integer/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "sum_multiples_3_5_7",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "sum-multiples",
+        "url": "https://leetcode.com/problems/sum-multiples/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "sum_squares_to_n",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "sum_squares_to_n"
+    },
+    {
+      "name": "sum_to_n",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "sum_to_n"
+    },
+    {
+      "name": "tribonacci",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "tribonacci"
+    },
+    {
+      "name": "two_sum_exists",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "two-sum",
+        "url": "https://leetcode.com/problems/two-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "two_sum_sorted",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "function": "two_sum_sorted"
+    },
+    {
+      "name": "upper_bound",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "function": "upper_bound"
+    },
+    {
+      "name": "uppercase_ascii_letter",
+      "return_type": "string",
+      "params": [
+        {
+          "name": "letter",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "Luogu",
+        "slug": "P5704",
+        "url": "https://www.luogu.com.cn/problem/P5704",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "valid_anagram_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "name": "b",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "valid-anagram",
+        "url": "https://leetcode.com/problems/valid-anagram/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "valid_palindrome_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "valid-palindrome",
+        "url": "https://leetcode.com/problems/valid-palindrome/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "valid_parentheses_brackets",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "valid-parentheses",
+        "url": "https://leetcode.com/problems/valid-parentheses/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "ways_to_reach",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "function": "ways_to_reach"
+    },
+    {
+      "name": "xor_operation_array",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "start",
+          "type": "int"
+        }
+      ],
+      "source": {
+        "name": "LeetCode",
+        "slug": "xor-operation-in-an-array",
+        "url": "https://leetcode.com/problems/xor-operation-in-an-array/",
+        "license": "local rewrite"
+      }
+    }
+  ]
+}

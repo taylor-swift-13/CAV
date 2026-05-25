@@ -1,0 +1,120 @@
+{
+  "name": "jewels_and_stones_ascii",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "jewels",
+      "type": "string"
+    },
+    {
+      "name": "stones",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "jewels": "aA",
+        "stones": "aAAbbbb"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "jewels": "z",
+        "stones": "ZZ"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "jewels": "",
+        "stones": "abc"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "jewels": "abc",
+        "stones": "cabd"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "jewels": "aA",
+        "stones": "aAAbbbb"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "jewels": "z",
+        "stones": "ZZ"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "jewels": "",
+        "stones": "abc"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "jewels": "abc",
+        "stones": "cabd"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "jewels": "aA",
+        "stones": "aAAbbbb"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "jewels": "z",
+        "stones": "ZZ"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "jewels-and-stones",
+    "url": "https://leetcode.com/problems/jewels-and-stones/",
+    "license": "local rewrite"
+  }
+}

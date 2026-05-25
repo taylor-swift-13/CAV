@@ -1,0 +1,83 @@
+{
+  "name": "reverse_digits",
+  "function": "reverse_digits",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 321
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 321
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 321
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 7
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 123
+      },
+      "expected": 321
+    }
+  ]
+}

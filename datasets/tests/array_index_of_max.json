@@ -1,0 +1,136 @@
+{
+  "name": "array_index_of_max",
+  "function": "array_index_of_max",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          3,
+          7,
+          2,
+          7
+        ]
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "a": [
+          7
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          -1,
+          -5,
+          -3
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          0,
+          0,
+          -1,
+          -2
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          3,
+          7,
+          2,
+          7
+        ]
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "a": [
+          7
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          -1,
+          -5,
+          -3
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          0,
+          0,
+          -1,
+          -2
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          3,
+          7,
+          2,
+          7
+        ]
+      },
+      "expected": 1
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 1,
+        "a": [
+          7
+        ]
+      },
+      "expected": 0
+    }
+  ]
+}

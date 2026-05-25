@@ -1,0 +1,106 @@
+{
+  "name": "formal_array_all_nonnegative_csv",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,1,2"
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,-1,2"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": ""
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "-5"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,1,2"
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,-1,2"
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": ""
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "-5"
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,1,2"
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,-1,2"
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "array-all-nonnegative",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite"
+  }
+}

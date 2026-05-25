@@ -1,0 +1,53 @@
+{
+  "name": "fb_easy_digit_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 9
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000000000
+      },
+      "expected": 10
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/CountDigit.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

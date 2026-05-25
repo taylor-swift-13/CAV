@@ -1,0 +1,83 @@
+{
+  "name": "abs_value",
+  "function": "abs_value",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "x",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "x": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 9
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": -9
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": -1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 12345
+      },
+      "expected": 12345
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 9
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": -9
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": -1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "x": 12345
+      },
+      "expected": 12345
+    }
+  ]
+}

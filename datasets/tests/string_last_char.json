@@ -1,0 +1,83 @@
+{
+  "name": "string_last_char",
+  "function": "string_last_char",
+  "return_type": "char",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "c"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "z"
+      },
+      "expected": "z"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "c"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "z"
+      },
+      "expected": "z"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "c"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "z"
+      },
+      "expected": "z"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "c"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "z"
+      },
+      "expected": "z"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "c"
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "z"
+      },
+      "expected": "z"
+    }
+  ]
+}

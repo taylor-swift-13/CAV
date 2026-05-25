@@ -1,0 +1,131 @@
+{
+  "name": "string_fill_char",
+  "function": "string_fill_char",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "c",
+      "type": "char"
+    },
+    {
+      "name": "s",
+      "type": "out_c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 4,
+        "c": "x",
+        "s": "_____"
+      },
+      "mutations": {
+        "s": "xxxx"
+      }
+    }
+  ]
+}

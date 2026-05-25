@@ -1,0 +1,97 @@
+{
+  "name": "fibonacci_mod",
+  "function": "fibonacci_mod",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "mod",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "mod": 7
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 8,
+        "mod": 5
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "mod": 7
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 8,
+        "mod": 5
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "mod": 7
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 8,
+        "mod": 5
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "mod": 7
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 8,
+        "mod": 5
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "mod": 7
+      },
+      "expected": 6
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 8,
+        "mod": 5
+      },
+      "expected": 1
+    }
+  ]
+}

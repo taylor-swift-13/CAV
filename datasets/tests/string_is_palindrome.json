@@ -1,0 +1,97 @@
+{
+  "name": "string_is_palindrome",
+  "function": "string_is_palindrome",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "s",
+      "type": "c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "s": "level"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "s": "test"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "s": ""
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "s": "x"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6,
+        "s": "abccba"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "s": "level"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "s": "test"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "s": ""
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "s": "x"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 6,
+        "s": "abccba"
+      },
+      "expected": 1
+    }
+  ]
+}

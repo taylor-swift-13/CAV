@@ -1,0 +1,161 @@
+{
+  "name": "count_equal_to_k",
+  "function": "count_equal_to_k",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    },
+    {
+      "name": "k",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          2,
+          3,
+          2
+        ],
+        "k": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "k": 9
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          2,
+          3,
+          2
+        ],
+        "k": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "k": 9
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          2,
+          3,
+          2
+        ],
+        "k": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "k": 9
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          2,
+          3,
+          2
+        ],
+        "k": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "k": 9
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          2,
+          3,
+          2
+        ],
+        "k": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "k": 9
+      },
+      "expected": 0
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "name": "fb_easy_max_mod_remainder_value",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "x",
+      "type": "int"
+    },
+    {
+      "name": "y",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "x": 3,
+        "y": 1
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "x": 3,
+        "y": 2
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "x": 7,
+        "y": 6
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 100,
+        "x": 10,
+        "y": 0
+      },
+      "expected": 100
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/FindMaxVal.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

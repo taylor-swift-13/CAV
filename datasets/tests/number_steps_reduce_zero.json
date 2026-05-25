@@ -1,0 +1,106 @@
+{
+  "name": "number_steps_reduce_zero",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "num",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "num": 14
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 8
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 123
+      },
+      "expected": 12
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "num": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 14
+      },
+      "expected": 6,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 8
+      },
+      "expected": 4,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 123
+      },
+      "expected": 12,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "num": 0
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 14
+      },
+      "expected": 6,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 8
+      },
+      "expected": 4,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "number-of-steps-to-reduce-a-number-to-zero",
+    "url": "https://leetcode.com/problems/number-of-steps-to-reduce-a-number-to-zero/",
+    "license": "local rewrite"
+  }
+}

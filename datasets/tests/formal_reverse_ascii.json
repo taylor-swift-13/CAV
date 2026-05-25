@@ -1,0 +1,106 @@
+{
+  "name": "formal_reverse_ascii",
+  "return_type": "string",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "cba"
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": ""
+      },
+      "expected": ""
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a"
+      },
+      "expected": "a"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "hello!"
+      },
+      "expected": "!olleh"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "cba",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": ""
+      },
+      "expected": "",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a"
+      },
+      "expected": "a",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "hello!"
+      },
+      "expected": "!olleh",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": "cba",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": ""
+      },
+      "expected": "",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "string-reverse",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite"
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "name": "goal_parser_interpret",
+  "return_type": "string",
+  "params": [
+    {
+      "name": "command",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "command": "G()(al)"
+      },
+      "expected": "Goal"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "G()()()()(al)"
+      },
+      "expected": "Gooooal"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "(al)G(al)()()G"
+      },
+      "expected": "alGalooG"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "G()(al)"
+      },
+      "expected": "Goal",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "G()()()()(al)"
+      },
+      "expected": "Gooooal",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "(al)G(al)()()G"
+      },
+      "expected": "alGalooG",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "G()(al)"
+      },
+      "expected": "Goal",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "G()()()()(al)"
+      },
+      "expected": "Gooooal",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "(al)G(al)()()G"
+      },
+      "expected": "alGalooG",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "command": "G()(al)"
+      },
+      "expected": "Goal",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "goal-parser-interpretation",
+    "url": "https://leetcode.com/problems/goal-parser-interpretation/",
+    "license": "local rewrite"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "name": "string_count_not_char",
+  "function": "string_count_not_char",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    },
+    {
+      "name": "c",
+      "type": "char"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "c": "a"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aaa",
+        "c": "a"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "c": "a"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aaa",
+        "c": "a"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "c": "a"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aaa",
+        "c": "a"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "c": "a"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aaa",
+        "c": "a"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "c": "a"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "aaa",
+        "c": "a"
+      },
+      "expected": 0
+    }
+  ]
+}

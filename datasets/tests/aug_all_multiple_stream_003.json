@@ -1,0 +1,92 @@
+{
+  "name": "aug_all_multiple_stream_003",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,5,-6"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "6,-7,-1,7"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-6,-2,4,-5,5"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,3,-8,0,-7,5"
+      },
+      "expected": false
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": ""
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-8"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-3,1"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,6,-5"
+      },
+      "expected": false
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "7,-6,0,8"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-5,-1,5,-4,6"
+      },
+      "expected": false
+    }
+  ],
+  "augment": {
+    "parent_dataset": "internal",
+    "parent_problem": "array_all_even",
+    "variant_kind": "fixed-divisibility-all-streaming-no-array",
+    "constants": {
+      "i": 3,
+      "mod": 5,
+      "implementation_strategy": "streaming-no-array"
+    }
+  }
+}

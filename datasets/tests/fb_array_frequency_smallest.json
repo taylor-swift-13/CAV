@@ -1,0 +1,67 @@
+{
+  "name": "fb_array_frequency_smallest",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "arr",
+      "type": "int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "arr": []
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "arr": [
+          5
+        ]
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "arr": [
+          3,
+          1,
+          1,
+          2,
+          1
+        ]
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "arr": [
+          -2,
+          -2,
+          0,
+          -1
+        ]
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/FrequencyOfSmallest.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

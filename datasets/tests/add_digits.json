@@ -1,0 +1,103 @@
+{
+  "name": "add_digits",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "num",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "num": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 9
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 38
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 9999
+      },
+      "expected": 9
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "num": 10
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 0
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 9
+      },
+      "expected": 9,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 38
+      },
+      "expected": 2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "num": 9999
+      },
+      "expected": 9,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "num": 10
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "add-digits",
+    "url": "https://leetcode.com/problems/add-digits/",
+    "license": "local rewrite"
+  }
+}

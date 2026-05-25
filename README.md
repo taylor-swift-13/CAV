@@ -52,13 +52,13 @@ Run the guarded OpenJML wrapper used by the end-to-end workflow:
 Prepare a contract workspace without invoking Codex:
 
 ```bash
-python3 scripts/run_codex_contract.py raw/smoke_add.md --function-name add --dry-run
+python3 scripts/run_contract.py raw/add_two.md --function-name add_two --dry-run
 ```
 
 Prepare a verify workspace without invoking Codex:
 
 ```bash
-python3 scripts/run_codex_verify.py input/smoke_add.java --class-name SmokeAdd --dry-run
+python3 scripts/run_verify.py input/add_two.java --class-name AddTwo --dry-run
 ```
 
 Compile with runtime assertion checking:
@@ -70,35 +70,107 @@ openjml-java -cp examples Counter
 
 The installer pins the downloaded release under `.tools/openjml/<version>` and updates `.tools/openjml/current` to point at it.
 
-## End-to-End Experience Workflow
+## Four-Agent Workflow
+
+Per the ICSE 2027 paper, the system has four file-coupled, peer agents:
+`contract` (Formalization), `verify` (Verification), `eval` (Evaluation),
+`audit` (Audit). `eval` and `audit` are optional reliability components.
+Each agent reads immutable inputs from earlier agents, writes its own
+artifacts, and is not allowed to modify another agent's outputs.
 
 The Java/OpenJML reusable workflow notes live under `experiences/general/`.
 Completed end-to-end example snapshots live under `experiences/end-end/<name>/`.
-It mirrors the CAV two-stage idea without copying the C examples:
 
-1. `contract`: raw task text to `input/<name>.java`.
-2. optional `eval`: `input/<name>.java` to
-   `output/eval_<timestamp>_<name>/`, with generated positive and negative
-   harness cases.
-3. `verify`: `input/<name>.java` to
-   `output/verify_<timestamp>_<name>/verified/<name>.java`, checked by
-   anti-cheating scans and `openjml -esc`.
+### contract — formalization
 
-The key rule is that `Final Result: Success` is only valid when OpenJML passes
-and `scripts/check_jml_cheating.py` accepts the verified file.
-
-There is also an independent eval skill at `skills/eval/SKILL.md` for
-generating 10 positive and 10 negative OpenJML harness cases for an existing
-implementation/spec.
-
-Batch flow. It follows the CAV many-script style: pass task names, and each
-name runs `contract -> verify` by default. With `--eval`, the order is
-`contract -> eval -> verify`. The batch script does not create a batch
-workspace; only the single-stage workspaces are kept under `output/`.
-Successful verify runs are exported to `experiences/end-end/<name>/` by
-default; use `--no-export-examples` to disable that. Existing same-name
-examples are skipped rather than overwritten.
+Generates JML pre/postconditions from a natural-language task. Writes
+`input/<name>.java` plus a contract workspace under
+`output/contract_<ts>_<name>/`.
 
 ```bash
-./scripts/run_codex_verify_many.sh --eval --timeout-seconds 3600 --jobs 1 add_two array_sum
+python3 scripts/run_contract.py raw/<name>.md --function-name <name>
+python3 scripts/run_pipeline.py raw/<name>.md --function-name <name>
+python3 scripts/run_pipeline.py raw/<name>.md --function-name <name> --eval
 ```
+
+### verify — proof construction
+
+Treats the contract as fixed. Adds loop invariants, bridge assertions, and
+ghost code until `openjml -esc` accepts the file. Writes a verified working
+copy plus a verify workspace under `output/verify_<ts>_<name>/`.
+
+```bash
+python3 scripts/run_verify.py input/<name>.java --class-name <ClassName>
+python3 scripts/run_pipeline.py input/<name>.java --class-name <ClassName> --only verify
+python3 scripts/run_pipeline.py input/<name>.java --class-name <ClassName> --only verify --audit
+```
+
+### eval — contract/implementation match (optional)
+
+Screens whether the formalized contract matches the implementation on
+concrete cases. Eval treats the JML spec as an executable predicate
+(spec-test) and supports `--agent {codex,claude}`. It generates positive and
+negative JSON cases, then for each case:
+
+1. substitutes the concrete values into every spec clause and computes the
+   boolean mechanically (enumerating bounded `\forall` / `\exists` /
+   `\sum` / `\num_of` over the case's range);
+2. sends only the clauses it cannot decide mechanically to an LLM-as-judge.
+
+It does not invoke `openjml -esc` and does not re-check well-formedness — the
+contract stage's success gate already guarantees the spec parses, type-checks,
+and is free of `NOT IMPLEMENTED` / unsupported aggregate quantifiers.
+
+```bash
+python3 scripts/run_eval.py input/<name>.java --class-name <ClassName> --agent codex
+python3 scripts/run_eval.py input/<name>.java --class-name <ClassName> --agent claude
+```
+
+Artifacts land in `output/eval_<ts>_<name>/`. This stage only runs when
+`run_pipeline.py` or `run_pipeline_many.sh` is given `--eval`.
+
+### audit — anti-cheating check (optional)
+
+Runs after `verify` reports success. Deterministic checks (in
+`scripts/audit_jml.py`) flag contract weakening, vacuous implications
+(`requires false`, `false ==> ...`), unproven lemmas (`native`, empty
+bodies), `axiom` / `assume` / `Admitted` / `skipesc` / `nowarn`, trivial
+postconditions (`ensures true`, `ensures \result == \result`), broad frame
+clauses (`assignable \everything`), and reflection / `System.exit`. The
+agent then renders findings into an audit verdict
+(`VerifiedClean` / `VerifiedWithWarnings` / `NotVerified`). OpenJML is
+rerun from the clean audit workspace as a cross-check.
+
+```bash
+python3 scripts/run_audit.py --workspace output/verify_<ts>_<name>/                 --agent codex
+python3 scripts/run_audit.py --original input/<name>.java --verified <verified>.java --agent claude
+```
+
+Artifacts land in `output/audit_<ts>_<name>/`. This stage only runs when
+`run_pipeline.py` or `run_pipeline_many.sh` is given `--audit`.
+
+### Default backends
+
+`--agent codex` uses Codex with `gpt-5.4` / medium effort (matching the
+paper's default). `--agent claude` uses Claude Code with `sonnet` by default.
+Both are exposed via `--model` / `--reasoning-effort` if you need to override
+them.
+
+### Batch driver
+
+The pipeline entry runs `contract -> verify` by default. `eval` and `audit`
+are both opt-in via flags: `--eval` enables the contract critic, `--audit`
+enables the verify critic.
+
+The batch driver is `run_pipeline_many.sh` and uses the same semantics.
+
+```bash
+python3 scripts/run_pipeline.py raw/add_two.md --function-name add_two
+python3 scripts/run_pipeline.py raw/add_two.md --function-name add_two --eval --audit
+./scripts/run_pipeline_many.sh --eval --audit --timeout-seconds 7200 --jobs 1 add_two array_sum
+./scripts/run_pipeline_many.sh --no-export-examples --timeout-seconds 7200 --jobs 1 string_length binary_search
+```
+
+Successful verify runs are exported to `experiences/end-end/<name>/` by
+default; use `--no-export-examples` to disable. Existing same-name examples
+are skipped rather than overwritten.

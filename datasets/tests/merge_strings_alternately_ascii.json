@@ -1,0 +1,120 @@
+{
+  "name": "merge_strings_alternately_ascii",
+  "return_type": "string",
+  "params": [
+    {
+      "name": "word1",
+      "type": "string"
+    },
+    {
+      "name": "word2",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "abc",
+        "word2": "pqr"
+      },
+      "expected": "apbqcr"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "ab",
+        "word2": "pqrs"
+      },
+      "expected": "apbqrs"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "abcd",
+        "word2": "pq"
+      },
+      "expected": "apbqcd"
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "word1": "",
+        "word2": "xy"
+      },
+      "expected": "xy"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "abc",
+        "word2": "pqr"
+      },
+      "expected": "apbqcr",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "ab",
+        "word2": "pqrs"
+      },
+      "expected": "apbqrs",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "abcd",
+        "word2": "pq"
+      },
+      "expected": "apbqcd",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "word1": "",
+        "word2": "xy"
+      },
+      "expected": "xy",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "abc",
+        "word2": "pqr"
+      },
+      "expected": "apbqcr",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "ab",
+        "word2": "pqrs"
+      },
+      "expected": "apbqrs",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "merge-strings-alternately",
+    "url": "https://leetcode.com/problems/merge-strings-alternately/",
+    "license": "local rewrite"
+  }
+}

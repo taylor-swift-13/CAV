@@ -1,0 +1,97 @@
+{
+  "name": "power_nonnegative",
+  "function": "power_nonnegative",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "base",
+      "type": "int"
+    },
+    {
+      "name": "exp",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "base": 2,
+        "exp": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 2,
+        "exp": 5
+      },
+      "expected": 32
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 3,
+        "exp": 3
+      },
+      "expected": 27
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 2,
+        "exp": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 2,
+        "exp": 5
+      },
+      "expected": 32
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 3,
+        "exp": 3
+      },
+      "expected": 27
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 2,
+        "exp": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 2,
+        "exp": 5
+      },
+      "expected": 32
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "base": 3,
+        "exp": 3
+      },
+      "expected": 27
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "base": 2,
+        "exp": 0
+      },
+      "expected": 1
+    }
+  ]
+}

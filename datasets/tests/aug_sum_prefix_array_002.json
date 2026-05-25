@@ -1,0 +1,92 @@
+{
+  "name": "aug_sum_prefix_array_002",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "-2,1"
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "3,6,-6"
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "8,-6,-1,6"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-4,-1,4,-6,3"
+      },
+      "expected": -5
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,4,-8,-1,8,2"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-6"
+      },
+      "expected": -6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,2"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "4,7,-5"
+      },
+      "expected": 11
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-8,-5,0,7"
+      },
+      "expected": -13
+    }
+  ],
+  "augment": {
+    "parent_dataset": "internal",
+    "parent_problem": "prefix_sum",
+    "variant_kind": "fixed-prefix-sum-array-backed",
+    "constants": {
+      "i": 2,
+      "limit": 2,
+      "implementation_strategy": "array-backed"
+    }
+  }
+}

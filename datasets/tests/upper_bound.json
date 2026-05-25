@@ -1,0 +1,171 @@
+{
+  "name": "upper_bound",
+  "function": "upper_bound",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    },
+    {
+      "name": "target",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 4
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 5
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 4
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 5
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 4
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 5
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 4
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 5
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 4
+      },
+      "expected": 4
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          4,
+          4,
+          8
+        ],
+        "target": 5
+      },
+      "expected": 4
+    }
+  ]
+}

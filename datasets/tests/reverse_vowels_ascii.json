@@ -1,0 +1,103 @@
+{
+  "name": "reverse_vowels_ascii",
+  "return_type": "string",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": ""
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "hello"
+      },
+      "expected": "holle"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "leetcode"
+      },
+      "expected": "leotcede"
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "bcdf"
+      },
+      "expected": "bcdf"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "Aa"
+      },
+      "expected": "aA"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": "",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "hello"
+      },
+      "expected": "holle",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "leetcode"
+      },
+      "expected": "leotcede",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "bcdf"
+      },
+      "expected": "bcdf",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "Aa"
+      },
+      "expected": "aA",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "reverse-vowels-of-a-string",
+    "url": "https://leetcode.com/problems/reverse-vowels-of-a-string/",
+    "license": "local rewrite"
+  }
+}

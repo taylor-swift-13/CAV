@@ -1,16 +1,26 @@
 ---
 name: java-openjml-eval
-description: Generate positive and negative OpenJML harness tests for an existing Java implementation/spec.
+description: Evaluate an existing Java/JML implementation against concrete positive and negative cases by treating the JML spec as an executable predicate (spec-test).
 ---
 
-Use this workflow independently from the contract and verify stages. The goal is
-to evaluate whether concrete examples satisfy the existing JML spec, not to
-change the implementation or weaken the spec.
+Use this workflow independently from contract, verify, and audit. The goal is
+to decide whether the JML spec attached to an implementation correctly
+characterizes that implementation's behavior on representative inputs. The
+spec and the implementation are not modified.
 
-## Read First
+Eval treats the JML spec as an **executable predicate** and looks for cases
+where mechanical evaluation disagrees with the implementation. It does **not**
+invoke `openjml -esc`, and it does **not** check well-formedness: the contract
+stage's success gate already guarantees the spec parses, type-checks, is free
+of `NOT IMPLEMENTED` and the unsupported aggregate quantifiers
+(`\num_of` / `\sum` / `\product`), and passes the anti-cheating scan. Deductive
+proof is the verify/audit stage's job. By the time eval runs, the spec is
+already well-formed, so eval only has to test its semantics.
+
+## Required References
 
 - `experiences/general/EVAL.md`
-- `experiences/general/ANTI_CHEATING.md`
+- `experiences/general/AUDIT.md`
 - `experiences/general/OPENJML.md`
 
 ## Inputs
@@ -18,75 +28,163 @@ change the implementation or weaken the spec.
 - Implementation/spec Java file.
 - Target class and method.
 - Workspace path.
-- Output harness directory.
+- Cases directory and evaluation directory.
 
-## Output
+## Output Layout
 
-- Exactly 10 positive cases and 10 negative cases.
-- Prefer two harness files:
-  - `<ClassName>PositiveHarness.java`
-  - `<ClassName>NegativeHarness.java`
-- `logs/test_reasoning.md`
-- `logs/issues.md`
-- `logs/metrics.md`
-- `logs/final_result.md`
-- OpenJML stdout/stderr logs for the positive and negative harness checks.
+```
+output/eval_<timestamp>_<name>/
+  original/<name>.java
+  cases/cases.json
+  evaluation/evaluation.json
+  logs/test_reasoning.md
+  logs/issues.md
+  logs/metrics.md
+  logs/final_result.md
+  logs/<agent>_prompt_<run>.txt
+  logs/<agent>_stdout_<run>.{jsonl,log}
+  logs/<agent>_stderr_<run>.log
+  logs/<agent>_last_message_<run>.txt
+```
 
-## Harness Requirements
+## Cases
 
-- Do not modify the implementation/spec file.
-- Generate positive cases that satisfy the target method's preconditions and
-  prove expected postcondition facts with JML `assert`.
-- Generate negative cases that are intentionally invalid with respect to the
-  spec. Each negative case must target one clear failure mode:
-  - precondition violation, or
-  - expected-output assertion that contradicts the spec.
-- Negative cases must be checked in a separate harness or mode where OpenJML is
-  expected to fail. A negative case passing is an eval failure unless the case
-  is explicitly documented as an accepted vacuity check.
-- Each case must be deterministic and concrete.
-- Prefer small primitive/array inputs that OpenJML can reason about directly.
+Generate **exactly the requested number of positive** and **exactly the requested number of negative** cases in
+`cases/cases.json`. Positive cases must satisfy every `requires` clause;
+their `result` and `post_state` come from running the implementation. Negative
+cases either violate one `requires` clause (precondition negative) or claim a
+`result` that contradicts the spec (postcondition negative).
+
+Choose cases adversarially: positives must cover EVERY branch / input partition
+(e.g. both `a >= b` and `a < b`) and stress each `ensures` clause, so a
+one-branch spec bug is not missed because no case hit that branch.
+
+`cases/cases.json` schema:
+
+```json
+{
+  "class_name": "MaxOfTwo",
+  "method_name": "max_of_two",
+  "positive": [
+    {
+      "id": "pos01",
+      "description": "a > b on small positives",
+      "inputs": {"a": 5, "b": 3},
+      "old": {},
+      "result": 5,
+      "post_state": {}
+    }
+  ],
+  "negative": [
+    {
+      "id": "neg01_precondition",
+      "kind": "precondition",
+      "description": "violates requires a >= 0",
+      "inputs": {"a": -1, "b": 3},
+      "old": {},
+      "result": null,
+      "post_state": {},
+      "violated_clause": "requires a >= 0"
+    },
+    {
+      "id": "neg02_wrong_output",
+      "kind": "postcondition",
+      "description": "claims wrong result; spec should reject",
+      "inputs": {"a": 5, "b": 3},
+      "old": {},
+      "result": 3,
+      "post_state": {},
+      "violated_clause": "ensures \\result == a || \\result == b"
+    }
+  ]
+}
+```
+
+## Test, then judge only the leftovers
+
+Simple flow: **test each case mechanically; if it cannot be tested
+mechanically, judge it.** No separate per-tier files.
+
+1. **Test (mechanical).** For each case, substitute its inputs / `\result` /
+   `\old(...)` into every spec clause and compute the boolean by ordinary
+   Java arithmetic/logic (`&&`, `||`, `==>`, `<==>`, `!`, constant indexing).
+   Enumerate bounded quantifiers over the case's concrete range
+   (`\forall` passes iff every witness is true; `\exists` iff some witness is;
+   `\sum`/`\num_of`/`\product` by running the implied loop). This is mechanical
+   substitution, not judgment — record the `substituted` string and the
+   `evaluated` boolean for each clause.
+2. **Judge (only leftovers).** A clause that cannot be decided mechanically
+   (unbounded quantifier, model function, etc.) is `needs_judge`. Judge only
+   those, citing the clause and reason. Do not judge what was decided
+   mechanically.
+
+Write ONE results file `evaluation/evaluation.json`:
+
+```json
+{
+  "cases": [
+    {
+      "id": "pos01",
+      "verdict": "pass",
+      "clauses": [
+        {"clause": "ensures \\result == a || \\result == b",
+         "substituted": "5 == 5 || 5 == 3", "evaluated": true}
+      ]
+    },
+    {
+      "id": "pos07",
+      "verdict": "needs_judge",
+      "clauses": [{"clause": "ensures someModelExpr(\\result)", "substituted": null, "evaluated": null}],
+      "judge": {"verdict": "pass", "reason": "..."}
+    }
+  ]
+}
+```
+
+`judge` is present only on `needs_judge` cases.
+
+## Aggregate spec verdict
+
+Write `logs/final_result.md` with one of:
+
+- **Spec verdict: Correct** — every positive case passes, every negative case
+  fails (as it should), and nothing stayed inconclusive after judging.
+- **Spec verdict: Buggy** — at least one positive case failed, or a negative
+  case passed. Record the offending cases and clauses.
+- **Spec verdict: Inconclusive** — a judged clause stayed undecided. Record
+  which clauses prevented a decisive verdict.
 
 ## Anti-Cheating Rules
 
 - No `assume`, `axiom`, `Admitted`, `skipesc`, broad `nowarn`, `native`,
-  reflection, or impossible path tricks.
+  reflection, or impossible-path tricks.
 - Do not weaken or delete target specs.
 - Do not encode negative tests by making methods unreachable.
-- Do not claim a negative case is successful unless OpenJML reports the expected
-  precondition/assertion failure.
+- Do not invoke `openjml -esc` to decide the verdict.
 
-## Proof Commands
+## Experience
 
-Run anti-cheating scan on the implementation and harnesses:
+Do not record experience here. Eval is a critic stage; experience is
+consolidated once at the very end of the flow by a dedicated unit
+(`scripts/experience_consolidate.py`), scoped to whatever flow ran. Just write a
+clear `logs/final_result.md` (the spec verdict) and `logs/issues.md` — the
+consolidation unit reads them.
 
-```bash
-scripts/check_jml_cheating.py <impl.java>
-scripts/check_jml_cheating.py <positive-harness.java>
-scripts/check_jml_cheating.py <negative-harness.java>
+## Final Result
+
+`logs/metrics.md` must end with one of:
+
+```
+Final Result: Success
+Final Result: Fail
 ```
 
-Run positive cases:
+`Final Result: Success` is allowed only when:
 
-```bash
-scripts/run_openjml_verify.sh <impl.java> <positive-harness.java>
-```
+- exactly the requested number of positive and negative cases are present in
+  `cases/cases.json`;
+- `evaluation/evaluation.json` exists and covers every case;
+- the aggregated spec verdict is `Correct` or `Buggy` (either is decisive);
+- `Spec verdict: Inconclusive` is treated as `Final Result: Fail`.
 
-Run negative cases:
-
-```bash
-scripts/run_openjml_verify.sh <impl.java> <negative-harness.java>
-```
-
-The positive command must exit 0. The negative command must exit non-zero with
-the expected failure locations recorded in `logs/issues.md`.
-
-## Completion
-
-- Exactly 10 positive and 10 negative cases are present.
-- Positive harness passes OpenJML.
-- Negative harness fails OpenJML for documented spec-related reasons.
-- Logs record which cases passed or failed and why.
-- `logs/final_result.md` records the final judgment.
-- If eval did not fully generate, scan, and run all required cases, write
-  `Final Result: Fail`, not `Final Result: Success`.
+If any condition is missing, write `Final Result: Fail`.

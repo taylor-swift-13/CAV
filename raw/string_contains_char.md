@@ -1,0 +1,46 @@
+# String Contains Char
+
+## 问题描述
+
+实现一个 Java 静态方法，输入一个以 `'\0'` 结尾的字符串 `s` 和一个字符 `c`，判断字符串中是否出现过这个字符。
+
+约定：
+
+- 字符串是合法的 C 风格字符串
+- 方法不修改字符串
+- 如果某个位置满足 `s[i] == c`，返回 `1`
+- 否则返回 `0`
+
+## Java 要求
+
+- 生成的 Java 类名应为 `StringContainsChar`。
+- 目标方法应为 `public static`。
+- 原版中的字符指针按 Java `char[]` 表示，以 `'\0'` 作为字符串结束符。
+- 方法只依赖参数和数组内容，不使用全局状态。
+
+## Java 参考实现
+
+```java
+class StringContainsChar {
+    public static int string_contains_char(char[] s, char c) {
+        int i = 0;
+
+        while (s[i] != '\0') {
+            if (s[i] == c) {
+                return 1;
+            }
+            i++;
+        }
+
+        return 0;
+    }
+}
+```
+
+## 说明
+
+这道题适合验证“扫描字符串直到 terminator”模式：
+
+- 单层循环
+- 只读字符串
+- 命中后立即返回

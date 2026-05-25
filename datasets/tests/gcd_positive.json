@@ -1,0 +1,114 @@
+{
+  "name": "gcd_positive",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 12,
+        "b": 18
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 17,
+        "b": 13
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 100,
+        "b": 25
+      },
+      "expected": 25
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 999
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 12,
+        "b": 18
+      },
+      "expected": 6,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 17,
+        "b": 13
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 100,
+        "b": 25
+      },
+      "expected": 25,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 999
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 12,
+        "b": 18
+      },
+      "expected": 6,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 17,
+        "b": 13
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ]
+}

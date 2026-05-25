@@ -1,0 +1,103 @@
+{
+  "name": "contains_duplicate_csv",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3,1"
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,2,3,4"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,1"
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": ""
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,2,-1"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3,1"
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,2,3,4"
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,1"
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": ""
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,2,-1"
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "contains-duplicate",
+    "url": "https://leetcode.com/problems/contains-duplicate/",
+    "license": "local rewrite"
+  }
+}

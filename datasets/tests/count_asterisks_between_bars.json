@@ -1,0 +1,106 @@
+{
+  "name": "count_asterisks_between_bars",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "l|*e*et|c**o|*de|"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "iamprogrammer"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "yo|uar|e**|b|e***au|tifu|l"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "***"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "l|*e*et|c**o|*de|"
+      },
+      "expected": 2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "iamprogrammer"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "yo|uar|e**|b|e***au|tifu|l"
+      },
+      "expected": 5,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "***"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "l|*e*et|c**o|*de|"
+      },
+      "expected": 2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "iamprogrammer"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "count-asterisks",
+    "url": "https://leetcode.com/problems/count-asterisks/",
+    "license": "local rewrite"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "name": "fb_array_subarray_product_sum",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "arr",
+      "type": "int_array"
+    },
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          1
+        ],
+        "n": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          1,
+          2
+        ],
+        "n": 2
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          1,
+          2,
+          3
+        ],
+        "n": 3
+      },
+      "expected": 20
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          2,
+          -1,
+          3
+        ],
+        "n": 3
+      },
+      "expected": -7
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/SumOfSubarrayProd.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

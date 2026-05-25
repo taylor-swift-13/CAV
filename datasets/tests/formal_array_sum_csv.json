@@ -1,0 +1,103 @@
+{
+  "name": "formal_array_sum_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3"
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,2,-3"
+      },
+      "expected": -2
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "5"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,0,0"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3"
+      },
+      "expected": 6,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,2,-3"
+      },
+      "expected": -2,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": ""
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "5"
+      },
+      "expected": 5,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,0,0"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "array-sum",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite"
+  }
+}

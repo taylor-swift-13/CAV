@@ -1,0 +1,71 @@
+{
+  "name": "fb_array_max_subarray_length",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int_array"
+    },
+    {
+      "name": "size",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "size": 3
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": [
+          -1,
+          5,
+          -2,
+          3
+        ],
+        "size": 4
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": [
+          -5,
+          -1
+        ],
+        "size": 2
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": [
+          4,
+          -10,
+          2,
+          2
+        ],
+        "size": 4
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/MaxSubArraySum.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

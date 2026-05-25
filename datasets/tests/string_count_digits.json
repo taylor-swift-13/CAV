@@ -1,0 +1,83 @@
+{
+  "name": "string_count_digits",
+  "function": "string_count_digits",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a1b2c3"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "0123456789"
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a1b2c3"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "0123456789"
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a1b2c3"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "abc"
+      },
+      "expected": 0
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "name": "middle_node_value_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "list",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "list": "1,2,3,4,5"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "1,2,3,4,5,6"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "9"
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "-1,0,1"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "5,6"
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "1,2,3,4,5"
+      },
+      "expected": 3,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "1,2,3,4,5,6"
+      },
+      "expected": 4,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "9"
+      },
+      "expected": 9,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "-1,0,1"
+      },
+      "expected": 0,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "list": "5,6"
+      },
+      "expected": 6,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "middle-of-the-linked-list",
+    "url": "https://leetcode.com/problems/middle-of-the-linked-list/",
+    "license": "local rewrite"
+  }
+}

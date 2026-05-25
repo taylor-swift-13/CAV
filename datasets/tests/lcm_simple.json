@@ -1,0 +1,97 @@
+{
+  "name": "lcm_simple",
+  "function": "lcm_simple",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 4,
+        "b": 6
+      },
+      "expected": 12
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 7,
+        "b": 5
+      },
+      "expected": 35
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 4,
+        "b": 6
+      },
+      "expected": 12
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 7,
+        "b": 5
+      },
+      "expected": 35
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 4,
+        "b": 6
+      },
+      "expected": 12
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 7,
+        "b": 5
+      },
+      "expected": 35
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 4,
+        "b": 6
+      },
+      "expected": 12
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 7,
+        "b": 5
+      },
+      "expected": 35
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 4,
+        "b": 6
+      },
+      "expected": 12
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": 7,
+        "b": 5
+      },
+      "expected": 35
+    }
+  ]
+}

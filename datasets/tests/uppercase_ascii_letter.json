@@ -1,0 +1,109 @@
+{
+  "name": "uppercase_ascii_letter",
+  "return_type": "string",
+  "params": [
+    {
+      "name": "letter",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "a"
+      },
+      "expected": "A"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "z"
+      },
+      "expected": "Z"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "m"
+      },
+      "expected": "M"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "a"
+      },
+      "expected": "A",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "z"
+      },
+      "expected": "Z",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "m"
+      },
+      "expected": "M",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "a"
+      },
+      "expected": "A",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "z"
+      },
+      "expected": "Z",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "m"
+      },
+      "expected": "M",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "letter": "a"
+      },
+      "expected": "A",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5704",
+    "url": "https://www.luogu.com.cn/problem/P5704",
+    "license": "local rewrite"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "name": "string_count_alnum",
+  "function": "string_count_alnum",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc123"
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a_b-9"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "!!"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc123"
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a_b-9"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "!!"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "abc123"
+      },
+      "expected": 6
+    }
+  ]
+}

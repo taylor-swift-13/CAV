@@ -1,0 +1,148 @@
+{
+  "name": "collatz_steps",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "negative",
+      "input": {
+        "n": 1
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "540a3d51-e7a6-47a5-92a3-4ad1838f0bfd",
+        "description": "zero steps for one",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 16
+      },
+      "expected": 4,
+      "source_case": {
+        "uuid": "3d76a0a6-ea84-444a-821a-f7857c2c1859",
+        "description": "divide if even",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 12
+      },
+      "expected": 9,
+      "source_case": {
+        "uuid": "754dea81-123c-429e-b8bc-db20b05a87b9",
+        "description": "even and odd steps",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000000
+      },
+      "expected": 152,
+      "source_case": {
+        "uuid": "ecfd0210-6f85-44f6-8280-f65534892ff6",
+        "description": "large number of even and odd steps",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 1
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "540a3d51-e7a6-47a5-92a3-4ad1838f0bfd",
+        "description": "zero steps for one",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 16
+      },
+      "expected": 4,
+      "source_case": {
+        "uuid": "3d76a0a6-ea84-444a-821a-f7857c2c1859",
+        "description": "divide if even",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 12
+      },
+      "expected": 9,
+      "source_case": {
+        "uuid": "754dea81-123c-429e-b8bc-db20b05a87b9",
+        "description": "even and odd steps",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000000
+      },
+      "expected": 152,
+      "source_case": {
+        "uuid": "ecfd0210-6f85-44f6-8280-f65534892ff6",
+        "description": "large number of even and odd steps",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 1
+      },
+      "expected": 0,
+      "source_case": {
+        "uuid": "540a3d51-e7a6-47a5-92a3-4ad1838f0bfd",
+        "description": "zero steps for one",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 16
+      },
+      "expected": 4,
+      "source_case": {
+        "uuid": "3d76a0a6-ea84-444a-821a-f7857c2c1859",
+        "description": "divide if even",
+        "property": "steps",
+        "file": "problem-specifications/exercises/collatz-conjecture/canonical-data.json"
+      }
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "collatz-conjecture",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/collatz-conjecture",
+    "license": "MIT"
+  }
+}

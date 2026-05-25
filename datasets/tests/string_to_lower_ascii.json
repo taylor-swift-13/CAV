@@ -1,0 +1,103 @@
+{
+  "name": "string_to_lower_ascii",
+  "function": "string_to_lower_ascii",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "s",
+      "type": "mut_c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "AbC1"
+      },
+      "mutations": {
+        "s": "abc1"
+      }
+    }
+  ]
+}

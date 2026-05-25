@@ -1,0 +1,83 @@
+{
+  "name": "climb_stairs",
+  "function": "climbStairs",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6
+      },
+      "expected": 13
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6
+      },
+      "expected": 13
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6
+      },
+      "expected": 13
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 0
+      },
+      "expected": 1
+    }
+  ]
+}

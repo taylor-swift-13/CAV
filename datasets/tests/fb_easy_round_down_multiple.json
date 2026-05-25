@@ -1,0 +1,54 @@
+{
+  "name": "fb_easy_round_down_multiple",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "m",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "m": 3
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "m": 3
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 20,
+        "m": 5
+      },
+      "expected": 20
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 23,
+        "m": 7
+      },
+      "expected": 21
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/RoundNum.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

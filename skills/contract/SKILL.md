@@ -23,16 +23,18 @@ Output:
 Command shape:
 
 ```bash
-python3 scripts/run_codex_contract.py raw/<name>.md --function-name <method_or_class>
+python3 scripts/run_contract.py raw/<name>.md --function-name <method_or_class>
 ```
 
-The next normal stage is verify. If batch eval is enabled, the order is
-`contract -> eval -> verify`; otherwise it is `contract -> verify`.
+The next normal stage is verify. In the pipeline entrypoints, the default flow
+is `contract -> verify`; pass `--eval` to enable the eval critic between them,
+and pass `--audit` later if you also want the verify critic.
 
 ## Read First
 
+- `experiences/general/README.md` (experience entry; jump by symptom)
 - `experiences/general/CONTRACT.md`
-- `experiences/general/ANTI_CHEATING.md`
+- `experiences/general/AUDIT.md`
 
 ## Search Prior Examples
 
@@ -66,18 +68,51 @@ rg -n "requires|ensures|assignable|loop_invariant|assert|pure" /home/yangfp/CAV-
 - Do not add loop invariants, assertions, assumptions, axioms, suppressions, or
   unchecked helpers in the contract stage.
 - If a helper is necessary, make it pure, executable, and specified.
-- If the run reveals a reusable contract-generation lesson, update the relevant
-  file under `/home/yangfp/CAV-JAVA/experiences/general` before finishing.
-  Typical targets are `CONTRACT.md` and `ANTI_CHEATING.md`.
-- If no reusable lesson was found, record that explicitly in
-  `logs/reasoning.md` or `logs/metrics.md`.
+- The spec must be **well-formed under OpenJML**: it must parse and type-check,
+  and it must use only verifier-supported features. Do **not** use the
+  aggregate quantifiers `\num_of`, `\sum`, or `\product`, or any feature OpenJML
+  reports as `NOT IMPLEMENTED` — these compile but make the contract unprovable
+  downstream. Express count/sum results with a `pure` recursive helper instead
+  (see `CONTRACT.md`). The contract stage runs
+  `scripts/check_spec_wellformed.py` and **fails** on parse/type errors or
+  unsupported features. It does **not** require every verification condition to
+  discharge — undischarged `Postcondition`/`Invariant`/`Assert`/loop obligations
+  are expected here and are the verify stage's job.
+- Self-check before finishing:
+  `python3 scripts/check_spec_wellformed.py input/<name>.java`. Exit 0 means
+  well-formed (VCs may remain open); exit 1 means a fatal spec problem you must
+  fix now, not defer to verify.
+- Do **not** record experience yourself. Experience is consolidated once at the
+  very end of the flow by a dedicated unit (`scripts/experience_consolidate.py`).
+  Just write clear `logs/reasoning.md`, `logs/issues.md`, `logs/continue.md`, and
+  `logs/summary.md` — the consolidation unit reads them.
+
+## Iteration / Restart / Resume
+
+The contract runner (`run_contract.py`) drives this stage in a
+budget-driven loop (`scripts/agent_loop.py`):
+
+- Keep iterating in the **same workspace** until the spec passes the
+  anti-cheating scan and the well-formedness gate, or the time budget is
+  exhausted. The loop restarts a fresh round only if you exit early without
+  passing; a round that hits its timeout is a failure and is **not** restarted.
+- On every round before editing, append a fresh section to `logs/continue.md`
+  (never overwrite): why the previous round did not finish, the current blocker,
+  the next step and plan, citing concrete evidence (file:line, the
+  well-formedness / OpenJML message, the spec snippet).
+- At the end of each round write `logs/summary.md`: what you did, the current
+  spec state, where you are stuck — this is what the next round resumes from.
+- When re-entered after the eval critic overturned the spec, the findings are in
+  the `## overturn` section of `logs/continue.md`; read it and fix exactly that.
 
 ## Completion
 
 - `input/<name>.java` exists.
 - `logs/reasoning.md`, `logs/issues.md`, and `logs/metrics.md` exist.
 - `scripts/check_jml_cheating.py input/<name>.java` passes.
-- Reusable general experience is updated under `experiences/general/` when
-  applicable, or the logs explain why no update was needed.
+- `scripts/check_spec_wellformed.py input/<name>.java` exits 0 (spec parses,
+  type-checks, and uses only verifier-supported features; undischarged VCs are
+  allowed).
 - `logs/metrics.md` ends with `Final Result: Success` only when the generated
-  Java file exists and the anti-cheating scan passes.
+  Java file exists, the anti-cheating scan passes, and the well-formedness gate
+  passes. (Experience is consolidated separately at the end of the flow.)

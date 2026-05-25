@@ -1,0 +1,142 @@
+{
+  "name": "array_sum_even_indices",
+  "function": "array_sum_even_indices",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          10,
+          20
+        ]
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          10,
+          20
+        ]
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          10,
+          20
+        ]
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          10,
+          20
+        ]
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expected": 9
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 2,
+        "a": [
+          10,
+          20
+        ]
+      },
+      "expected": 10
+    }
+  ]
+}

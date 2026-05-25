@@ -1,0 +1,70 @@
+{
+  "name": "fb_binomial_coefficient",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "k",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "k": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "k": 0
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "k": 2
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "k": 5
+      },
+      "expected": 252
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 20,
+        "k": 3
+      },
+      "expected": 1140
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 20,
+        "k": 10
+      },
+      "expected": 184756
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/BinomialCoeff.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

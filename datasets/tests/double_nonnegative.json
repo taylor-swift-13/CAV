@@ -1,0 +1,83 @@
+{
+  "name": "double_nonnegative",
+  "function": "double_nonnegative",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 14
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 100
+      },
+      "expected": 200
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 12345
+      },
+      "expected": 24690
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 14
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 100
+      },
+      "expected": 200
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 12345
+      },
+      "expected": 24690
+    }
+  ]
+}

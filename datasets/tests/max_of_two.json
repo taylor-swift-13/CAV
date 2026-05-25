@@ -1,0 +1,97 @@
+{
+  "name": "max_of_two",
+  "function": "max_of_two",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -5
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -5
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -5
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -5
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2
+      },
+      "expected": 2
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": -1,
+        "b": -5
+      },
+      "expected": -1
+    }
+  ]
+}

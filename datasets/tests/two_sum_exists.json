@@ -1,0 +1,117 @@
+{
+  "name": "two_sum_exists",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    },
+    {
+      "name": "target",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,7,11,15",
+        "target": 9
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "3,2,4",
+        "target": 6
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "3,3",
+        "target": 6
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,2,3",
+        "target": 7
+      },
+      "expected": false
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "",
+        "target": 0
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,7,11,15",
+        "target": 9
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "3,2,4",
+        "target": 6
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "3,3",
+        "target": 6
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "1,2,3",
+        "target": 7
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "nums": "",
+        "target": 0
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "two-sum",
+    "url": "https://leetcode.com/problems/two-sum/",
+    "license": "local rewrite"
+  }
+}

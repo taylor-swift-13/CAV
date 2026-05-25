@@ -1,0 +1,117 @@
+{
+  "name": "string_copy",
+  "function": "string_copy",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "src",
+      "type": "c_string"
+    },
+    {
+      "name": "dst",
+      "type": "out_c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "src": "hello",
+        "dst": "______"
+      },
+      "mutations": {
+        "dst": "hello"
+      }
+    }
+  ]
+}

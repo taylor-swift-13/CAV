@@ -23,6 +23,10 @@
 
 - `logs/workspace_fingerprint.json`
 
+在选择题目或改写题目表示前，先看：
+
+- `/home/yangfp/CAV-JAVA/experiences/general/TOOL_SCOPE.md`
+
 建议顺序：
 
 1. 先看 `keywords`

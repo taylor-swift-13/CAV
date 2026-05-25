@@ -1,0 +1,109 @@
+{
+  "name": "defang_ip_address",
+  "return_type": "string",
+  "params": [
+    {
+      "name": "address",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "address": "1.1.1.1"
+      },
+      "expected": "1[.]1[.]1[.]1"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "255.100.50.0"
+      },
+      "expected": "255[.]100[.]50[.]0"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "0.0.0.0"
+      },
+      "expected": "0[.]0[.]0[.]0"
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "1.1.1.1"
+      },
+      "expected": "1[.]1[.]1[.]1",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "255.100.50.0"
+      },
+      "expected": "255[.]100[.]50[.]0",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "0.0.0.0"
+      },
+      "expected": "0[.]0[.]0[.]0",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "1.1.1.1"
+      },
+      "expected": "1[.]1[.]1[.]1",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "255.100.50.0"
+      },
+      "expected": "255[.]100[.]50[.]0",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "0.0.0.0"
+      },
+      "expected": "0[.]0[.]0[.]0",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "address": "1.1.1.1"
+      },
+      "expected": "1[.]1[.]1[.]1",
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "defanging-an-ip-address",
+    "url": "https://leetcode.com/problems/defanging-an-ip-address/",
+    "license": "local rewrite"
+  }
+}

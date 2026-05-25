@@ -1,0 +1,83 @@
+{
+  "name": "last_digit",
+  "function": "last_digit",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 999
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 123
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1000
+      },
+      "expected": 0
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 999
+      },
+      "expected": 9
+    }
+  ]
+}

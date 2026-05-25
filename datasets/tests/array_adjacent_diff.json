@@ -1,0 +1,263 @@
+{
+  "name": "array_adjacent_diff",
+  "function": "array_adjacent_diff",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    },
+    {
+      "name": "out",
+      "type": "out_int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          2,
+          5,
+          1,
+          6
+        ],
+        "out": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          3,
+          -4,
+          5,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "a": [
+          7
+        ],
+        "out": [
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          10,
+          7,
+          7,
+          1,
+          -2
+        ],
+        "out": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          -3,
+          0,
+          -6,
+          -3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          2,
+          5,
+          1,
+          6
+        ],
+        "out": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          3,
+          -4,
+          5,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "a": [
+          7
+        ],
+        "out": [
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          10,
+          7,
+          7,
+          1,
+          -2
+        ],
+        "out": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          -3,
+          0,
+          -6,
+          -3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          2,
+          5,
+          1,
+          6
+        ],
+        "out": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          3,
+          -4,
+          5,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "a": [
+          7
+        ],
+        "out": [
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          10,
+          7,
+          7,
+          1,
+          -2
+        ],
+        "out": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          -3,
+          0,
+          -6,
+          -3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 4,
+        "a": [
+          2,
+          5,
+          1,
+          6
+        ],
+        "out": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "out": [
+          3,
+          -4,
+          5,
+          0
+        ]
+      }
+    }
+  ]
+}

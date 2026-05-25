@@ -1,0 +1,141 @@
+{
+  "name": "string_remove_char_to_output",
+  "function": "string_remove_char_to_output",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    },
+    {
+      "name": "out",
+      "type": "out_c_string"
+    },
+    {
+      "name": "c",
+      "type": "char"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "out": "_______",
+        "c": "a"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "bnn"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "out": "____",
+        "c": "z"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "abc"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "out": "_______",
+        "c": "a"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "bnn"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "out": "____",
+        "c": "z"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "abc"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "out": "_______",
+        "c": "a"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "bnn"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "out": "____",
+        "c": "z"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "abc"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "out": "_______",
+        "c": "a"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "bnn"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "out": "____",
+        "c": "z"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "abc"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "banana",
+        "out": "_______",
+        "c": "a"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "bnn"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "abc",
+        "out": "____",
+        "c": "z"
+      },
+      "expected": 3,
+      "mutations": {
+        "out": "abc"
+      }
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "name": "single_number_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,2,1"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "4,1,2,1,2"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,2,2"
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,2,1"
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "4,1,2,1,2"
+      },
+      "expected": 4,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1"
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,2,2"
+      },
+      "expected": -1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,2,1"
+      },
+      "expected": 1,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "4,1,2,1,2"
+      },
+      "expected": 4,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "single-number",
+    "url": "https://leetcode.com/problems/single-number/",
+    "license": "local rewrite"
+  }
+}

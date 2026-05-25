@@ -1,0 +1,97 @@
+{
+  "name": "string_find_char",
+  "function": "string_find_char",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    },
+    {
+      "name": "c",
+      "type": "char"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcabc",
+        "c": "b"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "c": "z"
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcabc",
+        "c": "b"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "c": "z"
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcabc",
+        "c": "b"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "c": "z"
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcabc",
+        "c": "b"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc",
+        "c": "z"
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcabc",
+        "c": "b"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "abc",
+        "c": "z"
+      },
+      "expected": -1
+    }
+  ]
+}

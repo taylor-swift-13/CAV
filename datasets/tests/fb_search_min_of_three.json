@@ -1,0 +1,53 @@
+{
+  "name": "fb_search_min_of_three",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    },
+    {
+      "name": "c",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2,
+        "c": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 3,
+        "b": 1,
+        "c": 2
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": 5,
+        "c": -2
+      },
+      "expected": -2
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/MinOfThree.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

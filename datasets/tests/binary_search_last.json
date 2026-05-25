@@ -1,0 +1,169 @@
+{
+  "name": "binary_search_last",
+  "function": "binary_search_last",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    },
+    {
+      "name": "target",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6,
+        "a": [
+          1,
+          2,
+          2,
+          2,
+          3,
+          4
+        ],
+        "target": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "target": 9
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          3,
+          3
+        ],
+        "target": 3
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6,
+        "a": [
+          1,
+          2,
+          2,
+          2,
+          3,
+          4
+        ],
+        "target": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "target": 9
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          3,
+          3
+        ],
+        "target": 3
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6,
+        "a": [
+          1,
+          2,
+          2,
+          2,
+          3,
+          4
+        ],
+        "target": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "target": 9
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          2,
+          3,
+          3,
+          3
+        ],
+        "target": 3
+      },
+      "expected": 4
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 6,
+        "a": [
+          1,
+          2,
+          2,
+          2,
+          3,
+          4
+        ],
+        "target": 2
+      },
+      "expected": 3
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "name": "min_of_three",
+  "function": "min_of_three",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    },
+    {
+      "name": "c",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2,
+        "c": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -2,
+        "c": -3
+      },
+      "expected": -3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2,
+        "c": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -2,
+        "c": -3
+      },
+      "expected": -3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2,
+        "c": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -2,
+        "c": -3
+      },
+      "expected": -3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2,
+        "c": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": -1,
+        "b": -2,
+        "c": -3
+      },
+      "expected": -3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 2,
+        "c": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": -1,
+        "b": -2,
+        "c": -3
+      },
+      "expected": -3
+    }
+  ]
+}

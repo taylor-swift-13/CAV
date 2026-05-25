@@ -1,0 +1,70 @@
+{
+  "name": "fb_sum_odd_range",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "l",
+      "type": "int"
+    },
+    {
+      "name": "r",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "l": 0,
+        "r": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "l": 0,
+        "r": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "l": 2,
+        "r": 4
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "l": 3,
+        "r": 9
+      },
+      "expected": 24
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "l": 10,
+        "r": 20
+      },
+      "expected": 75
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "l": 99,
+        "r": 101
+      },
+      "expected": 200
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/SumInRange.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

@@ -1,136 +1,126 @@
 # Eval Experience
 
-Eval checks concrete examples against an existing Java/JML implementation. It is
-independent from contract generation and full verification repair.
+This file records reusable lessons for the eval stage — testing whether the JML
+spec attached to an implementation correctly characterizes that implementation's
+behavior, by treating the spec as an executable predicate (spec-test). It does
+not record contract spec shapes (see `CONTRACT.md`) or anti-cheating policy
+(`AUDIT.md`).
 
-## Purpose
+Eval does **not** invoke `openjml -esc` and does **not** check well-formedness:
+the contract stage's success gate already guarantees the spec parses,
+type-checks, and is free of `NOT IMPLEMENTED` / `\num_of` / `\sum` / `\product`.
+By the time eval runs the spec is well-formed; eval only tests its semantics.
 
-Generate 20 concrete harness cases:
+常见入口 / symptom index:
 
-- 10 positive cases that satisfy the JML spec and should be proved by OpenJML.
-- 10 negative cases that violate a precondition or intentionally assert a result
-  that contradicts the spec, and therefore should fail OpenJML.
+- 要生成多少 case、什么形式 -> see 1
+- 正例怎么写 -> see 2
+- 反例怎么写 -> see 3
+- 正/反例与前置条件 -> see 4
+- 正/反例与后置条件·断言 -> see 5
+- 机械求值 vs 交给 judge -> see 6
+- 异常路径 -> see 7
+- 工作区布局 -> see 8
+- 终判条件 -> see 9
+- 反作弊 -> see 10
 
-This is not JUnit-style execution. It is static checking of concrete harness
-methods against the existing JML specification.
+## 1. 生成具体 case 到 cases.json
 
-## Positive Cases
+Generate the requested number of positive and negative concrete cases into
+`cases/cases.json`. A case is concrete data (`inputs`, `old`, `result`,
+`post_state`), not a JUnit test and not an OpenJML harness. Positive `result` /
+`post_state` come from running the implementation; the implementation is the
+oracle, so what is under test is the **spec**.
 
-Positive cases should:
+Choose cases adversarially: positives must cover EVERY branch / input partition
+(e.g. both `a >= b` and `a < b`) and stress each `ensures` clause, so a
+one-branch spec bug is not missed because no case exercised that branch.
 
-- Use legal concrete inputs.
-- Exercise boundary values, normal values, and small structural cases.
-- Assert the expected result or expected post-state.
-- Pass `openjml -esc`.
+## 2. 正例
 
-Example shape:
+Use legal concrete inputs that satisfy every `requires`; exercise boundary
+values, normal values, and small structural cases. Record the actual `result` /
+`post_state` produced by the implementation. A positive case is expected to
+make every spec clause evaluate true.
 
-```java
-public static void positive01() {
-    int r = Impl.add(1, 2);
-    //@ assert r == 3;
-}
+```json
+{"id": "pos01", "description": "a > b", "inputs": {"a": 5, "b": 3},
+ "old": {}, "result": 5, "post_state": {}}
 ```
 
-## Negative Cases
+## 3. 反例
 
-Negative cases should:
+Be deterministic and concrete; target one failure per case. Two kinds:
 
-- Be deterministic and concrete.
-- Target one failure per method.
-- Prefer precondition failures when testing invalid inputs.
-- Use contradictory assertions when testing wrong expected outputs.
-- Be documented as expected to fail.
+- **precondition negative** — violate exactly one `requires` clause; record
+  `violated_clause`. Do not violate several unrelated requirements at once.
+- **postcondition negative** — legal inputs but a `result` / `post_state` that
+  contradicts the spec; the spec, evaluated mechanically, should reject it.
 
-Example shape:
-
-```java
-public static void negative01_precondition() {
-    Impl.add(Integer.MAX_VALUE, 1);
-}
-
-public static void negative02_wrongExpected() {
-    int r = Impl.add(1, 2);
-    //@ assert r == 4;
-}
+```json
+{"id": "neg02_wrong_output", "kind": "postcondition",
+ "inputs": {"a": 5, "b": 3}, "old": {}, "result": 3, "post_state": {},
+ "violated_clause": "ensures \\result == a || \\result == b"}
 ```
 
-OpenJML must report a failure for each negative case. If a negative case passes,
-the eval has failed.
+A negative case that mechanically evaluates to "spec satisfied" is an eval
+failure (the spec failed to reject a wrong claim).
 
-## Manual Notes
+## 4. 正/反例与前置条件 (Preconditions.html)
 
-From `doc/openjml-tutorial/Preconditions.html`:
+Positive cases must satisfy every `requires` clause, including well-definedness
+prerequisites such as non-null arrays and valid indexes. Precondition negatives
+should violate one clear precondition only.
 
-- Positive harness calls must satisfy every `requires` clause, including
-  well-definedness prerequisites such as non-null arrays and valid indexes.
-- Negative precondition cases should call the target in a way that violates one
-  clear precondition, not several unrelated requirements at once.
+## 5. 正/反例与后置条件·断言 (Postconditions.html)
 
-From `doc/openjml-tutorial/Postconditions.html` and
-`doc/openjml-tutorial/AssertStatement.html`:
+Positive cases should make the target `ensures` clauses evaluate true on the
+implementation's real output, not on unstated implementation details.
+Postcondition negatives flip one fact directly tied to the method's spec.
 
-- Positive harnesses should assert facts that follow from the target
-  postconditions, not from unstated implementation details.
-- Negative wrong-output cases should use a contradictory `assert` after a legal
-  call. The contradiction should be directly related to the method spec.
+## 6. 机械求值优先，judge 只兜底剩下的
 
-From `doc/openjml-tutorial/WellDefinedExpressions.html`:
+For each case substitute its values into every spec clause and compute the
+boolean by ordinary arithmetic/logic; enumerate bounded quantifiers
+(`\forall` / `\exists` / `\sum` / `\num_of` / `\product`) over the case's
+concrete range. Record `substituted` + `evaluated` per clause. Only a clause
+that cannot be decided mechanically (unbounded quantifier, model function) is
+`needs_judge` — judge those, and do not judge what was already decided
+mechanically.
 
-- Harness assertions must themselves be well-defined. For array and object
-  assertions, establish non-nullness and bounds before reading values.
+## 7. 异常路径要和真正的 spec 违例区分开 (SpecifyingExceptions.html)
 
-From `doc/openjml-tutorial/SpecifyingExceptions.html`:
+If the target spec intentionally allows exceptional behavior, distinguish
+expected exceptional paths from genuine spec violations. Otherwise prefer
+ordinary precondition-violation and wrong-output cases.
 
-- If the target spec intentionally allows exceptional behavior, negative cases
-  must distinguish expected exceptional paths from genuine spec violations.
-  Otherwise prefer ordinary precondition-violation and wrong-assertion tests.
+## 8. 工作区布局
 
-## Recommended Layout
-
-For a target `input/Foo.java`, use an eval workspace:
+For a target `input/Foo.java`:
 
 ```text
 output/eval_<timestamp>_foo/
-  harness/FooPositiveHarness.java
-  harness/FooNegativeHarness.java
+  original/Foo.java
+  cases/cases.json
+  evaluation/evaluation.json
   logs/test_reasoning.md
   logs/issues.md
   logs/metrics.md
   logs/final_result.md
 ```
 
-Keep positive and negative harnesses separate so the positive proof can pass
-cleanly while negative cases are expected to fail.
+## 9. 终判条件
 
-## Final Judgment
+Eval must write `logs/final_result.md` (the `Spec verdict:` line) and
+`logs/metrics.md`. `Final Result: Success` is allowed only when: exactly the
+requested number of positive and negative cases are present in `cases.json`;
+`evaluation/evaluation.json` exists and covers every case; and the aggregated
+verdict is decisive (`Spec verdict: Correct` or `Spec verdict: Buggy`).
+`Spec verdict: Inconclusive` (a judged clause stayed undecided) is treated as
+`Final Result: Fail`.
 
-Eval must write `logs/final_result.md` and `logs/metrics.md`.
+## 10. 反作弊
 
-`Final Result: Success` is allowed only when all conditions hold:
-
-- exactly 10 positive cases are present;
-- exactly 10 negative cases are present;
-- anti-cheating scan passes for implementation and both harnesses;
-- positive harness passes OpenJML;
-- negative harness fails OpenJML for documented spec-related reasons.
-
-If any case is missing, any scan is skipped, or either OpenJML command is not
-run, the final line must be:
-
-```text
-Final Result: Fail
-```
-
-## Anti-Cheating
-
-The harness is not allowed to use:
-
-- `assume`
-- `axiom`
-- `skipesc`
-- `nowarn`
-- unreachable-path tricks
-- impossible helper preconditions
-
-Run `scripts/check_jml_cheating.py` on both implementation and harness files.
+Do not use `assume`, `axiom`, `skipesc`, `nowarn`, unreachable-path tricks, or
+impossible helper preconditions; do not weaken or delete the target spec; do not
+invoke `openjml -esc` to decide the verdict. (See `AUDIT.md`.)

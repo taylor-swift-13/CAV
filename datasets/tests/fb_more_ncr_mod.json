@@ -1,0 +1,62 @@
+{
+  "name": "fb_more_ncr_mod",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "r",
+      "type": "int"
+    },
+    {
+      "name": "p",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "r": 2,
+        "p": 7
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "r": 3,
+        "p": 11
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "r": 5,
+        "p": 13
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 20,
+        "r": 10,
+        "p": 997
+      },
+      "expected": 311
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/NcrModP.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

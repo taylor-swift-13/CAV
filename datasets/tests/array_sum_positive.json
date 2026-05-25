@@ -1,0 +1,129 @@
+{
+  "name": "array_sum_positive",
+  "function": "array_sum_positive",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "a": []
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          -2,
+          3,
+          0,
+          4
+        ]
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          -1,
+          0,
+          -5
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          7,
+          8
+        ]
+      },
+      "expected": 15
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "a": []
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          -2,
+          3,
+          0,
+          4
+        ]
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          -1,
+          0,
+          -5
+        ]
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          7,
+          8
+        ]
+      },
+      "expected": 15
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 0,
+        "a": []
+      },
+      "expected": 0
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 5,
+        "a": [
+          1,
+          -2,
+          3,
+          0,
+          4
+        ]
+      },
+      "expected": 8
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "name": "valid_anagram_ascii",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "a",
+      "type": "string"
+    },
+    {
+      "name": "b",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": "anagram",
+        "b": "nagaram"
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "rat",
+        "b": "car"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "",
+        "b": ""
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "a",
+        "b": "ab"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "anagram",
+        "b": "nagaram"
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "rat",
+        "b": "car"
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "",
+        "b": ""
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "a",
+        "b": "ab"
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "anagram",
+        "b": "nagaram"
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": "rat",
+        "b": "car"
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "valid-anagram",
+    "url": "https://leetcode.com/problems/valid-anagram/",
+    "license": "local rewrite"
+  }
+}

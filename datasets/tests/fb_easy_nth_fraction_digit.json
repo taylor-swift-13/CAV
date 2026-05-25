@@ -1,0 +1,62 @@
+{
+  "name": "fb_easy_nth_fraction_digit",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "p",
+      "type": "int"
+    },
+    {
+      "name": "q",
+      "type": "int"
+    },
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "p": 1,
+        "q": 2,
+        "n": 1
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "p": 1,
+        "q": 3,
+        "n": 3
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "p": 22,
+        "q": 7,
+        "n": 5
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "p": 5,
+        "q": 8,
+        "n": 3
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/FindNthDigit.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

@@ -28,7 +28,7 @@ Output:
 Command shape:
 
 ```bash
-python3 scripts/run_codex_verify.py input/<name>.java --class-name <ClassName>
+python3 scripts/run_verify.py input/<name>.java --class-name <ClassName>
 ```
 
 On success, the runner exports a CAV-style compact example snapshot under
@@ -54,10 +54,11 @@ OpenJML stderr, scanner stdout/stderr, or metrics into `experiences/end-end`.
 
 Read these local references before making verification edits:
 
+- `/home/yangfp/CAV-JAVA/experiences/general/README.md` (experience entry; jump by symptom)
 - `/home/yangfp/CAV-JAVA/experiences/general/INV.md`
 - `/home/yangfp/CAV-JAVA/experiences/general/ASSERTION.md`
 - `/home/yangfp/CAV-JAVA/experiences/general/LEMMA.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/ANTI_CHEATING.md`
+- `/home/yangfp/CAV-JAVA/experiences/general/AUDIT.md`
 - `/home/yangfp/CAV-JAVA/experiences/general/OPENJML.md`
 - `/home/yangfp/CAV-JAVA/experiences/INDEX.md`
 
@@ -243,10 +244,29 @@ Success requires all of the following:
 - Logs are complete.
 - `logs/workspace_fingerprint.json` has a non-empty `semantic_description` and
   controlled `keywords` from `/home/yangfp/CAV-JAVA/experiences/INDEX.md`.
-- Reusable lessons are recorded in `/home/yangfp/CAV-JAVA/experiences/general`
-  when applicable. Typical targets are `INV.md`, `ASSERTION.md`, `LEMMA.md`,
-  `OPENJML.md`, and `ANTI_CHEATING.md`.
-- If no reusable lesson was found, `logs/annotation_reasoning.md`,
-  `logs/issues.md`, or `logs/metrics.md` says so explicitly.
+
+Do **not** record experience yourself. Experience is consolidated once at the
+very end of the flow by a dedicated unit (`scripts/experience_consolidate.py`).
+Write clear `logs/issues.md`, `logs/annotation_reasoning.md`,
+`logs/continue.md`, and `logs/summary.md` — the consolidation unit reads them.
 
 If any condition is missing, write `Final Result: Fail`.
+
+## Iteration / Restart / Resume
+
+The verify runner (`run_verify.py`) drives this stage in a budget-driven
+loop (`scripts/agent_loop.py`):
+
+- Keep iterating in the **same workspace** until OpenJML ESC and the
+  anti-cheating scan both pass, or the time budget is exhausted. A fresh round
+  starts only if you exit early without passing; a round that hits its timeout
+  is a failure and is **not** restarted.
+- On every round before editing, append a fresh section to `logs/continue.md`
+  (never overwrite): why the previous round did not finish, the current blocker,
+  next step and plan, citing concrete evidence (file:line, the exact OpenJML
+  message, the JML/Java snippet).
+- At the end of each round write `logs/summary.md`: what you did, current proof
+  state, and where you are stuck — the next round resumes from it.
+- When re-entered after the audit critic overturned the proof, the findings are
+  in the `## overturn` section of `logs/continue.md`; read it and fix exactly
+  that anti-cheating problem without weakening the spec.

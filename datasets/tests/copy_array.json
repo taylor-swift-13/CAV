@@ -1,0 +1,251 @@
+{
+  "name": "copy_array",
+  "function": "copy_array",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "src",
+      "type": "int_array"
+    },
+    {
+      "name": "dst",
+      "type": "out_int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 3,
+        "src": [
+          7,
+          8,
+          9
+        ],
+        "dst": [
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          7,
+          8,
+          9
+        ]
+      }
+    }
+  ]
+}

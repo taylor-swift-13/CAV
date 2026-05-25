@@ -1,0 +1,66 @@
+{
+  "name": "fb_more_modular_inverse_square_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "arr",
+      "type": "int_array"
+    },
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "p",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          1,
+          2,
+          3
+        ],
+        "n": 3,
+        "p": 5
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          1,
+          4,
+          6,
+          9
+        ],
+        "n": 4,
+        "p": 10
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          2,
+          3,
+          5
+        ],
+        "n": 3,
+        "p": 7
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/ModularInverse.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

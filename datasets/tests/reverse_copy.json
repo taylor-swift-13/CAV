@@ -1,0 +1,281 @@
+{
+  "name": "reverse_copy",
+  "function": "reverse_copy",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "src",
+      "type": "int_array"
+    },
+    {
+      "name": "dst",
+      "type": "out_int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 4,
+        "src": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "dst": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mutations": {
+        "dst": [
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    }
+  ]
+}

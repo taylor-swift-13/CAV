@@ -1,0 +1,58 @@
+{
+  "name": "fb_array_second_rise_value",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "arr",
+      "type": "int_array"
+    },
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          1,
+          2,
+          3
+        ],
+        "n": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          5,
+          1,
+          4
+        ],
+        "n": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": [
+          3,
+          2,
+          1
+        ],
+        "n": 3
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/GetGcd.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  }
+}

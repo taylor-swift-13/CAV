@@ -1,0 +1,117 @@
+{
+  "name": "string_trim_last_char",
+  "function": "string_trim_last_char",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "s",
+      "type": "mut_c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "s": "hello"
+      },
+      "mutations": {
+        "s": "hell"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "s": "x"
+      },
+      "mutations": {
+        "s": ""
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "s": "hello"
+      },
+      "mutations": {
+        "s": "hell"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "s": "x"
+      },
+      "mutations": {
+        "s": ""
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "s": "hello"
+      },
+      "mutations": {
+        "s": "hell"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "s": "x"
+      },
+      "mutations": {
+        "s": ""
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "s": "hello"
+      },
+      "mutations": {
+        "s": "hell"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "s": "x"
+      },
+      "mutations": {
+        "s": ""
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "s": "hello"
+      },
+      "mutations": {
+        "s": "hell"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 1,
+        "s": "x"
+      },
+      "mutations": {
+        "s": ""
+      }
+    }
+  ]
+}

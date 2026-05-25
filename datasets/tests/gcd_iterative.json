@@ -1,0 +1,97 @@
+{
+  "name": "gcd_iterative",
+  "function": "gcd_iterative",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 12,
+        "b": 18
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 17,
+        "b": 13
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 100,
+        "b": 25
+      },
+      "expected": 25
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 14,
+        "b": 15
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 12,
+        "b": 18
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 17,
+        "b": 13
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 100,
+        "b": 25
+      },
+      "expected": 25
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 14,
+        "b": 15
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 12,
+        "b": 18
+      },
+      "expected": 6
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "a": 17,
+        "b": 13
+      },
+      "expected": 1
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "name": "array_clamp_nonnegative",
+  "function": "array_clamp_nonnegative",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "mut_int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          -2,
+          0,
+          3,
+          -1
+        ]
+      },
+      "mutations": {
+        "a": [
+          0,
+          0,
+          3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          5,
+          6
+        ]
+      },
+      "mutations": {
+        "a": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          -2,
+          0,
+          3,
+          -1
+        ]
+      },
+      "mutations": {
+        "a": [
+          0,
+          0,
+          3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          5,
+          6
+        ]
+      },
+      "mutations": {
+        "a": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          -2,
+          0,
+          3,
+          -1
+        ]
+      },
+      "mutations": {
+        "a": [
+          0,
+          0,
+          3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          5,
+          6
+        ]
+      },
+      "mutations": {
+        "a": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          -2,
+          0,
+          3,
+          -1
+        ]
+      },
+      "mutations": {
+        "a": [
+          0,
+          0,
+          3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "a": [
+          5,
+          6
+        ]
+      },
+      "mutations": {
+        "a": [
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          -2,
+          0,
+          3,
+          -1
+        ]
+      },
+      "mutations": {
+        "a": [
+          0,
+          0,
+          3,
+          0
+        ]
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 2,
+        "a": [
+          5,
+          6
+        ]
+      },
+      "mutations": {
+        "a": [
+          5,
+          6
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "name": "power_of_two",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 16
+      },
+      "expected": true
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 3
+      },
+      "expected": false
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 0
+      },
+      "expected": false
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": -16
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 16
+      },
+      "expected": true,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 3
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": 0
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "n": -16
+      },
+      "expected": false,
+      "source_case": {
+        "file": "local top-up from existing valid case"
+      }
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "power-of-two",
+    "url": "https://leetcode.com/problems/power-of-two/",
+    "license": "local rewrite"
+  }
+}

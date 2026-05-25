@@ -1,0 +1,117 @@
+{
+  "name": "string_collapse_spaces",
+  "function": "string_collapse_spaces",
+  "return_type": "void",
+  "params": [
+    {
+      "name": "s",
+      "type": "c_string"
+    },
+    {
+      "name": "out",
+      "type": "out_c_string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a  b   c",
+        "out": "__________"
+      },
+      "mutations": {
+        "out": "a b c"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "  a",
+        "out": "_____"
+      },
+      "mutations": {
+        "out": " a"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a  b   c",
+        "out": "__________"
+      },
+      "mutations": {
+        "out": "a b c"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "  a",
+        "out": "_____"
+      },
+      "mutations": {
+        "out": " a"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a  b   c",
+        "out": "__________"
+      },
+      "mutations": {
+        "out": "a b c"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "  a",
+        "out": "_____"
+      },
+      "mutations": {
+        "out": " a"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a  b   c",
+        "out": "__________"
+      },
+      "mutations": {
+        "out": "a b c"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "  a",
+        "out": "_____"
+      },
+      "mutations": {
+        "out": " a"
+      }
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a  b   c",
+        "out": "__________"
+      },
+      "mutations": {
+        "out": "a b c"
+      }
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "s": "  a",
+        "out": "_____"
+      },
+      "mutations": {
+        "out": " a"
+      }
+    }
+  ]
+}
