@@ -56,9 +56,9 @@ def emit_log(message: str) -> None:
     print(f"[verify] {message}", flush=True)
 
 
-def build_codex_env(logs_dir: Path) -> dict[str, str]:
+def build_agent_env(logs_dir: Path) -> dict[str, str]:
     env = os.environ.copy()
-    cache_dir = logs_dir / ".codex_cache"
+    cache_dir = logs_dir / ".agent_cache"
     state_dir = logs_dir / ".state"
     data_dir = logs_dir / ".data"
     config_dir = logs_dir / ".config"
@@ -163,7 +163,7 @@ Inputs:
 
 Retry rule:
 - Do not restart the task from scratch.
-- First read the current logs, generated Coq files, latest compile errors, latest `codex_last_message_*`, latest `codex_stderr_*`, and current annotated file in this workspace.
+- First read the current logs, generated Coq files, latest compile errors, latest `agent_last_message_*`, latest `agent_stderr_*`, and current annotated file in this workspace.
 - Before editing any file, append a new section to `logs/continue.md`; never overwrite or rewrite existing `continue.md` content.
 - Every retry round must keep extending `logs/continue.md` with a fresh section for that round, even if an earlier retry already wrote one.
 - In the new `logs/continue.md` section, analyze why the previous agent/run did not finish, what concrete blocker remains now, what should be continued next, how to do it, and the step-by-step plan for this retry.
@@ -417,15 +417,15 @@ def main() -> int:
     emit_log(f"agent={agent}")
     emit_log(f"model={model}")
     logs_dir = workspace_path / "logs"
-    codex_env = build_codex_env(logs_dir)
-    reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, codex_env)
+    agent_env = build_agent_env(logs_dir)
+    reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
     emit_log(f"reasoning_effort={reasoning_effort}")
     emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
     run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-    prompt_path = logs_dir / f"codex_prompt_{run_label}.txt"
-    stdout_jsonl = logs_dir / f"codex_stdout_{run_label}.jsonl"
-    stderr_log = logs_dir / f"codex_stderr_{run_label}.log"
-    last_message_path = logs_dir / f"codex_last_message_{run_label}.txt"
+    prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
+    stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
+    stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
+    last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
 
     if args.dry_run:
         prompt = build_prompt(skill_path, input_path, input_v_path, function_name, workspace_path, annotated_c_path, 1)
@@ -473,15 +473,15 @@ def main() -> int:
         elapsed_before = time.time() - overall_start_wall
         remaining_budget = total_budget_seconds - elapsed_before
         if remaining_budget <= 0:
-            emit_log("codex_exec_budget_exhausted")
+            emit_log("agent_exec_budget_exhausted")
             proc_returncode = 124
             break
 
         run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-        prompt_path = logs_dir / f"codex_prompt_{run_label}.txt"
-        stdout_jsonl = logs_dir / f"codex_stdout_{run_label}.jsonl"
-        stderr_log = logs_dir / f"codex_stderr_{run_label}.log"
-        last_message_path = logs_dir / f"codex_last_message_{run_label}.txt"
+        prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
+        stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
+        stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
+        last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
         prompt = build_prompt(
             skill_path,
             input_path,
@@ -537,7 +537,7 @@ def main() -> int:
                         stderr=err_f,
                         cwd=REPO_ROOT,
                         timeout=round_timeout,
-                        env=codex_env,
+                        env=agent_env,
                     )
                 proc_returncode = proc.returncode
                 last_message = agent_metrics.extract_claude_last_message(stdout_jsonl)
@@ -571,7 +571,7 @@ def main() -> int:
                         stderr=err_f,
                         cwd=REPO_ROOT,
                         timeout=round_timeout,
-                        env=codex_env,
+                        env=agent_env,
                     )
                 proc_returncode = proc.returncode
         except subprocess.TimeoutExpired:
@@ -586,7 +586,7 @@ def main() -> int:
         if proc_returncode != 0:
             update_issues_on_failure(
                 workspace_path / "logs" / "issues.md",
-                "external-codex-run",
+                "external-agent-run",
                 proc_returncode,
                 stderr_log,
             )
@@ -612,7 +612,7 @@ def main() -> int:
 
         elapsed_total = time.time() - overall_start_wall
         if elapsed_total >= total_budget_seconds:
-            emit_log("codex_exec_budget_exhausted_after_attempt")
+            emit_log("agent_exec_budget_exhausted_after_attempt")
             if proc_returncode == 0:
                 proc_returncode = 124
             break

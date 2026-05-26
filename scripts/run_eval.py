@@ -58,10 +58,10 @@ def emit_log(message: str) -> None:
     print(f"[eval] {message}", flush=True)
 
 
-def build_codex_env(logs_dir: Path) -> dict[str, str]:
+def build_agent_env(logs_dir: Path) -> dict[str, str]:
     env = os.environ.copy()
     for name, dirname in {
-        "XDG_CACHE_HOME": ".codex_cache",
+        "XDG_CACHE_HOME": ".agent_cache",
         "XDG_STATE_HOME": ".state",
         "XDG_DATA_HOME": ".data",
         "XDG_CONFIG_HOME": ".config",
@@ -355,7 +355,7 @@ def main() -> int:
     workspace_path = OUTPUT_ROOT / f"eval_{ts}_{stem}"
     bootstrap_workspace(workspace_path, input_c, input_v)
     logs_dir = workspace_path / "logs"
-    env = build_codex_env(logs_dir)
+    env = build_agent_env(logs_dir)
     emit_log(f"workspace={workspace_path}")
     emit_log(f"function_name={function_name} agent={agent} model={model} cases={num_positive}+{num_negative}")
 

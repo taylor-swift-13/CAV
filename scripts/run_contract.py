@@ -45,9 +45,9 @@ def emit_log(message: str) -> None:
     print(f"[contract] {message}", flush=True)
 
 
-def build_codex_env(logs_dir: Path) -> dict[str, str]:
+def build_agent_env(logs_dir: Path) -> dict[str, str]:
     env = os.environ.copy()
-    cache_dir = logs_dir / ".codex_cache"
+    cache_dir = logs_dir / ".agent_cache"
     state_dir = logs_dir / ".state"
     data_dir = logs_dir / ".data"
     config_dir = logs_dir / ".config"
@@ -303,17 +303,17 @@ def main() -> int:
     emit_log(f"target_v={target_v_path}")
 
     logs_dir = workspace_path / "logs"
-    codex_env = build_codex_env(logs_dir)
-    reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, codex_env)
+    agent_env = build_agent_env(logs_dir)
+    reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
     emit_log(f"agent={agent}")
     emit_log(f"model={model}")
     emit_log(f"reasoning_effort={reasoning_effort}")
     emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
     run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-    prompt_path = logs_dir / f"codex_prompt_{run_label}.txt"
-    stdout_jsonl = logs_dir / f"codex_stdout_{run_label}.jsonl"
-    stderr_log = logs_dir / f"codex_stderr_{run_label}.log"
-    last_message_path = logs_dir / f"codex_last_message_{run_label}.txt"
+    prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
+    stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
+    stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
+    last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
 
     restart_context = None
     if args.restart_context_file:
@@ -385,7 +385,7 @@ def main() -> int:
                     stderr=err_f,
                     cwd=REPO_ROOT,
                     timeout=args.timeout_seconds,
-                    env=codex_env,
+                    env=agent_env,
                 )
             proc_returncode = proc.returncode
             last_message = agent_metrics.extract_claude_last_message(stdout_jsonl)
@@ -419,7 +419,7 @@ def main() -> int:
                     stderr=err_f,
                     cwd=REPO_ROOT,
                     timeout=args.timeout_seconds,
-                    env=codex_env,
+                    env=agent_env,
                 )
             proc_returncode = proc.returncode
     except subprocess.TimeoutExpired:
@@ -469,12 +469,12 @@ def main() -> int:
     if proc_returncode != 0:
         ensure_reasoning_placeholder(
             reasoning_path(workspace_path),
-            "external-codex-run",
+            "external-agent-run",
             failure_detail,
         )
         update_issues_on_failure(
             issues_path(workspace_path),
-            "external-codex-run",
+            "external-agent-run",
             proc_returncode,
             stderr_log,
             failure_detail,

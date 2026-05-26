@@ -57,10 +57,10 @@ def emit_log(message: str) -> None:
     print(f"[audit] {message}", flush=True)
 
 
-def build_codex_env(logs_dir: Path) -> dict[str, str]:
+def build_agent_env(logs_dir: Path) -> dict[str, str]:
     env = os.environ.copy()
     for name, dirname in {
-        "XDG_CACHE_HOME": ".codex_cache", "XDG_STATE_HOME": ".state",
+        "XDG_CACHE_HOME": ".agent_cache", "XDG_STATE_HOME": ".state",
         "XDG_DATA_HOME": ".data", "XDG_CONFIG_HOME": ".config",
         "TMPDIR": ".tmp", "TMP": ".tmp", "TEMP": ".tmp",
     }.items():
@@ -324,7 +324,7 @@ def main() -> int:
     workspace_path = OUTPUT_ROOT / f"audit_{ts}_{stem}"
     copied = bootstrap_workspace(workspace_path, original_c, verified_c, proof_files)
     logs_dir = workspace_path / "logs"
-    env = build_codex_env(logs_dir)
+    env = build_agent_env(logs_dir)
     findings_doc = run_deterministic_scan(workspace_path, copied, function_name)
     det_summary = findings_doc["summary"]
     emit_log(f"workspace={workspace_path}")
