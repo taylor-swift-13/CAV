@@ -24,6 +24,15 @@ EXAMPLES_ROOT = REPO_ROOT / "experiences" / "end-end"
 DEFAULT_MODEL = "gpt-5.4"
 DEFAULT_CLAUDE_MODEL = "sonnet"
 DEFAULT_REASONING_EFFORT = "medium"
+
+# Backend-neutral efficiency contract injected into every agent prompt (claude
+# and codex both read the prompt from stdin). Shared core lives in agent_config;
+# verify appends symexec/proof-specific guidance.
+EFFICIENCY_RULES = agent_config.COMMON_EFFICIENCY_RULES + """
+- The exact `symexec` command is in `experiences/general/SYMEXEC.md` §0; the exact Coq compile template is in `COMPILE.md` §5.
+- Trivial fast path: if `symexec` succeeds and `proof_manual.v` has no manual obligation (only `proof_auto.v` Admitted placeholders), go straight to compile + finish — do not search reference solutions or read PROOF.md.
+"""
+
 NOISE_PATTERNS = [
     "WARNING: proceeding, even though we could not update PATH: Read-only file system",
     "failed to renew cache TTL: Read-only file system",
@@ -147,8 +156,9 @@ Execution rule:
 - Work only inside this existing workspace.
 - Start from the normal verify workflow for this task.
 - Early in the task, read `doc/retrieval/INDEX.md`, then update `logs/workspace_fingerprint.json` so `semantic_description` is non-empty and `keywords` use only the controlled vocabulary defined there.
-- Keep iterating in the same workspace until verification succeeds or the external time budget is exhausted.
-"""
+- Stop as soon as the skill's completion criteria are met. Do NOT keep exploring, re-reading, or re-confirming just to fill the time budget — the budget is a hard ceiling, not a target. Trivial cases (no loops, empty `proof_manual.v`) should finish in a few calls.
+- Only keep iterating while verification is genuinely incomplete (symexec not yet passing, manual obligations unproven, or `goal_check.v` not yet compiling).
+{EFFICIENCY_RULES}"""
     return f"""Use this skill as the complete workflow:
 {skill_path}
 
@@ -172,8 +182,8 @@ Retry rule:
 - Precisely identify the current blocker from the existing workspace state.
 - Continue repairing from that blocker in the same workspace.
 - Preserve existing correct work; only change what is needed for the next proof/compile step.
-- Keep iterating until verification succeeds or the external time budget is exhausted.
-"""
+- Stop as soon as the skill's completion criteria are met. Do NOT keep exploring or re-confirming just to fill the time budget — the budget is a hard ceiling, not a target. Only keep iterating while verification is genuinely incomplete.
+{EFFICIENCY_RULES}"""
 
 
 def write_metrics(
@@ -422,8 +432,10 @@ def main() -> int:
     logs_dir = workspace_path / "logs"
     agent_env = build_agent_env(logs_dir)
     reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
+    claude_effort_supported = agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
     emit_log(f"reasoning_effort={reasoning_effort}")
     emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
+    emit_log(f"claude_effort_supported={claude_effort_supported}")
     run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
     prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
     stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
@@ -531,6 +543,8 @@ def main() -> int:
                 ]
                 if model:
                     cmd.extend(["--model", model])
+                if reasoning_effort and claude_effort_supported:
+                    cmd.extend(["--effort", reasoning_effort])
                 with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
                     proc = subprocess.run(
                         cmd,

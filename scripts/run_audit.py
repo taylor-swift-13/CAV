@@ -179,6 +179,7 @@ a justified false positive. Perform the compile-replay cross-check yourself per
 `experiences/general/COMPILE.md` and record it in your reasoning. Then write
 `audit/findings.md`, `logs/reasoning.md`, `logs/final_result.md` (with one
 `Audit verdict:` line) and `logs/metrics.md` (ending in `Final Result:`).
+{agent_config.COMMON_EFFICIENCY_RULES}
 """
 
 
@@ -194,6 +195,8 @@ def run_agent_once(*, agent, codex_bin, claude_bin, model, reasoning_effort,
                str(REPO_ROOT), "--output-format", "stream-json", "--verbose"]
         if model:
             cmd.extend(["--model", model])
+        if reasoning_effort and agent_config.claude_supports_flag(claude_bin, REPO_ROOT, env, "--effort"):
+            cmd.extend(["--effort", reasoning_effort])
     else:
         cmd = [codex_bin, "--dangerously-bypass-approvals-and-sandbox", "exec",
                "--json", "--skip-git-repo-check", "-C", str(REPO_ROOT),

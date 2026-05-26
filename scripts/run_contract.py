@@ -149,7 +149,9 @@ Inputs:
 - Workspace: `{workspace_path}`
 - Output C: `{target_c_path}`
 - Optional output V: `{target_v_path}`
-{restart}"""
+{restart}
+{agent_config.COMMON_EFFICIENCY_RULES}
+"""
 
 
 def write_metrics(
@@ -305,10 +307,12 @@ def main() -> int:
     logs_dir = workspace_path / "logs"
     agent_env = build_agent_env(logs_dir)
     reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
+    claude_effort_supported = agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
     emit_log(f"agent={agent}")
     emit_log(f"model={model}")
     emit_log(f"reasoning_effort={reasoning_effort}")
     emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
+    emit_log(f"claude_effort_supported={claude_effort_supported}")
     run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
     prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
     stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
@@ -376,6 +380,8 @@ def main() -> int:
             ]
             if model:
                 cmd.extend(["--model", model])
+            if reasoning_effort and claude_effort_supported:
+                cmd.extend(["--effort", reasoning_effort])
             with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
                 proc = subprocess.run(
                     cmd,

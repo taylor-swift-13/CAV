@@ -11,6 +11,7 @@
 
 常见入口：
 
+- 标准 symexec 命令行（外部 workspace，先看这条）：看 0
 - 自动 verify 进程卡住：看 1
 - annotation 改动后重新 `symexec`：看 2
 - `symexec` 失败先查控制点：看 3
@@ -25,6 +26,41 @@
 - 重新生成 VC 后不能盲用旧 proof：看 15
 - manual / auto witness 分流：看 16
 - loop invariant 中直接使用的 Coq 类型须 `Extern Coq` 声明：看 19
+
+## 0. Canonical symexec 命令行（外部 workspace 的固定调用）
+
+**先看这条，不要现场逆向工具用法。** `symexec` 没有可用的 `--help`（执行它只会打印 `goal file not specified` 然后退出）；也不要 `cat run-example-linux.sh`、`chmod +x` 反复试、或翻 `QCP_examples/` 的样例去反推参数。本项目所有 verify 任务——标量、数组、链表——都用下面这一条固定命令，参数形状完全相同。
+
+工作目录必须是 `QualifiedCProgramming/`（否则工具找不到自带的 lib）。verify workspace 在外层仓库 `output/verify_<timestamp>_<name>/`，annotated 工作副本固定在 `annotated/verify_<timestamp>_<name>.c`：
+
+```bash
+REPO_ROOT=/home/yangfp/CAV-JAVA
+NAME=<name>
+STAMP=<timestamp>          # 形如 20260526_140320v1，与 workspace / annotated 文件名里的一致
+WS="$REPO_ROOT/output/verify_${STAMP}_${NAME}"
+GEN="$WS/coq/generated"
+
+mkdir -p "$GEN"
+cd "$REPO_ROOT/QualifiedCProgramming"
+linux-binary/symexec \
+  --goal-file="$GEN/${NAME}_goal.v" \
+  --proof-auto-file="$GEN/${NAME}_proof_auto.v" \
+  --proof-manual-file="$GEN/${NAME}_proof_manual.v" \
+  --coq-logic-path=SimpleC.EE.CAV.verify_${STAMP}_${NAME} \
+  -slp "$REPO_ROOT/annotated/" SimpleC.EE.CAV \
+  --input-file="$REPO_ROOT/annotated/verify_${STAMP}_${NAME}.c" \
+  --no-exec-info
+```
+
+参数固定含义：
+
+- `--coq-logic-path=SimpleC.EE.CAV.verify_<timestamp>_<name>`：generated 文件的逻辑前缀，必须和 `COMPILE.md §5` 的 `LP` 完全一致。
+- `-slp <annotated 目录> SimpleC.EE.CAV`：把顶层 `annotated/` 目录挂到逻辑前缀 `SimpleC.EE.CAV`；`-slp` 接两个位置参数（目录、前缀）。
+- `--input-file=<annotated 工作副本>`：用顶层 `annotated/verify_<timestamp>_<name>.c`，**不是** `input/<name>.c`，也不是旧 workspace 里的历史副本。
+- `--no-exec-info`：关掉冗长执行信息。
+- 数组题**不需要**额外 strategy 参数：`IntArray::full` / `IntArray::missing_i` 等谓词是 symexec 内置的（见 §18），不要手动挂 strategy 文件。
+
+成功标志是 stdout 出现 `Successfully finished symbolic execution.`，并生成 `goal/proof_auto/proof_manual/goal_check` 四个文件。重新跑前必须按 §2 先清理旧 generated 文件。
 
 ## 1. 自动 verify 进程卡住时，不要继续空等
 

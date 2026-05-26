@@ -23,6 +23,14 @@ Verify 默认只消费这些正式输入，不负责重写它们。
 
 ## 3. 默认允许读取
 
+**读取范围白名单。** 除当前任务自身的 I/O（`input/<name>.c`、`input/<name>.v`、当前 `annotated/verify_<timestamp>_<name>.c`、当前 workspace `output/verify_<timestamp>_<name>/` 下的文件）外，所有「查文档 / 查经验 / 找参考样例」的读取**只能**落在下面三棵目录树内：
+
+- `doc/`
+- `experiences/`
+- `QualifiedCProgramming/QCP_examples/`
+
+不要为了查工具用法或找参考解去读这三棵树以外的任何目录（详见 §3.1）。下面列出的是这三棵树里最常用的文件：
+
 - `input/<name>.c`
 - `input/<name>.v`，如果存在
 - `skills/verify/SKILL.md`
@@ -41,7 +49,15 @@ Verify 默认只消费这些正式输入，不负责重写它们。
 - `doc/retrieval/INDEX.md`：只在当前步骤卡住、需要检索相似例子时读取
 - `experiences/end-end/`：允许作为优先检索的完整样例库
 - `QualifiedCProgramming/QCP_examples/` 下其他例子：只有当 `experiences/end-end/` 没有足够接近的例子时，才允许扩大范围读取
-- `QualifiedCProgramming/tutorial/`：只在当前步骤确实缺少教程级说明时读取
+
+## 3.1 禁止读取
+
+这些目录/文件**不在**读取白名单内，读它们只会浪费 turn、拖慢简单任务，一律不要读：
+
+- `scripts/` 下的编排脚本（`run_verify.py`、`run_pipeline.py`、`agent_loop.py`、`coq_runner.py` 等）——它们是调用你的 harness，与单题验证无关。
+- `QualifiedCProgramming/` 下除 `QCP_examples/` 以外的目录（`SeparationLogic/`、`tutorial/`、`linux-binary/` 等库源码与工具）。编译时 cwd 在 `SeparationLogic/`、跑 `symexec` 时 cwd 在 `QualifiedCProgramming/`，那是「运行工具」不是「读源码」；命令模板见 `SYMEXEC.md §0` 与 `COMPILE.md §5`，不要去读这些目录反推用法。
+- 当前 workspace 的完整 harness transcript（`logs/agent_stdout_*.jsonl`、`logs/agent_prompt_*`）。retry 轮只读 `logs/agent_last_message_*`、`logs/agent_stderr_*`、`logs/continue.md` 和 generated/annotated 文件。
+- `git log` / `git show` 历史考古：不要靠翻 git 历史找参考解；参考解只按 `doc/retrieval/INDEX.md` 在 `experiences/end-end/` 或 `QCP_examples/` 里检索。
 
 ## 5. 当前任务允许人工修改
 

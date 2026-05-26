@@ -157,7 +157,9 @@ Inputs:
 - Evaluation directory: `{workspace_path / 'evaluation'}`
 - Required positive cases: `{num_positive}`
 - Required negative cases: `{num_negative}`
-{finalize}"""
+{finalize}
+{agent_config.COMMON_EFFICIENCY_RULES}
+"""
 
 
 def run_agent_once(
@@ -177,6 +179,8 @@ def run_agent_once(
                str(REPO_ROOT), "--output-format", "stream-json", "--verbose"]
         if model:
             cmd.extend(["--model", model])
+        if reasoning_effort and agent_config.claude_supports_flag(claude_bin, REPO_ROOT, env, "--effort"):
+            cmd.extend(["--effort", reasoning_effort])
     else:
         cmd = [codex_bin, "--dangerously-bypass-approvals-and-sandbox", "exec",
                "--json", "--skip-git-repo-check", "-C", str(REPO_ROOT),

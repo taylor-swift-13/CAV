@@ -44,6 +44,25 @@ Verify 只消费 Contract 已经准备好的验证输入，不再负责设计前
 
 ## 4. 规则
 
+### 4.0 读写边界
+
+**读边界**（参考读取只能落在白名单三棵树内；探索本身就是这类简单任务最大的时间浪费。权威定义见 `doc/PERMISSIONS.md §3 / §3.1`）：
+
+- 除当前任务自身 I/O（`input/`、当前 `annotated/verify_<timestamp>_<name>.c`、当前 workspace `output/verify_<timestamp>_<name>/`）外，查文档 / 查经验 / 找参考样例**只能**读这三棵目录树：`doc/`、`experiences/`、`QualifiedCProgramming/QCP_examples/`。
+- `symexec` 的调用方式直接看 `experiences/general/SYMEXEC.md §0`，编译模板看 `COMPILE.md §5`；**不要**用 `symexec --help`、`cat run-example-linux.sh`、`chmod +x` 反复试、或翻 `SeparationLogic/` 反推命令。
+- **不读** `scripts/` 编排脚本（`run_verify.py`/`run_pipeline.py`/`agent_loop.py`/`coq_runner.py`）、**不读** `QualifiedCProgramming/` 下除 `QCP_examples/` 外的库源码（编译/symexec 只是把它当 cwd 运行，不是读它）、**不读**当前 workspace 的完整 harness transcript（`logs/agent_stdout_*.jsonl`、`logs/agent_prompt_*`）、**不做** `git log` / `git show` 考古。
+- retry 轮只按 prompt 指示读 `agent_last_message_*`、`agent_stderr_*`、`logs/continue.md` 和 generated/annotated 文件。
+- 按 §1 分步读 experiences，不要一次性读完，也不要重复读同一文档。
+
+**写边界**（只写下列位置，其余一律不写）：
+
+- 当前任务的 `annotated/verify_<timestamp>_<name>.c`
+- 当前 workspace 的 `coq/generated/<name>_proof_manual.v` 和必要的本地 helper
+- 当前 workspace 的 `logs/*`（`issues.md`、`metrics.md`、`annotation_reasoning.md`、`proof_reasoning.md`、`workspace_fingerprint.json`、`continue.md`）
+- **不写** `input/`、**不写** `scripts/`、**不写**其它 workspace、**不写** `QualifiedCProgramming/` 源码
+- **不手改** `*_goal.v` / `*_proof_auto.v` / `*_goal_check.v`（见 §4.4）
+- `experiences/` 全程**只读**（见 §4.6），经验沉淀由末尾 consolidate 阶段统一负责
+
 ### 4.1 输入与边界
 
 - 默认信任 `input/<name>.c` / `.v` 的 contract，不重写 `Require` / `Ensure`
@@ -65,6 +84,7 @@ Verify 只消费 Contract 已经准备好的验证输入，不再负责设计前
 - 每次重新 `symexec` 后，都要重新检查最新生成的 VC；manual witness 的编号和内容都可能变化，不能盲用旧 proof
 - `proof_auto.v` 已解决的 VC 不进入 manual proof；不要在 `proof_manual.v` 中重复定义 `proof_auto.v` 已有的同名 lemma
 - 进入 proof 前，先逐条分析 manual goal 的 `P |-- Q` 是否语义可证；缺资源、缺 loop 语义或缺 spec 桥接时回 annotation，只有缺 list/arithmetic/helper lemma 时才进入 proof
+- **trivial 早停**：如果 `symexec` 成功后 `proof_manual.v` 没有任何需要手工证明的 theorem（所有 witness 都落在 `proof_auto.v` 的 `Admitted.` 占位里），就直接进入编译收尾（§4.5 / §5 第 6 步），**不要**再读 `PROOF.md`、不要检索 `doc/retrieval/INDEX.md`、不要找 `experiences/end-end` 或 `QCP_examples` 参考解、不要做任何额外探索。这类无循环纯标量/直接 disjunction contract 的题应在几次调用内收尾
 
 ### 4.4 Proof
 
@@ -109,7 +129,7 @@ Verify 只消费 Contract 已经准备好的验证输入，不再负责设计前
 2. 先读 `doc/retrieval/INDEX.md`，再写并回填 `logs/workspace_fingerprint.json`，确保 `semantic_description` 非空，且 `keywords` 只使用受控词表中的 key 和 value。
 3. 如果需要补 `Inv` / `Assert`，读 `INV.md` 和 `ASSERTION.md`，写并持续更新 `logs/annotation_reasoning.md`，记录关键 C/annotation 片段后再修改当前任务对应的 `annotated/*.c`；否则跳过这一步。
 4. 读 `SYMEXEC.md`，跑完整 `symexec`，生成最新 `goal/proof_auto/proof_manual/goal_check`，并确认使用的是最新完整 witness 列表。
-5. 如果 `proof_manual.v` 里还有需要手工证明的 theorem，读 `PROOF.md`，按 witness 顺序逐个证明；写并持续更新 `logs/proof_reasoning.md`，记录关键 Coq theorem/subgoal/tactic 片段后再补 `proof_manual.v`，编译失败就继续 proof 迭代直到通过；否则跳过这一步。
+5. 跑完 `symexec` 后先看 `proof_manual.v`：**如果它没有需要手工证明的 theorem（只有 `proof_auto.v` 里的 `Admitted.` 占位），这就是 trivial case，直接跳到第 6 步编译收尾——不要读 `PROOF.md`、不要检索 `doc/retrieval/INDEX.md` 或 `experiences/end-end` 参考解、不要翻 `QCP_examples`、不要做额外探索。** 只有当 `proof_manual.v` 确有待证 theorem 时，才读 `PROOF.md`，按 witness 顺序逐个证明；写并持续更新 `logs/proof_reasoning.md`，记录关键 Coq theorem/subgoal/tactic 片段后再补 `proof_manual.v`，编译失败就继续 proof 迭代直到通过。
 6. 读 `COMPILE.md`，按完整模板编译 `goal`、`proof_auto`、`proof_manual`、`goal_check`。
 7. 每解决一个有代表性的通用问题，就同步更新对应 Experience，并在 `logs/issues.md` 记录该问题的具体踩坑和修复链路。
 8. 详细写 `logs/issues.md` 和 `logs/metrics.md`，把整个过程中的踩坑、定位和修复链路补全，在 `logs/metrics.md` 中列出 `Experience updates`，并在最后一行写 `Final Result: Success` 或 `Final Result: Fail`。
