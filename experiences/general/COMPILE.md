@@ -136,6 +136,21 @@ coqc "${BASE[@]}" "${EXTRA[@]}" "$GEN/${NAME}_goal_check.v"
 - `proof_manual.v` 无 `Admitted.`
 - `proof_manual.v` 无新增 `Axiom`
 
+## 11. 重新确认轮次跳过完整 recompile 的条件（2026-05-26）
+
+在 verify 的"precautionary retry"轮次中，如果前一轮**已经确认** Final Result: Success，且进入当前轮次时以下条件全部满足：
+
+1. `coq/generated/` 只含 `.v` 文件，无 `.vo/.glob/.vok/.vos/.aux` 中间产物
+2. `proof_manual.v` 中 `Admitted.` 个数为 0（`grep -c "Admitted"` 退出码为 1）
+3. `workspace_fingerprint.json` 中 `verification_status` 为 `goal_check_passed`
+4. `metrics.md` 的 Final Result 为 Success
+
+此时**不必再跑完整 5 步 coqc**。直接核对上述四项，记录为"No new blockers found"后退出即可。
+
+理由：每次 coqc 会生成新的中间产物（`.vo/.glob` 等），随即又需要 cleanup；在 16 个重复轮次中，这一"编译 → 生成中间产物 → 清理"的循环每轮耗时约 1–2 分钟，累计超过 25 分钟，最终因整体 timeout（exit 124）导致 verify 阶段标记为 Fail，尽管证明本身在第一轮 ~22 分钟内就已完成。
+
+唯一例外：如果某轮因 API Overload 或其他故障中途终止（中间产物可能残留），才需要重跑 coqc 以恢复干净状态。
+
 ## 10. 编译后必须清理
 
 - `coq/` 下删除非 `.v` 的编译中间产物

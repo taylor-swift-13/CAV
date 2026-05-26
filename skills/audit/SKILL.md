@@ -81,6 +81,7 @@ Also write:
 
 - Audit never edits code or proof artifacts.
 - Audit never re-runs the verify repair loop.
+- `experiences/` is READ-ONLY for the audit agent: read references freely, but never create/edit/overwrite (including `cp`/`sed`) any file under `experiences/` (`end-end/` is written only by the runner's export step; `general/` only by consolidate).
 - A proof file containing `Admitted.`, manual `Axiom`, or similar stub is an
   error unless you can justify that it belongs only to generated auto artifacts
   outside manual proof responsibility.

@@ -132,6 +132,7 @@ Rules:
 - Do not treat unreachable-code tricks as valid negative cases.
 - Do not claim `Correct` when you are actually unsure.
 - Do not record experience here; only write the stage logs.
+- `experiences/` is READ-ONLY for the eval agent: read references freely, but never create/edit/overwrite (including `cp`/`sed`) any file under `experiences/` (the `end-end/` reference corpus is written only by the runner's export step; `general/` only by consolidate).
 
 ## Final Result
 

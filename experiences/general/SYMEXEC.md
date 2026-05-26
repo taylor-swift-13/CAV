@@ -24,6 +24,7 @@
 - `Extern Coq` 名称和 C 函数名重名：看 14
 - 重新生成 VC 后不能盲用旧 proof：看 15
 - manual / auto witness 分流：看 16
+- loop invariant 中直接使用的 Coq 类型须 `Extern Coq` 声明：看 19
 
 ## 1. 自动 verify 进程卡住时，不要继续空等
 
@@ -307,6 +308,24 @@ fatal error: Expected C expression ... Now parsing : n with type :2
 1. 不要先进入 Coq proof；这是前端解析问题。
 2. 在 active annotated 工作副本里把 ghost-state 的 `n@pre` 改成 `n`，保留真实 C 参数的 `old_c@pre`、`new_c@pre`、`s@pre` 等。
 3. 重新运行 `symexec`，因为该修改会改变生成 VC。
+
+## 19. loop invariant 中直接使用的 Coq 类型必须显式 `Extern Coq` 声明（2026-05-26）
+
+即使一个 Coq 类型已经通过 `/*@ Import Coq Require Import <file> */` 导入，如果它直接出现在循环 invariant 的注释位置（而不仅仅出现在 postcondition），就必须在 annotated C 文件顶部再加一条 `/*@ Extern Coq (...) */` 声明。
+
+QCP 前端在解析 invariant 时需要独立的符号表入口；仅有 `Import Coq` 不足以让前端识别 invariant 中出现的 Coq 类型名。
+
+典型例子：
+
+- `/*@ Import Coq Require Import insertion_sort */` 把 `Permutation` 带入 Coq 命名空间
+- 但 invariant 里写 `Permutation(l, l_outer)` 时，symexec 前端找不到这个名字
+- 必须额外加 `/*@ Extern Coq (Permutation: list Z -> list Z -> Prop) */`
+
+判断规则：
+
+1. 如果一个 Coq 名字只出现在 `Ensure` 中、由 symexec 通过 postcondition 推导——可以只用 `Extern Coq`，不一定需要 `Import Coq`
+2. 如果一个 Coq 名字出现在 `Inv`、`Assert` 或 `which implies` 中——无论是否已经 `Import Coq`，都必须有 `Extern Coq` 声明
+3. 两者都写是安全的，不要依赖"Import 一定够"
 
 ## 18. `int_array_def.h` 是不应该放进 annotated C 的头文件
 

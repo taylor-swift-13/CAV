@@ -86,15 +86,14 @@ Verify 只消费 Contract 已经准备好的验证输入，不再负责设计前
 ### 4.6 Logs, Metrics, Experience
 
 - `logs/issues.md` 只能追加，不能覆盖已有内容；必须写得非常具体，详细记录整个 verify 过程中的所有踩坑，而不是只记最后一个错误；每个问题至少要写清楚现象、触发条件、定位到的文件/行号或 theorem、修复动作、修复后的结果；每个代表性问题还要贴出足够读懂问题的关键代码或日志片段，例如 C annotation 片段、Coq theorem/subgoal/tactic 片段、`coqc`/`symexec` 报错片段或相关命令片段，保证后来的智能体只读 `issues.md` 也能理解问题发生在哪里、为什么发生、如何修复
-- 验证过程中每解决一个有代表性的通用问题，都必须立即判断是否需要更新 Experience；如果该问题能复用于后续任务，就更新对应的 `experiences/*.md`，不要等到任务最后才回忆
-- Experience 只写可复用结论，不写单题流水账；按问题所属阶段写入 `SYMEXEC.md`、`ASSERTION.md`、`INV.md`、`PROOF.md` 或 `COMPILE.md`
+- 验证过程中每解决一个有代表性的通用问题，把可复用结论详细写进当前 workspace 的 `logs/`（`issues.md`、`proof_reasoning.md`、`annotation_reasoning.md` 等），写清现象/定位/修复/关键片段。**不要直接写或修改 `experiences/` 下的任何文件**——经验沉淀由末尾的 consolidate 阶段统一负责。
 - `logs/workspace_fingerprint.json` 不能保留脚本初始化时的空占位；必须在任务早期回填非空的 `semantic_description` 和 `keywords`，回填 `keywords` 前先读 `doc/retrieval/INDEX.md`；`keywords` 的 key 和 value 都只能来自其中定义的受控词表
 - `logs/metrics.md` 只能追加，不能覆盖已有内容；唯一允许修改的已有内容是最后的 `Final Result: ...` 行
 - `logs/metrics.md` 必须记录整个 verify 流程的真实开始时间、结束时间和总 wall-clock 时间；不能只记录某一个子步骤的时间
 - `symexec_*`、proof compile、cleanup 等只能作为子阶段时间或子阶段状态补充，不能替代 verify 总耗时
 - `logs/metrics.md` 的最后必须显式写一行 `Final Result: Success` 或 `Final Result: Fail`
 - 这一行必须是**独立成行的纯文本**，整行就是 `Final Result: Success`（或 `Final Result: Fail`）：不要加 markdown 加粗 `**`、反引号、前后缀文字（如 `(confirmed in round N)`）、也不要并进其它句子。外部判据按整行识别这个标记；任何装饰都会被判为"未完成"从而触发无谓的重试。
-- 如果本次任务更新了任何经验文档，`logs/metrics.md` 必须显式列出更新了哪些经验文件；如果没有更新，也要明确写 `Experience updates: none`
+- `logs/metrics.md` 写 `Experience updates: none`（verify agent 不直接改 `experiences/`；经验由末尾 consolidate 统一沉淀）
 - `Final Result: Success` 只能在以下条件同时满足时写：
   - `symexec` 成功并基于当前最新 annotated 文件生成了最新 `goal/proof_auto/proof_manual/goal_check`
   - `proof_manual.v` 中所有需要手工证明的 theorem 都已完成
@@ -102,7 +101,7 @@ Verify 只消费 Contract 已经准备好的验证输入，不再负责设计前
   - `goal.v`、`proof_auto.v`、`proof_manual.v`、`goal_check.v` 全部按当前 workspace 的完整编译模板编译通过
   - 当前 workspace 的 `coq/` 非 `.v` 中间产物和 `input/` 下非 `.v`、非 `.c` 的中间产物已经清理
   - `issues.md` 和 `metrics.md` 已完整更新
-- 每次 verify 任务完成后，都要选择性更新 `experiences/general/SYMEXEC.md`、`experiences/general/ASSERTION.md`、`experiences/general/INV.md`、`experiences/general/PROOF.md`、`experiences/general/COMPILE.md`
+- **`experiences/` 对 verify agent 只读**：可以读其中的经验文档与参考解，但**不得创建、写入、修改、或用 `cp`/`sed` 覆盖**其中任何文件——尤其不要回写 `experiences/end-end/`（参考库；写它只由 runner 的 export 步骤负责，且只对尚不存在的新例子）。需要参考就读，绝不回写。
 
 ## 5. 最短流程
 
