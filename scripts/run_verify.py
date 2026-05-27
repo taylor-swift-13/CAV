@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import datetime as dt
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -51,10 +50,6 @@ def iso_now() -> str:
 
 def stem_from_input(input_path: Path) -> str:
     return input_path.stem
-
-
-def sha256_hex(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def ensure_parent(path: Path) -> None:
@@ -335,7 +330,6 @@ def bootstrap_workspace(workspace_path: Path, input_path: Path, input_v_path: Pa
 
     fingerprint_path = workspace_path / "logs" / "workspace_fingerprint.json"
     fingerprint = {
-        "fingerprint_version": 2,
         "workspace": workspace_path.name,
         "stage": "verify",
         "input_c": str(input_path),
@@ -344,7 +338,6 @@ def bootstrap_workspace(workspace_path: Path, input_path: Path, input_v_path: Pa
         "original_v": original_v,
         "annotated_c": str(annotated_c),
         "function_name": function_name,
-        "program_sha256": sha256_hex(input_path),
         "semantic_description": "",
         "keywords": {},
         "assume_contract_is_correct": True,

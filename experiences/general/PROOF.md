@@ -544,12 +544,14 @@ digit_sum_fuel (Z.div n 10) k
 
 如果 VC 有实质变化，必须重新证明。不要只按 witness 编号复用 proof，因为编号可能稳定但 VC 主体已经变化，也可能编号变化但 VC 主体相同。
 
-**快捷判断（2026-05-25）**：比较 VC 主体之前，先查当前 workspace 的 `logs/workspace_fingerprint.json` 中的 `program_sha256`，与先前成功 workspace 的同字段对比。
+开始 proof 前，先用 `logs/workspace_fingerprint.json` 的四字段检索端到端样例：
 
-- 如果 SHA256 **相同**（且 `input_v` 相同），symexec 输入完全一致，生成的 VC 保证相同，可以直接复用先前 `proof_manual.v`，只需把 `From SimpleC.EE.CAV.verify_<OLD_TIMESTAMP>_<NAME> Require Import` 一行的模块前缀改成当前 workspace 的前缀，proof tactic 主体不需要改动。
-- 如果 SHA256 **不同**，才需要逐条比较 VC 主体，按下面的检查点进行。
+- `keywords.problem_kind`
+- `keywords.data`
+- `keywords.pattern`
+- `semantic_description`
 
-**SHA256 查找范围（2026-05-26）**：不要只在 `output/` 目录里找先前 workspace——**先看 `experiences/end-end/<function-name>/logs/workspace_fingerprint.json`**。如果函数名对应的 end-end experience 存在，且其 `program_sha256` 与当前 workspace 相同，那 proof 已经存档在 `experiences/end-end/<function-name>/coq/generated/<function-name>_proof_manual.v`，直接复制该文件并把 `Require Import` 模块前缀换成当前 workspace 的前缀即可，无需重新推导任何证明策略。这是最快的复用路径，应在开始任何 proof 工作之前优先尝试。（实例：`verify_20260526_111429v1_binary_search` SHA256 与 end-end experience `verify_20260422_091409_binary_search` 完全相同，但 verify agent 未先查 end-end 而是重新推导了整个 proof，耗时约 530 秒。）
+如果 `experiences/end-end/<function-name>/` 存在，优先读取它的 fingerprint；否则按 `doc/retrieval/INDEX.md` 扫描 `experiences/end-end/*/logs/workspace_fingerprint.json`。fingerprint 只用于找到相关候选，不证明当前 VC 与旧 VC 相同。
 
 实操上，VC 主体比较重点是：
 

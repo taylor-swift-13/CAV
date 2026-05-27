@@ -25,6 +25,15 @@
 2. 再看 `semantic_description`
 3. 最后才读 `annotation_reasoning.md`、`proof_reasoning.md`、`issues.md` 和相关 `.v`
 
+大模型查找相关端到端样例时，只使用四字段 fingerprint：
+
+- `keywords.problem_kind`
+- `keywords.data`
+- `keywords.pattern`
+- `semantic_description`
+
+前三个字段是受控词表，用来粗筛候选；`semantic_description` 是自由文本，用来判断候选是否真的和当前题相关。
+
 ## 4. fingerprint 要写什么
 
 每个 workspace 的 `logs/workspace_fingerprint.json` 至少应包含：
@@ -45,104 +54,117 @@
 - 边界行为
 - 是否修改内存
 
+`semantic_description` 是 `keywords` 之外唯一的自由文本检索字段。`keywords` 负责粗筛；`semantic_description` 负责判断两个算法题是否真的相似。
+
 ## 6. `keywords` 怎么用
 
 - `keywords` 必须来自受控词表，不要自由发明同义词
-- 先用 `keywords` 过滤，再用自然语言描述判断是否真的相似
+- 优先按 `problem_kind` / `data` / `pattern` 过滤，再用 `semantic_description` 判断是否真的相似
+- 如果三个 keyword 全部一致，优先展开该样例
+- 如果只有两个 keyword 一致，只有在 `semantic_description` 的输入输出关系和控制结构也相似时才展开
+- 如果只有一个或零个 keyword 一致，默认不展开，除非用户明确要求扩大搜索
 
 ## 7. `keywords` 受控词表
 
-- 历史 git 版本里的受控 key 只有这些：
-  - `algorithm_family`
-  - `control_flow`
-  - `data_shape`
-  - `semantic_intent`
-  - `proof_pattern`
-  - `numeric_properties`
-  - `edge_case_behavior`
-  - `verification_status`
+为算法题检索，只保留 3 个 key：
 
-- `algorithm_family` 只允许：
-  - `identity`
-  - `selection`
-  - `counting`
-  - `accumulation`
-  - `arithmetic_series`
-  - `factorial`
-  - `prefix_sum`
-  - `simulation`
-  - `search`
-  - `two_pointers`
-  - `dynamic_programming`
-  - `greedy`
-  - `recursion`
+- `problem_kind`
+- `data`
+- `pattern`
 
-- `control_flow` 只允许：
-  - `straight_line`
-  - `if`
-  - `ternary`
-  - `for_loop`
-  - `while_loop`
-  - `do_while`
-  - `nested_loop`
-  - `recursion`
+`problem_kind` 描述题目要计算什么，只允许：
 
-- `data_shape` 只允许：
-  - `scalar_only`
-  - `array`
-  - `string`
-  - `pointer`
-  - `struct`
-  - `linked_list`
-  - `tree`
-  - `graph`
+- `identity`
+- `min_max`
+- `count`
+- `sum`
+- `product`
+- `search`
+- `compare`
+- `transform`
+- `partition`
+- `sort`
+- `prefix`
+- `dp`
+- `math`
 
-- `semantic_intent` 只允许：
-  - `return_input`
-  - `return_max`
-  - `count_iterations`
-  - `sum_1_to_n`
-  - `sum_even_series`
-  - `compute_factorial`
-  - `preserve_input`
-  - `in_place_update`
+`data` 描述主要数据形态，只允许：
 
-- `proof_pattern` 只允许：
-  - `pure_arithmetic`
-  - `loop_invariant`
-  - `case_split`
-  - `termination_by_bound`
-  - `closed_form`
-  - `monotonicity`
-  - `range_bound`
-  - `heap_reasoning`
+- `scalar`
+- `array`
+- `string`
+- `matrix`
+- `linked_list`
+- `tree`
+- `graph`
 
-- `numeric_properties` 只允许：
-  - `nonnegative_input`
-  - `overflow_guard`
-  - `int_range`
-  - `monotone_accumulator`
-  - `exact_closed_form`
+`pattern` 描述算法骨架，只允许：
 
-- `edge_case_behavior` 只允许：
-  - `returns_zero_on_nonpositive`
-  - `returns_input_on_nonpositive`
-  - `defined_for_nonnegative_only`
-  - `branch_on_order`
-  - `empty_loop_possible`
+- `straight_line`
+- `branch`
+- `single_loop`
+- `nested_loop`
+- `two_pointers`
+- `sliding_window`
+- `prefix_scan`
+- `binary_search`
+- `recursion`
+- `state_machine`
 
-- `verification_status` 只允许：
-  - `goal_check_passed`
-  - `proof_check_passed`
-  - `manual_witness_needed`
-  - `auto_proof_contains_admitted`
-  - `generated_goal_contains_axioms`
+`keywords` 只允许使用以上 key 和 value。一个 key 可以对应单个字符串，或由上述 value 组成的列表。如果当前任务不需要某个维度，就省略该 key。
 
-- `keywords` 只允许使用以上历史 key 和 value
-- 一个 key 可以对应单个字符串，或由上述历史 value 组成的列表
-- 如果当前任务不需要某个维度，就省略该 key，不要发明新 key，也不要发明新 value
+示例：
 
-## 8. 允许展开阅读的样例范围
+```json
+{
+  "semantic_description": "Sums all elements of an integer array with one accumulator loop. The input array is read-only; the empty array returns 0.",
+  "keywords": {
+    "problem_kind": "sum",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}
+```
+
+## 8. 大模型查找流程
+
+给定当前题目的四字段 fingerprint，大模型按下面顺序查找端到端样例：
+
+1. 调用 `scripts/search_fingerprint.py` 生成相似样例路径列表，不要手动展开全量样例
+2. 脚本只读取每个样例的四字段 fingerprint，不读取源码或 proof
+3. 脚本按 keyword 匹配数排序：`problem_kind`、`data`、`pattern` 三项全中优先，其次两项命中
+4. 脚本用 `semantic_description` 做轻量文本重合排序；大模型再对候选语义做最终判断，重点比较：
+   - 输入输出关系是否相同
+   - 是否修改内存
+   - 循环 / 分支结构是否相同
+   - 边界行为是否相同
+5. 只展开最相关的少数样例，再读取其 `annotation_reasoning.md`、`proof_reasoning.md`、`issues.md` 和 `.v`
+6. 复用 proof 前仍必须比较当前 VC 和旧 VC 主体；fingerprint 只能说明“相关”，不能证明 VC 相同
+
+默认调用：
+
+```bash
+python3 scripts/search_fingerprint.py --fingerprint output/verify_<timestamp>_<name>/logs/workspace_fingerprint.json
+```
+
+输出是一行一个相似端到端样例目录路径，例如：
+
+```text
+experiences/end-end/array_sum
+experiences/end-end/prefix_sum
+```
+
+如果当前还没有 fingerprint 文件，也可以直接传四字段：
+
+```bash
+python3 scripts/search_fingerprint.py \
+  --problem-kind sum \
+  --data array \
+  --pattern single_loop \
+  --semantic-description "Sums all elements of a read-only integer array with one accumulator loop."
+```
+
+## 9. 允许展开阅读的样例范围
 
 - `experiences/end-end/` 下的样例可以直接展开阅读
 - 如果 `experiences/end-end/` 不够，再去 `QualifiedCProgramming/QCP_examples/` 下读取其他相关例子

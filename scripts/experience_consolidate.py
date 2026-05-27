@@ -91,9 +91,9 @@ Capture TWO kinds of reusable lesson:
 2. Efficiency — analyze what made this run SLOW or wasteful (retries, dead-end
    fixes, re-deriving something that already existed, a critic re-run, time
    spent re-discovering a convention), and record the reusable shortcut that
-   would avoid it next time (e.g. "reuse `proof_manual.v` from a prior
-   same-SHA256 workspace and only update the module path", "don't try X, it
-   never works", "recognize convention Y up front"). File these efficiency
+   would avoid it next time (e.g. "use the four-field fingerprint to find the
+   closest end-to-end example before proving", "don't try X, it never works",
+   "recognize convention Y up front"). File these efficiency
    rules in the same scoped file as the topic they concern.
 
 Hard rules:
