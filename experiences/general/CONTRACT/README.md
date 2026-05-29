@@ -2,9 +2,9 @@
 
 This file records reusable lessons for the contract stage only: turning raw task
 text into one Java file with executable code and JML method contracts. It does
-not record loop invariants (see `INV.md`), assertions (see `ASSERTION.md`),
-helper-lemma proof detail (see `LEMMA.md`), anti-cheating policy (see
-`AUDIT.md`), or OpenJML diagnostics in general (see `OPENJML.md`).
+not record loop invariants (see `../INV/README.md`), assertions (see `../ASSERTION/README.md`),
+helper-lemma proof detail (see `../LEMMA/README.md`), anti-cheating policy (see
+`../AUDIT/README.md`), or OpenJML diagnostics in general (see `../OPENJML/README.md`).
 
 常见入口 / symptom index:
 
@@ -26,7 +26,7 @@ helper-lemma proof detail (see `LEMMA.md`), anti-cheating policy (see
 - Preserve the intended algorithm and public behavior from the raw task.
 - Use JML `requires`, `ensures`, and `assignable` clauses for the target method.
 - Keep the contract output free of assumptions, axioms, native methods, or tool
-  suppression pragmas (those are anti-cheating violations; see `AUDIT.md`).
+  suppression pragmas (those are anti-cheating violations; see `../AUDIT/README.md`).
 
 ## 2. 算术可能超 int 范围时写显式溢出前置条件
 
@@ -65,8 +65,8 @@ still write the explicit non-null requirement so the proof obligation is obvious
 ## 5. contract 阶段不写 invariant / proof-only assert
 
 Keep contract output free of loop invariants and proof-only assertions unless the
-raw task itself includes them — those belong to verify (see `INV.md`,
-`ASSERTION.md`). Exception: a `pure` specification helper used by the
+raw task itself includes them — those belong to verify (see `../INV/README.md`,
+`../ASSERTION/README.md`). Exception: a `pure` specification helper used by the
 postcondition is allowed; it is part of the contract surface, not a proof-only
 annotation.
 

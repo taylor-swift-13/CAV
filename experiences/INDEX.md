@@ -19,19 +19,21 @@
 
 ## 3. 检索时先看什么
 
-每个完成例子的最小检索单元是：
+检索单元有两种，schema 共享（都用 `semantic_description` + `keywords`）：
 
-- `logs/workspace_fingerprint.json`
+- **end-end 样例**：每个 `experiences/end-end/<case>/logs/workspace_fingerprint.json`（完整 workspace + 路径）
+- **专题经验**：每个 `experiences/general/<NAME>/<N>/<slug>.fingerprint`（指向同目录 `<slug>.md`，只放 `semantic_description` 和 `keywords` 两字段）
 
 在选择题目或改写题目表示前，先看：
 
-- `/home/yangfp/CAV-JAVA/experiences/general/TOOL_SCOPE.md`
+- `/home/yangfp/CAV-JAVA/experiences/general/TOOL_SCOPE/README.md`
 
 建议顺序：
 
 1. 先看 `keywords`
 2. 再看 `semantic_description`
-3. 最后才读 `annotation_reasoning.md`、`issues.md` 和相关 Java 文件
+3. 命中 general：直接读对应 `<N>/<slug>.md`（短，已 self-contained）
+4. 命中 end-end：再展开 `annotation_reasoning.md`、`issues.md` 和相关 Java 文件
 
 ## 4. fingerprint 要写什么
 
@@ -188,3 +190,34 @@
   }
 }
 ```
+
+## 10. `scripts/search_fingerprint.py` 调用方式
+
+脚本同时覆盖 end-end 完整样例和 general 专题经验。默认 `--scope all` 检索两者：
+
+```bash
+python3 scripts/search_fingerprint.py --fingerprint output/verify_<timestamp>_<name>/logs/workspace_fingerprint.json
+```
+
+`--scope` 可限制范围：
+
+- `--scope all`（默认）：同时检索 end-end 完整样例 + general 专题经验
+- `--scope end-end`：只看完整 workspace 样例
+- `--scope general`：只看 general 专题经验
+
+输出（`--format paths`）：每行一个匹配路径。end-end 给 case dir，general 给 `<NAME>/<N>/<slug>.md`。例如：
+
+```text
+experiences/end-end/array_sum
+experiences/general/INV/4/merge-loop-invariant.md
+```
+
+如果还没有 fingerprint 文件，直接传 keyword 字段：
+
+```bash
+python3 scripts/search_fingerprint.py \
+  --problem-kind sum --data array --pattern single_loop \
+  --semantic-description "Sums all elements of a read-only int[] with one accumulator loop."
+```
+
+注：`scripts/search_fingerprint.py` 使用上游设计的 3 键 `keywords`（`problem_kind` / `data` / `pattern`），与本文档 §7 的 8 键 Java/OpenJML 受控词表是两套独立的检索 schema。topical fingerprint 文件按 §7 写 8 键 keywords；脚本默认用 3 键过滤。如需扩 schema，统一受控词表后再改 `scripts/search_fingerprint.py` 的 `KEYS` 常量。

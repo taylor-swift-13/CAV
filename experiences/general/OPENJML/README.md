@@ -2,8 +2,8 @@
 
 This file records reusable lessons about running OpenJML and reading its
 diagnostics, across all stages. It does not record contract spec shapes (see
-`CONTRACT.md`), invariant design (`INV.md`), assertion use (`ASSERTION.md`),
-lemma encoding (`LEMMA.md`), or anti-cheating policy (`AUDIT.md`).
+`../CONTRACT/README.md`), invariant design (`../INV/README.md`), assertion use (`../ASSERTION/README.md`),
+lemma encoding (`../LEMMA/README.md`), or anti-cheating policy (`../AUDIT/README.md`).
 
 常见入口 / symptom index:
 
@@ -39,11 +39,11 @@ or exposed through a model field. See 9 for the manual detail.
 ## 3. 算术溢出失败
 
 Add explicit range preconditions or prove intermediate bounds (see
-`CONTRACT.md` 13).
+`../CONTRACT/README.md` 13).
 
 ## 4. 循环证明失败
 
-Add bounds, accumulator, frame, and exit-useful invariants (see `INV.md`).
+Add bounds, accumulator, frame, and exit-useful invariants (see `../INV/README.md`).
 
 ## 5. 计数/求和量词只是部分实现
 
@@ -51,7 +51,7 @@ Add bounds, accumulator, frame, and exit-useful invariants (see `INV.md`).
 baseline contract uses them, first prove the executable loop state with supported
 invariants or pure helpers; if the only remaining failure is the quantified
 clause itself, record a tool-support blocker instead of weakening the contract.
-(Best avoided entirely at contract time — see `CONTRACT.md` 4.)
+(Best avoided entirely at contract time — see `../CONTRACT/README.md` 4.)
 
 ## 6. `assignable` 失败
 
@@ -61,7 +61,7 @@ mutating methods.
 ## 7. exit 0 是必要非充分条件
 
 OpenJML exit code 0 is necessary but not sufficient. The anti-cheating scanner
-must also pass (see `AUDIT.md`).
+must also pass (see `../AUDIT/README.md`).
 
 ## 8. 运行期安全检查会以验证失败出现 (checks.shtml.html)
 

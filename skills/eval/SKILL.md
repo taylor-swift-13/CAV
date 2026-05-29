@@ -17,11 +17,14 @@ of `NOT IMPLEMENTED` and the unsupported aggregate quantifiers
 proof is the verify/audit stage's job. By the time eval runs, the spec is
 already well-formed, so eval only has to test its semantics.
 
+
+跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
+
 ## Required References
 
-- `experiences/general/EVAL.md`
-- `experiences/general/AUDIT.md`
-- `experiences/general/OPENJML.md`
+- `experiences/general/EVAL/README.md`
+- `experiences/general/AUDIT/README.md`
+- `experiences/general/OPENJML/README.md`
 
 ## Inputs
 

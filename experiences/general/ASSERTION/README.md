@@ -3,8 +3,8 @@
 This file records reusable lessons for `Assert` / bridge assertions — local
 proof bridges that explain a fact following from the current program state, and
 must not replace a missing invariant. It does not record loop-invariant design
-(see `INV.md`), lemma encoding (`LEMMA.md`), or general OpenJML diagnostics
-(`OPENJML.md`).
+(see `../INV/README.md`), lemma encoding (`../LEMMA/README.md`), or general OpenJML diagnostics
+(`../OPENJML/README.md`).
 
 常见入口 / symptom index:
 

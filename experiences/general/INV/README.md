@@ -2,8 +2,8 @@
 
 This file records reusable lessons for loop-invariant design — the main OpenJML
 proof aid for iterative Java code. It does not record `Assert`/bridge detail
-(see `ASSERTION.md`), helper-lemma encoding (`LEMMA.md`), or general OpenJML
-diagnostics (`OPENJML.md`).
+(see `../ASSERTION/README.md`), helper-lemma encoding (`../LEMMA/README.md`), or general OpenJML
+diagnostics (`../OPENJML/README.md`).
 
 常见入口 / symptom index:
 

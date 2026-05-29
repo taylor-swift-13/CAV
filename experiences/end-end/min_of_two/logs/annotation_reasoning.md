@@ -4,11 +4,11 @@
 
 - Read `/home/yangfp/CAV-JAVA/experiences/INDEX.md`.
 - Read required general references:
-  - `/home/yangfp/CAV-JAVA/experiences/general/INV.md`
-  - `/home/yangfp/CAV-JAVA/experiences/general/ASSERTION.md`
-  - `/home/yangfp/CAV-JAVA/experiences/general/LEMMA.md`
+  - `/home/yangfp/CAV-JAVA/experiences/general/INV/README.md`
+  - `/home/yangfp/CAV-JAVA/experiences/general/ASSERTION/README.md`
+  - `/home/yangfp/CAV-JAVA/experiences/general/LEMMA/README.md`
   - `/home/yangfp/CAV-JAVA/experiences/general/ANTI_CHEATING.md`
-  - `/home/yangfp/CAV-JAVA/experiences/general/OPENJML.md`
+  - `/home/yangfp/CAV-JAVA/experiences/general/OPENJML/README.md`
 - Searched `/home/yangfp/CAV-JAVA/experiences/end-end` with:
   - `find /home/yangfp/CAV-JAVA/experiences/end-end -maxdepth 4 -type f | sort`
   - `rg -n "return_min|return_max|branch_on_order|algorithm_family.*selection|semantic_intent|case_split|Math.min|min\(|<=|>=|ensures.*result" /home/yangfp/CAV-JAVA/experiences/end-end`

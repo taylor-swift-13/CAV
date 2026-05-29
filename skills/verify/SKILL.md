@@ -7,6 +7,9 @@ Use this workflow for the Java/OpenJML verify stage. This skill consumes an
 existing Java implementation/spec and repairs only the verified working copy
 until OpenJML ESC passes without cheating.
 
+
+跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
+
 ## Pipeline Position
 
 This is the final proof stage of the Java/OpenJML workflow.
@@ -54,12 +57,12 @@ OpenJML stderr, scanner stdout/stderr, or metrics into `experiences/end-end`.
 
 Read these local references before making verification edits:
 
-- `/home/yangfp/CAV-JAVA/experiences/general/README.md` (experience entry; jump by symptom)
-- `/home/yangfp/CAV-JAVA/experiences/general/INV.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/ASSERTION.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/LEMMA.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/AUDIT.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/OPENJML.md`
+- `/home/yangfp/CAV-JAVA/experiences/general/README/README.md` (experience entry; jump by symptom)
+- `/home/yangfp/CAV-JAVA/experiences/general/INV/README.md`
+- `/home/yangfp/CAV-JAVA/experiences/general/ASSERTION/README.md`
+- `/home/yangfp/CAV-JAVA/experiences/general/LEMMA/README.md`
+- `/home/yangfp/CAV-JAVA/experiences/general/AUDIT/README.md`
+- `/home/yangfp/CAV-JAVA/experiences/general/OPENJML/README.md`
 - `/home/yangfp/CAV-JAVA/experiences/INDEX.md`
 
 Search completed end-to-end examples before making verification edits:
@@ -270,3 +273,13 @@ loop (`scripts/agent_loop.py`):
 - When re-entered after the audit critic overturned the proof, the findings are
   in the `## overturn` section of `logs/continue.md`; read it and fix exactly
   that anti-cheating problem without weakening the spec.
+
+
+## 条件性 mode addendum
+
+runner 在 prompt 加标记触发以下附录，**没标记就不读**。多个标记可叠加。
+
+| Prompt 标记 | 附录文件 | 含义 |
+|------------|---------|------|
+| `Attempt: N (retry — ...)` 且 N > 1 | `MODE_RETRY.md` | 接力上一轮工作，必须追加 `logs/continue.md` 新 section |
+| `Audit findings:` 块 | `MODE_RERUN_AUDIT.md` | audit critic 标记不可信后的重跑，逐条修复 finding |

@@ -2,8 +2,8 @@
 
 This file records the anti-cheating policy used across stages: verification is
 useful only if success is not obtained by weakening the problem or bypassing the
-verifier. It does not record invariant/assertion/lemma design (see `INV.md`,
-`ASSERTION.md`, `LEMMA.md`) or general OpenJML diagnostics (`OPENJML.md`).
+verifier. It does not record invariant/assertion/lemma design (see `../INV/README.md`,
+`../ASSERTION/README.md`, `../LEMMA/README.md`) or general OpenJML diagnostics (`../OPENJML/README.md`).
 
 常见入口 / symptom index:
 

@@ -3,8 +3,8 @@
 This file records reusable lessons for the eval stage — testing whether the JML
 spec attached to an implementation correctly characterizes that implementation's
 behavior, by treating the spec as an executable predicate (spec-test). It does
-not record contract spec shapes (see `CONTRACT.md`) or anti-cheating policy
-(`AUDIT.md`).
+not record contract spec shapes (see `../CONTRACT/README.md`) or anti-cheating policy
+(`../AUDIT/README.md`).
 
 Eval does **not** invoke `openjml -esc` and does **not** check well-formedness:
 the contract stage's success gate already guarantees the spec parses,
@@ -123,4 +123,4 @@ verdict is decisive (`Spec verdict: Correct` or `Spec verdict: Buggy`).
 
 Do not use `assume`, `axiom`, `skipesc`, `nowarn`, unreachable-path tricks, or
 impossible helper preconditions; do not weaken or delete the target spec; do not
-invoke `openjml -esc` to decide the verdict. (See `AUDIT.md`.)
+invoke `openjml -esc` to decide the verdict. (See `../AUDIT/README.md`.)

@@ -12,6 +12,9 @@ Audit does not modify code. It runs deterministic scripts to flag suspicious
 patterns and asks the agent to compile the findings into a single audit
 verdict.
 
+
+跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
+
 ## Pipeline Position
 
 Audit is the fourth and last agent. Inputs are produced by verify; outputs

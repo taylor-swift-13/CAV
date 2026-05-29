@@ -31,7 +31,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 OPENJML_RUNNER = REPO_ROOT / "scripts" / "run_openjml_verify.sh"
 
 # Aggregate quantifiers OpenJML's SMT backend cannot translate. See
-# experiences/general/CONTRACT.md "Verifier-Supported Postcondition Shapes".
+# experiences/general/CONTRACT/README.md "Verifier-Supported Postcondition Shapes".
 UNSUPPORTED_QUANTIFIER = re.compile(r"\\(num_of|sum|product)\b")
 NOT_IMPLEMENTED = re.compile(r"NOT IMPLEMENTED", re.IGNORECASE)
 COMPILE_ERROR = re.compile(r":\d+:\s*error:")
@@ -61,7 +61,7 @@ def classify(java_file: Path, exit_code: int, output: str) -> tuple[bool, list[s
         fatal.append(
             f"unsupported aggregate quantifier `\\{m.group(1)}` in spec "
             "(OpenJML SMT backend cannot translate it; rewrite with a `pure` "
-            "recursive helper -- see experiences/general/CONTRACT.md)"
+            "recursive helper -- see experiences/general/CONTRACT/README.md)"
         )
 
     for line in output.splitlines():

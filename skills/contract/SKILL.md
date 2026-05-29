@@ -5,6 +5,9 @@ description: Produce Java source with JML contracts from raw task text.
 
 Use this workflow for the Java/OpenJML contract stage.
 
+
+跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
+
 ## Pipeline Position
 
 This is stage 1 of the Java/OpenJML workflow.
@@ -32,9 +35,9 @@ and pass `--audit` later if you also want the verify critic.
 
 ## Read First
 
-- `experiences/general/README.md` (experience entry; jump by symptom)
-- `experiences/general/CONTRACT.md`
-- `experiences/general/AUDIT.md`
+- `experiences/general/README/README.md` (experience entry; jump by symptom)
+- `experiences/general/CONTRACT/README.md`
+- `experiences/general/AUDIT/README.md`
 
 ## Search Prior Examples
 

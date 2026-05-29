@@ -2,8 +2,8 @@
 
 This file records reusable lessons for encoding helper lemmas as Java/JML
 artifacts OpenJML can check — never as unchecked axioms. It does not record loop
-invariants (see `INV.md`), assertion use (`ASSERTION.md`), or anti-cheating
-policy (`AUDIT.md`).
+invariants (see `../INV/README.md`), assertion use (`../ASSERTION/README.md`), or anti-cheating
+policy (`../AUDIT/README.md`).
 
 常见入口 / symptom index:
 
