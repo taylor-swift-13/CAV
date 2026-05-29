@@ -1,105 +1,59 @@
 ---
 name: c-qcp-audit
-description: Audit a verify workspace for anti-cheating violations such as weakened contracts, forbidden proof stubs, and unverifiable proof artifacts.
+description: 审计 verify workspace 是否有作弊（弱化 contract、proof stub、unverifiable artifact 等）。
 ---
 
-Use this workflow independently from contract, verify, and eval. The goal is to
-decide whether a QCP verification result is trustworthy, not to repair it.
-Audit does not modify source code, annotations, or proof files.
+跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 audit-specific 内容。
 
-## Required References
+按需读：`experiences/general/AUDIT/README.md`、`experiences/general/PROOF/README.md`、`experiences/general/COMPILE/README.md`。**Audit 不修改任何源码、annotation 或 proof 文件**，只判 verify 结果可不可信、不修复。
 
-- `experiences/general/AUDIT.md`
-- `experiences/general/PROOF.md`
-- `experiences/general/COMPILE.md`
+## 1. 输入
 
-## Inputs
+- 一个 verify workspace，或显式的 original / verified 文件对
+- runner 已生成的 deterministic `audit/findings.json`
+- runner 已生成的 compile-replay 日志
 
-- A verify workspace, or an explicit original/verified pair.
-- Deterministic findings produced by the runner.
-- Cross-check compile replay logs produced by the runner.
+## 2. 输出
 
-## Output Layout
+`output/audit_<timestamp>_<name>/` 下：
 
-```text
-output/audit_<timestamp>_<name>/
-  original/<name>.c
-  original/<name>.v            # optional
-  verified/<name>.c
-  audit/findings.json
-  audit/findings.md
-  logs/reasoning.md
-  logs/issues.md
-  logs/metrics.md
-  logs/final_result.md
-  logs/cheating_scan_stdout.log
-  logs/cheating_scan_stderr.log
-  logs/compile_replay_stdout.log
-  logs/compile_replay_stderr.log
-  logs/agent_prompt_<run>.txt
-  logs/agent_stdout_<run>.{jsonl,log}
-  logs/agent_stderr_<run>.log
-  logs/agent_last_message_<run>.txt
-```
+- `original/<name>.{c,v}`、`verified/<name>.c`
+- `audit/findings.json`（runner 写）、`audit/findings.md`（agent 写）
+- `logs/reasoning.md`、`logs/issues.md`、`logs/metrics.md`、`logs/final_result.md`
+- `logs/cheating_scan_{stdout,stderr}.log`、`logs/compile_replay_{stdout,stderr}.log`、agent runtime 输出（runner 自动放）
 
-## What Audit Checks
+## 3. 工作流
 
-The deterministic scan already flags suspicious patterns. Your job is to read
-those findings, inspect the copied files, and render one justified audit
-verdict.
+deterministic cheating scan 由 runner 跑完，agent 的工作是**判断**每条 finding 是真违规还是合理 false positive，并自己**做一次 compile-replay 交叉检查**记录在 reasoning 里。然后写：
 
-Typical finding categories:
+- `audit/findings.md` — 每条 finding 的解释 + 处理意见
+- `logs/reasoning.md` — 逐条审计分析
+- `logs/issues.md` — 只放未解决的疑问
+- `logs/final_result.md` — 单行 `Audit verdict: <verdict>`
 
-- `contract_weakening`
-- `proof_stub`
-- `manual_axiom`
-- `forbidden_import`
-- `compile_replay_failure`
-- `suspicious_assumption`
+## 4. Finding 类型（典型）
 
-## Verdict
+`contract_weakening` / `proof_stub` / `manual_axiom` / `forbidden_import` / `compile_replay_failure` / `suspicious_assumption`
 
-Write `logs/final_result.md` with one of:
+## 5. Verdict 三选一
 
-- `Audit verdict: VerifiedClean`
-- `Audit verdict: VerifiedWithWarnings`
-- `Audit verdict: NotVerified`
+| Verdict | 条件 |
+|---------|------|
+| `VerifiedClean` | 无未解决 error-severity finding + compile replay 通过 |
+| `VerifiedWithWarnings` | 仅剩 warning-severity finding + compile replay 通过 |
+| `NotVerified` | 任何 error 未解决，或 compile replay 失败 |
 
-Meaning:
-- `VerifiedClean`: no unresolved error-severity finding remains, and the compile
-  replay cross-check passes.
-- `VerifiedWithWarnings`: only warning-severity findings remain, and the compile
-  replay cross-check passes.
-- `NotVerified`: any unresolved error remains, or compile replay fails.
+判定规则：
 
-Also write:
-- `audit/findings.md` — render every finding with explanation and remediation.
-- `logs/reasoning.md` — per-finding audit analysis.
-- `logs/issues.md` — unresolved questions only.
+- proof 文件出现 `Admitted.` / 手写 `Axiom` / 类似 stub 是 error，除非能论证属于**生成的 proof_auto.v 自动 stub**——`proof_auto.v` 的 Admitted 是 QCP 约定的正常状态（见 `experiences/general/PROOF/README.md`），只有 `proof_manual.v` 的 Admitted 才算违规。
+- contract weakening 是 error，除非能论证 verified 文件保留了原 contract 的语义。
 
-## Rules
+## 6. 完成判据
 
-- Audit never edits code or proof artifacts.
-- Audit never re-runs the verify repair loop.
-- `experiences/` is READ-ONLY for the audit agent: read references freely, but never create/edit/overwrite (including `cp`/`sed`) any file under `experiences/` (`end-end/` is written only by the runner's export step; `general/` only by consolidate).
-- A proof file containing `Admitted.`, manual `Axiom`, or similar stub is an
-  error unless you can justify that it belongs only to generated auto artifacts
-  outside manual proof responsibility.
-- Contract weakening remains an error unless you can show the verified file
-  preserves the original contract semantics.
+`Final Result: Success` 仅当：
 
-## Final Result
+- `audit/findings.json` 存在且能解析；
+- `audit/findings.md` 和 `logs/final_result.md` 都已写；
+- verdict 是 `VerifiedClean` 或 `VerifiedWithWarnings`。
 
-`logs/metrics.md` must end with exactly one of:
-
-```text
-Final Result: Success
-Final Result: Fail
-```
-
-`Success` is allowed only when:
-- `audit/findings.json` exists and parses;
-- `audit/findings.md` and `logs/final_result.md` exist;
-- the verdict is `VerifiedClean` or `VerifiedWithWarnings`.
-
-`Audit verdict: NotVerified` is `Final Result: Fail`.
+`Audit verdict: NotVerified` 对应 `Final Result: Fail`。

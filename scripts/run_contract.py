@@ -133,25 +133,19 @@ def build_prompt(
     function_name: str,
     restart_context: str | None = None,
 ) -> str:
-    restart = ""
+    lines = [
+        f"Follow this skill as the complete workflow: {skill_path}",
+        "",
+        "Inputs:",
+        f"- Raw markdown: `{raw_path}`",
+        f"- Target function: `{function_name}`",
+        f"- Workspace: `{workspace_path}`",
+        f"- Output C: `{target_c_path}`",
+        f"- Optional output V: `{target_v_path}`",
+    ]
     if restart_context:
-        restart = (
-            "\nThis is a RE-RUN: a downstream eval critic rejected the previous "
-            "contract. Address its findings before re-emitting the contract.\n\n"
-            "Critic findings:\n" + restart_context.rstrip() + "\n"
-        )
-    return f"""Use this skill as the complete workflow:
-{skill_path}
-
-Inputs:
-- Raw markdown: `{raw_path}`
-- Target function: `{function_name}`
-- Workspace: `{workspace_path}`
-- Output C: `{target_c_path}`
-- Optional output V: `{target_v_path}`
-{restart}
-{agent_config.COMMON_EFFICIENCY_RULES}
-"""
+        lines += ["", "Critic findings (RE-RUN after eval critic — see SKILL.md):", restart_context.rstrip()]
+    return "\n".join(lines) + "\n"
 
 
 def write_metrics(

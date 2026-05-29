@@ -4,6 +4,7 @@ import datetime as dt
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -24,13 +25,9 @@ DEFAULT_MODEL = "gpt-5.4"
 DEFAULT_CLAUDE_MODEL = "sonnet"
 DEFAULT_REASONING_EFFORT = "medium"
 
-# Backend-neutral efficiency contract injected into every agent prompt (claude
-# and codex both read the prompt from stdin). Shared core lives in agent_config;
-# verify appends symexec/proof-specific guidance.
-EFFICIENCY_RULES = agent_config.COMMON_EFFICIENCY_RULES + """
-- The exact `symexec` command is in `experiences/general/SYMEXEC.md` §0; the exact Coq compile template is in `COMPILE.md` §5.
-- Trivial fast path: if `symexec` succeeds and `proof_manual.v` has no manual obligation (only `proof_auto.v` Admitted placeholders), go straight to compile + finish — do not search reference solutions or read PROOF.md.
-"""
+# Agent-facing rules live in skills/verify/SKILL.md (see §4.0 read/write
+# boundaries, §4.3/§4.4 proof-manual-only completion, §4.5a-§4.5e workflow).
+# This script's prompts pass paths + per-run context and refer to the skill.
 
 NOISE_PATTERNS = [
     "WARNING: proceeding, even though we could not update PATH: Read-only file system",
@@ -116,6 +113,17 @@ def paired_input_v(input_path: Path) -> Path | None:
     return None
 
 
+def _input_lines(input_path: Path, input_v_path: Path | None, function_name: str, workspace_path: Path, annotated_c_path: Path) -> str:
+    input_v = f"`{input_v_path}`" if input_v_path else "`<not provided>`"
+    return (
+        f"- Input C: `{input_path}`\n"
+        f"- Optional input V: {input_v}\n"
+        f"- Target function: `{function_name}`\n"
+        f"- Workspace: `{workspace_path}`\n"
+        f"- Active annotated C: `{annotated_c_path}`\n"
+    )
+
+
 def build_prompt(
     skill_path: Path,
     input_path: Path,
@@ -126,59 +134,39 @@ def build_prompt(
     attempt: int,
     restart_context: str | None = None,
 ) -> str:
-    input_v_line = f"- Optional input V: `{input_v_path}`\n" if input_v_path else "- Optional input V: `<not provided>`\n"
-    continue_path = workspace_path / "logs" / "continue.md"
-    if attempt <= 1:
-        restart = ""
-        if restart_context:
-            restart = (
-                "\nThis verify is a RE-RUN after an audit critic flagged the "
-                "previous attempt as untrustworthy. Address every finding below — "
-                "in particular, do NOT leave any obligation `Admitted.` in "
-                "proof_auto.v or proof_manual.v.\n\nAudit findings:\n"
-                + restart_context.rstrip() + "\n"
-            )
-        return f"""Use this skill as the complete workflow:
-{skill_path}
+    lines = [
+        f"Follow this skill as the complete workflow: {skill_path}",
+        "",
+        "Inputs:",
+        _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
+    ]
+    if attempt > 1:
+        lines += ["", f"Attempt: {attempt} (retry — also follow MODE_RETRY.md per SKILL.md §4.5c)."]
+    if restart_context:
+        lines += ["", "Audit findings (also follow MODE_RERUN_AUDIT.md per SKILL.md §4.5c):", restart_context.rstrip()]
+    return "\n".join(lines) + "\n"
 
-Inputs:
-- Input C: `{input_path}`
-{input_v_line}- Target function: `{function_name}`
-- Workspace: `{workspace_path}`
-- Active annotated C: `{annotated_c_path}`
-{restart}
-Execution rule:
-- Work only inside this existing workspace.
-- Start from the normal verify workflow for this task.
-- Early in the task, read `doc/retrieval/INDEX.md`, then update `logs/workspace_fingerprint.json` so `semantic_description` is non-empty and `keywords` use only the controlled vocabulary defined there.
-- Stop as soon as the skill's completion criteria are met. Do NOT keep exploring, re-reading, or re-confirming just to fill the time budget — the budget is a hard ceiling, not a target. Trivial cases (no loops, empty `proof_manual.v`) should finish in a few calls.
-- Only keep iterating while verification is genuinely incomplete (symexec not yet passing, manual obligations unproven, or `goal_check.v` not yet compiling).
-{EFFICIENCY_RULES}"""
-    return f"""Use this skill as the complete workflow:
-{skill_path}
 
-Retry round for the same verify workspace.
-
-Inputs:
-- Input C: `{input_path}`
-{input_v_line}- Target function: `{function_name}`
-- Workspace: `{workspace_path}`
-- Active annotated C: `{annotated_c_path}`
-- Continue analysis log: `{continue_path}`
-
-Retry rule:
-- Do not restart the task from scratch.
-- First read the current logs, generated Coq files, latest compile errors, latest `agent_last_message_*`, latest `agent_stderr_*`, and current annotated file in this workspace.
-- Before editing any file, append a new section to `logs/continue.md`; never overwrite or rewrite existing `continue.md` content.
-- Every retry round must keep extending `logs/continue.md` with a fresh section for that round, even if an earlier retry already wrote one.
-- In the new `logs/continue.md` section, analyze why the previous agent/run did not finish, what concrete blocker remains now, what should be continued next, how to do it, and the step-by-step plan for this retry.
-- The continue analysis must cite concrete workspace evidence: file paths, theorem/witness names, compile errors, relevant C annotation snippets, or relevant Coq snippets. Do not write only generic text.
-- If `logs/workspace_fingerprint.json` still has empty `semantic_description` or `keywords`, first read `doc/retrieval/INDEX.md` and fill them using only its controlled vocabulary before proceeding.
-- Precisely identify the current blocker from the existing workspace state.
-- Continue repairing from that blocker in the same workspace.
-- Preserve existing correct work; only change what is needed for the next proof/compile step.
-- Stop as soon as the skill's completion criteria are met. Do NOT keep exploring or re-confirming just to fill the time budget — the budget is a hard ceiling, not a target. Only keep iterating while verification is genuinely incomplete.
-{EFFICIENCY_RULES}"""
+def build_proof_only_prompt(
+    skill_path: Path,
+    input_path: Path,
+    input_v_path: Path | None,
+    function_name: str,
+    workspace_path: Path,
+    annotated_c_path: Path,
+    attempt: int,
+) -> str:
+    lines = [
+        f"Follow this skill as the complete workflow: {skill_path}",
+        "",
+        "Mode: proof-only (also follow MODE_PROOF_ONLY.md per SKILL.md §4.5c).",
+        "",
+        "Inputs:",
+        _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
+    ]
+    if attempt > 1:
+        lines += ["", f"Attempt: {attempt} (retry — also follow MODE_RETRY.md per SKILL.md §4.5c)."]
+    return "\n".join(lines) + "\n"
 
 
 def write_metrics(
@@ -309,6 +297,207 @@ def export_example_if_needed(workspace_path: Path, function_name: str) -> tuple[
     if metrics.exists():
         metrics.unlink()
     return True, target_dir.as_posix()
+
+
+def strip_c_comments(text: str) -> str:
+    text = re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
+    return re.sub(r"//.*", "", text)
+
+
+def is_loop_free_candidate(input_path: Path) -> tuple[bool, str]:
+    """Conservative gate for deterministic verify without an external agent."""
+    text = strip_c_comments(input_path.read_text(encoding="utf-8", errors="replace"))
+    forbidden = (r"\bfor\b", r"\bwhile\b", r"\bdo\b", r"\bswitch\b", r"\bgoto\b")
+    for pattern in forbidden:
+        if re.search(pattern, text):
+            return False, f"has_control_flow:{pattern}"
+    if not re.search(r"\b\w+(?:\s*\*)?\s+\w+\s*\([^)]*\)\s*\{", text):
+        return False, "not_simple_function"
+    return True, "loop_free"
+
+
+def update_trivial_fingerprint(workspace_path: Path, function_name: str, input_path: Path) -> None:
+    fingerprint_path = workspace_path / "logs" / "workspace_fingerprint.json"
+    data = json.loads(fingerprint_path.read_text(encoding="utf-8"))
+    text = strip_c_comments(input_path.read_text(encoding="utf-8", errors="replace"))
+    returns = [x.strip() for x in re.findall(r"\breturn\s+([^;]+);", text)]
+    returned = ", ".join(f"`{x}`" for x in returns) if returns else "scalar expression(s)"
+    pattern = "branch" if re.search(r"\bif\b", text) else "straight_line"
+    has_pointer_or_array = "*" in text or "[" in text or "]" in text or "->" in text
+    data_shape = "linked_list" if "sll" in input_path.read_text(encoding="utf-8", errors="replace") else ("array" if "[" in text else ("scalar" if not has_pointer_or_array else "pointer"))
+    data["semantic_description"] = f"Loop-free function `{function_name}` returning {returned}."
+    data["keywords"] = {
+        "problem_kind": "math",
+        "data": data_shape,
+        "pattern": pattern,
+    }
+    fingerprint_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def run_symexec(workspace_path: Path, annotated_c_path: Path, function_name: str, timeout_seconds: int = 120) -> tuple[int, str, str]:
+    generated_dir = workspace_path / "coq" / "generated"
+    generated_dir.mkdir(parents=True, exist_ok=True)
+    for old in generated_dir.glob(f"{function_name}_*.v"):
+        old.unlink()
+    logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
+    cmd = [
+        str(REPO_ROOT / "QualifiedCProgramming" / "linux-binary" / "symexec"),
+        f"--goal-file={generated_dir / f'{function_name}_goal.v'}",
+        f"--proof-auto-file={generated_dir / f'{function_name}_proof_auto.v'}",
+        f"--proof-manual-file={generated_dir / f'{function_name}_proof_manual.v'}",
+        f"--coq-logic-path={logic_path}",
+        "-slp", str(REPO_ROOT / "annotated") + "/", "SimpleC.EE.CAV",
+        f"--input-file={annotated_c_path}",
+        "--no-exec-info",
+    ]
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=REPO_ROOT / "QualifiedCProgramming",
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired:
+        return 124, "", f"symexec timed out after {timeout_seconds}s"
+    except OSError as exc:
+        return 127, "", f"symexec not runnable: {exc}"
+    return proc.returncode, proc.stdout, proc.stderr
+
+
+def proof_file_has_obligations(proof_file: Path) -> bool:
+    if not proof_file.exists():
+        return True
+    text = proof_file.read_text(encoding="utf-8", errors="replace")
+    return bool(re.search(r"\b(Admitted|admit|Abort)\b", text))
+
+
+def proof_manual_has_obligations(generated_dir: Path, function_name: str) -> bool:
+    """Verify completion judge: only `proof_manual.v` Admitteds count.
+
+    `proof_auto.v` Admitteds are symexec's normal auto-discharge stubs and are
+    accepted by `goal_check.v` as axioms. The agreed completion criterion (memory
+    ``proof-auto-admitted-is-normal``): `goal_check.v` compiles and
+    `proof_manual.v` contains no `Admitted`/`admit`/`Abort`.
+    """
+    return proof_file_has_obligations(generated_dir / f"{function_name}_proof_manual.v")
+
+
+def compile_generated(workspace_path: Path, function_name: str, input_v_path: Path | None, timeout_seconds: int = 120) -> tuple[bool, list[str]]:
+    generated_dir = workspace_path / "coq" / "generated"
+    original_dir = workspace_path / "original"
+    logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
+    extra_q = [(str(original_dir), "")]
+    extra_r = [(str(generated_dir), logic_path)]
+    logs: list[str] = []
+
+    if input_v_path is not None:
+        original_v = original_dir / input_v_path.name
+        rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
+        logs.append(f"$ coqc {original_v}\nrc={rc}\n{out}{err}")
+        if rc != 0:
+            return False, logs
+
+    for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"):
+        path = generated_dir / f"{function_name}_{suffix}.v"
+        rc, out, err = coq_runner.run_coqc(path, extra_q=extra_q, extra_r=extra_r, timeout_seconds=timeout_seconds)
+        logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
+        if rc != 0:
+            return False, logs
+    return True, logs
+
+
+def try_trivial_fast_path(
+    *,
+    workspace_path: Path,
+    annotated_c_path: Path,
+    input_path: Path,
+    input_v_path: Path | None,
+    function_name: str,
+    model: str,
+    reasoning_effort: str,
+    export_examples: bool,
+    start_iso: str,
+    start_wall: float,
+) -> tuple[bool, int]:
+    if input_v_path is not None:
+        return False, 0
+    candidate, detail = is_loop_free_candidate(input_path)
+    if not candidate:
+        emit_log(f"trivial_fast_path_skipped detail={detail}")
+        return False, 0
+
+    logs_dir = workspace_path / "logs"
+    stdout_log = logs_dir / "deterministic_fast_path_stdout.log"
+    stderr_log = logs_dir / "deterministic_fast_path_stderr.log"
+    prompt_log = logs_dir / "deterministic_fast_path_prompt.txt"
+    last_message = logs_dir / "deterministic_fast_path_last_message.txt"
+    prompt_log.write_text("deterministic loop-free fast path; no external agent invoked\n", encoding="utf-8")
+    emit_log(f"trivial_fast_path_start detail={detail}")
+    update_trivial_fingerprint(workspace_path, function_name, input_path)
+
+    rc, symout, symerr = run_symexec(workspace_path, annotated_c_path, function_name)
+    stdout_parts = ["# symexec\n", symout]
+    stderr_parts = [symerr]
+    generated_dir = workspace_path / "coq" / "generated"
+    expected = [generated_dir / f"{function_name}_{suffix}.v" for suffix in ("goal", "proof_auto", "proof_manual", "goal_check")]
+    if rc != 0 or not all(path.exists() for path in expected):
+        stdout_log.write_text("".join(stdout_parts), encoding="utf-8")
+        stderr_log.write_text("".join(stderr_parts), encoding="utf-8")
+        emit_log(f"trivial_fast_path_failed stage=symexec rc={rc}")
+        return False, 0
+
+    if proof_manual_has_obligations(generated_dir, function_name):
+        stdout_log.write_text("".join(stdout_parts), encoding="utf-8")
+        stderr_log.write_text("".join(stderr_parts), encoding="utf-8")
+        emit_log("trivial_fast_path_failed stage=proof_manual_obligations")
+        return False, 0
+
+    ok, compile_logs = compile_generated(workspace_path, function_name, input_v_path)
+    stdout_parts.extend(["\n# coqc\n", "\n".join(compile_logs)])
+    stdout_log.write_text("".join(stdout_parts), encoding="utf-8")
+    stderr_log.write_text("".join(stderr_parts), encoding="utf-8")
+    if not ok:
+        emit_log("trivial_fast_path_failed stage=coqc")
+        return False, 0
+
+    coq_runner.clean_compile_artifacts(workspace_path / "coq")
+    issues = workspace_path / "logs" / "issues.md"
+    issues.write_text(
+        "# Issues Log\n\n"
+        "No issues encountered. Deterministic loop-free fast path completed "
+        "symexec and all generated Coq compilation without invoking an external agent.\n",
+        encoding="utf-8",
+    )
+    last_message.write_text(
+        "Deterministic loop-free fast path completed successfully.\n",
+        encoding="utf-8",
+    )
+    write_metrics(
+        metrics_path(workspace_path),
+        status="Success",
+        attempts=0,
+        last_agent_exit=0,
+        start_iso=start_iso,
+        end_iso=iso_now(),
+        wall_clock_seconds=time.time() - start_wall,
+        model=model,
+        reasoning_effort=reasoning_effort,
+        usage=None,
+        prompt_path=prompt_log,
+        stdout_jsonl=stdout_log,
+        stderr_log=stderr_log,
+        last_message_path=last_message,
+        input_c=input_path,
+        input_v=input_v_path,
+        export_examples=export_examples,
+    )
+    if export_examples:
+        exported, export_detail = export_example_if_needed(workspace_path, function_name)
+        emit_log(("examples_exported=" if exported else "examples_export_skipped=") + export_detail)
+    emit_log("trivial_fast_path_success")
+    return True, 0
 
 
 def bootstrap_workspace(workspace_path: Path, input_path: Path, input_v_path: Path | None, function_name: str) -> Path:
@@ -462,9 +651,32 @@ def main() -> int:
         print(str(workspace_path))
         return 0
 
-    total_budget_seconds = args.timeout_seconds
     overall_start_wall = time.time()
     overall_start_iso = iso_now()
+    fast_completed, fast_rc = try_trivial_fast_path(
+        workspace_path=workspace_path,
+        annotated_c_path=annotated_c_path,
+        input_path=input_path,
+        input_v_path=input_v_path,
+        function_name=function_name,
+        model=model,
+        reasoning_effort=reasoning_effort,
+        export_examples=args.export_examples,
+        start_iso=overall_start_iso,
+        start_wall=overall_start_wall,
+    )
+    if fast_completed:
+        print(str(workspace_path))
+        return fast_rc
+    proof_only_mode = (
+        input_v_path is None
+        and is_loop_free_candidate(input_path)[0]
+        and (workspace_path / "coq" / "generated" / f"{function_name}_goal.v").exists()
+    )
+    if proof_only_mode:
+        emit_log("agent_mode=proof_only_loop_free")
+
+    total_budget_seconds = args.timeout_seconds
     attempt = 0
     proc_returncode = 1
     completed = False
@@ -490,16 +702,27 @@ def main() -> int:
         stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
         stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
         last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
-        prompt = build_prompt(
-            skill_path,
-            input_path,
-            input_v_path,
-            function_name,
-            workspace_path,
-            annotated_c_path,
-            attempt,
-            verify_restart_context,
-        )
+        if proof_only_mode:
+            prompt = build_proof_only_prompt(
+                skill_path,
+                input_path,
+                input_v_path,
+                function_name,
+                workspace_path,
+                annotated_c_path,
+                attempt,
+            )
+        else:
+            prompt = build_prompt(
+                skill_path,
+                input_path,
+                input_v_path,
+                function_name,
+                workspace_path,
+                annotated_c_path,
+                attempt,
+                verify_restart_context,
+            )
         ensure_parent(prompt_path)
         prompt_path.write_text(prompt, encoding="utf-8")
 
@@ -631,7 +854,7 @@ def main() -> int:
             f"verify_incomplete_retrying attempt={attempt} detail={detail} remaining_seconds={max(0, int(total_budget_seconds - elapsed_total))}"
         )
 
-    # COMPILE.md §10: drop coqc intermediates (.vo/.glob/.aux) from the
+    # experiences/general/COMPILE/README.md §10: drop coqc intermediates (.vo/.glob/.aux) from the
     # workspace coq dirs, keeping .v sources. Never touches the shared QCP tree.
     removed = coq_runner.clean_compile_artifacts(workspace_path / "coq")
     emit_log(f"cleaned_compile_artifacts count={len(removed)}")

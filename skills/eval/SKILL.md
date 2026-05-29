@@ -1,151 +1,97 @@
 ---
 name: c-qcp-eval
-description: Evaluate an existing C/QCP implementation against concrete positive and negative cases by treating the attached contract as the semantic target.
+description: Evaluate an existing C/QCP implementation against concrete positive/negative cases，把 contract 当语义目标。
 ---
 
-Use this workflow independently from contract, verify, and audit. The goal is
-to decide whether the contract attached to an implementation correctly
-characterizes that implementation's behavior on representative concrete inputs.
-Do not modify the implementation, its contract, or any `.v` helper file.
+跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 eval-specific 内容。
 
-## Required References
+按需读：`experiences/general/EVAL/README.md`、`experiences/general/AUDIT/README.md`、`experiences/general/CONTRACT/README.md`。不修改实现、contract 或 `.v` 文件。
 
-- `experiences/general/EVAL.md`
-- `experiences/general/AUDIT.md`
-- `experiences/general/CONTRACT.md`
+## 1. 输入
 
-## Inputs
+- 实现/规格 C 文件、可选 companion `.v`
+- target function、workspace path、cases 数、evaluation 目录
 
-- Implementation/spec C file.
-- Optional companion `.v` file.
-- Target function.
-- Workspace path.
-- Cases directory and evaluation directory.
+## 2. 输出
 
-## Output Layout
+`output/eval_<timestamp>_<name>/` 下：
 
-```text
-output/eval_<timestamp>_<name>/
-  original/<name>.c
-  original/<name>.v            # optional copy when provided
-  cases/cases.json
-  evaluation/evaluation.json
-  logs/test_reasoning.md
-  logs/issues.md
-  logs/metrics.md
-  logs/final_result.md
-  logs/agent_prompt_<run>.txt
-  logs/agent_stdout_<run>.{jsonl,log}
-  logs/agent_stderr_<run>.log
-  logs/agent_last_message_<run>.txt
-```
+- `original/<name>.c`（+ `.v` 如有）
+- `cases/cases.json`、`evaluation/evaluation.json`
+- `logs/test_reasoning.md`、`logs/issues.md`、`logs/metrics.md`、`logs/final_result.md`
+- agent 输出文件由 runner 自动放在 `logs/`
 
-## Cases
+## 3. Cases（写入 `cases/cases.json`）
 
-Generate exactly the requested number of positive and negative cases in
-`cases/cases.json`.
+按 prompt 要求的数量生成 positive + negative case。positive 满足每条 `Require`；negative 要么违反某条前条件、要么声称一个被 `Ensure` 拒绝的返回值 / 后状态。**偏向 adversarial 覆盖**：覆盖每个分支和每个后条件形状。
 
-- Positive cases satisfy every `Require` clause.
-- Negative cases either violate a precondition or claim a return value / post
-  state that should be rejected by `Ensure`.
-- Prefer adversarial coverage: hit every branch and every postcondition shape.
-
-Schema:
+Schema：
 
 ```json
 {
   "function_name": "abs_value",
   "positive": [
-    {
-      "id": "pos01",
-      "description": "negative branch",
-      "inputs": {"x": -3},
-      "result": 3,
-      "post_state": {}
-    }
+    {"id": "pos01", "description": "negative branch",
+     "inputs": {"x": -3}, "result": 3, "post_state": {}}
   ],
   "negative": [
-    {
-      "id": "neg01_wrong_output",
-      "kind": "postcondition",
-      "description": "claims a wrong return value",
-      "inputs": {"x": -3},
-      "result": -3,
-      "post_state": {},
-      "violated_clause": "__return >= 0"
-    }
+    {"id": "neg01_wrong_output", "kind": "postcondition",
+     "description": "claims a wrong return value",
+     "inputs": {"x": -3}, "result": -3, "post_state": {},
+     "violated_clause": "__return >= 0"}
   ]
 }
 ```
 
-## Evaluation
+## 4. Evaluation（写入 `evaluation/evaluation.json`）
 
-For each case, evaluate the contract clauses against the concrete values.
-Mechanical substitution is preferred; if a clause depends on external Coq
-predicates or other semantics that cannot be decided mechanically from the case,
-reason about it explicitly and record why.
-
-Write `evaluation/evaluation.json`:
+对每个 case 逐条 contract 子句机械代入；不能机械决定的，显式 reason 并记录原因。允许 verdict：`pass` / `fail` / `needs_judge`。`needs_judge` 必须附 `judge: {verdict, reason}`。
 
 ```json
-{
-  "cases": [
-    {
-      "id": "pos01",
-      "verdict": "pass",
-      "clauses": [
-        {
-          "clause": "__return >= 0",
-          "substituted": "3 >= 0",
-          "evaluated": true
-        }
-      ]
-    }
-  ]
-}
+{"cases": [{"id":"pos01","verdict":"pass","clauses":[{"clause":"__return >= 0","substituted":"3 >= 0","evaluated":true}]}]}
 ```
 
-Allowed case verdicts:
-- `pass`
-- `fail`
-- `needs_judge`
+### 4.1 `needs_judge` 是可计算 Coq 项时，转 compute_queries
 
-If `needs_judge` is used, include a `judge` object with `verdict` and `reason`.
+如果 `needs_judge` 子句的真伪可以归约到「对当前 case 的具体闭式 Coq term `vm_compute` 求值」（典型：递归函数应用到字面量、复杂 list 操作的归一形式），**不要凭直觉判 pass/fail**。append 到 `evaluation/compute_queries.json`：
 
-## Aggregate Verdict
-
-Write `logs/final_result.md` with one of:
-
-- `Spec verdict: Correct`
-- `Spec verdict: Buggy`
-- `Spec verdict: Inconclusive`
-
-Rules:
-- `Correct`: every positive passes, every negative fails, and nothing remains
-  undecided.
-- `Buggy`: at least one positive fails, or at least one negative passes.
-- `Inconclusive`: some clause or case could not be resolved decisively.
-
-## Anti-Cheating Rules
-
-- Do not rewrite the contract to fit the cases.
-- Do not treat unreachable-code tricks as valid negative cases.
-- Do not claim `Correct` when you are actually unsure.
-- Do not record experience here; only write the stage logs.
-- `experiences/` is READ-ONLY for the eval agent: read references freely, but never create/edit/overwrite (including `cp`/`sed`) any file under `experiences/` (the `end-end/` reference corpus is written only by the runner's export step; `general/` only by consolidate).
-
-## Final Result
-
-`logs/metrics.md` must end with exactly one of:
-
-```text
-Final Result: Success
-Final Result: Fail
+```json
+{"queries": [
+  {"id": "pos03.c1", "clause": "<clause text>",
+   "coq_expr": "<closed Coq term, all case values substituted, of bool/Z/list/...>",
+   "requires": ["Require Import ZArith.", "From SimpleC.EE Require Import ..."]}
+]}
 ```
 
-`Success` is allowed only when:
-- the requested number of positive and negative cases were produced;
-- `evaluation/evaluation.json` exists and covers every case;
-- `logs/final_result.md` contains `Spec verdict: Correct` or `Spec verdict: Buggy`.
+runner 会对每条 query 跑 `vm_compute` 并触发 finalize pass。这一轮先把这些子句留作 `needs_judge`，**不要**在还有 computable 子句未解时就给 `Correct` verdict。
 
-`Spec verdict: Inconclusive` is `Final Result: Fail`.
+## 5. Aggregate verdict（写入 `logs/final_result.md`）
+
+`Spec verdict:` 之一：
+
+- `Correct` — 每个 positive 都 pass、每个 negative 都 fail、没有 undecided
+- `Buggy` — 至少一个 positive fail，或至少一个 negative pass
+- `Inconclusive` — 任何子句/case 没有 decisive 结果（含未消化的 `needs_judge`）
+
+## 6. Anti-Cheating
+
+- 不为了让 case pass 而重写 contract
+- 不把「unreachable code」trick 当合法 negative case
+- 不在自己也不确定时硬写 `Correct`
+- 经验沉淀属于末尾 consolidate 阶段；不写 `experiences/`
+
+## 7. 完成判据
+
+`Final Result: Success` 只在以下条件全部满足时写：
+
+- 生成了请求数量的 positive + negative case
+- `evaluation/evaluation.json` 存在且覆盖每个 case（含每个 case 的所有 clause）
+- `logs/final_result.md` 是 `Spec verdict: Correct` 或 `Spec verdict: Buggy`
+
+`Spec verdict: Inconclusive` 对应 `Final Result: Fail`。
+
+## 8. 条件性 mode addendum
+
+| Prompt 标记 | 附录文件 | 含义 |
+|------------|---------|------|
+| `Compute results:` 路径出现 | `MODE_FINALIZE.md` | runner 跑完 compute_queries 后的 finalize pass，需把 vm_compute 的归一形折回 evaluation |

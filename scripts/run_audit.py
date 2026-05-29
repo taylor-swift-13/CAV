@@ -6,7 +6,7 @@ Mirrors the other runners. The runner produces the *deterministic* artifacts the
 audit SKILL expects — ``audit/findings.json`` from ``audit_scan`` plus the
 cheating-scan logs — then the agent reads them, inspects the copied files, and
 renders one verdict in ``logs/final_result.md``. Compile replay is delegated to
-the agent (see ``experiences/general/COMPILE.md``); the runner does not run coqc.
+the agent (see ``experiences/general/COMPILE/README.md``); the runner does not run coqc.
 
 Gate: ``logs/metrics.md`` ends in ``Final Result: Success`` and
 ``logs/final_result.md`` carries ``Audit verdict: VerifiedClean`` or
@@ -162,8 +162,7 @@ def run_deterministic_scan(workspace_path: Path, copied: dict, function_name: st
 
 def build_prompt(*, skill_path: Path, workspace_path: Path, function_name: str,
                  findings_doc: dict) -> str:
-    return f"""Use this skill as the complete workflow:
-{skill_path}
+    return f"""Follow this skill as the complete workflow: {skill_path}
 
 Inputs:
 - Target function: `{function_name}`
@@ -172,14 +171,6 @@ Inputs:
 - Verified files (annotated C + generated proofs): `{workspace_path / 'verified'}`
 - Deterministic findings (runner-produced): `{workspace_path / 'audit' / 'findings.json'}`
   summary: {json.dumps(findings_doc['summary'], ensure_ascii=False)}
-
-The deterministic cheating scan has already run. Read `findings.json`, inspect
-the copied files, and for each finding decide whether it is a real violation or
-a justified false positive. Perform the compile-replay cross-check yourself per
-`experiences/general/COMPILE.md` and record it in your reasoning. Then write
-`audit/findings.md`, `logs/reasoning.md`, `logs/final_result.md` (with one
-`Audit verdict:` line) and `logs/metrics.md` (ending in `Final Result:`).
-{agent_config.COMMON_EFFICIENCY_RULES}
 """
 
 
@@ -355,7 +346,7 @@ def main() -> int:
     # The agent may have run compile-replay coqc inside verified/; drop the
     # .vo/.glob/.aux intermediates, keep the .v/.c copies.
     coq_runner.clean_compile_artifacts(workspace_path / "verified")
-    # COMPILE.md §5's template compiles in-place in the SOURCE verify workspace,
+    # experiences/general/COMPILE/README.md §5's template compiles in-place in the SOURCE verify workspace,
     # so the replay leaves intermediates there too — clean those as well.
     if source_verify_ws is not None:
         n_src = len(coq_runner.clean_compile_artifacts(source_verify_ws / "coq"))

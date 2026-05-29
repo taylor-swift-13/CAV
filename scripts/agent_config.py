@@ -27,18 +27,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = REPO_ROOT / "config" / "agents.json"
 
 
-# Backend-neutral efficiency contract injected into every stage's agent prompt
-# (claude and codex both read the prompt from stdin). Exploration — reverse-
-# engineering tool flags, git archaeology, reading orchestration scripts — was
-# the dominant time sink on simple cases, so forbid it up front. Stage-specific
-# runners may append their own extra lines.
-COMMON_EFFICIENCY_RULES = """
-Efficiency rules (exploration is the main time waster on these tasks — do not over-explore):
-- Do NOT reverse-engineer tool usage from scratch (no `--help` probes, no `cat`-ing run scripts, no `chmod +x` trial-and-error, no digging through examples to reconstruct flags). Exact commands and templates live in the relevant `experiences/` docs — read those.
-- Do NOT read orchestration scripts under `scripts/` (run_*.py, agent_loop.py, coq_runner.py) or your own harness logs (`logs/agent_stdout_*.jsonl`, `logs/agent_prompt_*`). They are irrelevant to the task.
-- Do NOT use `git log` / `git show` to hunt for reference solutions.
-- Reference reading is limited to `doc/`, `experiences/`, and `QualifiedCProgramming/QCP_examples/` (plus this task's own input / annotated / workspace files). See `doc/PERMISSIONS.md`.
-- Stop as soon as the stage's completion criteria are met. The time budget is a hard ceiling, not a target."""
+# Cross-stage agent-facing rules now live in skills/COMMON.md (referenced by
+# each stage's SKILL.md). Stage prompts pass paths + triggers and follow the
+# skill; they no longer inline efficiency rules here.
 
 
 def claude_supports_flag(claude_bin: str, cwd: Path, env: dict[str, str], flag: str) -> bool:

@@ -80,6 +80,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--skip-eval", action="store_true", help="Run contract without the eval gate.")
     p.add_argument("--skip-audit", action="store_true", help="Run verify without the audit gate.")
     p.add_argument("--no-consolidate", action="store_true")
+    p.add_argument("--no-export", action="store_true", help="Do not export verified workspaces into experiences/end-end/.")
     p.add_argument("--force", action="store_true", help="Continue to verify even if eval never reaches Correct.")
     p.add_argument("--config", default=None)
     p.add_argument("--agent", choices=["codex", "claude"], default=None)
@@ -174,6 +175,8 @@ def main() -> int:
         cmd = [sys.executable, str(SCRIPTS / "run_verify.py"), str(input_c),
                "--function-name", name, "--timestamp", ts, "--workspace-name", name,
                "--timeout-seconds", str(args.verify_timeout), *cf]
+        if not args.no_export and not args.dry_run:
+            cmd += ["--export-examples"]
         if restart_file:
             cmd += ["--restart-context-file", str(restart_file)]
         if run_stage(cmd) != 0:

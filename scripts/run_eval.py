@@ -118,48 +118,28 @@ def build_prompt(
     compute_results: Path | None,
 ) -> str:
     v_line = f"- Companion V: `{input_v}`\n" if input_v and input_v.exists() else ""
+    lines = [
+        f"Follow this skill as the complete workflow: {skill_path}",
+        "",
+        "Inputs:",
+        f"- Implementation/spec C: `{input_c}`",
+    ]
+    if v_line:
+        lines.append(v_line.rstrip())
+    lines += [
+        f"- Target function: `{function_name}`",
+        f"- Workspace: `{workspace_path}`",
+        f"- Cases directory: `{workspace_path / 'cases'}`",
+        f"- Evaluation directory: `{workspace_path / 'evaluation'}`",
+        f"- Required positive cases: `{num_positive}`",
+        f"- Required negative cases: `{num_negative}`",
+    ]
     if compute_results is not None:
-        finalize = f"""
-This is the FINALIZE pass. The runner has evaluated your `compute_queries.json`
-with Coq `vm_compute`. Read the results:
-- Compute results: `{compute_results}`
-
-For each result, fold the computed normal form into the matching clause in
-`evaluation/evaluation.json` (turn the corresponding `needs_judge` into `pass`
-or `fail`), then finalize `logs/final_result.md` and `logs/metrics.md`.
-"""
-    else:
-        finalize = f"""
-For any `needs_judge` clause whose truth reduces to evaluating a COMPUTABLE Coq
-term on the concrete (closed) case values, do NOT guess. Instead append a query
-to `evaluation/compute_queries.json` as:
-
-```json
-{{"queries": [
-  {{"id": "pos03.c1", "clause": "<clause text>",
-    "coq_expr": "<closed Coq term, all case values substituted, of bool/Z/etc>",
-    "requires": ["Require Import ZArith.", "From SimpleC.EE Require Import ..."]}}
-]}}
-```
-
-The runner will evaluate every query with `vm_compute` and run a finalize pass.
-Leave such clauses as `needs_judge` for now; do not emit a `Correct` verdict
-while computable clauses are still unresolved.
-"""
-    return f"""Use this skill as the complete workflow:
-{skill_path}
-
-Inputs:
-- Implementation/spec C: `{input_c}`
-{v_line}- Target function: `{function_name}`
-- Workspace: `{workspace_path}`
-- Cases directory: `{workspace_path / 'cases'}`
-- Evaluation directory: `{workspace_path / 'evaluation'}`
-- Required positive cases: `{num_positive}`
-- Required negative cases: `{num_negative}`
-{finalize}
-{agent_config.COMMON_EFFICIENCY_RULES}
-"""
+        lines += [
+            "",
+            f"Compute results: `{compute_results}` (FINALIZE pass — also follow MODE_FINALIZE.md per SKILL.md §8).",
+        ]
+    return "\n".join(lines) + "\n"
 
 
 def run_agent_once(
