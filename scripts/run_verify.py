@@ -190,10 +190,9 @@ def build_prompt(
         intro = "Start the normal Java/OpenJML verify workflow for this task."
     elif restart_context:
         intro = (
-            "Re-entry: the audit stage overturned a previous result. Read the "
-            f"overturn section in `{logs / 'continue.md'}` and the cited audit "
-            "findings first, then fix exactly that anti-cheating problem without "
-            "weakening the spec."
+            "Re-entry with Restart feedback. Read the latest restart-feedback "
+            f"section in `{logs / 'continue.md'}` first, then fix the cited "
+            "verify blocker before continuing."
         )
     else:
         intro = (
@@ -533,7 +532,7 @@ def main() -> int:
         rf = Path(args.restart_from)
         if rf.exists():
             restart_context = (
-                f"Findings injected from `{rf}`:\n\n"
+                f"Restart feedback injected from `{rf}`:\n\n"
                 + rf.read_text(encoding="utf-8", errors="replace")
             )
 

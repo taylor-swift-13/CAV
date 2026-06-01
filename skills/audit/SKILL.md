@@ -1,6 +1,6 @@
 ---
 name: java-openjml-audit
-description: Audit a verify workspace (or Java/JML file) for anti-cheating violations - contract weakening, unproven lemmas/axioms, vacuous implications.
+description: Audit a verify workspace (or Java/JML file) for anti-cheating violations - contract weakening, unproven lemmas/axioms, suppressions.
 ---
 
 Use this workflow independently from contract, verify, and eval. The goal is
@@ -8,9 +8,9 @@ to detect whether a "verified" Java/JML artifact actually earned its
 verification, or whether it relied on cheating constructs that a human
 reviewer should reject.
 
-Audit does not modify code. It runs deterministic scripts to flag suspicious
-patterns and asks the agent to compile the findings into a single audit
-verdict.
+Audit treats the original and verified Java files as read-only inputs. It runs
+deterministic scripts to flag proof-bypass patterns and asks the agent to
+compile the findings into a single audit verdict.
 
 
 跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
@@ -90,28 +90,6 @@ Severity `error` when the method appears in a JML `\old`, `ensures`, or
 Any `//@ assume`, `Admitted`, or `skipesc` in the verified source. Severity
 `error`. Already covered by `check_jml_cheating.py`.
 
-### vacuous_implication
-
-The spec includes a pattern that makes a clause trivially true by construction:
-
-- `requires false;`
-- `false ==> ...` inside `ensures`;
-- `(\forall ...; false; ...)` — the body is never reached;
-- `requires \old(false)` and similar dead antecedents.
-
-Severity `error`. This is the `false ==> ALL` case the user specifically
-flagged.
-
-### trivial_postcondition
-
-The spec contains a tautological postcondition that proves nothing:
-
-- `ensures true;`
-- `ensures \result == \result;`
-- `ensures x == x;` for any identifier.
-
-Severity `error`. Matches the paper's "trivial postconditions" check.
-
 ### broad_frame_clause
 
 The spec uses an overly broad frame clause that lets the verifier accept
@@ -186,10 +164,11 @@ Final Result: Fail
 
 ## Rules
 
-- Audit does not modify the implementation, the spec, or the verified file.
-- Audit does not run the verify Codex repair loop.
+- Audit uses the implementation, the spec, and the verified file as read-only
+  evidence.
+- Audit produces reports under `audit/` and `logs/`, then returns a justified
+  audit verdict.
 - The agent's job is to render the findings into a justified audit verdict.
-  It is not allowed to add new "fixes" to the verified code.
 - The detection pipeline runs even when the agent is offline; the agent
   cannot substitute its own judgment for the deterministic checks.
 - Every `error`-severity finding either remains an `error` in the verdict
@@ -198,8 +177,7 @@ Final Result: Fail
 
 ## Experience
 
-Do not record experience here. Audit is a critic stage; experience is
-consolidated once at the very end of the flow by a dedicated unit
-(`scripts/experience_consolidate.py`), scoped to whatever flow ran. Just write
-clear `audit/findings.md` and `logs/final_result.md` — the consolidation unit
-reads them.
+Experience is consolidated once at the very end of the flow by
+`scripts/experience_consolidate.py`, scoped to whatever flow ran. Audit writes
+clear `audit/findings.md` and `logs/final_result.md` for that consolidation
+unit to read.

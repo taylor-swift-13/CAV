@@ -3,8 +3,8 @@
 
 Audit consumes a verify workspace (or an explicit original/verified pair) and
 detects anti-cheating violations: contract weakening, unchecked axioms,
-unproven lemmas, assume/Admitted, vacuous implications, suppressions,
-reflection / runtime exit. The deterministic detection is done by
+unproven lemmas, assume/Admitted, suppressions, reflection / runtime exit.
+The deterministic detection is done by
 scripts/audit_jml.py; this runner orchestrates the agent that renders the
 findings into a justified audit verdict.
 """
@@ -210,8 +210,8 @@ Audit outputs you must produce:
   `Final Result: Success` or `Final Result: Fail` per the skill rules.
 
 Rules:
-- Audit does not modify `{original_java}` or `{verified_java}`.
-- Audit does not run the verify Codex repair loop.
+- Treat `{original_java}` and `{verified_java}` as read-only evidence.
+- Produce audit reports under the audit workspace.
 - Every `error`-severity finding either remains an error in the verdict or
   carries an `accepted_false_positive` justification citing a specific JML
   rule.
@@ -536,9 +536,8 @@ def main() -> int:
     else:
         # The agent always runs: it is the only semantic review layer. audit_jml.py
         # is purely syntactic (regex + textual contract-clause diff), so a clean
-        # deterministic result is NOT sufficient — over-strong/contradictory
-        # preconditions, non-literal vacuity, and subtly-weak postconditions need
-        # the agent's reading. Never short-circuit it away.
+        # deterministic result is NOT sufficient for a justified audit report.
+        # Never short-circuit it away.
         agent_env = build_agent_env(logs_dir)
         if agent == AGENT_CODEX:
             exit_code = run_codex_agent(

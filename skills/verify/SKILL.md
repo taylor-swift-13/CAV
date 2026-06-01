@@ -43,8 +43,9 @@ On success, the runner exports a CAV-style compact example snapshot under
 - `logs/annotation_reasoning.md`
 - `logs/issues.md`
 
-Do not export runtime-only logs such as Codex stdout/stderr, OpenJML stdout,
-OpenJML stderr, scanner stdout/stderr, or metrics into `experiences/end-end`.
+`experiences/end-end` exports stable source/proof artifacts and curated
+reasoning summaries. Runtime-only logs such as Codex stdout/stderr, OpenJML
+stdout/stderr, scanner stdout/stderr, and metrics stay in the workspace logs.
 
 ## Inputs
 
@@ -101,8 +102,7 @@ Use these official OpenJML resources as the local reference corpus:
 - `/home/yangfp/CAV-JAVA/examples/openjml-demos`
 - `/home/yangfp/CAV-JAVA/examples/openjml-userguide`
 
-Do not bulk-read all of `doc` or `examples`. Search them selectively. Useful
-queries include:
+Search `doc` and `examples` selectively. Useful queries include:
 
 ```bash
 rg -n "loop_invariant|decreases|assignable|assert|pure|model|ghost|spec_public" /home/yangfp/CAV-JAVA/doc /home/yangfp/CAV-JAVA/examples
@@ -113,9 +113,9 @@ rg -n "ArithmeticOperationRange|InvariantExit|Precondition|PossiblyNull|LoopInva
 
 - Modify only the verified working Java file and files under the current
   workspace logs.
-- Never modify the original input Java file.
-- Preserve baseline `requires`, `ensures`, and `assignable` clauses. Do not
-  weaken, delete, or make them vacuous.
+- Treat the original input Java file as read-only baseline evidence.
+- Preserve baseline `requires`, `ensures`, and `assignable` clauses in their
+  original strength and reachability.
 - Keep the implementation semantically aligned with the input. If the input
   implementation/spec is fundamentally wrong, record the issue and fail the
   verify stage instead of silently changing the problem.
@@ -191,23 +191,23 @@ Forbidden aids:
 - Track modified and unmodified array regions separately.
 - Track accumulators as prefix or segment facts.
 - Add `decreases` when OpenJML cannot prove termination.
-- Do not use an assertion to compensate for a missing loop invariant if the
-  fact must hold across iterations.
+- Facts that must hold across iterations belong in loop invariants; assertions
+  are for facts derivable at a specific program point.
 
 ## Assertion Rules
 
 - Use JML `assert` only for facts derivable at that program point.
 - Prefer assertions for branch facts, arithmetic bounds, and loop-exit bridges.
-- Do not assert the postcondition directly unless the current invariants and
-  branch facts already imply it.
-- Do not introduce `assume`; assertions must be checked by OpenJML.
+- Direct postcondition assertions are appropriate only when current invariants
+  and branch facts already imply them.
+- Assertions must be checked by OpenJML from the current proof context.
 
 ## Lemma Rules
 
 - Helper lemmas must be Java/JML artifacts OpenJML can check.
 - Prefer small `pure` methods with executable bodies and contracts.
-- Do not use `native`, empty bodies, impossible preconditions, or unchecked
-  model methods.
+- Helper lemmas use executable bodies, reachable preconditions, and checked
+  model/pure methods.
 - If a helper lemma is added, OpenJML must verify it in the same run as the
   target class.
 
@@ -270,9 +270,9 @@ loop (`scripts/agent_loop.py`):
   message, the JML/Java snippet).
 - At the end of each round write `logs/summary.md`: what you did, current proof
   state, and where you are stuck — the next round resumes from it.
-- When re-entered after the audit critic overturned the proof, the findings are
-  in the `## overturn` section of `logs/continue.md`; read it and fix exactly
-  that anti-cheating problem without weakening the spec.
+- When re-entered with `Restart feedback`, the feedback is in the latest
+  restart-feedback section of `logs/continue.md`; read it and fix the cited
+  verify blocker without weakening the spec.
 
 
 ## 条件性 mode addendum
@@ -282,4 +282,4 @@ runner 在 prompt 加标记触发以下附录，**没标记就不读**。多个�
 | Prompt 标记 | 附录文件 | 含义 |
 |------------|---------|------|
 | `Attempt: N (retry — ...)` 且 N > 1 | `MODE_RETRY.md` | 接力上一轮工作，必须追加 `logs/continue.md` 新 section |
-| `Audit findings:` 块 | `MODE_RERUN_AUDIT.md` | audit critic 标记不可信后的重跑，逐条修复 finding |
+| `Restart feedback` 块 | `MODE_RERUN_AUDIT.md` | audit agent 反馈后的 verify 重跑，逐条修复 finding |

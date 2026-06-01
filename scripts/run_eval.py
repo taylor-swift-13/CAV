@@ -9,13 +9,10 @@ treats the spec as an executable predicate (spec-test):
   clause -> only clauses that cannot be decided mechanically go to an
   LLM-as-judge -> aggregate a `Spec verdict:` (Correct / Buggy / Inconclusive).
 
-Eval does NOT check well-formedness and does NOT invoke `openjml -esc`. The
-contract stage's success gate already guarantees the spec parses, type-checks,
-is free of `NOT IMPLEMENTED` and the unsupported aggregate quantifiers, and
-passes the anti-cheating scan (see scripts/check_spec_wellformed.py wired into
-scripts/run_contract.py). Deductive proof is the verify/audit stage's
-job. So by the time eval runs, the spec is already well-formed and eval only
-has to test its semantics.
+Eval performs spec-test and the final semantic judge. Contract runner owns
+well-formedness, typecheck, unsupported-construct, and contract-stage
+anti-cheating gates. Deductive proof is the verify/audit stage's job. By the
+time eval runs, eval tests spec semantics.
 
 This runner replaces the older scripts/run_codex_eval.py, scripts/run_spec_test.py,
 and the earlier harness mode of this script.
@@ -157,15 +154,14 @@ Inputs:
 - Evaluation directory: `{eval_dir}`
 - Logs directory: `{logs_dir}`
 
-Simple flow: GENERATE cases -> TEST each mechanically -> only what cannot be
-tested mechanically goes to the JUDGE. No elaborate tier bookkeeping.
+Simple flow: GENERATE cases -> TEST each mechanically -> send mechanically
+undecidable clauses to the JUDGE. Use one results file.
 
 Rules:
 - This eval stage is independent from contract, verify, and audit.
-- The spec is already well-formed (the contract stage guarantees it parses,
-  type-checks, and is free of `NOT IMPLEMENTED` / unsupported aggregate
-  quantifiers). Do NOT re-check well-formedness and do NOT invoke `openjml -esc`.
-- Do not modify `{impl_java}`.
+- Contract runner owns `openjml -esc`, well-formedness/typecheck,
+  unsupported-construct scan, and contract-stage anti-cheating scan.
+- Treat `{impl_java}` as the read-only semantic target.
 - GENERATE exactly {num_positive} positive and {num_negative} negative concrete cases in
   `{cases_dir / 'cases.json'}` (schema per the skill). Positive `result` /
   `post_state` come from running the implementation. Choose cases adversarially:
@@ -193,6 +189,10 @@ Rules:
   `Spec verdict: Inconclusive` (a judged clause stays inconclusive).
 - After the spec-test, run the same LLM judge as the C eval flow. Judge whether
   the spec is sound and complete for the intended method behavior:
+  * Precondition strength: preconditions are not too strong and do not exclude
+    valid input cases; the strongest bad form is `requires false`.
+  * Postcondition strength: postconditions are not too weak or trivial and
+    actually characterize behavior; the weakest bad form is `ensures true`.
   * Soundness: every input/output of the correct program satisfies the spec.
   * Positive coverage: all positive cases satisfy the spec.
   * Parameter coverage: all input, output, and necessary post-state parameters
@@ -201,10 +201,10 @@ Rules:
   * Negative rejection: all negative cases are rejected by the spec.
   * Completeness: any implementation satisfying the spec is a correct solution
     to this problem.
-  Write `Judge verdict: Pass` only if all six items pass. Otherwise write
+  Write `Judge verdict: Pass` only if all eight items pass. Otherwise write
   `Judge verdict: Fail`; use `Judge verdict: Inconclusive` if undecidable.
-- Do not use assume, axiom, skipesc, nowarn, native, reflection, or
-  unreachable-path tricks.
+- Generated eval artifacts are case/evaluation/report files under `{logs_dir}`
+  and the eval workspace.
 - Write `test_reasoning.md`, `issues.md`, `final_result.md`, `metrics.md` under
   `{logs_dir}`; `metrics.md` ends with `Final Result: Success` or `Fail`.
 """

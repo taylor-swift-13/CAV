@@ -17,6 +17,10 @@ of `NOT IMPLEMENTED` and the unsupported aggregate quantifiers
 proof is the verify/audit stage's job. By the time eval runs, the spec is
 already well-formed, so eval only has to test its semantics.
 
+Stage responsibility: eval performs spec-test and the final semantic judge.
+Contract runner owns well-formedness, typecheck, unsupported-construct, and
+contract-stage anti-cheating gates.
+
 
 跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
 
@@ -117,9 +121,9 @@ mechanically, judge it.** No separate per-tier files.
    substitution, not judgment — record the `substituted` string and the
    `evaluated` boolean for each clause.
 2. **Judge (only leftovers).** A clause that cannot be decided mechanically
-   (unbounded quantifier, model function, etc.) is `needs_judge`. Judge only
-   those, citing the clause and reason. Do not judge what was decided
-   mechanically.
+   (unbounded quantifier, model function, etc.) is `needs_judge`. Judge those
+   clauses, citing the clause and reason. Mechanically decided clauses keep
+   their substituted result.
 
 Write ONE results file `evaluation/evaluation.json`:
 
@@ -162,9 +166,13 @@ Write `logs/final_result.md` with one of:
 The spec-test verdict is not enough by itself. Also judge whether the JML spec
 soundly and completely characterizes the intended method behavior.
 
-Check all six items and write `Pass` / `Fail` / `Inconclusive` with a short
+Check all eight items and write `Pass` / `Fail` / `Inconclusive` with a short
 reason in `logs/final_result.md`:
 
+- `Precondition strength`: preconditions are not too strong and do not exclude
+  valid input cases; the strongest bad form is `requires false`.
+- `Postcondition strength`: postconditions are not too weak or trivial and
+  actually characterize behavior; the weakest bad form is `ensures true`.
 - `Soundness`: every input/output of the correct program satisfies the spec.
 - `Positive coverage`: all positive cases satisfy the spec.
 - `Parameter coverage`: all input, output, and necessary post-state parameters
@@ -174,7 +182,16 @@ reason in `logs/final_result.md`:
 - `Completeness`: any implementation satisfying the spec is a correct solution
   to this problem.
 
-Only if all six items are `Pass`, write:
+Trivial or tautological specs, such as `ensures true` or `ensures \result ==
+\result`, must fail this semantic judge unless the raw task is genuinely that
+weak.
+
+Vacuous-path specs are also eval responsibilities: `requires false`,
+over-strong preconditions that exclude valid inputs, `false ==> P`, and
+empty-range quantifiers must fail the semantic judge when they make the spec
+unsound or incomplete for the raw task.
+
+Only if all eight items are `Pass`, write:
 
 ```text
 Judge verdict: Pass
@@ -183,21 +200,20 @@ Judge verdict: Pass
 If any item fails, write `Judge verdict: Fail`. If any item cannot be decided,
 write `Judge verdict: Inconclusive`.
 
-## Anti-Cheating Rules
+## Eval Integrity
 
-- No `assume`, `axiom`, `Admitted`, `skipesc`, broad `nowarn`, `native`,
-  reflection, or impossible-path tricks.
-- Do not weaken or delete target specs.
-- Do not encode negative tests by making methods unreachable.
-- Do not invoke `openjml -esc` to decide the verdict.
+- Generated eval artifacts are ordinary case/evaluation/report files under the
+  eval workspace.
+- Existing implementation/spec files remain the semantic target being judged.
+- Negative cases encode concrete rejected inputs or wrong claimed outputs.
+- The verdict is decided by mechanical spec-test plus the semantic judge.
 
 ## Experience
 
-Do not record experience here. Eval is a critic stage; experience is
-consolidated once at the very end of the flow by a dedicated unit
-(`scripts/experience_consolidate.py`), scoped to whatever flow ran. Just write a
-clear `logs/final_result.md` (the spec verdict) and `logs/issues.md` — the
-consolidation unit reads them.
+Experience is consolidated once at the very end of the flow by
+`scripts/experience_consolidate.py`, scoped to whatever flow ran. Eval writes a
+clear `logs/final_result.md` and `logs/issues.md` for that consolidation unit
+to read.
 
 ## Final Result
 

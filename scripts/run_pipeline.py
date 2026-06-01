@@ -206,7 +206,7 @@ def run_verify_block(
     """Run verify, optionally with audit as a bounded critic loop."""
     workspaces: list[Path] = []
     verify_ws: Path | None = None
-    audit_findings: Path | None = None
+    verify_restart_feedback: Path | None = None
     stem = input_java.stem
 
     for overturn in range(max_overturn + 1):
@@ -216,8 +216,8 @@ def run_verify_block(
                   "--timeout-seconds", str(remaining(deadline)), *common]
         if verify_ws is not None:
             v_args += ["--resume-workspace", str(verify_ws)]
-        if audit_findings is not None:
-            v_args += ["--restart-from", str(audit_findings)]
+        if verify_restart_feedback is not None:
+            v_args += ["--restart-from", str(verify_restart_feedback)]
         if export_examples:
             v_args.append("--export-examples")
         if dry_run:
@@ -243,11 +243,11 @@ def run_verify_block(
         outcome, verdict = classify_audit(audit_ws)
         emit(f"audit outcome={outcome} verdict={verdict}")
         if outcome == CRITIC_OVERTURN:
-            audit_findings = write_findings(
+            verify_restart_feedback = write_findings(
                 pipeline_logs, f"audit_overturn_{overturn + 1}",
                 audit_ws / "audit" / "findings.md", audit_ws / "logs" / "final_result.md",
             )
-            emit(f"audit overturned verify; restarting verify (round {overturn + 1})")
+            emit(f"audit produced verify Restart feedback; restarting verify (round {overturn + 1})")
             continue
         if outcome == CRITIC_INCONCLUSIVE:
             return BlockResult("Fail", f"audit inconclusive (verdict={verdict}); proof not validated", workspaces)

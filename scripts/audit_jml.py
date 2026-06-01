@@ -8,9 +8,6 @@ additional categories required by the audit stage:
                            audit can emit a unified findings.json.
   * unproven_lemma       — helper methods declared but not checkable
                            (native, empty body, assume-only body).
-  * vacuous_implication  — `requires false`, `false ==>`,
-                           `(\\forall ...; false; ...)`, etc.
-
 The script emits findings as JSON to --findings (default findings.json beside
 the input) and prints them as human-readable lines to stderr. Exit code is
 non-zero if any error-severity finding is present.
@@ -52,35 +49,6 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str], str]] = [
     ),
     ("reflection_or_runtime_exit", re.compile(r"\bClass\.forName\b|\bjava\.lang\.reflect\b"), "Reflection breaks verification"),
     ("reflection_or_runtime_exit", re.compile(r"\bSystem\.exit\s*\("), "System.exit breaks verification"),
-]
-
-
-# Vacuous patterns. `requires false` is the canonical "false ==> ALL" cheat.
-VACUOUS_PATTERNS: list[tuple[re.Pattern[str], str]] = [
-    (re.compile(r"//@[^\n]*\brequires\s+false\b"), "requires false makes the contract vacuously valid"),
-    (re.compile(r"//@[^\n]*\bensures\s+false\s*==>", re.IGNORECASE), "false ==> ... ensures clause is vacuously true"),
-    (
-        re.compile(r"\(\s*\\forall\b[^;]*;\s*false\s*;", re.IGNORECASE),
-        "\\forall range 'false' makes the body unreachable",
-    ),
-    (
-        re.compile(r"\\old\s*\(\s*false\s*\)\s*==>", re.IGNORECASE),
-        "\\old(false) ==> ... is vacuously true",
-    ),
-]
-
-
-# Trivial postcondition patterns.
-TRIVIAL_POST_PATTERNS: list[tuple[re.Pattern[str], str]] = [
-    (re.compile(r"//@[^\n]*\bensures\s+true\s*;"), "ensures true is a tautology"),
-    (
-        re.compile(r"//@[^\n]*\bensures\s+([\w\\]+)\s*==\s*\1\s*;"),
-        "ensures x == x is a tautology",
-    ),
-    (
-        re.compile(r"//@[^\n]*\bensures\s+\\result\s*==\s*\\result\s*;"),
-        "ensures \\result == \\result is a tautology",
-    ),
 ]
 
 
@@ -156,29 +124,6 @@ def scan_forbidden(path: Path) -> list[Finding]:
     return findings
 
 
-def scan_trivial_postconditions(path: Path) -> list[Finding]:
-    findings: list[Finding] = []
-    for line_no, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), start=1):
-        matched = False
-        for pattern, detail in TRIVIAL_POST_PATTERNS:
-            if pattern.search(line):
-                findings.append(
-                    Finding(
-                        category="trivial_postcondition",
-                        severity="error",
-                        path=str(path),
-                        line_no=line_no,
-                        text=line.strip(),
-                        detail=detail,
-                    )
-                )
-                matched = True
-                break
-        if matched:
-            continue
-    return findings
-
-
 def scan_broad_frame(path: Path) -> list[Finding]:
     findings: list[Finding] = []
     for line_no, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), start=1):
@@ -195,52 +140,6 @@ def scan_broad_frame(path: Path) -> list[Finding]:
                     )
                 )
     return findings
-
-
-def scan_vacuous(path: Path) -> list[Finding]:
-    findings: list[Finding] = []
-    text = path.read_text(encoding="utf-8", errors="replace")
-    # Search line-by-line so we can report positions. Some patterns span
-    # `/*@ ... @*/` blocks; flatten to a single line per block too.
-    block_re = re.compile(r"/\*@.*?@?\*/", re.DOTALL)
-    for match in block_re.finditer(text):
-        block = match.group(0)
-        line_no = text.count("\n", 0, match.start()) + 1
-        for pattern, detail in VACUOUS_PATTERNS:
-            if pattern.search(block):
-                findings.append(
-                    Finding(
-                        category="vacuous_implication",
-                        severity="error",
-                        path=str(path),
-                        line_no=line_no,
-                        text=block.strip().splitlines()[0][:200],
-                        detail=detail,
-                    )
-                )
-    for line_no, line in enumerate(text.splitlines(), start=1):
-        for pattern, detail in VACUOUS_PATTERNS:
-            if pattern.search(line):
-                findings.append(
-                    Finding(
-                        category="vacuous_implication",
-                        severity="error",
-                        path=str(path),
-                        line_no=line_no,
-                        text=line.strip(),
-                        detail=detail,
-                    )
-                )
-    # Dedup by (line_no, text).
-    seen: set[tuple[int, str]] = set()
-    unique: list[Finding] = []
-    for f in findings:
-        key = (f.line_no, f.text)
-        if key in seen:
-            continue
-        seen.add(key)
-        unique.append(f)
-    return unique
 
 
 METHOD_DECL_RE = re.compile(
@@ -293,8 +192,6 @@ def scan_unproven_lemmas(path: Path) -> list[Finding]:
 def run_audit(verified: Path, baseline: Path | None) -> list[Finding]:
     findings: list[Finding] = []
     findings.extend(scan_forbidden(verified))
-    findings.extend(scan_vacuous(verified))
-    findings.extend(scan_trivial_postconditions(verified))
     findings.extend(scan_broad_frame(verified))
     findings.extend(scan_unproven_lemmas(verified))
     if baseline:

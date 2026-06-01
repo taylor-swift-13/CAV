@@ -68,14 +68,15 @@ rg -n "requires|ensures|assignable|loop_invariant|assert|pure" /home/yangfp/CAV-
 - Write `logs/reasoning.md` before creating or changing the output Java file.
 - Generate a single Java file with Java implementation and JML contract.
 - Include `requires`, `ensures`, and `assignable`.
-- Do not add loop invariants, assertions, assumptions, axioms, suppressions, or
-  unchecked helpers in the contract stage.
+- Contract-stage output consists of the implementation plus method-level JML
+  contract. Loop invariants, assertions, assumptions, axioms, suppressions, and
+  proof helpers belong to later proof/debug responsibilities.
 - If a helper is necessary, make it pure, executable, and specified.
 - The spec must be **well-formed under OpenJML**: it must parse and type-check,
-  and it must use only verifier-supported features. Do **not** use the
-  aggregate quantifiers `\num_of`, `\sum`, or `\product`, or any feature OpenJML
-  reports as `NOT IMPLEMENTED` — these compile but make the contract unprovable
-  downstream. Express count/sum results with a `pure` recursive helper instead
+  and it must use verifier-supported features. Express count/sum/product-style
+  properties with a `pure` recursive helper instead of aggregate quantifiers
+  `\num_of`, `\sum`, or `\product`, or features OpenJML reports as
+  `NOT IMPLEMENTED`, because those constructs make the contract unprovable downstream
   (see `CONTRACT.md`). The contract stage runs
   `scripts/check_spec_wellformed.py` and **fails** on parse/type errors or
   unsupported features. It does **not** require every verification condition to
