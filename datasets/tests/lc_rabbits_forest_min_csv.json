@@ -1,0 +1,40 @@
+{
+  "name": "lc_rabbits_forest_min_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "answers",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "answers": "1,1,2"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "answers": "10,10,10"
+      },
+      "expected": 11
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "answers": "0,0,1,1,1"
+      },
+      "expected": 6
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "rabbits-in-forest",
+    "url": "https://leetcode.com/problems/rabbits-in-forest/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

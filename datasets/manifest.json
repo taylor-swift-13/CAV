@@ -6003,6 +6003,27 @@
       }
     },
     {
+      "name": "lc_car_pooling_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "trips",
+          "type": "string"
+        },
+        {
+          "name": "capacity",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "car-pooling",
+        "url": "https://leetcode.com/problems/car-pooling/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_character_replacement_len",
       "return_type": "int",
       "params": [
@@ -6196,6 +6217,40 @@
         "name": "LeetCode",
         "slug": "continuous-subarray-sum",
         "url": "https://leetcode.com/problems/continuous-subarray-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_good_meals_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "deliciousness",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-good-meals",
+        "url": "https://leetcode.com/problems/count-good-meals/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_nice_pairs_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-nice-pairs-in-an-array",
+        "url": "https://leetcode.com/problems/count-nice-pairs-in-an-array/",
         "license": "local rewrite"
       }
     },
@@ -6530,6 +6585,35 @@
       }
     },
     {
+      "name": "lc_four_sum_ii_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "name": "b",
+          "type": "string"
+        },
+        {
+          "name": "c",
+          "type": "string"
+        },
+        {
+          "name": "d",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "4sum-ii",
+        "url": "https://leetcode.com/problems/4sum-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_fruit_into_baskets_len_csv",
       "return_type": "int",
       "params": [
@@ -6602,6 +6686,27 @@
       }
     },
     {
+      "name": "lc_hand_of_straights_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "hand",
+          "type": "string"
+        },
+        {
+          "name": "group_size",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "hand-of-straights",
+        "url": "https://leetcode.com/problems/hand-of-straights/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_happy_number_bool",
       "return_type": "bool",
       "params": [
@@ -6632,6 +6737,23 @@
         "name": "LeetCode",
         "slug": "house-robber-ii",
         "url": "https://leetcode.com/problems/house-robber-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_increasing_triplet_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "increasing-triplet-subsequence",
+        "url": "https://leetcode.com/problems/increasing-triplet-subsequence/",
         "license": "local rewrite"
       }
     },
@@ -7877,6 +7999,23 @@
       }
     },
     {
+      "name": "lc_rabbits_forest_min_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "answers",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "rabbits-in-forest",
+        "url": "https://leetcode.com/problems/rabbits-in-forest/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_range_bitwise_and_value",
       "return_type": "int",
       "params": [
@@ -8434,6 +8573,23 @@
         "name": "LeetCode",
         "slug": "triangle",
         "url": "https://leetcode.com/problems/triangle/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_tuple_same_product_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "tuple-with-same-product",
+        "url": "https://leetcode.com/problems/tuple-with-same-product/",
         "license": "local rewrite"
       }
     },
