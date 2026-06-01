@@ -1,0 +1,47 @@
+{
+  "name": "lc_target_sum_ways_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    },
+    {
+      "name": "target",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,1,1,1,1",
+        "target": 3
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1",
+        "target": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,7",
+        "target": 4
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "target-sum",
+    "url": "https://leetcode.com/problems/target-sum/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "ex_hamming_distance",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "string"
+    },
+    {
+      "name": "b",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": "GAGCCTACTAACGGGAT",
+        "b": "CATCGTAATGACGGCCT"
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "A",
+        "b": "A"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": "GG",
+        "b": "TT"
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "hamming",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/hamming",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

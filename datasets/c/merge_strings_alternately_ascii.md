@@ -21,6 +21,7 @@ Merge `word1` and `word2` by alternating characters, starting with `word1`.
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *merge_strings_alternately_ascii(const char *word1, const char *word2) {
     int n = 0, m = 0;
     while (word1[n] != '\0') n++;

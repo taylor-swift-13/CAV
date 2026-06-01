@@ -1,0 +1,47 @@
+{
+  "name": "ex_matrix_row_sum",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    },
+    {
+      "name": "row",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1,2;3,4",
+        "row": 1
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1,2;3,4",
+        "row": 2
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "9",
+        "row": 1
+      },
+      "expected": 9
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "matrix",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/matrix",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

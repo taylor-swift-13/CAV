@@ -96,5 +96,6 @@
     "slug": "array-sorted",
     "url": "https://github.com/thanhlecongg/FormalBench/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "medium"
 }

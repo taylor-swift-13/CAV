@@ -1,0 +1,47 @@
+{
+  "name": "lc_subarray_product_less_than_k_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    },
+    {
+      "name": "k",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "10,5,2,6",
+        "k": 100
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3",
+        "k": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,1,1",
+        "k": 2
+      },
+      "expected": 6
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "subarray-product-less-than-k",
+    "url": "https://leetcode.com/problems/subarray-product-less-than-k/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

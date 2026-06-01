@@ -158,5 +158,6 @@
     "slug": "hamming",
     "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/hamming",
     "license": "MIT"
-  }
+  },
+  "difficulty": "easy"
 }

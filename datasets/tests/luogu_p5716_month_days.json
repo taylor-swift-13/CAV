@@ -1,0 +1,47 @@
+{
+  "name": "luogu_p5716_month_days",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "year",
+      "type": "int"
+    },
+    {
+      "name": "month",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "year": 2020,
+        "month": 2
+      },
+      "expected": 29
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "year": 1900,
+        "month": 2
+      },
+      "expected": 28
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "year": 2021,
+        "month": 11
+      },
+      "expected": 30
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5716",
+    "url": "https://www.luogu.com.cn/problem/P5716",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

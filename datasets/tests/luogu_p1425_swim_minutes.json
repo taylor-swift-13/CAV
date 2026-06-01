@@ -1,0 +1,61 @@
+{
+  "name": "luogu_p1425_swim_minutes",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "start_hour",
+      "type": "int"
+    },
+    {
+      "name": "start_minute",
+      "type": "int"
+    },
+    {
+      "name": "end_hour",
+      "type": "int"
+    },
+    {
+      "name": "end_minute",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "start_hour": 7,
+        "start_minute": 30,
+        "end_hour": 8,
+        "end_minute": 0
+      },
+      "expected": 30
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "start_hour": 9,
+        "start_minute": 0,
+        "end_hour": 12,
+        "end_minute": 10
+      },
+      "expected": 190
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "start_hour": 0,
+        "start_minute": 0,
+        "end_hour": 23,
+        "end_minute": 59
+      },
+      "expected": 1439
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P1425",
+    "url": "https://www.luogu.com.cn/problem/P1425",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

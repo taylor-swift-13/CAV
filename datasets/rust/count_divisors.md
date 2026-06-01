@@ -1,4 +1,3 @@
-
 # Count Divisors
 
 ## 问题描述

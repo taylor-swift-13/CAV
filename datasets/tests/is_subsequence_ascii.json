@@ -113,5 +113,6 @@
     "slug": "is-subsequence",
     "url": "https://leetcode.com/problems/is-subsequence/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

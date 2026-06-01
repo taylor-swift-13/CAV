@@ -1,0 +1,47 @@
+{
+  "name": "lc_teemo_attacking_duration_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "times",
+      "type": "string"
+    },
+    {
+      "name": "duration",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "times": "1,4",
+        "duration": 2
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "times": "1,2",
+        "duration": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "times": "5",
+        "duration": 10
+      },
+      "expected": 10
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "teemo-attacking",
+    "url": "https://leetcode.com/problems/teemo-attacking/",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

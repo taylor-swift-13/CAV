@@ -1,0 +1,40 @@
+{
+  "name": "lc_maximal_rectangle_area_rows",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "10100;10111;11111;10010"
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "0"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1"
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "maximal-rectangle",
+    "url": "https://leetcode.com/problems/maximal-rectangle/",
+    "license": "local rewrite"
+  },
+  "difficulty": "hard"
+}

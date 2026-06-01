@@ -102,5 +102,6 @@
     "slug": "split-a-string-in-balanced-strings",
     "url": "https://leetcode.com/problems/split-a-string-in-balanced-strings/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

@@ -1,0 +1,40 @@
+{
+  "name": "luogu_p5724_range_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,5,9,2"
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "7,7,7"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-3,4,1"
+      },
+      "expected": 7
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5724",
+    "url": "https://www.luogu.com.cn/problem/P5724",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

@@ -102,5 +102,6 @@
     "slug": "best-time-to-buy-and-sell-stock",
     "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

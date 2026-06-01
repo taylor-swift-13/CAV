@@ -1,0 +1,47 @@
+{
+  "name": "luogu_p5703_apple_purchase",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 2,
+        "b": 3
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 0,
+        "b": 5
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 7,
+        "b": 8
+      },
+      "expected": 56
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5703",
+    "url": "https://www.luogu.com.cn/problem/P5703",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

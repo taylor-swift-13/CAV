@@ -116,5 +116,6 @@
     "slug": "P5703",
     "url": "https://www.luogu.com.cn/problem/P5703",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

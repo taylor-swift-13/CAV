@@ -21,6 +21,7 @@ Return a copy of `s` with only ASCII vowels reversed.
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 int is_vowel_rv(char c) { return c=='a'||c=='e'||c=='i'||c=='o'||c=='u'||c=='A'||c=='E'||c=='I'||c=='O'||c=='U'; }
 char *reverse_vowels_ascii(const char *s) {
     int n = 0;

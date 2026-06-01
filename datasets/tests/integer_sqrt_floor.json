@@ -99,5 +99,6 @@
     "slug": "sqrtx",
     "url": "https://leetcode.com/problems/sqrtx/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

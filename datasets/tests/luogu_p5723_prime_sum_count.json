@@ -1,0 +1,40 @@
+{
+  "name": "luogu_p5723_prime_sum_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "limit",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "limit": 10
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "limit": 2
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "limit": 1
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5723",
+    "url": "https://www.luogu.com.cn/problem/P5723",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

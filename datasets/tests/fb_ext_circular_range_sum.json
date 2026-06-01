@@ -1,0 +1,87 @@
+{
+  "name": "fb_ext_circular_range_sum",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "a",
+      "type": "int_array"
+    },
+    {
+      "name": "left",
+      "type": "int"
+    },
+    {
+      "name": "right",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "left": 1,
+        "right": 3
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "a": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "left": 3,
+        "right": 1
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "a": [
+          5
+        ],
+        "left": 0,
+        "right": 0
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "a": [
+          -1,
+          2,
+          4
+        ],
+        "left": 2,
+        "right": 1
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/SumRangeList.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  },
+  "difficulty": "medium"
+}

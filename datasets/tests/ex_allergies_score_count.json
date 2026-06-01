@@ -1,0 +1,47 @@
+{
+  "name": "ex_allergies_score_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "score",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "score": 0
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "score": 34
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "score": 255
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "score": 509
+      },
+      "expected": 7
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "allergies",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/allergies",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

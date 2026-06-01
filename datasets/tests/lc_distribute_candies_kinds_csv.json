@@ -1,0 +1,40 @@
+{
+  "name": "lc_distribute_candies_kinds_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "types",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "types": "1,1,2,2,3,3"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "types": "1,1,2,3"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "types": "6,6,6,6"
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "distribute-candies",
+    "url": "https://leetcode.com/problems/distribute-candies/",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

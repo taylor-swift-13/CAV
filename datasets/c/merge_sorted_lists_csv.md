@@ -21,6 +21,8 @@ Treat `a` and `b` as sorted linked lists encoded by comma-separated integers and
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
+#include <stdio.h>
 char *merge_sorted_lists_csv(const char *a, const char *b) {
     int av[64], bv[64];
     int an = 0, bn = 0, i = 0;

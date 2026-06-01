@@ -144,5 +144,6 @@
     "slug": "armstrong-numbers",
     "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/armstrong-numbers",
     "license": "MIT"
-  }
+  },
+  "difficulty": "easy"
 }

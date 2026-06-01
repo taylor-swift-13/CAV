@@ -1,0 +1,58 @@
+{
+  "name": "sg_find_closest_number",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "nums",
+      "type": "int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "nums": [
+          -4,
+          -2,
+          1,
+          4
+        ]
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "nums": [
+          -2,
+          2,
+          5
+        ]
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "nums": [
+          -7
+        ]
+      },
+      "expected": -7
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/FindClosestNum",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/FindClosestNum/FindClosestNum.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "easy"
+}

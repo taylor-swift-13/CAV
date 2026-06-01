@@ -1,0 +1,63 @@
+{
+  "name": "sg_is_boomerang_points",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "x1",
+      "type": "int"
+    },
+    {
+      "name": "y1",
+      "type": "int"
+    },
+    {
+      "name": "x2",
+      "type": "int"
+    },
+    {
+      "name": "y2",
+      "type": "int"
+    },
+    {
+      "name": "x3",
+      "type": "int"
+    },
+    {
+      "name": "y3",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "x1": 1,
+        "y1": 1,
+        "x2": 2,
+        "y2": 3,
+        "x3": 3,
+        "y3": 2
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x1": 1,
+        "y1": 1,
+        "x2": 2,
+        "y2": 2,
+        "x3": 3,
+        "y3": 3
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/IsBoomerang",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsBoomerang/IsBoomerang.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "easy"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "luogu_p5728_similar_triples_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "90,90,90;92,93,91;80,80,80"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1,1,1;2,2,2;3,3,3"
+      },
+      "expected": 3
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5728",
+    "url": "https://www.luogu.com.cn/problem/P5728",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

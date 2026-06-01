@@ -1,0 +1,63 @@
+{
+  "name": "fb_ext_grid_paths_mod",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "int"
+    },
+    {
+      "name": "cols",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": 1,
+        "cols": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": 2,
+        "cols": 3
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": 3,
+        "cols": 3
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": 4,
+        "cols": 5
+      },
+      "expected": 35
+    },
+    {
+      "kind": "negative",
+      "input": {
+        "rows": 0,
+        "cols": 5
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "FormalBench",
+    "slug": "FormalBenchHF/base/programs/NcrModP.java",
+    "url": "https://github.com/thanhlecongg/FormalBench/",
+    "license": "local rewrite from SESpec java_flat"
+  },
+  "difficulty": "hard"
+}

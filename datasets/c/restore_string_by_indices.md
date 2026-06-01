@@ -21,6 +21,7 @@ Restore a string by placing `s[i]` at index `indices[i]`; indices are comma-sepa
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *restore_string_by_indices(const char *s, const char *indices) {
     int n = 0;
     while (s[n] != '\0') n++;

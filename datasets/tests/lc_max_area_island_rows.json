@@ -1,0 +1,40 @@
+{
+  "name": "lc_max_area_island_rows",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "00100;01110;00100"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "000;000"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "110;010;011"
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "max-area-of-island",
+    "url": "https://leetcode.com/problems/max-area-of-island/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

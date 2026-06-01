@@ -1,0 +1,63 @@
+{
+  "name": "lc_min_path_sum_grid2x3",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a00",
+      "type": "int"
+    },
+    {
+      "name": "a01",
+      "type": "int"
+    },
+    {
+      "name": "a02",
+      "type": "int"
+    },
+    {
+      "name": "a10",
+      "type": "int"
+    },
+    {
+      "name": "a11",
+      "type": "int"
+    },
+    {
+      "name": "a12",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a00": 1,
+        "a01": 3,
+        "a02": 1,
+        "a10": 1,
+        "a11": 5,
+        "a12": 1
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a00": 1,
+        "a01": 2,
+        "a02": 3,
+        "a10": 4,
+        "a11": 5,
+        "a12": 6
+      },
+      "expected": 12
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "minimum-path-sum",
+    "url": "https://leetcode.com/problems/minimum-path-sum/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

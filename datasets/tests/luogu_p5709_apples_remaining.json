@@ -1,0 +1,54 @@
+{
+  "name": "luogu_p5709_apples_remaining",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "m",
+      "type": "int"
+    },
+    {
+      "name": "t",
+      "type": "int"
+    },
+    {
+      "name": "s",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "m": 10,
+        "t": 3,
+        "s": 17
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "m": 5,
+        "t": 2,
+        "s": 1
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "m": 3,
+        "t": 1,
+        "s": 9
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5709",
+    "url": "https://www.luogu.com.cn/problem/P5709",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

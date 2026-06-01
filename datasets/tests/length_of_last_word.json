@@ -99,5 +99,6 @@
     "slug": "length-of-last-word",
     "url": "https://leetcode.com/problems/length-of-last-word/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

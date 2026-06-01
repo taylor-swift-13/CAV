@@ -1,0 +1,47 @@
+{
+  "name": "ex_series_largest_digit_sum",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "digits",
+      "type": "string"
+    },
+    {
+      "name": "span",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "digits": "01234",
+        "span": 2
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "digits": "999",
+        "span": 2
+      },
+      "expected": 18
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "digits": "12345",
+        "span": 0
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "series",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/series",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

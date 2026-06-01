@@ -1,0 +1,47 @@
+{
+  "name": "lc_word_break_bool",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    },
+    {
+      "name": "dict",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "leetcode",
+        "dict": "leet;code"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "applepenapple",
+        "dict": "apple;pen"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "catsandog",
+        "dict": "cats;dog;sand;and;cat"
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "word-break",
+    "url": "https://leetcode.com/problems/word-break/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

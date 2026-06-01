@@ -102,5 +102,6 @@
     "slug": "sign-of-the-product-of-an-array",
     "url": "https://leetcode.com/problems/sign-of-the-product-of-an-array/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

@@ -1,0 +1,40 @@
+{
+  "name": "lc_min_stack_final_min_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "ops",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "ops": "push:-2;push:0;push:-3;pop"
+      },
+      "expected": -2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "ops": "push:5;push:3;push:7"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "ops": "push:2;push:1;pop"
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "min-stack",
+    "url": "https://leetcode.com/problems/min-stack/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

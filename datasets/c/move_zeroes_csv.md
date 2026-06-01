@@ -21,6 +21,8 @@ Move all zeroes in comma-separated integer array `nums` to the end while preserv
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
+#include <stdio.h>
 char *move_zeroes_csv(const char *nums) {
     int values[128];
     int n = 0, i = 0;

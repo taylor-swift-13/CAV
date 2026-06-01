@@ -113,5 +113,6 @@
     "slug": "find-the-index-of-the-first-occurrence-in-a-string",
     "url": "https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

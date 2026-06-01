@@ -144,5 +144,6 @@
     "slug": "collatz-conjecture",
     "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/collatz-conjecture",
     "license": "MIT"
-  }
+  },
+  "difficulty": "easy"
 }

@@ -127,5 +127,12 @@
         "s": "xxxx"
       }
     }
-  ]
+  ],
+  "difficulty": "easy",
+  "source": {
+    "name": "CAV-JAVA local dataset",
+    "slug": "datasets/local",
+    "url": "file:///home/yangfp/CAV-JAVA/datasets",
+    "license": "local repository dataset"
+  }
 }

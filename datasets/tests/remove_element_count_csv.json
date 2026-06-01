@@ -113,5 +113,6 @@
     "slug": "remove-element",
     "url": "https://leetcode.com/problems/remove-element/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

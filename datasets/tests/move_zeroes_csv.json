@@ -99,5 +99,6 @@
     "slug": "move-zeroes",
     "url": "https://leetcode.com/problems/move-zeroes/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

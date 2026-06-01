@@ -1,0 +1,47 @@
+{
+  "name": "lc_find_difference_ascii",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    },
+    {
+      "name": "t",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcd",
+        "t": "abcde"
+      },
+      "expected": 101
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "",
+        "t": "y"
+      },
+      "expected": 121
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a",
+        "t": "aa"
+      },
+      "expected": 97
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "find-the-difference",
+    "url": "https://leetcode.com/problems/find-the-difference/",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

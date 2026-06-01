@@ -99,5 +99,6 @@
     "slug": "add-digits",
     "url": "https://leetcode.com/problems/add-digits/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

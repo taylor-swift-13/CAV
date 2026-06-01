@@ -102,5 +102,6 @@
     "slug": "majority-element",
     "url": "https://leetcode.com/problems/majority-element/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

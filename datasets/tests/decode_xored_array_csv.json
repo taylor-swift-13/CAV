@@ -119,5 +119,6 @@
     "slug": "decode-xored-array",
     "url": "https://leetcode.com/problems/decode-xored-array/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

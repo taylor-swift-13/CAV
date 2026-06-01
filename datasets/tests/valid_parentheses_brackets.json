@@ -96,5 +96,6 @@
     "slug": "valid-parentheses",
     "url": "https://leetcode.com/problems/valid-parentheses/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

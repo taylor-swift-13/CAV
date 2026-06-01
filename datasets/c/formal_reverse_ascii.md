@@ -22,6 +22,7 @@ Return the reverse of ASCII string `s`.
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *formal_reverse_ascii(const char *s) {
     int n = 0;
     while (s[n] != '\0') n++;

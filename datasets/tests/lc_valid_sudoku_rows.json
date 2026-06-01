@@ -1,0 +1,33 @@
+{
+  "name": "lc_valid_sudoku_rows",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "53..7....;6..195...;.98....6.;8...6...3;4..8.3..1;7...2...6;.6....28.;...419..5;....8..79"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "83..7....;6..195...;.98....6.;8...6...3;4..8.3..1;7...2...6;.6....28.;...419..5;....8..79"
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "valid-sudoku",
+    "url": "https://leetcode.com/problems/valid-sudoku/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

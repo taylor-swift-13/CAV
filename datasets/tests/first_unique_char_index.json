@@ -102,5 +102,6 @@
     "slug": "first-unique-character-in-a-string",
     "url": "https://leetcode.com/problems/first-unique-character-in-a-string/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

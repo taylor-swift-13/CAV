@@ -1,0 +1,58 @@
+{
+  "name": "sg_one_bit_character",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "bits",
+      "type": "int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "bits": [
+          1,
+          0,
+          0
+        ]
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "bits": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "bits": [
+          0
+        ]
+      },
+      "expected": true
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/IsOneBitCharacter",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsOneBitCharacter/IsOneBitCharacter.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "medium"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "ex_collatz_steps",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 12
+      },
+      "expected": 9
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 19
+      },
+      "expected": 20
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "collatz-conjecture",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/collatz-conjecture",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

@@ -116,5 +116,6 @@
     "slug": "add-binary",
     "url": "https://leetcode.com/problems/add-binary/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

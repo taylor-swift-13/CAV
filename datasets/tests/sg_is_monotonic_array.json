@@ -1,0 +1,61 @@
+{
+  "name": "sg_is_monotonic_array",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "nums",
+      "type": "int_array"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "nums": [
+          1,
+          2,
+          2,
+          3
+        ]
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "nums": [
+          6,
+          5,
+          4,
+          4
+        ]
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "nums": [
+          1,
+          3,
+          2
+        ]
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/IsMonotonic",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsMonotonic/IsMonotonic.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "easy"
+}

@@ -99,5 +99,6 @@
     "slug": "P5710",
     "url": "https://www.luogu.com.cn/problem/P5710",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

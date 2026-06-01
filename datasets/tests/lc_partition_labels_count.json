@@ -1,0 +1,40 @@
+{
+  "name": "lc_partition_labels_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "ababcbacadefegdehijhklij"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "eccbbbbdec"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": 3
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "partition-labels",
+    "url": "https://leetcode.com/problems/partition-labels/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

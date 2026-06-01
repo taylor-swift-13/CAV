@@ -99,5 +99,6 @@
     "slug": "contains-duplicate",
     "url": "https://leetcode.com/problems/contains-duplicate/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

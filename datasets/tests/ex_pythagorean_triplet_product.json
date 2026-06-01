@@ -1,0 +1,40 @@
+{
+  "name": "ex_pythagorean_triplet_product",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "sum",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "sum": 12
+      },
+      "expected": 60
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "sum": 30
+      },
+      "expected": 780
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "sum": 11
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "pythagorean-triplet",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/pythagorean-triplet",
+    "license": "MIT"
+  },
+  "difficulty": "medium"
+}

@@ -11,6 +11,11 @@
     "standard library only",
     "shared tests"
   ],
+  "difficulty_levels": [
+    "easy",
+    "medium",
+    "hard"
+  ],
   "problems": [
     {
       "name": "abs_value",
@@ -21,7 +26,14 @@
           "type": "int"
         }
       ],
-      "function": "abs_value"
+      "difficulty": "easy",
+      "function": "abs_value",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "add_binary_strings",
@@ -36,6 +48,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "add-binary",
@@ -52,6 +65,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "add-digits",
@@ -72,7 +86,14 @@
           "type": "int"
         }
       ],
-      "function": "add_two"
+      "difficulty": "easy",
+      "function": "add_two",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "apple_purchase_total",
@@ -87,6 +108,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Luogu",
         "slug": "P5703",
@@ -111,7 +133,14 @@
           "type": "int"
         }
       ],
-      "function": "arithmetic_series"
+      "difficulty": "easy",
+      "function": "arithmetic_series",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "armstrong_number",
@@ -122,6 +151,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Exercism",
         "slug": "armstrong-numbers",
@@ -150,7 +180,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_add"
+      "difficulty": "easy",
+      "function": "array_add",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_adjacent_diff",
@@ -169,7 +206,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_adjacent_diff"
+      "difficulty": "easy",
+      "function": "array_adjacent_diff",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_all_even",
@@ -184,7 +228,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_all_even"
+      "difficulty": "easy",
+      "function": "array_all_even",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_all_less_than_k",
@@ -203,7 +254,14 @@
           "type": "int"
         }
       ],
-      "function": "array_all_less_than_k"
+      "difficulty": "easy",
+      "function": "array_all_less_than_k",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_all_positive",
@@ -218,7 +276,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_all_positive"
+      "difficulty": "easy",
+      "function": "array_all_positive",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_all_zero",
@@ -233,7 +298,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_all_zero"
+      "difficulty": "easy",
+      "function": "array_all_zero",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_any_equal_sum",
@@ -256,7 +328,14 @@
           "type": "int"
         }
       ],
-      "function": "array_any_equal_sum"
+      "difficulty": "easy",
+      "function": "array_any_equal_sum",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_any_negative",
@@ -271,7 +350,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_any_negative"
+      "difficulty": "easy",
+      "function": "array_any_negative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_any_zero",
@@ -286,7 +372,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_any_zero"
+      "difficulty": "easy",
+      "function": "array_any_zero",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_clamp_nonnegative",
@@ -301,7 +394,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_clamp_nonnegative"
+      "difficulty": "easy",
+      "function": "array_clamp_nonnegative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_contains",
@@ -320,7 +420,14 @@
           "type": "int"
         }
       ],
-      "function": "array_contains"
+      "difficulty": "easy",
+      "function": "array_contains",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_copy_even",
@@ -339,7 +446,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_copy_even"
+      "difficulty": "easy",
+      "function": "array_copy_even",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_copy_positive",
@@ -358,7 +472,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_copy_positive"
+      "difficulty": "easy",
+      "function": "array_copy_positive",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_between",
@@ -381,7 +502,14 @@
           "type": "int"
         }
       ],
-      "function": "array_count_between"
+      "difficulty": "easy",
+      "function": "array_count_between",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_distinct_sorted",
@@ -396,7 +524,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_distinct_sorted"
+      "difficulty": "medium",
+      "function": "array_count_distinct_sorted",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_even",
@@ -411,7 +546,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_even"
+      "difficulty": "easy",
+      "function": "array_count_even",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_greater_than_k",
@@ -430,7 +572,14 @@
           "type": "int"
         }
       ],
-      "function": "array_count_greater_than_k"
+      "difficulty": "easy",
+      "function": "array_count_greater_than_k",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_increasing_steps",
@@ -445,7 +594,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_increasing_steps"
+      "difficulty": "easy",
+      "function": "array_count_increasing_steps",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_negative",
@@ -460,7 +616,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_negative"
+      "difficulty": "easy",
+      "function": "array_count_negative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_nonzero",
@@ -475,7 +638,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_nonzero"
+      "difficulty": "easy",
+      "function": "array_count_nonzero",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_odd",
@@ -490,7 +660,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_odd"
+      "difficulty": "easy",
+      "function": "array_count_odd",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_transitions",
@@ -505,7 +682,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_transitions"
+      "difficulty": "easy",
+      "function": "array_count_transitions",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_count_zero",
@@ -520,7 +704,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_count_zero"
+      "difficulty": "easy",
+      "function": "array_count_zero",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_equal",
@@ -539,7 +730,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_equal"
+      "difficulty": "easy",
+      "function": "array_equal",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_fill_value",
@@ -558,7 +756,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_fill_value"
+      "difficulty": "easy",
+      "function": "array_fill_value",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_find_last_equal",
@@ -577,7 +782,14 @@
           "type": "int"
         }
       ],
-      "function": "array_find_last_equal"
+      "difficulty": "easy",
+      "function": "array_find_last_equal",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_first",
@@ -592,7 +804,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_first"
+      "difficulty": "easy",
+      "function": "array_first",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_first_negative",
@@ -607,7 +826,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_first_negative"
+      "difficulty": "easy",
+      "function": "array_first_negative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_first_peak",
@@ -622,7 +848,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_first_peak"
+      "difficulty": "easy",
+      "function": "array_first_peak",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_has_adjacent_equal",
@@ -637,7 +870,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_has_adjacent_equal"
+      "difficulty": "easy",
+      "function": "array_has_adjacent_equal",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_increment",
@@ -652,7 +892,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_increment"
+      "difficulty": "easy",
+      "function": "array_increment",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_index_of_max",
@@ -667,7 +914,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_index_of_max"
+      "difficulty": "easy",
+      "function": "array_index_of_max",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_index_of_min",
@@ -682,7 +936,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_index_of_min"
+      "difficulty": "easy",
+      "function": "array_index_of_min",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_init",
@@ -697,7 +958,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_init"
+      "difficulty": "easy",
+      "function": "array_init",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_intersection_count_sorted",
@@ -720,7 +988,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_intersection_count_sorted"
+      "difficulty": "medium",
+      "function": "array_intersection_count_sorted",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_is_sorted_csv",
@@ -731,6 +1006,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "array-sorted",
@@ -751,7 +1027,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_is_strictly_increasing"
+      "difficulty": "easy",
+      "function": "array_is_strictly_increasing",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_last",
@@ -766,7 +1049,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_last"
+      "difficulty": "easy",
+      "function": "array_last",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_last_positive",
@@ -781,7 +1071,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_last_positive"
+      "difficulty": "easy",
+      "function": "array_last_positive",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_longest_nonnegative_run",
@@ -796,7 +1093,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_longest_nonnegative_run"
+      "difficulty": "medium",
+      "function": "array_longest_nonnegative_run",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_max",
@@ -811,7 +1115,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_max"
+      "difficulty": "easy",
+      "function": "array_max",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_min",
@@ -826,7 +1137,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_min"
+      "difficulty": "easy",
+      "function": "array_min",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_min_csv",
@@ -837,6 +1155,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "array-min",
@@ -857,7 +1176,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_move_zeroes_to_end"
+      "difficulty": "medium",
+      "function": "array_move_zeroes_to_end",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_negate",
@@ -876,7 +1202,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_negate"
+      "difficulty": "easy",
+      "function": "array_negate",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_none_zero",
@@ -891,7 +1224,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_none_zero"
+      "difficulty": "easy",
+      "function": "array_none_zero",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_pairwise_sum",
@@ -914,7 +1254,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_pairwise_sum"
+      "difficulty": "easy",
+      "function": "array_pairwise_sum",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_prefix_max",
@@ -933,7 +1280,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_prefix_max"
+      "difficulty": "easy",
+      "function": "array_prefix_max",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_product_small",
@@ -948,7 +1302,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_product_small"
+      "difficulty": "easy",
+      "function": "array_product_small",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_remove_value_to_output",
@@ -971,7 +1332,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_remove_value_to_output"
+      "difficulty": "medium",
+      "function": "array_remove_value_to_output",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_replace_k",
@@ -994,7 +1362,14 @@
           "type": "int"
         }
       ],
-      "function": "array_replace_k"
+      "difficulty": "easy",
+      "function": "array_replace_k",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_replace_negative_zero",
@@ -1009,7 +1384,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_replace_negative_zero"
+      "difficulty": "easy",
+      "function": "array_replace_negative_zero",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_reverse_in_place",
@@ -1024,7 +1406,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_reverse_in_place"
+      "difficulty": "medium",
+      "function": "array_reverse_in_place",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_scale",
@@ -1047,7 +1436,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_scale"
+      "difficulty": "easy",
+      "function": "array_scale",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_second_largest",
@@ -1062,7 +1458,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_second_largest"
+      "difficulty": "easy",
+      "function": "array_second_largest",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_sign",
@@ -1081,7 +1484,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "array_sign"
+      "difficulty": "easy",
+      "function": "array_sign",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_sum",
@@ -1096,7 +1506,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_sum"
+      "difficulty": "easy",
+      "function": "array_sum",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_sum_abs",
@@ -1111,7 +1528,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_sum_abs"
+      "difficulty": "easy",
+      "function": "array_sum_abs",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_sum_even_indices",
@@ -1126,7 +1550,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_sum_even_indices"
+      "difficulty": "easy",
+      "function": "array_sum_even_indices",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_sum_nonnegative",
@@ -1141,7 +1572,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_sum_nonnegative"
+      "difficulty": "easy",
+      "function": "array_sum_nonnegative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_sum_positive",
@@ -1156,7 +1594,14 @@
           "type": "int_array"
         }
       ],
-      "function": "array_sum_positive"
+      "difficulty": "easy",
+      "function": "array_sum_positive",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "array_swap_ends",
@@ -1171,7 +1616,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "array_swap_ends"
+      "difficulty": "easy",
+      "function": "array_swap_ends",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "aug_all_multiple_array_003",
@@ -1182,6 +1634,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_all_even",
@@ -1191,6 +1644,12 @@
           "mod": 5,
           "implementation_strategy": "array-backed"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1202,6 +1661,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_all_even",
@@ -1211,6 +1671,12 @@
           "mod": 5,
           "implementation_strategy": "streaming-no-array"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1222,6 +1688,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_count_between",
@@ -1231,6 +1698,12 @@
           "threshold": -8,
           "implementation_strategy": "array-backed"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1242,6 +1715,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_count_between",
@@ -1251,6 +1725,12 @@
           "threshold": -1,
           "implementation_strategy": "array-backed"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1262,6 +1742,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_count_between",
@@ -1271,6 +1752,12 @@
           "threshold": -8,
           "implementation_strategy": "streaming-no-array"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1282,6 +1769,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_count_between",
@@ -1291,6 +1779,12 @@
           "threshold": -1,
           "implementation_strategy": "streaming-no-array"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1302,6 +1796,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_count_between",
@@ -1311,6 +1806,12 @@
           "threshold": -4,
           "implementation_strategy": "array-backed"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1322,6 +1823,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "find_first_equal",
@@ -1331,6 +1833,12 @@
           "threshold": -5,
           "implementation_strategy": "array-backed"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1342,6 +1850,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "find_first_equal",
@@ -1351,6 +1860,12 @@
           "threshold": -5,
           "implementation_strategy": "streaming-no-array"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1362,6 +1877,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "array_find_last_equal",
@@ -1371,6 +1887,12 @@
           "threshold": 1,
           "implementation_strategy": "array-backed"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1382,6 +1904,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "string_count_char",
@@ -1391,6 +1914,12 @@
           "char": "e",
           "implementation_strategy": "index-scan"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1402,6 +1931,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "string_count_char",
@@ -1411,6 +1941,12 @@
           "char": "e",
           "implementation_strategy": "pointer-walk"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1422,6 +1958,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "prefix_sum",
@@ -1431,6 +1968,12 @@
           "limit": 2,
           "implementation_strategy": "array-backed"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1442,6 +1985,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "augment": {
         "parent_dataset": "internal",
         "parent_problem": "prefix_sum",
@@ -1451,6 +1995,12 @@
           "limit": 2,
           "implementation_strategy": "streaming-no-array"
         }
+      },
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
       }
     },
     {
@@ -1462,6 +2012,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "split-a-string-in-balanced-strings",
@@ -1478,6 +2029,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "best-time-to-buy-and-sell-stock",
@@ -1502,7 +2054,14 @@
           "type": "int"
         }
       ],
-      "function": "binary_search"
+      "difficulty": "medium",
+      "function": "binary_search",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "binary_search_first",
@@ -1521,7 +2080,14 @@
           "type": "int"
         }
       ],
-      "function": "binary_search_first"
+      "difficulty": "medium",
+      "function": "binary_search_first",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "binary_search_last",
@@ -1540,7 +2106,14 @@
           "type": "int"
         }
       ],
-      "function": "binary_search_last"
+      "difficulty": "medium",
+      "function": "binary_search_last",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "bubble_sort",
@@ -1555,7 +2128,14 @@
           "type": "int"
         }
       ],
-      "function": "bubble_sort"
+      "difficulty": "medium",
+      "function": "bubble_sort",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "clamp_int",
@@ -1574,7 +2154,14 @@
           "type": "int"
         }
       ],
-      "function": "clamp_int"
+      "difficulty": "easy",
+      "function": "clamp_int",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "climb_stairs",
@@ -1585,7 +2172,14 @@
           "type": "int"
         }
       ],
-      "function": "climbStairs"
+      "difficulty": "medium",
+      "function": "climbStairs",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "collatz_steps",
@@ -1596,6 +2190,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Exercism",
         "slug": "collatz-conjecture",
@@ -1612,6 +2207,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "contains-duplicate",
@@ -1636,7 +2232,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "copy_array"
+      "difficulty": "easy",
+      "function": "copy_array",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "count_asterisks_between_bars",
@@ -1647,6 +2250,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "count-asterisks",
@@ -1663,7 +2267,14 @@
           "type": "int"
         }
       ],
-      "function": "count_digits"
+      "difficulty": "easy",
+      "function": "count_digits",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "count_divisors",
@@ -1674,7 +2285,14 @@
           "type": "int"
         }
       ],
-      "function": "count_divisors"
+      "difficulty": "easy",
+      "function": "count_divisors",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "count_equal_to_k",
@@ -1693,7 +2311,14 @@
           "type": "int"
         }
       ],
-      "function": "count_equal_to_k"
+      "difficulty": "easy",
+      "function": "count_equal_to_k",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "count_good_pairs_csv",
@@ -1704,6 +2329,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "number-of-good-pairs",
@@ -1724,7 +2350,14 @@
           "type": "int"
         }
       ],
-      "function": "count_multiples"
+      "difficulty": "easy",
+      "function": "count_multiples",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "count_odds_interval",
@@ -1739,6 +2372,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "count-odd-numbers-in-an-interval-range",
@@ -1759,7 +2393,14 @@
           "type": "int_array"
         }
       ],
-      "function": "count_positive"
+      "difficulty": "easy",
+      "function": "count_positive",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "count_set_bits",
@@ -1770,7 +2411,14 @@
           "type": "int"
         }
       ],
-      "function": "count_set_bits"
+      "difficulty": "easy",
+      "function": "count_set_bits",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "decode_xored_array_csv",
@@ -1785,6 +2433,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "decode-xored-array",
@@ -1801,6 +2450,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "defanging-an-ip-address",
@@ -1817,7 +2467,14 @@
           "type": "int"
         }
       ],
-      "function": "digit_product"
+      "difficulty": "easy",
+      "function": "digit_product",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "digit_sum",
@@ -1828,7 +2485,14 @@
           "type": "int"
         }
       ],
-      "function": "digit_sum"
+      "difficulty": "easy",
+      "function": "digit_sum",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "double_nonnegative",
@@ -1839,7 +2503,694 @@
           "type": "int"
         }
       ],
-      "function": "double_nonnegative"
+      "difficulty": "easy",
+      "function": "double_nonnegative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
+    },
+    {
+      "name": "ex_allergies_score_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "score",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "allergies",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/allergies",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_anagram_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "subject",
+          "type": "string"
+        },
+        {
+          "name": "candidates",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "anagram",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/anagram",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_armstrong_number_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "armstrong-numbers",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/armstrong-numbers",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_binary_search_index_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "binary-search",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/binary-search",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_collatz_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "collatz-conjecture",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/collatz-conjecture",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_darts_score",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "darts",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/darts",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_difference_of_squares",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "difference-of-squares",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/difference-of-squares",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_grains_square_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "square",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "grains",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/grains",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_hamming_distance",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "name": "b",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "hamming",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/hamming",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_isbn10_valid",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "isbn-verifier",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/isbn-verifier",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_isogram_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "isogram",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/isogram",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_largest_series_product",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "digits",
+          "type": "string"
+        },
+        {
+          "name": "span",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "largest-series-product",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/largest-series-product",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_luhn_valid_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "luhn",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/luhn",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_matching_brackets_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "matching-brackets",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/matching-brackets",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_matrix_row_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        },
+        {
+          "name": "row",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "matrix",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/matrix",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_nth_prime_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "nth-prime",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/nth-prime",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_nucleotide_count_char",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "dna",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "nucleotide-count",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/nucleotide-count",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_pangram_ascii",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "pangram",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/pangram",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_pascals_triangle_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "row",
+          "type": "int"
+        },
+        {
+          "name": "col",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "pascals-triangle",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/pascals-triangle",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_perfect_number_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "perfect-numbers",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/perfect-numbers",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_prime_factors_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "prime-factors",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/prime-factors",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_protein_stop_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rna",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "protein-translation",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/protein-translation",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_pythagorean_triplet_product",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "sum",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "pythagorean-triplet",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/pythagorean-triplet",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_queen_attack_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "r1",
+          "type": "int"
+        },
+        {
+          "name": "c1",
+          "type": "int"
+        },
+        {
+          "name": "r2",
+          "type": "int"
+        },
+        {
+          "name": "c2",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "queen-attack",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/queen-attack",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_raindrops_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "raindrops",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/raindrops",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_resistor_color_duo_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "first",
+          "type": "int"
+        },
+        {
+          "name": "second",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "resistor-color-duo",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/resistor-color-duo",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_resistor_color_trio_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "first",
+          "type": "int"
+        },
+        {
+          "name": "second",
+          "type": "int"
+        },
+        {
+          "name": "multiplier",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "resistor-color-trio",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/resistor-color-trio",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_roman_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "roman-numerals",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/roman-numerals",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_saddle_points_count_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "saddle-points",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/saddle-points",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_scrabble_score",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "word",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "scrabble-score",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/scrabble-score",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_secret_handshake_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "secret-handshake",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/secret-handshake",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_series_largest_digit_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "digits",
+          "type": "string"
+        },
+        {
+          "name": "span",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "series",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/series",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_sieve_prime_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "limit",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Exercism",
+        "slug": "sieve",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/sieve",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_square_root_int",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "radicand",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "square-root",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/square-root",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_sum_of_multiples_3_5",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "limit",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "sum-of-multiples",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/sum-of-multiples",
+        "license": "MIT"
+      }
+    },
+    {
+      "name": "ex_triangle_kind_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Exercism",
+        "slug": "triangle",
+        "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/triangle",
+        "license": "MIT"
+      }
     },
     {
       "name": "factorial",
@@ -1850,7 +3201,14 @@
           "type": "int"
         }
       ],
-      "function": "fac"
+      "difficulty": "easy",
+      "function": "fac",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "fb_array_count_value",
@@ -1869,6 +3227,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountTuplex.java",
@@ -1889,6 +3248,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountPairs.java",
@@ -1909,6 +3269,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindEvenPair.java",
@@ -1929,6 +3290,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FirstEven.java",
@@ -1949,6 +3311,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindFixedPoint.java",
@@ -1969,6 +3332,7 @@
           "type": "int_array"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FrequencyOfSmallest.java",
@@ -1993,6 +3357,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/Frequency.java",
@@ -2013,6 +3378,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetInvCount.java",
@@ -2033,6 +3399,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/LargestPos.java",
@@ -2053,6 +3420,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/MaxSubArraySum.java",
@@ -2073,6 +3441,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindMinSwaps.java",
@@ -2093,6 +3462,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/NegCount.java",
@@ -2113,6 +3483,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/OddLengthSum.java",
@@ -2133,6 +3504,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetOddOccurrence.java",
@@ -2153,6 +3525,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindOddPair.java",
@@ -2173,6 +3546,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/PairOrSum.java",
@@ -2193,6 +3567,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindPeak.java",
@@ -2217,6 +3592,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumRangeList.java",
@@ -2237,6 +3613,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetGcd.java",
@@ -2257,6 +3634,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/Search.java",
@@ -2277,6 +3655,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumOfSubarrayProd.java",
@@ -2297,6 +3676,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumEvenAndEvenIndex.java",
@@ -2313,6 +3693,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/AverageEven.java",
@@ -2329,6 +3710,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/AverageOdd.java",
@@ -2349,6 +3731,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/BinomialCoeff.java",
@@ -2365,6 +3748,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CalSum.java",
@@ -2381,6 +3765,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CatalanNumber.java",
@@ -2401,6 +3786,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/NumCommDiv.java",
@@ -2417,6 +3803,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/Difference.java",
@@ -2433,6 +3820,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumDigits.java",
@@ -2449,6 +3837,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CenteredHexagonalNumber.java",
@@ -2465,6 +3854,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumSeries.java",
@@ -2481,6 +3871,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/IsNumDecagonal.java",
@@ -2497,6 +3888,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountDigit.java",
@@ -2513,6 +3905,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/Divisor.java",
@@ -2529,6 +3922,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/EvenPowerSum.java",
@@ -2549,6 +3943,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/HammingDistance.java",
@@ -2573,6 +3968,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindMaxVal.java",
@@ -2589,6 +3985,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/NextPerfectSquare.java",
@@ -2605,6 +4002,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/IsNonagonal.java",
@@ -2629,6 +4027,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindNthDigit.java",
@@ -2645,6 +4044,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/IsOctagonal.java",
@@ -2661,6 +4061,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/OddDays.java",
@@ -2681,6 +4082,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/PermutationCoefficient.java",
@@ -2697,6 +4099,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumDiv.java",
@@ -2717,6 +4120,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/RoundNum.java",
@@ -2733,6 +4137,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountNum.java",
@@ -2749,6 +4154,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/EvenBitSetNumber.java",
@@ -2765,6 +4171,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/EvenBitToggleNumber.java",
@@ -2781,6 +4188,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountUnsetBits.java",
@@ -2797,9 +4205,102 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/EvenBinomialCoeffSum.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_ext_circular_range_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        },
+        {
+          "name": "left",
+          "type": "int"
+        },
+        {
+          "name": "right",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/SumRangeList.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_ext_count_nondecreasing_pairs",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/CountPairs.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_ext_grid_paths_mod",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "int"
+        },
+        {
+          "name": "cols",
+          "type": "int"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/NcrModP.java",
+        "url": "https://github.com/thanhlecongg/FormalBench/",
+        "license": "local rewrite from SESpec java_flat"
+      }
+    },
+    {
+      "name": "fb_ext_peak_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "a",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "FormalBench",
+        "slug": "FormalBenchHF/base/programs/FindPeak.java",
         "url": "https://github.com/thanhlecongg/FormalBench/",
         "license": "local rewrite from SESpec java_flat"
       }
@@ -2813,6 +4314,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/LastTwoDigits.java",
@@ -2829,6 +4331,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FirstDigit.java",
@@ -2845,6 +4348,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetFirstSetBitPos.java",
@@ -2861,6 +4365,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/JacobsthalNum.java",
@@ -2877,6 +4382,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/MaxPrimeFactors.java",
@@ -2897,6 +4403,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/ComputeLastDigit.java",
@@ -2917,6 +4424,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/Lcm.java",
@@ -2933,6 +4441,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindLucas.java",
@@ -2953,6 +4462,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindDivisor.java",
@@ -2969,6 +4479,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountFac.java",
@@ -2985,6 +4496,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/JacobsthalLucas.java",
@@ -3009,6 +4521,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "hard",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/ModularInverse.java",
@@ -3033,6 +4546,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "hard",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/NcrModP.java",
@@ -3061,6 +4575,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountNo.java",
@@ -3081,6 +4596,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "hard",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountNoOfWays.java",
@@ -3109,6 +4625,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetPosition.java",
@@ -3133,6 +4650,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindRemainder.java",
@@ -3149,6 +4667,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SetLeftMostUnsetBit.java",
@@ -3173,6 +4692,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SmallestMissing.java",
@@ -3189,6 +4709,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/NextPowerOf2.java",
@@ -3205,6 +4726,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetPell.java",
@@ -3221,6 +4743,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/Sum.java",
@@ -3241,6 +4764,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/BigDiff.java",
@@ -3265,6 +4789,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/MinOps.java",
@@ -3289,6 +4814,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindFirstOccurrence.java",
@@ -3313,6 +4839,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/LeftInsertion.java",
@@ -3337,6 +4864,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindLastOccurrence.java",
@@ -3353,6 +4881,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/LateralsurfaceCube.java",
@@ -3369,6 +4898,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/MaxVolume.java",
@@ -3393,6 +4923,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/MinOfThree.java",
@@ -3413,6 +4944,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindMissing.java",
@@ -3433,6 +4965,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetNumber.java",
@@ -3457,6 +4990,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/GetPairsCount.java",
@@ -3473,6 +5007,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountRectangles.java",
@@ -3493,6 +5028,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/FindRotationCount.java",
@@ -3509,6 +5045,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SmallestDivisor.java",
@@ -3525,6 +5062,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SmallestMultiple.java",
@@ -3541,6 +5079,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SqrtRoot.java",
@@ -3557,6 +5096,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/Sumoffactors.java",
@@ -3577,6 +5117,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumEven.java",
@@ -3593,6 +5134,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumOfOddFactors.java",
@@ -3613,6 +5155,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/SumInRange.java",
@@ -3629,6 +5172,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "medium",
       "source": {
         "name": "FormalBench",
         "slug": "FormalBenchHF/base/programs/CountWays.java",
@@ -3645,7 +5189,14 @@
           "type": "int"
         }
       ],
-      "function": "fibonacci"
+      "difficulty": "easy",
+      "function": "fibonacci",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "fibonacci_mod",
@@ -3660,7 +5211,14 @@
           "type": "int"
         }
       ],
-      "function": "fibonacci_mod"
+      "difficulty": "medium",
+      "function": "fibonacci_mod",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "final_value_after_operations",
@@ -3671,6 +5229,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "final-value-of-variable-after-performing-operations",
@@ -3695,7 +5254,14 @@
           "type": "int"
         }
       ],
-      "function": "find_first_equal"
+      "difficulty": "easy",
+      "function": "find_first_equal",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "first_unique_char_index",
@@ -3706,6 +5272,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "first-unique-character-in-a-string",
@@ -3722,6 +5289,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "array-all-nonnegative",
@@ -3738,6 +5306,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "array-max-abs",
@@ -3754,6 +5323,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "array-sum",
@@ -3770,6 +5340,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "count-positive",
@@ -3786,6 +5357,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "string-digit-sum",
@@ -3802,6 +5374,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "string-reverse",
@@ -3818,6 +5391,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "string-count-char",
@@ -3834,6 +5408,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "string-count-lowercase",
@@ -3850,6 +5425,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "FormalBench",
         "slug": "string-has-space",
@@ -3870,7 +5446,14 @@
           "type": "int"
         }
       ],
-      "function": "gcd_iterative"
+      "difficulty": "medium",
+      "function": "gcd_iterative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "gcd_positive",
@@ -3884,7 +5467,14 @@
           "name": "b",
           "type": "int"
         }
-      ]
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "goal_parser_interpret",
@@ -3895,6 +5485,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "goal-parser-interpretation",
@@ -3915,6 +5506,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Exercism",
         "slug": "hamming",
@@ -3935,7 +5527,14 @@
           "type": "int_array"
         }
       ],
-      "function": "house_robber"
+      "difficulty": "medium",
+      "function": "house_robber",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "insertion_sort",
@@ -3950,7 +5549,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "insertion_sort"
+      "difficulty": "medium",
+      "function": "insertion_sort",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "integer_sqrt_floor",
@@ -3961,6 +5567,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "sqrtx",
@@ -3985,7 +5592,14 @@
           "type": "int"
         }
       ],
-      "function": "is_between_inclusive"
+      "difficulty": "easy",
+      "function": "is_between_inclusive",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "is_even",
@@ -3995,7 +5609,14 @@
           "name": "n",
           "type": "int"
         }
-      ]
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "is_multiple",
@@ -4010,7 +5631,14 @@
           "type": "int"
         }
       ],
-      "function": "is_multiple"
+      "difficulty": "easy",
+      "function": "is_multiple",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "is_prime_simple",
@@ -4021,7 +5649,14 @@
           "type": "int"
         }
       ],
-      "function": "is_prime_simple"
+      "difficulty": "medium",
+      "function": "is_prime_simple",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "is_sorted_nondecreasing",
@@ -4036,7 +5671,14 @@
           "type": "int_array"
         }
       ],
-      "function": "is_sorted_nondecreasing"
+      "difficulty": "medium",
+      "function": "is_sorted_nondecreasing",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "is_subsequence_ascii",
@@ -4051,6 +5693,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "is-subsequence",
@@ -4071,6 +5714,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "jewels-and-stones",
@@ -4087,7 +5731,1387 @@
           "type": "int"
         }
       ],
-      "function": "last_digit"
+      "difficulty": "easy",
+      "function": "last_digit",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
+    },
+    {
+      "name": "lc_arithmetic_slices_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "arithmetic-slices",
+        "url": "https://leetcode.com/problems/arithmetic-slices/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_asteroid_collision_survivors_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "asteroids",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "asteroid-collision",
+        "url": "https://leetcode.com/problems/asteroid-collision/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_buddy_strings_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "goal",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "buddy-strings",
+        "url": "https://leetcode.com/problems/buddy-strings/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_can_jump_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "jump-game",
+        "url": "https://leetcode.com/problems/jump-game/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_can_place_flowers_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "bed",
+          "type": "string"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "can-place-flowers",
+        "url": "https://leetcode.com/problems/can-place-flowers/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_coin_change_min_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "coins",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "coin-change",
+        "url": "https://leetcode.com/problems/coin-change/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_combination_sum4_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "combination-sum-iv",
+        "url": "https://leetcode.com/problems/combination-sum-iv/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_container_max_water",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "height",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "container-with-most-water",
+        "url": "https://leetcode.com/problems/container-with-most-water/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_primes_below",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-primes",
+        "url": "https://leetcode.com/problems/count-primes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_course_schedule_can_finish",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "num_courses",
+          "type": "int"
+        },
+        {
+          "name": "prereqs",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "course-schedule",
+        "url": "https://leetcode.com/problems/course-schedule/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_daily_temperatures_wait_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "temps",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "daily-temperatures",
+        "url": "https://leetcode.com/problems/daily-temperatures/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_decode_ways_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "decode-ways",
+        "url": "https://leetcode.com/problems/decode-ways/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_degree_shortest_subarray_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "degree-of-an-array",
+        "url": "https://leetcode.com/problems/degree-of-an-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_delete_and_earn_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "delete-and-earn",
+        "url": "https://leetcode.com/problems/delete-and-earn/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_distribute_candies_kinds_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "types",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "distribute-candies",
+        "url": "https://leetcode.com/problems/distribute-candies/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_edit_distance_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "word1",
+          "type": "string"
+        },
+        {
+          "name": "word2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "edit-distance",
+        "url": "https://leetcode.com/problems/edit-distance/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_eval_rpn_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "tokens",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "evaluate-reverse-polish-notation",
+        "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_find_difference_ascii",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "t",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-the-difference",
+        "url": "https://leetcode.com/problems/find-the-difference/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_find_min_rotated_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-minimum-in-rotated-sorted-array",
+        "url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_find_peak_index_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-peak-element",
+        "url": "https://leetcode.com/problems/find-peak-element/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_gas_station_start_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "gas",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "gas-station",
+        "url": "https://leetcode.com/problems/gas-station/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_happy_number_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "happy-number",
+        "url": "https://leetcode.com/problems/happy-number/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_house_robber_ii_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "house-robber-ii",
+        "url": "https://leetcode.com/problems/house-robber-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_integer_break_max_product",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "integer-break",
+        "url": "https://leetcode.com/problems/integer-break/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_island_perimeter_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "island-perimeter",
+        "url": "https://leetcode.com/problems/island-perimeter/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_isomorphic_strings_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "t",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "isomorphic-strings",
+        "url": "https://leetcode.com/problems/isomorphic-strings/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_koko_min_speed_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "piles",
+          "type": "string"
+        },
+        {
+          "name": "h",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "koko-eating-bananas",
+        "url": "https://leetcode.com/problems/koko-eating-bananas/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_lcs_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "text1",
+          "type": "string"
+        },
+        {
+          "name": "text2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-common-subsequence",
+        "url": "https://leetcode.com/problems/longest-common-subsequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_lemonade_change_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "bills",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "lemonade-change",
+        "url": "https://leetcode.com/problems/lemonade-change/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_lis_length_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-increasing-subsequence",
+        "url": "https://leetcode.com/problems/longest-increasing-subsequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_consecutive_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-consecutive-sequence",
+        "url": "https://leetcode.com/problems/longest-consecutive-sequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_palindrome_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-palindrome",
+        "url": "https://leetcode.com/problems/longest-palindrome/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_palindrome_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-palindromic-substring",
+        "url": "https://leetcode.com/problems/longest-palindromic-substring/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_substring_unique_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-substring-without-repeating-characters",
+        "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_area_island_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "max-area-of-island",
+        "url": "https://leetcode.com/problems/max-area-of-island/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_product_three_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-product-of-three-numbers",
+        "url": "https://leetcode.com/problems/maximum-product-of-three-numbers/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_maximal_rectangle_area_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximal-rectangle",
+        "url": "https://leetcode.com/problems/maximal-rectangle/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_maximal_square_area_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximal-square",
+        "url": "https://leetcode.com/problems/maximal-square/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_cost_climbing_stairs_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "cost",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "min-cost-climbing-stairs",
+        "url": "https://leetcode.com/problems/min-cost-climbing-stairs/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_path_sum_grid2x3",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a00",
+          "type": "int"
+        },
+        {
+          "name": "a01",
+          "type": "int"
+        },
+        {
+          "name": "a02",
+          "type": "int"
+        },
+        {
+          "name": "a10",
+          "type": "int"
+        },
+        {
+          "name": "a11",
+          "type": "int"
+        },
+        {
+          "name": "a12",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-path-sum",
+        "url": "https://leetcode.com/problems/minimum-path-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_stack_final_min_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "ops",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "min-stack",
+        "url": "https://leetcode.com/problems/min-stack/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_subarray_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "target",
+          "type": "int"
+        },
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-size-subarray-sum",
+        "url": "https://leetcode.com/problems/minimum-size-subarray-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_monotonic_array_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "monotonic-array",
+        "url": "https://leetcode.com/problems/monotonic-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_number_of_islands_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-islands",
+        "url": "https://leetcode.com/problems/number-of-islands/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_partition_equal_subset_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "partition-equal-subset-sum",
+        "url": "https://leetcode.com/problems/partition-equal-subset-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_partition_labels_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "partition-labels",
+        "url": "https://leetcode.com/problems/partition-labels/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_perfect_squares_min",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "perfect-squares",
+        "url": "https://leetcode.com/problems/perfect-squares/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_power_of_three_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "power-of-three",
+        "url": "https://leetcode.com/problems/power-of-three/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_product_except_self_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "product-of-array-except-self",
+        "url": "https://leetcode.com/problems/product-of-array-except-self/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_range_sum_query_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "left",
+          "type": "int"
+        },
+        {
+          "name": "right",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "range-sum-query-immutable",
+        "url": "https://leetcode.com/problems/range-sum-query-immutable/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_ransom_note_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "ransom",
+          "type": "string"
+        },
+        {
+          "name": "magazine",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "ransom-note",
+        "url": "https://leetcode.com/problems/ransom-note/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_robot_return_origin_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "moves",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "robot-return-to-origin",
+        "url": "https://leetcode.com/problems/robot-return-to-origin/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_search_rotated_index_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "search-in-rotated-sorted-array",
+        "url": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_set_matrix_zeroes_count_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "set-matrix-zeroes",
+        "url": "https://leetcode.com/problems/set-matrix-zeroes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_single_number_ii_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "single-number-ii",
+        "url": "https://leetcode.com/problems/single-number-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_stock_cooldown_profit_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "prices",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+        "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_subarray_product_less_than_k_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "subarray-product-less-than-k",
+        "url": "https://leetcode.com/problems/subarray-product-less-than-k/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_subarray_sum_k_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "subarray-sum-equals-k",
+        "url": "https://leetcode.com/problems/subarray-sum-equals-k/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_target_sum_ways_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "target-sum",
+        "url": "https://leetcode.com/problems/target-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_task_scheduler_least_interval",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "tasks",
+          "type": "string"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "task-scheduler",
+        "url": "https://leetcode.com/problems/task-scheduler/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_teemo_attacking_duration_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "times",
+          "type": "string"
+        },
+        {
+          "name": "duration",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "teemo-attacking",
+        "url": "https://leetcode.com/problems/teemo-attacking/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_three_sum_closest_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "3sum-closest",
+        "url": "https://leetcode.com/problems/3sum-closest/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_toeplitz_matrix_bool_rows",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "toeplitz-matrix",
+        "url": "https://leetcode.com/problems/toeplitz-matrix/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_trapping_rain_water",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "height",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "trapping-rain-water",
+        "url": "https://leetcode.com/problems/trapping-rain-water/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_unique_bst_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "unique-binary-search-trees",
+        "url": "https://leetcode.com/problems/unique-binary-search-trees/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_unique_paths_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "unique-paths",
+        "url": "https://leetcode.com/problems/unique-paths/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_valid_mountain_array_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "valid-mountain-array",
+        "url": "https://leetcode.com/problems/valid-mountain-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_valid_palindrome_ii_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "valid-palindrome-ii",
+        "url": "https://leetcode.com/problems/valid-palindrome-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_valid_perfect_square_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "num",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "valid-perfect-square",
+        "url": "https://leetcode.com/problems/valid-perfect-square/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_valid_sudoku_rows",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "valid-sudoku",
+        "url": "https://leetcode.com/problems/valid-sudoku/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_word_break_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "dict",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "word-break",
+        "url": "https://leetcode.com/problems/word-break/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_word_pattern_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "pattern",
+          "type": "string"
+        },
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "word-pattern",
+        "url": "https://leetcode.com/problems/word-pattern/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_word_search_exists",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        },
+        {
+          "name": "word",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "word-search",
+        "url": "https://leetcode.com/problems/word-search/",
+        "license": "local rewrite"
+      }
     },
     {
       "name": "lcm_simple",
@@ -4102,7 +7126,14 @@
           "type": "int"
         }
       ],
-      "function": "lcm_simple"
+      "difficulty": "medium",
+      "function": "lcm_simple",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "leap_year",
@@ -4113,6 +7144,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Exercism",
         "slug": "leap",
@@ -4129,6 +7161,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "length-of-last-word",
@@ -4149,7 +7182,14 @@
           "type": "int_array"
         }
       ],
-      "function": "longest_increasing_run"
+      "difficulty": "medium",
+      "function": "longest_increasing_run",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "lower_bound",
@@ -4168,7 +7208,562 @@
           "type": "int"
         }
       ],
-      "function": "lower_bound"
+      "difficulty": "medium",
+      "function": "lower_bound",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
+    },
+    {
+      "name": "luogu_p1421_pencil_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "yuan",
+          "type": "int"
+        },
+        {
+          "name": "jiao",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1421",
+        "url": "https://www.luogu.com.cn/problem/P1421",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1425_swim_minutes",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "start_hour",
+          "type": "int"
+        },
+        {
+          "name": "start_minute",
+          "type": "int"
+        },
+        {
+          "name": "end_hour",
+          "type": "int"
+        },
+        {
+          "name": "end_minute",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1425",
+        "url": "https://www.luogu.com.cn/problem/P1425",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5703_apple_purchase",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5703",
+        "url": "https://www.luogu.com.cn/problem/P5703",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5707_latest_departure",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "distance",
+          "type": "int"
+        },
+        {
+          "name": "speed",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5707",
+        "url": "https://www.luogu.com.cn/problem/P5707",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5709_apples_remaining",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "t",
+          "type": "int"
+        },
+        {
+          "name": "s",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5709",
+        "url": "https://www.luogu.com.cn/problem/P5709",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5710_property_mask",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5710",
+        "url": "https://www.luogu.com.cn/problem/P5710",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5711_leap_year_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "year",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5711",
+        "url": "https://www.luogu.com.cn/problem/P5711",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5711_leap_year_flag",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "year",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5711",
+        "url": "https://www.luogu.com.cn/problem/P5711",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5713_local_or_luogu",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5713",
+        "url": "https://www.luogu.com.cn/problem/P5713",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5714_bmi_category",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "h",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5714",
+        "url": "https://www.luogu.com.cn/problem/P5714",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5716_month_days",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "year",
+          "type": "int"
+        },
+        {
+          "name": "month",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5716",
+        "url": "https://www.luogu.com.cn/problem/P5716",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5717_triangle_type_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        },
+        {
+          "name": "c",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5717",
+        "url": "https://www.luogu.com.cn/problem/P5717",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5718_min_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5718",
+        "url": "https://www.luogu.com.cn/problem/P5718",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5720_half_until_one_days",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5720",
+        "url": "https://www.luogu.com.cn/problem/P5720",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5722_sequence_sum",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5722",
+        "url": "https://www.luogu.com.cn/problem/P5722",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5723_prime_sum_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "limit",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5723",
+        "url": "https://www.luogu.com.cn/problem/P5723",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5724_range_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5724",
+        "url": "https://www.luogu.com.cn/problem/P5724",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5727_hailstone_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5727",
+        "url": "https://www.luogu.com.cn/problem/P5727",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5728_similar_triples_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5728",
+        "url": "https://www.luogu.com.cn/problem/P5728",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5729_remaining_cubes",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "w",
+          "type": "int"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "h",
+          "type": "int"
+        },
+        {
+          "name": "cuts",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5729",
+        "url": "https://www.luogu.com.cn/problem/P5729",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5736_prime_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5736",
+        "url": "https://www.luogu.com.cn/problem/P5736",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5737_leap_year_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "start",
+          "type": "int"
+        },
+        {
+          "name": "end",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5737",
+        "url": "https://www.luogu.com.cn/problem/P5737",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5739_factorial",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5739",
+        "url": "https://www.luogu.com.cn/problem/P5739",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5740_best_total_score",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5740",
+        "url": "https://www.luogu.com.cn/problem/P5740",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5741_rival_pair_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "students",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5741",
+        "url": "https://www.luogu.com.cn/problem/P5741",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5742_excellent_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5742",
+        "url": "https://www.luogu.com.cn/problem/P5742",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5743_monkey_peaches",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5743",
+        "url": "https://www.luogu.com.cn/problem/P5743",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p5744_training_after_years",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "age",
+          "type": "int"
+        },
+        {
+          "name": "score",
+          "type": "int"
+        },
+        {
+          "name": "years",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P5744",
+        "url": "https://www.luogu.com.cn/problem/P5744",
+        "license": "local rewrite"
+      }
     },
     {
       "name": "majority_candidate",
@@ -4183,7 +7778,14 @@
           "type": "int_array"
         }
       ],
-      "function": "majority_candidate"
+      "difficulty": "medium",
+      "function": "majority_candidate",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "majority_element_csv",
@@ -4194,6 +7796,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "majority-element",
@@ -4214,7 +7817,14 @@
           "type": "int"
         }
       ],
-      "function": "max_abs_two"
+      "difficulty": "easy",
+      "function": "max_abs_two",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "max_consecutive_ones_csv",
@@ -4225,6 +7835,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "max-consecutive-ones",
@@ -4249,7 +7860,14 @@
           "type": "int"
         }
       ],
-      "function": "max_of_three"
+      "difficulty": "easy",
+      "function": "max_of_three",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "max_of_two",
@@ -4264,7 +7882,14 @@
           "type": "int"
         }
       ],
-      "function": "max_of_two"
+      "difficulty": "easy",
+      "function": "max_of_two",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "max_parentheses_depth",
@@ -4275,6 +7900,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "maximum-nesting-depth-of-the-parentheses",
@@ -4295,7 +7921,14 @@
           "type": "int_array"
         }
       ],
-      "function": "max_subarray_sum"
+      "difficulty": "medium",
+      "function": "max_subarray_sum",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "maximum_69_number",
@@ -4306,6 +7939,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "maximum-69-number",
@@ -4338,7 +7972,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "merge_sorted_arrays"
+      "difficulty": "medium",
+      "function": "merge_sorted_arrays",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "merge_sorted_lists_csv",
@@ -4353,6 +7994,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "merge-two-sorted-lists",
@@ -4373,6 +8015,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "merge-strings-alternately",
@@ -4389,6 +8032,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "middle-of-the-linked-list",
@@ -4409,7 +8053,14 @@
           "type": "int_array"
         }
       ],
-      "function": "min_cost_two_steps"
+      "difficulty": "medium",
+      "function": "min_cost_two_steps",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "min_of_three",
@@ -4428,7 +8079,14 @@
           "type": "int"
         }
       ],
-      "function": "min_of_three"
+      "difficulty": "easy",
+      "function": "min_of_three",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "missing_number_csv",
@@ -4443,6 +8101,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "missing-number",
@@ -4459,6 +8118,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "move-zeroes",
@@ -4475,6 +8135,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Luogu",
         "slug": "P5710",
@@ -4491,6 +8152,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "number-of-steps-to-reduce-a-number-to-zero",
@@ -4507,6 +8169,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "palindrome-number",
@@ -4527,7 +8190,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "partition_nonnegative"
+      "difficulty": "medium",
+      "function": "partition_nonnegative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "pivot_index_csv",
@@ -4538,6 +8208,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "find-pivot-index",
@@ -4554,6 +8225,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "plus-one",
@@ -4574,7 +8246,14 @@
           "type": "int"
         }
       ],
-      "function": "power_nonnegative"
+      "difficulty": "easy",
+      "function": "power_nonnegative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "power_of_two",
@@ -4585,6 +8264,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "power-of-two",
@@ -4609,7 +8289,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "prefix_sum"
+      "difficulty": "medium",
+      "function": "prefix_sum",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "remove_duplicates_sorted",
@@ -4624,7 +8311,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "remove_duplicates_sorted"
+      "difficulty": "medium",
+      "function": "remove_duplicates_sorted",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "remove_element_count_csv",
@@ -4639,6 +8333,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "remove-element",
@@ -4659,6 +8354,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "shuffle-string",
@@ -4683,7 +8379,14 @@
           "type": "out_int_array"
         }
       ],
-      "function": "reverse_copy"
+      "difficulty": "easy",
+      "function": "reverse_copy",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "reverse_digits",
@@ -4694,7 +8397,14 @@
           "type": "int"
         }
       ],
-      "function": "reverse_digits"
+      "difficulty": "medium",
+      "function": "reverse_digits",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "reverse_fixed_decimal",
@@ -4705,6 +8415,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Luogu",
         "slug": "P5705",
@@ -4721,6 +8432,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "reverse-linked-list",
@@ -4737,6 +8449,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "reverse-vowels-of-a-string",
@@ -4753,6 +8466,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "richest-customer-wealth",
@@ -4769,6 +8483,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Exercism",
         "slug": "rna-transcription",
@@ -4789,7 +8504,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "rotate_left_by_one"
+      "difficulty": "medium",
+      "function": "rotate_left_by_one",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "running_sum_csv",
@@ -4800,6 +8522,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "running-sum-of-1d-array",
@@ -4816,6 +8539,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Exercism",
         "slug": "scrabble-score",
@@ -4836,6 +8560,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "search-insert-position",
@@ -4856,7 +8581,14 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "selection_sort"
+      "difficulty": "medium",
+      "function": "selection_sort",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "sentence_is_pangram_ascii",
@@ -4867,6 +8599,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "check-if-the-sentence-is-pangram",
@@ -4887,7 +8620,494 @@
           "type": "mut_int_array"
         }
       ],
-      "function": "set_zero"
+      "difficulty": "easy",
+      "function": "set_zero",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
+    },
+    {
+      "name": "sg_all_unique_lowercase",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/IsAllUnique",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsAllUnique/IsAllUnique.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_check_a_before_b",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/CheckABeforeB",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/CheckABeforeB/CheckABeforeB.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_dominant_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "nums",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/DominantIndex",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/DominantIndex/DominantIndex.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_find_closest_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "nums",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/FindClosestNum",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/FindClosestNum/FindClosestNum.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_is_boomerang_points",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "x1",
+          "type": "int"
+        },
+        {
+          "name": "y1",
+          "type": "int"
+        },
+        {
+          "name": "x2",
+          "type": "int"
+        },
+        {
+          "name": "y2",
+          "type": "int"
+        },
+        {
+          "name": "x3",
+          "type": "int"
+        },
+        {
+          "name": "y3",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/IsBoomerang",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsBoomerang/IsBoomerang.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_is_monotonic_array",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "nums",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/IsMonotonic",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsMonotonic/IsMonotonic.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_largest_triangle_perimeter",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "sides",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/LargestPerimeter",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/LargestPerimeter/LargestPerimeter.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_matrix_2x2_product_trace",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a00",
+          "type": "int"
+        },
+        {
+          "name": "a01",
+          "type": "int"
+        },
+        {
+          "name": "a10",
+          "type": "int"
+        },
+        {
+          "name": "a11",
+          "type": "int"
+        },
+        {
+          "name": "b00",
+          "type": "int"
+        },
+        {
+          "name": "b01",
+          "type": "int"
+        },
+        {
+          "name": "b10",
+          "type": "int"
+        },
+        {
+          "name": "b11",
+          "type": "int"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/MatrixMul",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/MatrixMul/MatrixMul.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_number_of_cuts",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/NumberOfCuts",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/NumberOfCuts/NumberOfCuts.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_one_bit_character",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "bits",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/IsOneBitCharacter",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsOneBitCharacter/IsOneBitCharacter.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_overlap_area",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "ax1",
+          "type": "int"
+        },
+        {
+          "name": "ay1",
+          "type": "int"
+        },
+        {
+          "name": "ax2",
+          "type": "int"
+        },
+        {
+          "name": "ay2",
+          "type": "int"
+        },
+        {
+          "name": "bx1",
+          "type": "int"
+        },
+        {
+          "name": "by1",
+          "type": "int"
+        },
+        {
+          "name": "bx2",
+          "type": "int"
+        },
+        {
+          "name": "by2",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/ComputeOverlap",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/ComputeOverlap/ComputeOverlap.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_pass_pillow_holder",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "time",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/PassPillow",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/PassPillow/PassPillow.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_power_of_four_flag",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/PowerOfFourLoop",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/PowerOfFourLoop/PowerOfFourLoop.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_prime_check_flag",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/PrimeCheck",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/PrimeCheck/PrimeCheck.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_repeated_char_first_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/RepeatedCharNested",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/RepeatedCharNested/RepeatedCharNested.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_repeated_num_first_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "arr",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/RepeatedNumNested",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/RepeatedNumNested/RepeatedNumNested.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_three_consecutive_odds",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "arr",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/ThreeConsecutiveOdds",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/ThreeConsecutiveOdds/ThreeConsecutiveOdds.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_total_rectangle_area",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "ax1",
+          "type": "int"
+        },
+        {
+          "name": "ay1",
+          "type": "int"
+        },
+        {
+          "name": "ax2",
+          "type": "int"
+        },
+        {
+          "name": "ay2",
+          "type": "int"
+        },
+        {
+          "name": "bx1",
+          "type": "int"
+        },
+        {
+          "name": "by1",
+          "type": "int"
+        },
+        {
+          "name": "bx2",
+          "type": "int"
+        },
+        {
+          "name": "by2",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/ComputeArea",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/ComputeArea/ComputeArea.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_ugly_number_flag",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/UglyNum",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/UglyNum/UglyNum.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
+    },
+    {
+      "name": "sg_unique_num_first_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "arr",
+          "type": "int_array"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "SpecGenBench",
+        "slug": "SpecGenBench/common/UniqueNumNested",
+        "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/UniqueNumNested/UniqueNumNested.java",
+        "license": "local three-language rewrite from local external benchmark"
+      }
     },
     {
       "name": "sign_of_product_csv",
@@ -4898,6 +9118,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "sign-of-the-product-of-an-array",
@@ -4914,6 +9135,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "single-number",
@@ -4930,7 +9152,14 @@
           "type": "int"
         }
       ],
-      "function": "square_nonnegative"
+      "difficulty": "easy",
+      "function": "square_nonnegative",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_all_digits",
@@ -4941,7 +9170,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_all_digits"
+      "difficulty": "easy",
+      "function": "string_all_digits",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_all_lowercase",
@@ -4952,7 +9188,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_all_lowercase"
+      "difficulty": "easy",
+      "function": "string_all_lowercase",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_all_uppercase",
@@ -4963,7 +9206,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_all_uppercase"
+      "difficulty": "easy",
+      "function": "string_all_uppercase",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_any_lowercase",
@@ -4974,7 +9224,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_any_lowercase"
+      "difficulty": "easy",
+      "function": "string_any_lowercase",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_collapse_spaces",
@@ -4989,7 +9246,14 @@
           "type": "out_c_string"
         }
       ],
-      "function": "string_collapse_spaces"
+      "difficulty": "easy",
+      "function": "string_collapse_spaces",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_contains_char",
@@ -5004,7 +9268,14 @@
           "type": "char"
         }
       ],
-      "function": "string_contains_char"
+      "difficulty": "easy",
+      "function": "string_contains_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_copy",
@@ -5019,7 +9290,14 @@
           "type": "out_c_string"
         }
       ],
-      "function": "string_copy"
+      "difficulty": "easy",
+      "function": "string_copy",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_copy_prefix",
@@ -5038,7 +9316,14 @@
           "type": "out_c_string"
         }
       ],
-      "function": "string_copy_prefix"
+      "difficulty": "easy",
+      "function": "string_copy_prefix",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_alnum",
@@ -5049,7 +9334,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_alnum"
+      "difficulty": "easy",
+      "function": "string_count_alnum",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_char",
@@ -5064,7 +9356,14 @@
           "type": "char"
         }
       ],
-      "function": "string_count_char"
+      "difficulty": "easy",
+      "function": "string_count_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_digits",
@@ -5075,7 +9374,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_digits"
+      "difficulty": "easy",
+      "function": "string_count_digits",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_hash",
@@ -5086,7 +9392,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_hash"
+      "difficulty": "easy",
+      "function": "string_count_hash",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_lowercase",
@@ -5097,7 +9410,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_lowercase"
+      "difficulty": "easy",
+      "function": "string_count_lowercase",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_not_char",
@@ -5112,7 +9432,14 @@
           "type": "char"
         }
       ],
-      "function": "string_count_not_char"
+      "difficulty": "easy",
+      "function": "string_count_not_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_punctuation",
@@ -5123,7 +9450,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_punctuation"
+      "difficulty": "easy",
+      "function": "string_count_punctuation",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_spaces",
@@ -5134,7 +9468,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_spaces"
+      "difficulty": "easy",
+      "function": "string_count_spaces",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_uppercase",
@@ -5145,7 +9486,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_uppercase"
+      "difficulty": "easy",
+      "function": "string_count_uppercase",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_vowels",
@@ -5156,7 +9504,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_vowels"
+      "difficulty": "easy",
+      "function": "string_count_vowels",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_count_words_simple",
@@ -5167,7 +9522,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_count_words_simple"
+      "difficulty": "easy",
+      "function": "string_count_words_simple",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_ends_with_char",
@@ -5182,7 +9544,14 @@
           "type": "char"
         }
       ],
-      "function": "string_ends_with_char"
+      "difficulty": "easy",
+      "function": "string_ends_with_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_equal",
@@ -5197,7 +9566,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_equal"
+      "difficulty": "easy",
+      "function": "string_equal",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_fill_char",
@@ -5216,7 +9592,14 @@
           "type": "out_c_string"
         }
       ],
-      "function": "string_fill_char"
+      "difficulty": "easy",
+      "function": "string_fill_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_find_char",
@@ -5231,7 +9614,14 @@
           "type": "char"
         }
       ],
-      "function": "string_find_char"
+      "difficulty": "easy",
+      "function": "string_find_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_find_last_char",
@@ -5246,7 +9636,14 @@
           "type": "char"
         }
       ],
-      "function": "string_find_last_char"
+      "difficulty": "easy",
+      "function": "string_find_last_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_first_char",
@@ -5257,7 +9654,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_first_char"
+      "difficulty": "easy",
+      "function": "string_first_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_has_digit",
@@ -5268,7 +9672,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_has_digit"
+      "difficulty": "easy",
+      "function": "string_has_digit",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_has_double_char",
@@ -5279,7 +9690,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_has_double_char"
+      "difficulty": "easy",
+      "function": "string_has_double_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_is_empty",
@@ -5290,7 +9708,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_is_empty"
+      "difficulty": "easy",
+      "function": "string_is_empty",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_is_palindrome",
@@ -5305,7 +9730,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_is_palindrome"
+      "difficulty": "easy",
+      "function": "string_is_palindrome",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_last_char",
@@ -5316,7 +9748,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_last_char"
+      "difficulty": "easy",
+      "function": "string_last_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_length",
@@ -5327,7 +9766,14 @@
           "type": "c_string"
         }
       ],
-      "function": "string_length"
+      "difficulty": "easy",
+      "function": "string_length",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_remove_char_to_output",
@@ -5346,7 +9792,14 @@
           "type": "char"
         }
       ],
-      "function": "string_remove_char_to_output"
+      "difficulty": "medium",
+      "function": "string_remove_char_to_output",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_replace_char",
@@ -5365,7 +9818,14 @@
           "type": "char"
         }
       ],
-      "function": "string_replace_char"
+      "difficulty": "easy",
+      "function": "string_replace_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_replace_spaces_underscore",
@@ -5376,7 +9836,14 @@
           "type": "mut_c_string"
         }
       ],
-      "function": "string_replace_spaces_underscore"
+      "difficulty": "easy",
+      "function": "string_replace_spaces_underscore",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_reverse_copy",
@@ -5395,7 +9862,14 @@
           "type": "out_c_string"
         }
       ],
-      "function": "string_reverse_copy"
+      "difficulty": "medium",
+      "function": "string_reverse_copy",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_set_a",
@@ -5410,7 +9884,14 @@
           "type": "mut_c_string"
         }
       ],
-      "function": "string_set_a"
+      "difficulty": "easy",
+      "function": "string_set_a",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_starts_with",
@@ -5425,7 +9906,14 @@
           "type": "char"
         }
       ],
-      "function": "string_starts_with"
+      "difficulty": "easy",
+      "function": "string_starts_with",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_starts_with_char",
@@ -5440,7 +9928,14 @@
           "type": "char"
         }
       ],
-      "function": "string_starts_with_char"
+      "difficulty": "easy",
+      "function": "string_starts_with_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_to_lower_ascii",
@@ -5451,7 +9946,14 @@
           "type": "mut_c_string"
         }
       ],
-      "function": "string_to_lower_ascii"
+      "difficulty": "easy",
+      "function": "string_to_lower_ascii",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_to_upper_ascii",
@@ -5462,7 +9964,14 @@
           "type": "mut_c_string"
         }
       ],
-      "function": "string_to_upper_ascii"
+      "difficulty": "easy",
+      "function": "string_to_upper_ascii",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "string_trim_last_char",
@@ -5477,7 +9986,14 @@
           "type": "mut_c_string"
         }
       ],
-      "function": "string_trim_last_char"
+      "difficulty": "easy",
+      "function": "string_trim_last_char",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "substring_index_ascii",
@@ -5492,6 +10008,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "find-the-index-of-the-first-occurrence-in-a-string",
@@ -5508,6 +10025,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "subtract-the-product-and-sum-of-digits-of-an-integer",
@@ -5524,6 +10042,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "sum-multiples",
@@ -5540,7 +10059,14 @@
           "type": "int"
         }
       ],
-      "function": "sum_squares_to_n"
+      "difficulty": "easy",
+      "function": "sum_squares_to_n",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "sum_to_n",
@@ -5551,7 +10077,14 @@
           "type": "int"
         }
       ],
-      "function": "sum_to_n"
+      "difficulty": "easy",
+      "function": "sum_to_n",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "tribonacci",
@@ -5562,7 +10095,14 @@
           "type": "int"
         }
       ],
-      "function": "tribonacci"
+      "difficulty": "easy",
+      "function": "tribonacci",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "two_sum_exists",
@@ -5577,6 +10117,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "two-sum",
@@ -5601,7 +10142,14 @@
           "type": "int"
         }
       ],
-      "function": "two_sum_sorted"
+      "difficulty": "medium",
+      "function": "two_sum_sorted",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "upper_bound",
@@ -5620,7 +10168,14 @@
           "type": "int"
         }
       ],
-      "function": "upper_bound"
+      "difficulty": "medium",
+      "function": "upper_bound",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "uppercase_ascii_letter",
@@ -5631,6 +10186,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "Luogu",
         "slug": "P5704",
@@ -5651,6 +10207,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "valid-anagram",
@@ -5667,6 +10224,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "valid-palindrome",
@@ -5683,6 +10241,7 @@
           "type": "string"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "valid-parentheses",
@@ -5699,7 +10258,14 @@
           "type": "int"
         }
       ],
-      "function": "ways_to_reach"
+      "difficulty": "medium",
+      "function": "ways_to_reach",
+      "source": {
+        "name": "CAV-JAVA local dataset",
+        "slug": "datasets/local",
+        "url": "file:///home/yangfp/CAV-JAVA/datasets",
+        "license": "local repository dataset"
+      }
     },
     {
       "name": "xor_operation_array",
@@ -5714,6 +10280,7 @@
           "type": "int"
         }
       ],
+      "difficulty": "easy",
       "source": {
         "name": "LeetCode",
         "slug": "xor-operation-in-an-array",

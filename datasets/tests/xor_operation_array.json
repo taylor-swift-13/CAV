@@ -116,5 +116,6 @@
     "slug": "xor-operation-in-an-array",
     "url": "https://leetcode.com/problems/xor-operation-in-an-array/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

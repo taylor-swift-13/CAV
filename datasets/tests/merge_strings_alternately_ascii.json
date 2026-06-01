@@ -116,5 +116,6 @@
     "slug": "merge-strings-alternately",
     "url": "https://leetcode.com/problems/merge-strings-alternately/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

@@ -67,5 +67,6 @@
     "slug": "FormalBenchHF/base/programs/MaxSubArraySum.java",
     "url": "https://github.com/thanhlecongg/FormalBench/",
     "license": "local rewrite from SESpec java_flat"
-  }
+  },
+  "difficulty": "medium"
 }

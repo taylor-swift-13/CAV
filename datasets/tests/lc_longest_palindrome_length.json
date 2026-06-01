@@ -1,0 +1,61 @@
+{
+  "name": "lc_longest_palindrome_length",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "babad"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "cbbd"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "ac"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "racecar"
+      },
+      "expected": 7
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "longest-palindromic-substring",
+    "url": "https://leetcode.com/problems/longest-palindromic-substring/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}
