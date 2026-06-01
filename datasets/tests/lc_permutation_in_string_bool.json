@@ -1,0 +1,47 @@
+{
+  "name": "lc_permutation_in_string_bool",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "s1",
+      "type": "string"
+    },
+    {
+      "name": "s2",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s1": "ab",
+        "s2": "eidbaooo"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s1": "ab",
+        "s2": "eidboaoo"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s1": "adc",
+        "s2": "dcda"
+      },
+      "expected": true
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "permutation-in-string",
+    "url": "https://leetcode.com/problems/permutation-in-string/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

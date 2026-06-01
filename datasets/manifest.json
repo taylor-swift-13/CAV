@@ -5880,6 +5880,39 @@
       }
     },
     {
+      "name": "lc_cheapest_flights_k_stops",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "flights",
+          "type": "string"
+        },
+        {
+          "name": "src",
+          "type": "int"
+        },
+        {
+          "name": "dst",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "cheapest-flights-within-k-stops",
+        "url": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_coin_change_min_csv",
       "return_type": "int",
       "params": [
@@ -5939,6 +5972,27 @@
         "name": "LeetCode",
         "slug": "container-with-most-water",
         "url": "https://leetcode.com/problems/container-with-most-water/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_continuous_subarray_sum_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "continuous-subarray-sum",
+        "url": "https://leetcode.com/problems/continuous-subarray-sum/",
         "license": "local rewrite"
       }
     },
@@ -6100,6 +6154,27 @@
         "name": "LeetCode",
         "slug": "evaluate-reverse-polish-notation",
         "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_find_anagrams_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "p",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-all-anagrams-in-a-string",
+        "url": "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
         "license": "local rewrite"
       }
     },
@@ -6763,6 +6838,31 @@
       }
     },
     {
+      "name": "lc_network_delay_time",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "times",
+          "type": "string"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "network-delay-time",
+        "url": "https://leetcode.com/problems/network-delay-time/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_non_overlapping_intervals_remove_count",
       "return_type": "int",
       "params": [
@@ -6793,6 +6893,23 @@
         "name": "LeetCode",
         "slug": "number-of-islands",
         "url": "https://leetcode.com/problems/number-of-islands/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_number_of_provinces_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-provinces",
+        "url": "https://leetcode.com/problems/number-of-provinces/",
         "license": "local rewrite"
       }
     },
@@ -6861,6 +6978,27 @@
         "name": "LeetCode",
         "slug": "perfect-squares",
         "url": "https://leetcode.com/problems/perfect-squares/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_permutation_in_string_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s1",
+          "type": "string"
+        },
+        {
+          "name": "s2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "permutation-in-string",
+        "url": "https://leetcode.com/problems/permutation-in-string/",
         "license": "local rewrite"
       }
     },
@@ -6983,6 +7121,23 @@
       }
     },
     {
+      "name": "lc_rotting_oranges_minutes_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "rotting-oranges",
+        "url": "https://leetcode.com/problems/rotting-oranges/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_search_matrix_bool_rows",
       "return_type": "bool",
       "params": [
@@ -7038,6 +7193,23 @@
         "name": "LeetCode",
         "slug": "set-matrix-zeroes",
         "url": "https://leetcode.com/problems/set-matrix-zeroes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_shortest_path_binary_matrix_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "shortest-path-in-binary-matrix",
+        "url": "https://leetcode.com/problems/shortest-path-in-binary-matrix/",
         "license": "local rewrite"
       }
     },
