@@ -5741,6 +5741,23 @@
       }
     },
     {
+      "name": "lc_all_paths_source_target_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "graph",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "all-paths-from-source-to-target",
+        "url": "https://leetcode.com/problems/all-paths-from-source-to-target/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_arithmetic_slices_count_csv",
       "return_type": "int",
       "params": [
@@ -6272,6 +6289,40 @@
       }
     },
     {
+      "name": "lc_count_servers_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-servers-that-communicate",
+        "url": "https://leetcode.com/problems/count-servers-that-communicate/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_squares_all_ones_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-square-submatrices-with-all-ones",
+        "url": "https://leetcode.com/problems/count-square-submatrices-with-all-ones/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_course_schedule_can_finish",
       "return_type": "bool",
       "params": [
@@ -6454,6 +6505,23 @@
         "name": "LeetCode",
         "slug": "edit-distance",
         "url": "https://leetcode.com/problems/edit-distance/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_equations_possible_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "equations",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "satisfiability-of-equality-equations",
+        "url": "https://leetcode.com/problems/satisfiability-of-equality-equations/",
         "license": "local rewrite"
       }
     },
@@ -6989,6 +7057,44 @@
       }
     },
     {
+      "name": "lc_largest_component_common_factor_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "largest-component-size-by-common-factor",
+        "url": "https://leetcode.com/problems/largest-component-size-by-common-factor/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_largest_plus_sign_order",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "mines",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "order-of-largest-plus-sign",
+        "url": "https://leetcode.com/problems/order-of-largest-plus-sign/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_largest_rectangle_area_csv",
       "return_type": "int",
       "params": [
@@ -7260,6 +7366,44 @@
       }
     },
     {
+      "name": "lc_make_connected_ops",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "connections",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-operations-to-make-network-connected",
+        "url": "https://leetcode.com/problems/number-of-operations-to-make-network-connected/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_matrix_diagonal_sum_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "matrix-diagonal-sum",
+        "url": "https://leetcode.com/problems/matrix-diagonal-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_max_area_island_rows",
       "return_type": "int",
       "params": [
@@ -7485,6 +7629,23 @@
       }
     },
     {
+      "name": "lc_min_cost_connect_points",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "points",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "min-cost-to-connect-all-points",
+        "url": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_min_days_bouquets_csv",
       "return_type": "int",
       "params": [
@@ -7615,6 +7776,23 @@
         "name": "LeetCode",
         "slug": "minimum-size-subarray-sum",
         "url": "https://leetcode.com/problems/minimum-size-subarray-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_swaps_couples_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "row",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "couples-holding-hands",
+        "url": "https://leetcode.com/problems/couples-holding-hands/",
         "license": "local rewrite"
       }
     },
@@ -7995,6 +8173,23 @@
         "name": "LeetCode",
         "slug": "product-of-array-except-self",
         "url": "https://leetcode.com/problems/product-of-array-except-self/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_projection_area_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "projection-area-of-3d-shapes",
+        "url": "https://leetcode.com/problems/projection-area-of-3d-shapes/",
         "license": "local rewrite"
       }
     },
@@ -8421,6 +8616,23 @@
       }
     },
     {
+      "name": "lc_surface_area_grid_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "surface-area-of-3d-shapes",
+        "url": "https://leetcode.com/problems/surface-area-of-3d-shapes/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_swim_rising_water_time_rows",
       "return_type": "int",
       "params": [
@@ -8696,6 +8908,35 @@
         "name": "LeetCode",
         "slug": "valid-palindrome-ii",
         "url": "https://leetcode.com/problems/valid-palindrome-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_valid_path_graph_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        },
+        {
+          "name": "source",
+          "type": "int"
+        },
+        {
+          "name": "destination",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-if-path-exists-in-graph",
+        "url": "https://leetcode.com/problems/find-if-path-exists-in-graph/",
         "license": "local rewrite"
       }
     },
