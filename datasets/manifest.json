@@ -5860,6 +5860,27 @@
       }
     },
     {
+      "name": "lc_binary_subarrays_sum_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "goal",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "binary-subarrays-with-sum",
+        "url": "https://leetcode.com/problems/binary-subarrays-with-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_boats_rescue_count_csv",
       "return_type": "int",
       "params": [
@@ -6137,6 +6158,23 @@
         "name": "LeetCode",
         "slug": "container-with-most-water",
         "url": "https://leetcode.com/problems/container-with-most-water/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_contiguous_array_max_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "contiguous-array",
+        "url": "https://leetcode.com/problems/contiguous-array/",
         "license": "local rewrite"
       }
     },
@@ -6867,6 +6905,27 @@
       }
     },
     {
+      "name": "lc_least_unique_after_k_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "least-number-of-unique-integers-after-k-removals",
+        "url": "https://leetcode.com/problems/least-number-of-unique-integers-after-k-removals/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_lemonade_change_bool_csv",
       "return_type": "bool",
       "params": [
@@ -7236,6 +7295,23 @@
       }
     },
     {
+      "name": "lc_maximum_erasure_value_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-erasure-value",
+        "url": "https://leetcode.com/problems/maximum-erasure-value/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_merge_intervals_total_length",
       "return_type": "int",
       "params": [
@@ -7308,6 +7384,23 @@
         "name": "LeetCode",
         "slug": "minimum-number-of-days-to-make-m-bouquets",
         "url": "https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_deletions_unique_freq",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-deletions-to-make-character-frequencies-unique",
+        "url": "https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/",
         "license": "local rewrite"
       }
     },
@@ -7480,6 +7573,27 @@
         "name": "LeetCode",
         "slug": "network-delay-time",
         "url": "https://leetcode.com/problems/network-delay-time/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_nice_subarrays_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-number-of-nice-subarrays",
+        "url": "https://leetcode.com/problems/count-number-of-nice-subarrays/",
         "license": "local rewrite"
       }
     },
@@ -7830,6 +7944,27 @@
       }
     },
     {
+      "name": "lc_repeated_subarray_max_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums1",
+          "type": "string"
+        },
+        {
+          "name": "nums2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-length-of-repeated-subarray",
+        "url": "https://leetcode.com/problems/maximum-length-of-repeated-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_robot_return_origin_bool",
       "return_type": "bool",
       "params": [
@@ -7995,6 +8130,23 @@
         "name": "LeetCode",
         "slug": "shortest-path-in-binary-matrix",
         "url": "https://leetcode.com/problems/shortest-path-in-binary-matrix/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_shortest_unsorted_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "shortest-unsorted-continuous-subarray",
+        "url": "https://leetcode.com/problems/shortest-unsorted-continuous-subarray/",
         "license": "local rewrite"
       }
     },
