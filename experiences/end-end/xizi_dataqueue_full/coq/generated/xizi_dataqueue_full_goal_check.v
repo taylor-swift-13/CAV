@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260601_174201v1_xizi_dataqueue_full Require Import xizi_dataqueue_full_goal xizi_dataqueue_full_proof_auto xizi_dataqueue_full_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_dataqueue_full_proof_auto.
+  Include xizi_dataqueue_full_proof_manual.
+End VC_Correctness.

@@ -13,6 +13,7 @@
 
 常见入口：
 
+- QCP 基础表层语言：看 `../QCP/README.md`
 - 阅读方式：看 1
 - 合同写作重点：看 2
 - 方式一：直接 `Extern Coq`：看 3
@@ -25,11 +26,14 @@
 - 缺 `.v` 的判断标准：看 10
 - 避免在函数级 `Require` 中用顶层析取表达简单数值域：看 11
 - QCP 前端不处理 C 预处理器——INT_MIN / INT_MAX 等常量必须改为字面量：看 12
-- 后条件能写蕴含就别写析取——析取强迫证明手动选边：看 13
+- 后条件优先用蕴含刻画分支，避免证明析取；C 表层用 `=>`：看 13
+- `Ensure` 表层不要用 `->`，QCP 蕴含写 `=>`：看 14
+- 简单标量 contract 先跑 gate，不要先翻仓库找风格：看 15
 
 ## 1. 阅读方式
 
 - 开始 contract 任务时，先从本文件开头顺序读
+- 如果只是简单标量/判断函数，先读 `../QCP/README.md`，写最小 contract 后直接跑 gate
 - 先看 workspace 约定和规格接入方式
 - 再看后面的具体规格经验
 ## 2. 合同写作重点
@@ -241,7 +245,7 @@ QCP 的 `symexec` 前端不运行 C 预处理器，`<limits.h>` 中定义的 `IN
 
 不要把这类符号替换留到 Verify 阶段；这是 Contract 层就该固定的形式。
 
-## 13. 后条件能写蕴含就别写析取——析取强迫证明手动选边（2026-05-28）
+## 13. 后条件优先用蕴含刻画分支，避免证明析取（2026-05-28）
 
 contract 在**逻辑上正确**和**对下游证明友好**是两件事。`Ensure` 里的顶层析取 `||` 即便语义紧、eval 能放过，也会**强迫 verify 阶段在每个 `return_wit` 里手动用 `Left` / `Right` 选边**——标量 fast path 的 `pre_process; entailer!; try lia.` 不会自动挑分支，coqc 立刻报 "remaining open goals"，整个用例必须回退到 agent。
 
@@ -260,20 +264,18 @@ int abs_value(int x)
 - agent 还易踩坑：QCP 的 SL 析取 introduction 是**大写** `Left` / `Right`（`derivable1_orp_intros1/2`），不是 Coq builtin 的 `left` / `right`，agent 摸索这个就要烧几分钟；
 - 实际结果：标量 fast path 失败 → 回退 agent → 262s 才收敛。
 
-### 推荐：用蕴含按前提分情况
+### 推荐：语义上按前提分情况，用 `=>`
 
 ```c
 /*@ Require x >= -2147483647 && emp
-    Ensure  (x@pre >= 0 -> __return == x@pre) &&
-            (x@pre <  0 -> __return == -x@pre) && emp
+    Ensure  (x@pre >= 0 => __return == x@pre) &&
+            (x@pre <  0 => __return == -x@pre) && emp
 */
 ```
 
-每条蕴含对应 C 的一个分支：`pre_process` 自动按 `x >= 0` / `x < 0` 把 context 切两份，每个 return wit 用 `pre_process; entailer!; try lia.` 直接收尾。**整道题在标量 fast path 上零 agent 跑过**，不再走 4 分钟 sonnet。
+这种“每个分支各管一条后条件”的语义仍然是对的：verify 侧最喜欢的就是每条 return path 只需要证明自己那一支。
 
-### 还更干净：把语义函数 Extern 出来
-
-如果 `.v` 里桥得起 `abs : Z -> Z`，最直白的写法是：
+更干净的写法是把语义函数 Extern 出来：
 
 ```
 /*@ Extern Coq (abs : Z -> Z) */
@@ -283,10 +285,59 @@ int abs_value(int x)
 
 contract 一目了然，verify 端无需任何选边逻辑——前提是要在 §3 或 §4 的方式里把这个 Coq 函数 import 进来。
 
-### 通用规则
+通用规则：
 
-- 后条件首选**蕴含**（按前提分情况）或**直接等式**（语义函数 Extern）；
+- 后条件首选**单分支语义**：能直接写语义函数等式就写等式；需要分情况时，用 `=>` 让每条 return path 对应自己那一支结论；
 - 仅当**真存在多种合法实现可选**（非确定性 spec、refinement 接口）时才用析取；
 - 写析取前先问自己：这道题是「数学上有多个合法答案」还是「只是不想 Extern 函数所以用析取拼出来」？后者就是踩坑前兆。
 
-这条规则跟 §13（`Require` 顶层析取触发 old-value 绑定问题）正好成对：**`Require` 顶层析取触发前端问题，`Ensure` 顶层析取触发证明问题，两边都尽量避免**。
+## 14. `Ensure` 表层不要用 `->`，QCP 蕴含写 `=>`（2026-06-01）
+
+本轮 `xizi_ready_bitmap_empty` 是最简单的标量判零函数，但第一版直接把上面的蕴含写进 C contract：
+
+```c
+/*@ Ensure
+      (ready_group@pre == 0 -> __return == 1) &&
+      (ready_group@pre != 0 -> __return == 0) && emp
+*/
+```
+
+`python3 scripts/check_spec_wellformed.py` 立刻失败，报 `bison: syntax error, unexpected PT___RETURN`。也就是说：**“按前提分情况”这个想法是对的，但当前 QCP 的 C contract parser 不稳定支持 `->` 这种表层写法。**
+
+因此要分两层看：
+
+- **语义层**：优先让每条 return path 对应单独一支结论，不要把唯一返回值规格写成顶层析取；
+- **语法层**：如果 contract 直接写在 C 注释里，蕴含优先写成 QCP 已广泛使用的 `=>`，再跑 gate 确认。
+
+对纯标量分支函数，稳定写法是把“每支一个结论”写成多条蕴含，例如：
+
+```c
+/*@ Ensure
+      (ready_group@pre == 0 => __return == 1) &&
+      (ready_group@pre != 0 => __return == 0) &&
+      emp
+*/
+```
+
+这样比互斥 case 析取更直接：每条路径只需要证明当前前件下的结论，不需要在 `return_wit` 里手工选择 `Left` / `Right`。
+
+这条规则跟 §11、§13 正好成对：**`Require` 顶层析取容易触发前端 old-value 问题；`Ensure` 里的“裸析取多个候选结果”容易触发证明选边问题；而 `Ensure` 表层 `->` 还可能直接触发 parser 问题。优先用 `=>` 刻画分支语义。**
+
+## 15. 简单标量 contract 先跑 gate，不要先翻仓库找风格（2026-06-01）
+
+这类 `emp` precondition + 标量返回值的题，最大的效率损失通常不是写错语义，而是**先花几十次读取去确认“repo 更喜欢哪种风格”**。更快的顺序是：
+
+1. 直接写最小 contract 草稿；
+2. 立刻跑 `python3 scripts/check_spec_wellformed.py input/<name>.c`；
+3. 按 parser / symexec 的第一条硬错误改写；
+4. gate 过了就停，不再继续搜相似例子。
+
+原因很简单：对这类题，真正有信息量的是 gate 是否接受当前 contract dialect，而不是别的题用了哪种表面写法。
+
+如果 gate 报错之外，**确实**还需要看一个模板，优先顺序也要收窄：
+
+1. 先看 `experiences/end-end/` 里**同家族、同形状**的已完成题，尤其是相邻命名的一组小标量判断题；
+2. 再看最近一次同类 `output/contract_*` 的 `reasoning.md`；
+3. 只有前两者都没有时，才去翻 `QualifiedCProgramming/QCP_examples` 这类泛例子库。
+
+原因：简单标量 contract 的主要问题通常是当前 repo 的 parser / symexec 接受哪种 contract 形状；同家族 end-to-end 题会直接暴露这套约定，而泛例子库只会扩大搜索面，容易把时间烧在无关风格对比上。

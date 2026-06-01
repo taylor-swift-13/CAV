@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260601_175257v1_xizi_stack_range_check Require Import xizi_stack_range_check_goal xizi_stack_range_check_proof_auto xizi_stack_range_check_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_stack_range_check_proof_auto.
+  Include xizi_stack_range_check_proof_manual.
+End VC_Correctness.

@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260601_170937v1_xizi_ready_bitmap_empty Require Import xizi_ready_bitmap_empty_goal xizi_ready_bitmap_empty_proof_auto xizi_ready_bitmap_empty_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_ready_bitmap_empty_proof_auto.
+  Include xizi_ready_bitmap_empty_proof_manual.
+End VC_Correctness.

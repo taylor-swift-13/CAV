@@ -1,0 +1,18 @@
+{
+  "workspace": "verify_20260601_175257v1_xizi_stack_range_check",
+  "stage": "verify",
+  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_stack_range_check.c",
+  "input_v": "",
+  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260601_175257v1_xizi_stack_range_check/original/xizi_stack_range_check.c",
+  "original_v": "",
+  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260601_175257v1_xizi_stack_range_check.c",
+  "function_name": "xizi_stack_range_check",
+  "semantic_description": "Loop-free function `xizi_stack_range_check` returning `1`, `0`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "branch"
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

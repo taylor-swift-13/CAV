@@ -74,6 +74,7 @@ spec-test 通过还不够。必须再做整体 judge，判断 contract 是否真
 逐项判断并在 `logs/final_result.md` 写出 `Pass` / `Fail` / `Inconclusive` 和一句依据：
 
 - `Precondition strength`: 前条件是否过强，导致合法输入情况不能被刻画；最强错误形态是 `requires false`。
+- `Precondition safety`: 前条件是否足以排除实现的运行时错误/未定义行为风险，例如除零、空指针解引用、数组越界、无效内存访问、会触发 C UB 的溢出或非法移位。
 - `Postcondition strength`: 后条件是否过弱或 trivial，导致不能刻画程序行为；最弱错误形态是 `ensures true`。
 - `Soundness`: 正确程序的所有输入输出是否都满足 spec。
 - `Positive coverage`: 所有正例是否都满足 spec。
