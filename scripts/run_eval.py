@@ -243,32 +243,107 @@ def evaluate_compute_queries(workspace_path: Path, env: dict[str, str]) -> int:
     return len(results)
 
 
-def read_spec_verdict(workspace_path: Path) -> str | None:
+def read_final_result_value(workspace_path: Path, marker: str) -> str | None:
     fr = final_result_path(workspace_path)
     if not fr.exists():
         return None
     for line in fr.read_text(encoding="utf-8", errors="replace").splitlines():
-        # Accept both `Spec verdict: X` and the markdown `## Spec verdict: X`.
-        if "Spec verdict:" in line:
-            return line.split("Spec verdict:", 1)[1].strip()
+        # Accept both `Marker: X` and markdown/list forms like `## Marker: X`.
+        if marker in line:
+            return line.split(marker, 1)[1].strip()
     return None
 
 
-def gate_success(workspace_path: Path) -> tuple[bool, str]:
+def read_spec_verdict(workspace_path: Path) -> str | None:
+    return read_final_result_value(workspace_path, "Spec verdict:")
+
+
+def read_judge_verdict(workspace_path: Path) -> str | None:
+    return read_final_result_value(workspace_path, "Judge verdict:")
+
+
+def artifact_gate(workspace_path: Path, num_positive: int, num_negative: int) -> tuple[bool, str]:
+    cases_path = workspace_path / "cases" / "cases.json"
+    eval_path = workspace_path / "evaluation" / "evaluation.json"
+    if not cases_path.exists():
+        return False, f"missing_cases:{cases_path}"
+    if not eval_path.exists():
+        return False, f"missing_evaluation:{eval_path}"
+
+    try:
+        cases_doc = json.loads(cases_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return False, f"invalid_cases_json:{exc}"
+    try:
+        eval_doc = json.loads(eval_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return False, f"invalid_evaluation_json:{exc}"
+
+    positives = cases_doc.get("positive") if isinstance(cases_doc, dict) else None
+    negatives = cases_doc.get("negative") if isinstance(cases_doc, dict) else None
+    if not isinstance(positives, list) or len(positives) < num_positive:
+        return False, f"insufficient_positive_cases:{len(positives) if isinstance(positives, list) else 'missing'}<{num_positive}"
+    if not isinstance(negatives, list) or len(negatives) < num_negative:
+        return False, f"insufficient_negative_cases:{len(negatives) if isinstance(negatives, list) else 'missing'}<{num_negative}"
+
+    positive_ids = {str(c.get("id")) for c in positives if isinstance(c, dict) and c.get("id") is not None}
+    negative_ids = {str(c.get("id")) for c in negatives if isinstance(c, dict) and c.get("id") is not None}
+    expected_ids = positive_ids | negative_ids
+    eval_cases = eval_doc.get("cases") if isinstance(eval_doc, dict) else None
+    if not isinstance(eval_cases, list):
+        return False, "evaluation_cases_missing"
+    evaluated_ids = {str(c.get("id")) for c in eval_cases if isinstance(c, dict) and c.get("id") is not None}
+    missing = sorted(expected_ids - evaluated_ids)
+    if missing:
+        return False, "evaluation_missing_cases:" + ",".join(missing)
+
+    def has_unresolved_needs_judge(value) -> bool:
+        if isinstance(value, dict):
+            if value.get("verdict") == "needs_judge":
+                return True
+            return any(has_unresolved_needs_judge(v) for v in value.values())
+        if isinstance(value, list):
+            return any(has_unresolved_needs_judge(v) for v in value)
+        return False
+
+    if has_unresolved_needs_judge(eval_doc):
+        return False, "evaluation_has_unresolved_needs_judge"
+
+    verdict_by_id = {
+        str(c.get("id")): c.get("verdict")
+        for c in eval_cases
+        if isinstance(c, dict) and c.get("id") is not None
+    }
+    positive_failures = sorted(cid for cid in positive_ids if verdict_by_id.get(cid) != "pass")
+    negative_failures = sorted(cid for cid in negative_ids if verdict_by_id.get(cid) != "fail")
+    if positive_failures:
+        return False, "positive_cases_not_pass:" + ",".join(positive_failures)
+    if negative_failures:
+        return False, "negative_cases_not_rejected:" + ",".join(negative_failures)
+    return True, "artifacts_ok"
+
+
+def gate_success(workspace_path: Path, num_positive: int, num_negative: int) -> tuple[bool, str]:
     mp = metrics_path(workspace_path)
     if not mp.exists():
         return False, "missing_metrics"
     saw_success = any(ln.strip() == "Final Result: Success"
                       for ln in mp.read_text(encoding="utf-8", errors="replace").splitlines())
     verdict = read_spec_verdict(workspace_path)
-    if saw_success and verdict in ("Correct", "Buggy"):
-        return True, f"verdict:{verdict}"
-    return False, f"verdict:{verdict}|final_result_success:{saw_success}"
+    judge = read_judge_verdict(workspace_path)
+    artifacts_ok, artifacts_detail = artifact_gate(workspace_path, num_positive, num_negative)
+    if saw_success and verdict == "Correct" and judge == "Pass" and artifacts_ok:
+        return True, f"spec:{verdict}|judge:{judge}|{artifacts_detail}"
+    return False, (
+        f"spec:{verdict}|judge:{judge}|agent_final_result_success:{saw_success}|"
+        f"artifacts:{artifacts_detail}"
+    )
 
 
 def write_metrics(path: Path, *, status: str, exit_code: int, start_iso: str,
                   end_iso: str, wall_seconds: float, model: str, reasoning_effort: str,
                   agent_rounds: int, compute_evaluated: int, verdict: str | None,
+                  judge_verdict: str | None,
                   usage: dict[str, int] | None) -> None:
     lines = [
         "# Eval Metrics", "",
@@ -283,6 +358,7 @@ def write_metrics(path: Path, *, status: str, exit_code: int, start_iso: str,
         f"- Agent rounds: `{agent_rounds}`",
         f"- Compute queries evaluated: `{compute_evaluated}`",
         f"- Spec verdict: `{verdict}`",
+        f"- Judge verdict: `{judge_verdict}`",
     ]
     lines.extend(agent_metrics.usage_lines(usage))
     lines.append(f"Final Result: {status}")
@@ -347,7 +423,7 @@ def main() -> int:
         write_metrics(metrics_path(workspace_path), status="Success", exit_code=0,
                       start_iso=iso_now(), end_iso=iso_now(), wall_seconds=0.0, model=model,
                       reasoning_effort=reasoning_effort, agent_rounds=0, compute_evaluated=0,
-                      verdict=None, usage=None)
+                      verdict=None, judge_verdict=None, usage=None)
         emit_log("dry_run=true")
         print(str(workspace_path))
         return 0
@@ -383,7 +459,7 @@ def main() -> int:
         if n:
             compute_evaluated += n
             emit_log(f"compute_queries_evaluated={n}")
-        ok, detail = gate_success(workspace_path)
+        ok, detail = gate_success(workspace_path, num_positive, num_negative)
         if ok:
             emit_log(f"gate_pass {detail}")
             break
@@ -393,14 +469,19 @@ def main() -> int:
         if time.time() >= deadline:
             break
 
-    ok, _ = gate_success(workspace_path)
+    ok, _ = gate_success(workspace_path, num_positive, num_negative)
     status = "Success" if ok else "Fail"
     verdict = read_spec_verdict(workspace_path)
+    judge_verdict = read_judge_verdict(workspace_path)
     write_metrics(metrics_path(workspace_path), status=status, exit_code=last_rc,
                   start_iso=start_iso, end_iso=iso_now(), wall_seconds=time.time() - start_wall,
                   model=model, reasoning_effort=reasoning_effort, agent_rounds=rounds,
-                  compute_evaluated=compute_evaluated, verdict=verdict, usage=usage_total)
-    emit_log(f"status={status} verdict={verdict} rounds={rounds} compute_evaluated={compute_evaluated}")
+                  compute_evaluated=compute_evaluated, verdict=verdict,
+                  judge_verdict=judge_verdict, usage=usage_total)
+    emit_log(
+        f"status={status} verdict={verdict} judge={judge_verdict} "
+        f"rounds={rounds} compute_evaluated={compute_evaluated}"
+    )
     print(str(workspace_path))
     return 0 if ok else 1
 
