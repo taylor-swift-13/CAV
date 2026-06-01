@@ -5885,6 +5885,23 @@
       }
     },
     {
+      "name": "lc_burst_balloons_max_coins_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "burst-balloons",
+        "url": "https://leetcode.com/problems/burst-balloons/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_can_jump_csv",
       "return_type": "bool",
       "params": [
@@ -6293,6 +6310,23 @@
       }
     },
     {
+      "name": "lc_dungeon_min_hp_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "dungeon-game",
+        "url": "https://leetcode.com/problems/dungeon-game/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_edit_distance_value",
       "return_type": "int",
       "params": [
@@ -6572,6 +6606,23 @@
       }
     },
     {
+      "name": "lc_integer_replacement_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "integer-replacement",
+        "url": "https://leetcode.com/problems/integer-replacement/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_interleaving_string_bool",
       "return_type": "bool",
       "params": [
@@ -6829,6 +6880,23 @@
         "name": "LeetCode",
         "slug": "longest-consecutive-sequence",
         "url": "https://leetcode.com/problems/longest-consecutive-sequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_increasing_path_matrix",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-increasing-path-in-a-matrix",
+        "url": "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
         "license": "local rewrite"
       }
     },
@@ -7378,6 +7446,23 @@
       }
     },
     {
+      "name": "lc_pal_partition_min_cut",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "palindrome-partitioning-ii",
+        "url": "https://leetcode.com/problems/palindrome-partitioning-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_palindromic_substrings_count",
       "return_type": "int",
       "params": [
@@ -7518,6 +7603,27 @@
         "name": "LeetCode",
         "slug": "product-of-array-except-self",
         "url": "https://leetcode.com/problems/product-of-array-except-self/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_range_bitwise_and_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "left",
+          "type": "int"
+        },
+        {
+          "name": "right",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "bitwise-and-of-numbers-range",
+        "url": "https://leetcode.com/problems/bitwise-and-of-numbers-range/",
         "license": "local rewrite"
       }
     },
