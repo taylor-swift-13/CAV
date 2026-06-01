@@ -2438,6 +2438,329 @@ def more_real_source_problems_26() -> list[Problem]:
     ]
 
 
+def more_real_source_problems_27() -> list[Problem]:
+    lc = lambda slug: source("LeetCode", slug, f"https://leetcode.com/problems/{slug}/")
+    return [
+        Problem("lc_can_i_win_bool", "LC Can I Win Bool", "Return true if the first player can force a win.", ["Players alternately choose unused integers from `1..max_choosable_integer`.", "The player who reaches or exceeds `desired_total` wins."], "bool", [{"name": "max_choosable_integer", "type": "int"}, {"name": "desired_total", "type": "int"}], [case({"max_choosable_integer": 10, "desired_total": 11}, False), case({"max_choosable_integer": 10, "desired_total": 0}, True), case({"max_choosable_integer": 10, "desired_total": 1}, True)], lc("can-i-win"), "medium", {
+            "c": "static int lc_ciw_max, lc_ciw_target, lc_ciw_memo[1 << 20];\nstatic int lc_ciw_dfs(int mask, int total) { if (lc_ciw_memo[mask] != 0) return lc_ciw_memo[mask] == 1; for (int i = 0; i < lc_ciw_max; i++) if ((mask & (1 << i)) == 0) { int pick = i + 1; if (total + pick >= lc_ciw_target || !lc_ciw_dfs(mask | (1 << i), total + pick)) { lc_ciw_memo[mask] = 1; return 1; } } lc_ciw_memo[mask] = -1; return 0; }\nint lc_can_i_win_bool(int max_choosable_integer, int desired_total) {\n    if (desired_total <= 0) return 1;\n    if (max_choosable_integer * (max_choosable_integer + 1) / 2 < desired_total) return 0;\n    lc_ciw_max = max_choosable_integer; lc_ciw_target = desired_total; int limit = 1 << max_choosable_integer; for (int i = 0; i < limit; i++) lc_ciw_memo[i] = 0; return lc_ciw_dfs(0, 0);\n}",
+            "java": "class LcCanIWinBool {\n    static int max, target; static int[] memo;\n    static boolean dfs(int mask, int total) { if (memo[mask] != 0) return memo[mask] == 1; for (int i = 0; i < max; i++) if ((mask & (1 << i)) == 0) { int pick = i + 1; if (total + pick >= target || !dfs(mask | (1 << i), total + pick)) { memo[mask] = 1; return true; } } memo[mask] = -1; return false; }\n    public static boolean lc_can_i_win_bool(int max_choosable_integer, int desired_total) {\n        if (desired_total <= 0) return true; if (max_choosable_integer * (max_choosable_integer + 1) / 2 < desired_total) return false; max = max_choosable_integer; target = desired_total; memo = new int[1 << max]; return dfs(0, 0);\n    }\n}",
+            "rust": "pub fn lc_can_i_win_bool(max_choosable_integer: i32, desired_total: i32) -> bool {\n    fn dfs(mask: usize, total: i32, max: i32, target: i32, memo: &mut Vec<i8>) -> bool { if memo[mask] != 0 { return memo[mask] == 1; } let mut i = 0; while i < max { let bit = 1usize << i; if mask & bit == 0 { let pick = i + 1; if total + pick >= target || !dfs(mask | bit, total + pick, max, target, memo) { memo[mask] = 1; return true; } } i += 1; } memo[mask] = -1; false }\n    if desired_total <= 0 { return true; } if max_choosable_integer * (max_choosable_integer + 1) / 2 < desired_total { return false; } let mut memo = vec![0i8; 1usize << max_choosable_integer]; dfs(0, 0, max_choosable_integer, desired_total, &mut memo)\n}",
+        }),
+        Problem("lc_predict_winner_bool_csv", "LC Predict The Winner Bool CSV", "Return true if player 1 can win or tie under optimal play.", ["`nums` is a nonempty comma-separated list of scores.", "Each turn takes one number from either end."], "bool", [{"name": "nums", "type": "string"}], [case({"nums": "1,5,2"}, False), case({"nums": "1,5,233,7"}, True), case({"nums": "1"}, True)], lc("predict-the-winner"), "medium", {
+            "c": "int lc_predict_winner_bool_csv(const char *nums) {\n    int a[256], n = 0, i = 0; while (nums[i] != '\\0') { int sign = 1, v = 0; if (nums[i] == '-') { sign = -1; i++; } while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } a[n++] = sign * v; if (nums[i] == ',') i++; } int dp[256]; for (int x = 0; x < n; x++) dp[x] = a[x]; for (int len = 2; len <= n; len++) for (int l = 0; l + len <= n; l++) { int r = l + len - 1; int left = a[l] - dp[l + 1], right = a[r] - dp[l]; dp[l] = left > right ? left : right; } return dp[0] >= 0;\n}",
+            "java": "class LcPredictWinnerBoolCsv {\n    public static boolean lc_predict_winner_bool_csv(String nums) {\n        String[] p = nums.split(\",\"); int n = p.length; int[] a = new int[n], dp = new int[n]; for (int i = 0; i < n; i++) { a[i] = Integer.parseInt(p[i]); dp[i] = a[i]; } for (int len = 2; len <= n; len++) for (int l = 0; l + len <= n; l++) { int r = l + len - 1; dp[l] = Math.max(a[l] - dp[l + 1], a[r] - dp[l]); } return dp[0] >= 0;\n    }\n}",
+            "rust": "pub fn lc_predict_winner_bool_csv(nums: &str) -> bool {\n    let a: Vec<i32> = nums.split(',').map(|x| x.parse::<i32>().unwrap()).collect(); let n = a.len(); let mut dp = a.clone(); let mut len = 2usize; while len <= n { let mut l = 0usize; while l + len <= n { let r = l + len - 1; dp[l] = (a[l] - dp[l + 1]).max(a[r] - dp[l]); l += 1; } len += 1; } dp[0] >= 0\n}",
+        }),
+        Problem("lc_last_stone_weight_ii_csv", "LC Last Stone Weight II CSV", "Return the smallest possible final stone weight.", ["`stones` is a comma-separated list of positive weights."], "int", [{"name": "stones", "type": "string"}], [case({"stones": "2,7,4,1,8,1"}, 1), case({"stones": "31,26,33,21,40"}, 5), case({"stones": "1,2"}, 1)], lc("last-stone-weight-ii"), "medium", {
+            "c": "int lc_last_stone_weight_ii_csv(const char *stones) {\n    int a[256], n = 0, sum = 0, i = 0; while (stones[i] != '\\0') { int v = 0; while (stones[i] >= '0' && stones[i] <= '9') { v = v * 10 + stones[i] - '0'; i++; } a[n++] = v; sum += v; if (stones[i] == ',') i++; } int dp[3001] = {0}; for (int x = 0; x < n; x++) for (int s = sum / 2; s >= a[x]; s--) if (dp[s - a[x]] + a[x] > dp[s]) dp[s] = dp[s - a[x]] + a[x]; return sum - 2 * dp[sum / 2];\n}",
+            "java": "class LcLastStoneWeightIiCsv {\n    public static int lc_last_stone_weight_ii_csv(String stones) {\n        String[] p = stones.split(\",\"); int[] a = new int[p.length]; int sum = 0; for (int i = 0; i < p.length; i++) { a[i] = Integer.parseInt(p[i]); sum += a[i]; } int[] dp = new int[sum / 2 + 1]; for (int v : a) for (int s = sum / 2; s >= v; s--) dp[s] = Math.max(dp[s], dp[s - v] + v); return sum - 2 * dp[sum / 2];\n    }\n}",
+            "rust": "pub fn lc_last_stone_weight_ii_csv(stones: &str) -> i32 {\n    let a: Vec<i32> = stones.split(',').map(|x| x.parse::<i32>().unwrap()).collect(); let sum: i32 = a.iter().sum(); let mut dp = vec![0; (sum / 2 + 1) as usize]; for &v in &a { let mut s = sum / 2; while s >= v { let cand = dp[(s - v) as usize] + v; if cand > dp[s as usize] { dp[s as usize] = cand; } s -= 1; } } sum - 2 * dp[(sum / 2) as usize]\n}",
+        }),
+        Problem("lc_min_score_triangulation_csv", "LC Minimum Score Triangulation CSV", "Return the minimum triangulation score for a convex polygon.", ["`values` is a comma-separated list of vertex values."], "int", [{"name": "values", "type": "string"}], [case({"values": "1,2,3"}, 6), case({"values": "3,7,4,5"}, 144), case({"values": "1,3,1,4,1,5"}, 13)], lc("minimum-score-triangulation-of-polygon"), "medium", {
+            "c": "int lc_min_score_triangulation_csv(const char *values) {\n    int a[128], n = 0, i = 0; while (values[i] != '\\0') { int v = 0; while (values[i] >= '0' && values[i] <= '9') { v = v * 10 + values[i] - '0'; i++; } a[n++] = v; if (values[i] == ',') i++; } int dp[128][128] = {{0}}; for (int len = 3; len <= n; len++) for (int l = 0; l + len <= n; l++) { int r = l + len - 1; dp[l][r] = 1000000000; for (int k = l + 1; k < r; k++) { int val = dp[l][k] + dp[k][r] + a[l] * a[k] * a[r]; if (val < dp[l][r]) dp[l][r] = val; } } return dp[0][n - 1];\n}",
+            "java": "class LcMinScoreTriangulationCsv {\n    public static int lc_min_score_triangulation_csv(String values) {\n        String[] p = values.split(\",\"); int n = p.length; int[] a = new int[n]; for (int i = 0; i < n; i++) a[i] = Integer.parseInt(p[i]); int[][] dp = new int[n][n]; for (int len = 3; len <= n; len++) for (int l = 0; l + len <= n; l++) { int r = l + len - 1; dp[l][r] = 1000000000; for (int k = l + 1; k < r; k++) dp[l][r] = Math.min(dp[l][r], dp[l][k] + dp[k][r] + a[l] * a[k] * a[r]); } return dp[0][n - 1];\n    }\n}",
+            "rust": "pub fn lc_min_score_triangulation_csv(values: &str) -> i32 {\n    let a: Vec<i32> = values.split(',').map(|x| x.parse::<i32>().unwrap()).collect(); let n = a.len(); let mut dp = vec![vec![0; n]; n]; let mut len = 3usize; while len <= n { let mut l = 0usize; while l + len <= n { let r = l + len - 1; dp[l][r] = 1000000000; let mut k = l + 1; while k < r { let val = dp[l][k] + dp[k][r] + a[l] * a[k] * a[r]; if val < dp[l][r] { dp[l][r] = val; } k += 1; } l += 1; } len += 1; } dp[0][n - 1]\n}",
+        }),
+        Problem("lc_profitable_schemes_count", "LC Profitable Schemes Count", "Return how many subsets of jobs use at most `n` members and earn at least `min_profit`.", ["`group` and `profit` are comma-separated lists of equal length.", "Return the count modulo `1_000_000_007`."], "int", [{"name": "n", "type": "int"}, {"name": "min_profit", "type": "int"}, {"name": "group", "type": "string"}, {"name": "profit", "type": "string"}], [case({"n": 5, "min_profit": 3, "group": "2,2", "profit": "2,3"}, 2), case({"n": 10, "min_profit": 5, "group": "2,3,5", "profit": "6,7,8"}, 7), case({"n": 1, "min_profit": 1, "group": "1,1,1", "profit": "0,0,1"}, 1)], lc("profitable-schemes"), "hard", {
+            "c": "int lc_profitable_schemes_count(int n, int min_profit, const char *group, const char *profit) {\n    int g[128], p[128], jobs = 0, i = 0; while (group[i] != '\\0') { int v = 0; while (group[i] >= '0' && group[i] <= '9') { v = v * 10 + group[i] - '0'; i++; } g[jobs++] = v; if (group[i] == ',') i++; } i = 0; int m = 0; while (profit[i] != '\\0') { int v = 0; while (profit[i] >= '0' && profit[i] <= '9') { v = v * 10 + profit[i] - '0'; i++; } p[m++] = v; if (profit[i] == ',') i++; } int mod = 1000000007; int dp[101][101] = {{0}}; dp[0][0] = 1; for (int job = 0; job < jobs; job++) for (int members = n; members >= g[job]; members--) for (int prof = min_profit; prof >= 0; prof--) { int prev = prof - p[job]; if (prev < 0) prev = 0; dp[members][prof] = (dp[members][prof] + dp[members - g[job]][prev]) % mod; } int ans = 0; for (int members = 0; members <= n; members++) ans = (ans + dp[members][min_profit]) % mod; return ans;\n}",
+            "java": "class LcProfitableSchemesCount {\n    public static int lc_profitable_schemes_count(int n, int min_profit, String group, String profit) {\n        String[] gs = group.split(\",\"), ps = profit.split(\",\"); int jobs = gs.length, mod = 1000000007; int[] g = new int[jobs], p = new int[jobs]; for (int i = 0; i < jobs; i++) { g[i] = Integer.parseInt(gs[i]); p[i] = Integer.parseInt(ps[i]); } int[][] dp = new int[n + 1][min_profit + 1]; dp[0][0] = 1; for (int job = 0; job < jobs; job++) for (int members = n; members >= g[job]; members--) for (int prof = min_profit; prof >= 0; prof--) { int prev = Math.max(0, prof - p[job]); dp[members][prof] = (dp[members][prof] + dp[members - g[job]][prev]) % mod; } int ans = 0; for (int members = 0; members <= n; members++) ans = (ans + dp[members][min_profit]) % mod; return ans;\n    }\n}",
+            "rust": "pub fn lc_profitable_schemes_count(n: i32, min_profit: i32, group: &str, profit: &str) -> i32 {\n    let g: Vec<usize> = group.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); let p: Vec<usize> = profit.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); let nn = n as usize; let mp = min_profit as usize; let modu = 1000000007i32; let mut dp = vec![vec![0i32; mp + 1]; nn + 1]; dp[0][0] = 1; let mut job = 0usize; while job < g.len() { let mut members = nn + 1; while members > g[job] { members -= 1; let mut prof = mp + 1; while prof > 0 { prof -= 1; let prev = prof.saturating_sub(p[job]); dp[members][prof] = (dp[members][prof] + dp[members - g[job]][prev]) % modu; } } job += 1; } let mut ans = 0; let mut members = 0usize; while members <= nn { ans = (ans + dp[members][mp]) % modu; members += 1; } ans\n}",
+        }),
+        Problem("lc_knight_dialer_count", "LC Knight Dialer Count", "Return how many distinct phone numbers of length `n` a chess knight can dial, modulo `1_000_000_007`.", ["The keypad graph is the standard LeetCode knight dialer keypad."], "int", [{"name": "n", "type": "int"}], [case({"n": 1}, 10), case({"n": 2}, 20), case({"n": 3}, 46)], lc("knight-dialer"), "medium", {
+            "c": "int lc_knight_dialer_count(int n) {\n    int moves[10][3] = {{4,6,-1},{6,8,-1},{7,9,-1},{4,8,-1},{0,3,9},{-1,-1,-1},{0,1,7},{2,6,-1},{1,3,-1},{2,4,-1}}; long long dp[10], next[10], mod = 1000000007LL; for (int i = 0; i < 10; i++) dp[i] = 1; for (int step = 1; step < n; step++) { for (int i = 0; i < 10; i++) next[i] = 0; for (int i = 0; i < 10; i++) for (int k = 0; k < 3; k++) if (moves[i][k] >= 0) next[moves[i][k]] = (next[moves[i][k]] + dp[i]) % mod; for (int i = 0; i < 10; i++) dp[i] = next[i]; } long long ans = 0; for (int i = 0; i < 10; i++) ans = (ans + dp[i]) % mod; return (int)ans;\n}",
+            "java": "class LcKnightDialerCount {\n    public static int lc_knight_dialer_count(int n) {\n        int[][] moves = {{4,6},{6,8},{7,9},{4,8},{0,3,9},{},{0,1,7},{2,6},{1,3},{2,4}}; long mod = 1000000007L; long[] dp = new long[10]; java.util.Arrays.fill(dp, 1); for (int step = 1; step < n; step++) { long[] next = new long[10]; for (int i = 0; i < 10; i++) for (int to : moves[i]) next[to] = (next[to] + dp[i]) % mod; dp = next; } long ans = 0; for (long v : dp) ans = (ans + v) % mod; return (int)ans;\n    }\n}",
+            "rust": "pub fn lc_knight_dialer_count(n: i32) -> i32 {\n    let moves: Vec<Vec<usize>> = vec![vec![4,6],vec![6,8],vec![7,9],vec![4,8],vec![0,3,9],vec![],vec![0,1,7],vec![2,6],vec![1,3],vec![2,4]]; let modu = 1000000007i64; let mut dp = vec![1i64; 10]; let mut step = 1; while step < n { let mut next = vec![0i64; 10]; let mut i = 0usize; while i < 10 { for &to in &moves[i] { next[to] = (next[to] + dp[i]) % modu; } i += 1; } dp = next; step += 1; } (dp.iter().sum::<i64>() % modu) as i32\n}",
+        }),
+        Problem("lc_out_boundary_paths_count", "LC Out Of Boundary Paths Count", "Return how many paths move out of grid boundary within at most `max_move` moves.", ["Start at `(start_row,start_column)` in an `m x n` grid.", "Return the count modulo `1_000_000_007`."], "int", [{"name": "m", "type": "int"}, {"name": "n", "type": "int"}, {"name": "max_move", "type": "int"}, {"name": "start_row", "type": "int"}, {"name": "start_column", "type": "int"}], [case({"m": 2, "n": 2, "max_move": 2, "start_row": 0, "start_column": 0}, 6), case({"m": 1, "n": 3, "max_move": 3, "start_row": 0, "start_column": 1}, 12), case({"m": 3, "n": 3, "max_move": 0, "start_row": 1, "start_column": 1}, 0)], lc("out-of-boundary-paths"), "medium", {
+            "c": "int lc_out_boundary_paths_count(int m, int n, int max_move, int start_row, int start_column) {\n    int mod = 1000000007; int dp[64][64] = {{0}}, next[64][64]; dp[start_row][start_column] = 1; long long ans = 0; int dx[4] = {1,-1,0,0}, dy[4] = {0,0,1,-1}; for (int move = 0; move < max_move; move++) { for (int i = 0; i < m; i++) for (int j = 0; j < n; j++) next[i][j] = 0; for (int i = 0; i < m; i++) for (int j = 0; j < n; j++) if (dp[i][j]) for (int d = 0; d < 4; d++) { int ni = i + dx[d], nj = j + dy[d]; if (ni < 0 || ni >= m || nj < 0 || nj >= n) ans = (ans + dp[i][j]) % mod; else next[ni][nj] = (next[ni][nj] + dp[i][j]) % mod; } for (int i = 0; i < m; i++) for (int j = 0; j < n; j++) dp[i][j] = next[i][j]; } return (int)ans;\n}",
+            "java": "class LcOutBoundaryPathsCount {\n    public static int lc_out_boundary_paths_count(int m, int n, int max_move, int start_row, int start_column) {\n        int mod = 1000000007; int[][] dp = new int[m][n]; dp[start_row][start_column] = 1; long ans = 0; int[] dx = {1,-1,0,0}, dy = {0,0,1,-1}; for (int move = 0; move < max_move; move++) { int[][] next = new int[m][n]; for (int i = 0; i < m; i++) for (int j = 0; j < n; j++) if (dp[i][j] != 0) for (int d = 0; d < 4; d++) { int ni = i + dx[d], nj = j + dy[d]; if (ni < 0 || ni >= m || nj < 0 || nj >= n) ans = (ans + dp[i][j]) % mod; else next[ni][nj] = (next[ni][nj] + dp[i][j]) % mod; } dp = next; } return (int)ans;\n    }\n}",
+            "rust": "pub fn lc_out_boundary_paths_count(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {\n    let mm = m as usize; let nn = n as usize; let modu = 1000000007i32; let mut dp = vec![vec![0; nn]; mm]; dp[start_row as usize][start_column as usize] = 1; let dirs = [(1i32,0i32),(-1,0),(0,1),(0,-1)]; let mut ans = 0; let mut mv = 0; while mv < max_move { let mut next = vec![vec![0; nn]; mm]; let mut i = 0usize; while i < mm { let mut j = 0usize; while j < nn { if dp[i][j] != 0 { for &(dx,dy) in &dirs { let ni = i as i32 + dx; let nj = j as i32 + dy; if ni < 0 || ni >= m || nj < 0 || nj >= n { ans = (ans + dp[i][j]) % modu; } else { next[ni as usize][nj as usize] = (next[ni as usize][nj as usize] + dp[i][j]) % modu; } } } j += 1; } i += 1; } dp = next; mv += 1; } ans\n}",
+        }),
+        Problem("lc_num_ways_stay_same_place", "LC Number Of Ways Stay Same Place", "Return how many ways to be at index 0 after exactly `steps` moves.", ["At each move, stay, move left, or move right within array bounds.", "Return the count modulo `1_000_000_007`."], "int", [{"name": "steps", "type": "int"}, {"name": "arr_len", "type": "int"}], [case({"steps": 3, "arr_len": 2}, 4), case({"steps": 2, "arr_len": 4}, 2), case({"steps": 4, "arr_len": 2}, 8)], lc("number-of-ways-to-stay-in-the-same-place-after-some-steps"), "hard", {
+            "c": "int lc_num_ways_stay_same_place(int steps, int arr_len) {\n    int mod = 1000000007, max_pos = steps < arr_len ? steps : arr_len - 1; int dp[512] = {0}, next[512]; dp[0] = 1; for (int s = 0; s < steps; s++) { for (int i = 0; i <= max_pos; i++) next[i] = 0; for (int i = 0; i <= max_pos; i++) { next[i] = (next[i] + dp[i]) % mod; if (i > 0) next[i - 1] = (next[i - 1] + dp[i]) % mod; if (i < max_pos) next[i + 1] = (next[i + 1] + dp[i]) % mod; } for (int i = 0; i <= max_pos; i++) dp[i] = next[i]; } return dp[0];\n}",
+            "java": "class LcNumWaysStaySamePlace {\n    public static int lc_num_ways_stay_same_place(int steps, int arr_len) {\n        int mod = 1000000007, max = Math.min(steps, arr_len - 1); int[] dp = new int[max + 1]; dp[0] = 1; for (int s = 0; s < steps; s++) { int[] next = new int[max + 1]; for (int i = 0; i <= max; i++) { next[i] = (next[i] + dp[i]) % mod; if (i > 0) next[i - 1] = (next[i - 1] + dp[i]) % mod; if (i < max) next[i + 1] = (next[i + 1] + dp[i]) % mod; } dp = next; } return dp[0];\n    }\n}",
+            "rust": "pub fn lc_num_ways_stay_same_place(steps: i32, arr_len: i32) -> i32 {\n    let modu = 1000000007i32; let max_pos = steps.min(arr_len - 1) as usize; let mut dp = vec![0; max_pos + 1]; dp[0] = 1; let mut s = 0; while s < steps { let mut next = vec![0; max_pos + 1]; let mut i = 0usize; while i <= max_pos { next[i] = (next[i] + dp[i]) % modu; if i > 0 { next[i - 1] = (next[i - 1] + dp[i]) % modu; } if i < max_pos { next[i + 1] = (next[i + 1] + dp[i]) % modu; } i += 1; } dp = next; s += 1; } dp[0]\n}",
+        }),
+    ]
+
+
+def more_real_source_problems_28() -> list[Problem]:
+    lc = lambda slug: source("LeetCode", slug, f"https://leetcode.com/problems/{slug}/")
+    luogu = lambda pid: source("Luogu", pid, f"https://www.luogu.com.cn/problem/{pid}")
+    ex = lambda slug: source("Exercism", slug, f"https://exercism.org/tracks/c/exercises/{slug}")
+    return [
+        Problem("lc_coin_change_ii_ways_csv", "LC Coin Change II Ways CSV", "Return the number of combinations that make `amount` using unlimited coins.", ["`coins` is a comma-separated list of positive coin values.", "Order of coins in a combination does not matter."], "int", [{"name": "amount", "type": "int"}, {"name": "coins", "type": "string"}], [case({"amount": 5, "coins": "1,2,5"}, 4), case({"amount": 3, "coins": "2"}, 0), case({"amount": 10, "coins": "10"}, 1)], lc("coin-change-ii"), "medium", {
+            "c": """int lc_coin_change_ii_ways_csv(int amount, const char *coins) {
+    int c[128], n = 0, i = 0; while (coins[i] != '\\0') { int v = 0; while (coins[i] >= '0' && coins[i] <= '9') { v = v * 10 + coins[i] - '0'; i++; } c[n++] = v; if (coins[i] == ',') i++; }
+    int dp[5001] = {0}; dp[0] = 1; for (int k = 0; k < n; k++) for (int s = c[k]; s <= amount; s++) dp[s] += dp[s - c[k]]; return dp[amount];
+}""",
+            "java": """class LcCoinChangeIiWaysCsv {
+    public static int lc_coin_change_ii_ways_csv(int amount, String coins) {
+        String[] parts = coins.split(","); int[] dp = new int[amount + 1]; dp[0] = 1; for (String part : parts) { int coin = Integer.parseInt(part); for (int s = coin; s <= amount; s++) dp[s] += dp[s - coin]; } return dp[amount];
+    }
+}""",
+            "rust": """pub fn lc_coin_change_ii_ways_csv(amount: i32, coins: &str) -> i32 {
+    let mut dp = vec![0i32; amount as usize + 1]; dp[0] = 1; for coin in coins.split(',').map(|x| x.parse::<usize>().unwrap()) { let mut s = coin; while s <= amount as usize { dp[s] += dp[s - coin]; s += 1; } } dp[amount as usize]
+}""",
+        }),
+        Problem("lc_unique_paths_obstacles_grid", "LC Unique Paths With Obstacles Grid", "Return the number of right/down paths through a grid with blocked cells.", ["`grid` uses comma-separated rows separated by semicolons.", "`1` means blocked and `0` means open."], "int", [{"name": "grid", "type": "string"}], [case({"grid": "0,0,0;0,1,0;0,0,0"}, 2), case({"grid": "0,1;0,0"}, 1), case({"grid": "1"}, 0)], lc("unique-paths-ii"), "medium", {
+            "c": """int lc_unique_paths_obstacles_grid(const char *grid) {
+    int a[64][64], r = 0, c = 0, col = 0, i = 0; while (grid[i] != '\\0') { if (grid[i] == '0' || grid[i] == '1') { a[r][col++] = grid[i] - '0'; i++; } else if (grid[i] == ',') i++; else { if (col > c) c = col; col = 0; r++; i++; } } if (col > c) c = col; r++;
+    int dp[64] = {0}; dp[0] = a[0][0] == 0 ? 1 : 0; for (int x = 0; x < r; x++) for (int y = 0; y < c; y++) { if (a[x][y] == 1) dp[y] = 0; else if (y > 0) dp[y] += dp[y - 1]; } return dp[c - 1];
+}""",
+            "java": """class LcUniquePathsObstaclesGrid {
+    public static int lc_unique_paths_obstacles_grid(String grid) {
+        String[] rows = grid.split(";"); int m = rows.length, n = rows[0].split(",").length; int[] dp = new int[n]; dp[0] = rows[0].charAt(0) == '0' ? 1 : 0; for (int i = 0; i < m; i++) { String[] cells = rows[i].split(","); for (int j = 0; j < n; j++) { if (cells[j].equals("1")) dp[j] = 0; else if (j > 0) dp[j] += dp[j - 1]; } } return dp[n - 1];
+    }
+}""",
+            "rust": """pub fn lc_unique_paths_obstacles_grid(grid: &str) -> i32 {
+    let rows: Vec<Vec<i32>> = grid.split(';').map(|r| r.split(',').map(|x| x.parse::<i32>().unwrap()).collect()).collect(); let n = rows[0].len(); let mut dp = vec![0; n]; dp[0] = if rows[0][0] == 0 { 1 } else { 0 }; for row in rows { let mut j = 0usize; while j < n { if row[j] == 1 { dp[j] = 0; } else if j > 0 { dp[j] += dp[j - 1]; } j += 1; } } dp[n - 1]
+}""",
+        }),
+        Problem("lc_course_schedule_possible", "LC Course Schedule Possible", "Return true if all courses can be finished.", ["`prerequisites` is semicolon-separated `course,prerequisite` pairs.", "Courses are numbered from `0` to `num_courses - 1`."], "bool", [{"name": "num_courses", "type": "int"}, {"name": "prerequisites", "type": "string"}], [case({"num_courses": 2, "prerequisites": "1,0"}, True), case({"num_courses": 2, "prerequisites": "1,0;0,1"}, False), case({"num_courses": 4, "prerequisites": "1,0;2,1;3,2"}, True)], lc("course-schedule"), "medium", {
+            "c": """int lc_course_schedule_possible(int num_courses, const char *prerequisites) {
+    int g[128][128] = {{0}}, deg[128] = {0}, i = 0; while (prerequisites[i] != '\\0') { int a = 0, b = 0; while (prerequisites[i] >= '0' && prerequisites[i] <= '9') { a = a * 10 + prerequisites[i] - '0'; i++; } if (prerequisites[i] == ',') i++; while (prerequisites[i] >= '0' && prerequisites[i] <= '9') { b = b * 10 + prerequisites[i] - '0'; i++; } if (!g[b][a]) { g[b][a] = 1; deg[a]++; } if (prerequisites[i] == ';') i++; }
+    int q[128], h = 0, t = 0, seen = 0; for (int v = 0; v < num_courses; v++) if (deg[v] == 0) q[t++] = v; while (h < t) { int v = q[h++]; seen++; for (int to = 0; to < num_courses; to++) if (g[v][to] && --deg[to] == 0) q[t++] = to; } return seen == num_courses;
+}""",
+            "java": """class LcCourseSchedulePossible {
+    public static boolean lc_course_schedule_possible(int num_courses, String prerequisites) {
+        int[][] g = new int[num_courses][num_courses]; int[] deg = new int[num_courses]; for (String pair : prerequisites.split(";")) { String[] p = pair.split(","); int a = Integer.parseInt(p[0]), b = Integer.parseInt(p[1]); if (g[b][a] == 0) { g[b][a] = 1; deg[a]++; } } int[] q = new int[num_courses]; int h = 0, t = 0, seen = 0; for (int i = 0; i < num_courses; i++) if (deg[i] == 0) q[t++] = i; while (h < t) { int v = q[h++]; seen++; for (int to = 0; to < num_courses; to++) if (g[v][to] == 1 && --deg[to] == 0) q[t++] = to; } return seen == num_courses;
+    }
+}""",
+            "rust": """pub fn lc_course_schedule_possible(num_courses: i32, prerequisites: &str) -> bool {
+    let n = num_courses as usize; let mut g = vec![vec![false; n]; n]; let mut deg = vec![0; n]; for pair in prerequisites.split(';') { let p: Vec<usize> = pair.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); if !g[p[1]][p[0]] { g[p[1]][p[0]] = true; deg[p[0]] += 1; } } let mut q = Vec::new(); for i in 0..n { if deg[i] == 0 { q.push(i); } } let mut h = 0usize; while h < q.len() { let v = q[h]; h += 1; for to in 0..n { if g[v][to] { deg[to] -= 1; if deg[to] == 0 { q.push(to); } } } } q.len() == n
+}""",
+        }),
+        Problem("lc_jump_game_ii_min_jumps", "LC Jump Game II Min Jumps", "Return the minimum number of jumps needed to reach the last index.", ["`nums` is a comma-separated list of nonnegative jump lengths.", "The last index is reachable."], "int", [{"name": "nums", "type": "string"}], [case({"nums": "2,3,1,1,4"}, 2), case({"nums": "2,3,0,1,4"}, 2), case({"nums": "0"}, 0)], lc("jump-game-ii"), "medium", {
+            "c": """int lc_jump_game_ii_min_jumps(const char *nums) {
+    int a[512], n = 0, i = 0; while (nums[i] != '\\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } a[n++] = v; if (nums[i] == ',') i++; } int jumps = 0, end = 0, far = 0; for (int idx = 0; idx < n - 1; idx++) { if (idx + a[idx] > far) far = idx + a[idx]; if (idx == end) { jumps++; end = far; } } return jumps;
+}""",
+            "java": """class LcJumpGameIiMinJumps {
+    public static int lc_jump_game_ii_min_jumps(String nums) {
+        String[] p = nums.split(","); int jumps = 0, end = 0, far = 0; for (int i = 0; i < p.length - 1; i++) { int v = Integer.parseInt(p[i]); far = Math.max(far, i + v); if (i == end) { jumps++; end = far; } } return jumps;
+    }
+}""",
+            "rust": """pub fn lc_jump_game_ii_min_jumps(nums: &str) -> i32 {
+    let a: Vec<i32> = nums.split(',').map(|x| x.parse::<i32>().unwrap()).collect(); let mut jumps = 0; let mut end = 0usize; let mut far = 0usize; let mut i = 0usize; while i + 1 < a.len() { far = far.max(i + a[i] as usize); if i == end { jumps += 1; end = far; } i += 1; } jumps
+}""",
+        }),
+        Problem("lc_find_town_judge", "LC Find Town Judge", "Return the label of the town judge, or `-1` if no judge exists.", ["`trust` is semicolon-separated `a,b` pairs.", "People are labeled from `1` to `n`."], "int", [{"name": "n", "type": "int"}, {"name": "trust", "type": "string"}], [case({"n": 2, "trust": "1,2"}, 2), case({"n": 3, "trust": "1,3;2,3"}, 3), case({"n": 3, "trust": "1,3;2,3;3,1"}, -1)], lc("find-the-town-judge"), "easy", {
+            "c": """int lc_find_town_judge(int n, const char *trust) {
+    int score[128] = {0}, i = 0; while (trust[i] != '\\0') { int a = 0, b = 0; while (trust[i] >= '0' && trust[i] <= '9') { a = a * 10 + trust[i] - '0'; i++; } if (trust[i] == ',') i++; while (trust[i] >= '0' && trust[i] <= '9') { b = b * 10 + trust[i] - '0'; i++; } score[a]--; score[b]++; if (trust[i] == ';') i++; } for (int person = 1; person <= n; person++) if (score[person] == n - 1) return person; return -1;
+}""",
+            "java": """class LcFindTownJudge {
+    public static int lc_find_town_judge(int n, String trust) {
+        int[] score = new int[n + 1]; for (String pair : trust.split(";")) { String[] p = pair.split(","); score[Integer.parseInt(p[0])]--; score[Integer.parseInt(p[1])]++; } for (int i = 1; i <= n; i++) if (score[i] == n - 1) return i; return -1;
+    }
+}""",
+            "rust": """pub fn lc_find_town_judge(n: i32, trust: &str) -> i32 {
+    let mut score = vec![0; n as usize + 1]; for pair in trust.split(';') { let p: Vec<usize> = pair.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); score[p[0]] -= 1; score[p[1]] += 1; } for person in 1..=n as usize { if score[person] == n - 1 { return person as i32; } } -1
+}""",
+        }),
+        Problem("lc_minimum_total_triangle_csv", "LC Triangle Minimum Total CSV", "Return the minimum path sum from top to bottom of a triangle.", ["`triangle` uses comma-separated rows separated by semicolons.", "Each step may move to the same or next index in the next row."], "int", [{"name": "triangle", "type": "string"}], [case({"triangle": "2;3,4;6,5,7;4,1,8,3"}, 11), case({"triangle": "-10"}, -10), case({"triangle": "1;2,3"}, 3)], lc("triangle"), "medium", {
+            "c": """int lc_minimum_total_triangle_csv(const char *triangle) {
+    int rows[64][64], sizes[64], r = 0, c = 0, i = 0; while (triangle[i] != '\\0') { int sign = 1, v = 0; if (triangle[i] == '-') { sign = -1; i++; } while (triangle[i] >= '0' && triangle[i] <= '9') { v = v * 10 + triangle[i] - '0'; i++; } rows[r][c++] = sign * v; if (triangle[i] == ',') i++; else { sizes[r++] = c; c = 0; if (triangle[i] == ';') i++; } } if (c > 0) sizes[r++] = c;
+    int dp[64]; for (int j = 0; j < sizes[r - 1]; j++) dp[j] = rows[r - 1][j]; for (int x = r - 2; x >= 0; x--) for (int y = 0; y < sizes[x]; y++) dp[y] = rows[x][y] + (dp[y] < dp[y + 1] ? dp[y] : dp[y + 1]); return dp[0];
+}""",
+            "java": """class LcMinimumTotalTriangleCsv {
+    public static int lc_minimum_total_triangle_csv(String triangle) {
+        String[] rows = triangle.split(";"); int[] dp = new int[rows.length]; String[] last = rows[rows.length - 1].split(","); for (int i = 0; i < last.length; i++) dp[i] = Integer.parseInt(last[i]); for (int r = rows.length - 2; r >= 0; r--) { String[] cells = rows[r].split(","); for (int c = 0; c < cells.length; c++) dp[c] = Integer.parseInt(cells[c]) + Math.min(dp[c], dp[c + 1]); } return dp[0];
+    }
+}""",
+            "rust": """pub fn lc_minimum_total_triangle_csv(triangle: &str) -> i32 {
+    let rows: Vec<Vec<i32>> = triangle.split(';').map(|r| r.split(',').map(|x| x.parse::<i32>().unwrap()).collect()).collect(); let mut dp = rows[rows.len() - 1].clone(); let mut r = rows.len() - 1; while r > 0 { r -= 1; let mut c = 0usize; while c < rows[r].len() { dp[c] = rows[r][c] + dp[c].min(dp[c + 1]); c += 1; } } dp[0]
+}""",
+        }),
+        Problem("luogu_p1003_carpet_top_index", "Luogu P1003 Carpet Top Index", "Return the topmost carpet covering a query point, or `-1` if none covers it.", ["`carpets` is semicolon-separated `x,y,width,height` records.", "Return the 1-based carpet index matching Luogu P1003 order."], "int", [{"name": "carpets", "type": "string"}, {"name": "x", "type": "int"}, {"name": "y", "type": "int"}], [case({"carpets": "1,0,2,3;0,2,3,3", "x": 2, "y": 2}, 2), case({"carpets": "0,0,1,1", "x": 2, "y": 2}, -1), case({"carpets": "0,0,2,2;1,1,1,1", "x": 1, "y": 1}, 2)], luogu("P1003"), "medium", {
+            "c": """int luogu_p1003_carpet_top_index(const char *carpets, int x, int y) {
+    int ans = -1, idx = 1, i = 0; while (carpets[i] != '\\0') { int v[4] = {0,0,0,0}; for (int k = 0; k < 4; k++) { while (carpets[i] >= '0' && carpets[i] <= '9') { v[k] = v[k] * 10 + carpets[i] - '0'; i++; } if (carpets[i] == ',') i++; } if (x >= v[0] && x <= v[0] + v[2] && y >= v[1] && y <= v[1] + v[3]) ans = idx; idx++; if (carpets[i] == ';') i++; } return ans;
+}""",
+            "java": """class LuoguP1003CarpetTopIndex {
+    public static int luogu_p1003_carpet_top_index(String carpets, int x, int y) {
+        int ans = -1, idx = 1; for (String rec : carpets.split(";")) { String[] p = rec.split(","); int a = Integer.parseInt(p[0]), b = Integer.parseInt(p[1]), g = Integer.parseInt(p[2]), k = Integer.parseInt(p[3]); if (x >= a && x <= a + g && y >= b && y <= b + k) ans = idx; idx++; } return ans;
+    }
+}""",
+            "rust": """pub fn luogu_p1003_carpet_top_index(carpets: &str, x: i32, y: i32) -> i32 {
+    let mut ans = -1; for (i, rec) in carpets.split(';').enumerate() { let v: Vec<i32> = rec.split(',').map(|p| p.parse::<i32>().unwrap()).collect(); if x >= v[0] && x <= v[0] + v[2] && y >= v[1] && y <= v[1] + v[3] { ans = i as i32 + 1; } } ans
+}""",
+        }),
+        Problem("luogu_p1014_cantor_code", "Luogu P1014 Cantor Code", "Return the Cantor-table fraction at position `n` encoded as `numerator * 1000 + denominator`.", ["Use the zigzag diagonal order from Luogu P1014.", "`n` is positive."], "int", [{"name": "n", "type": "int"}], [case({"n": 1}, 1001), case({"n": 7}, 1004), case({"n": 14}, 2004)], luogu("P1014"), "easy", {
+            "c": """int luogu_p1014_cantor_code(int n) {
+    int diag = 1, used = 0; while (used + diag < n) { used += diag; diag++; } int offset = n - used; int num, den; if (diag % 2 == 0) { num = offset; den = diag - offset + 1; } else { num = diag - offset + 1; den = offset; } return num * 1000 + den;
+}""",
+            "java": """class LuoguP1014CantorCode {
+    public static int luogu_p1014_cantor_code(int n) {
+        int diag = 1, used = 0; while (used + diag < n) { used += diag; diag++; } int offset = n - used; int num, den; if (diag % 2 == 0) { num = offset; den = diag - offset + 1; } else { num = diag - offset + 1; den = offset; } return num * 1000 + den;
+    }
+}""",
+            "rust": """pub fn luogu_p1014_cantor_code(n: i32) -> i32 {
+    let mut diag = 1; let mut used = 0; while used + diag < n { used += diag; diag += 1; } let offset = n - used; let (num, den) = if diag % 2 == 0 { (offset, diag - offset + 1) } else { (diag - offset + 1, offset) }; num * 1000 + den
+}""",
+        }),
+        Problem("luogu_p1909_pencil_min_cost", "Luogu P1909 Pencil Min Cost", "Return the minimum cost to buy at least `n` pencils.", ["`options` is semicolon-separated `pack_size,price` records.", "Each purchase uses only one supplier option."], "int", [{"name": "n", "type": "int"}, {"name": "options", "type": "string"}], [case({"n": 57, "options": "2,2;50,30;30,27"}, 54), case({"n": 999, "options": "128,233;128,233;128,233"}, 1864), case({"n": 1, "options": "3,10;5,12;7,15"}, 10)], luogu("P1909"), "easy", {
+            "c": """int luogu_p1909_pencil_min_cost(int n, const char *options) {
+    int best = 2147483647, i = 0; while (options[i] != '\\0') { int pack = 0, price = 0; while (options[i] >= '0' && options[i] <= '9') { pack = pack * 10 + options[i] - '0'; i++; } if (options[i] == ',') i++; while (options[i] >= '0' && options[i] <= '9') { price = price * 10 + options[i] - '0'; i++; } int cost = ((n + pack - 1) / pack) * price; if (cost < best) best = cost; if (options[i] == ';') i++; } return best;
+}""",
+            "java": """class LuoguP1909PencilMinCost {
+    public static int luogu_p1909_pencil_min_cost(int n, String options) {
+        int best = Integer.MAX_VALUE; for (String rec : options.split(";")) { String[] p = rec.split(","); int pack = Integer.parseInt(p[0]), price = Integer.parseInt(p[1]); best = Math.min(best, ((n + pack - 1) / pack) * price); } return best;
+    }
+}""",
+            "rust": """pub fn luogu_p1909_pencil_min_cost(n: i32, options: &str) -> i32 {
+    let mut best = i32::MAX; for rec in options.split(';') { let p: Vec<i32> = rec.split(',').map(|x| x.parse::<i32>().unwrap()).collect(); best = best.min(((n + p[0] - 1) / p[0]) * p[1]); } best
+}""",
+        }),
+        Problem("exercism_sieve_prime_count", "Exercism Sieve Prime Count", "Return how many primes are less than or equal to `limit`.", ["Use the Sieve of Eratosthenes task from Exercism.", "`limit` is nonnegative."], "int", [{"name": "limit", "type": "int"}], [case({"limit": 10}, 4), case({"limit": 1}, 0), case({"limit": 30}, 10)], ex("sieve"), "medium", {
+            "c": """int exercism_sieve_prime_count(int limit) {
+    if (limit < 2) return 0; int prime[10001]; for (int i = 0; i <= limit; i++) prime[i] = 1; prime[0] = prime[1] = 0; for (int p = 2; p * p <= limit; p++) if (prime[p]) for (int m = p * p; m <= limit; m += p) prime[m] = 0; int count = 0; for (int i = 2; i <= limit; i++) count += prime[i]; return count;
+}""",
+            "java": """class ExercismSievePrimeCount {
+    public static int exercism_sieve_prime_count(int limit) {
+        if (limit < 2) return 0; boolean[] prime = new boolean[limit + 1]; java.util.Arrays.fill(prime, true); prime[0] = false; prime[1] = false; for (int p = 2; p * p <= limit; p++) if (prime[p]) for (int m = p * p; m <= limit; m += p) prime[m] = false; int count = 0; for (int i = 2; i <= limit; i++) if (prime[i]) count++; return count;
+    }
+}""",
+            "rust": """pub fn exercism_sieve_prime_count(limit: i32) -> i32 {
+    if limit < 2 { return 0; } let n = limit as usize; let mut prime = vec![true; n + 1]; prime[0] = false; prime[1] = false; let mut p = 2usize; while p * p <= n { if prime[p] { let mut m = p * p; while m <= n { prime[m] = false; m += p; } } p += 1; } prime.iter().filter(|&&x| x).count() as i32
+}""",
+        }),
+        Problem("exercism_prime_factors_sum", "Exercism Prime Factors Sum", "Return the sum of prime factors of `n`, counting multiplicity.", ["This is based on Exercism's prime-factors exercise.", "`n >= 1`."], "int", [{"name": "n", "type": "int"}], [case({"n": 60}, 12), case({"n": 13}, 13), case({"n": 1}, 0)], ex("prime-factors"), "medium", {
+            "c": """int exercism_prime_factors_sum(int n) {
+    int sum = 0; for (int p = 2; p * p <= n; p++) while (n % p == 0) { sum += p; n /= p; } if (n > 1) sum += n; return sum;
+}""",
+            "java": """class ExercismPrimeFactorsSum {
+    public static int exercism_prime_factors_sum(int n) {
+        int sum = 0; for (int p = 2; p * p <= n; p++) while (n % p == 0) { sum += p; n /= p; } if (n > 1) sum += n; return sum;
+    }
+}""",
+            "rust": """pub fn exercism_prime_factors_sum(mut n: i32) -> i32 {
+    let mut sum = 0; let mut p = 2; while p * p <= n { while n % p == 0 { sum += p; n /= p; } p += 1; } if n > 1 { sum += n; } sum
+}""",
+        }),
+        Problem("exercism_largest_series_product", "Exercism Largest Series Product", "Return the largest product of any contiguous span of digits.", ["`digits` contains only decimal digits.", "A zero-length span has product `1`."], "int", [{"name": "digits", "type": "string"}, {"name": "span", "type": "int"}], [case({"digits": "1027839564", "span": 3}, 270), case({"digits": "29", "span": 2}, 18), case({"digits": "123", "span": 0}, 1)], ex("largest-series-product"), "medium", {
+            "c": """int exercism_largest_series_product(const char *digits, int span) {
+    if (span == 0) return 1; int n = 0; while (digits[n] != '\\0') n++; int best = 0; for (int i = 0; i + span <= n; i++) { int prod = 1; for (int j = 0; j < span; j++) prod *= digits[i + j] - '0'; if (prod > best) best = prod; } return best;
+}""",
+            "java": """class ExercismLargestSeriesProduct {
+    public static int exercism_largest_series_product(String digits, int span) {
+        if (span == 0) return 1; int best = 0; for (int i = 0; i + span <= digits.length(); i++) { int prod = 1; for (int j = 0; j < span; j++) prod *= digits.charAt(i + j) - '0'; best = Math.max(best, prod); } return best;
+    }
+}""",
+            "rust": """pub fn exercism_largest_series_product(digits: &str, span: i32) -> i32 {
+    if span == 0 { return 1; } let b = digits.as_bytes(); let s = span as usize; let mut best = 0; let mut i = 0usize; while i + s <= b.len() { let mut prod = 1; let mut j = 0usize; while j < s { prod *= (b[i + j] - b'0') as i32; j += 1; } best = best.max(prod); i += 1; } best
+}""",
+        }),
+    ]
+
+
+def more_real_source_problems_29() -> list[Problem]:
+    lc = lambda slug: source("LeetCode", slug, f"https://leetcode.com/problems/{slug}/")
+    luogu = lambda pid: source("Luogu", pid, f"https://www.luogu.com.cn/problem/{pid}")
+    return [
+        Problem("lc_redundant_connection_edge_code", "LC Redundant Connection Edge Code", "Return the redundant undirected edge encoded as `u * 1000 + v`.", ["`edges` is semicolon-separated `u,v` pairs.", "Return the last edge whose addition creates a cycle."], "int", [{"name": "edges", "type": "string"}], [case({"edges": "1,2;1,3;2,3"}, 2003), case({"edges": "1,2;2,3;3,4;1,4;1,5"}, 1004), case({"edges": "2,3;1,2;1,3"}, 1003)], lc("redundant-connection"), "medium", {
+            "c": """static int lc_rc_find(int *parent, int x) { while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+int lc_redundant_connection_edge_code(const char *edges) {
+    int parent[1001]; for (int i = 0; i <= 1000; i++) parent[i] = i; int i = 0, ans = 0; while (edges[i] != '\\0') { int u = 0, v = 0; while (edges[i] >= '0' && edges[i] <= '9') { u = u * 10 + edges[i] - '0'; i++; } if (edges[i] == ',') i++; while (edges[i] >= '0' && edges[i] <= '9') { v = v * 10 + edges[i] - '0'; i++; } int ru = lc_rc_find(parent, u), rv = lc_rc_find(parent, v); if (ru == rv) ans = u * 1000 + v; else parent[ru] = rv; if (edges[i] == ';') i++; } return ans;
+}""",
+            "java": """class LcRedundantConnectionEdgeCode {
+    static int find(int[] parent, int x) { while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+    public static int lc_redundant_connection_edge_code(String edges) {
+        int[] parent = new int[1001]; for (int i = 0; i < parent.length; i++) parent[i] = i; int ans = 0; for (String e : edges.split(";")) { String[] p = e.split(","); int u = Integer.parseInt(p[0]), v = Integer.parseInt(p[1]); int ru = find(parent, u), rv = find(parent, v); if (ru == rv) ans = u * 1000 + v; else parent[ru] = rv; } return ans;
+    }
+}""",
+            "rust": """pub fn lc_redundant_connection_edge_code(edges: &str) -> i32 {
+    fn find(parent: &mut Vec<usize>, mut x: usize) -> usize { while parent[x] != x { let px = parent[x]; parent[x] = parent[px]; x = parent[x]; } x }
+    let mut parent: Vec<usize> = (0..=1000).collect(); let mut ans = 0; for e in edges.split(';') { let p: Vec<usize> = e.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); let ru = find(&mut parent, p[0]); let rv = find(&mut parent, p[1]); if ru == rv { ans = (p[0] * 1000 + p[1]) as i32; } else { parent[ru] = rv; } } ans
+}""",
+        }),
+        Problem("lc_min_genetic_mutation_steps", "LC Minimum Genetic Mutation Steps", "Return the minimum number of single-character mutations from `start` to `end`.", ["Each intermediate gene must appear in comma-separated `bank`.", "Genes have length 8 and use `A`, `C`, `G`, `T`."], "int", [{"name": "start", "type": "string"}, {"name": "end", "type": "string"}, {"name": "bank", "type": "string"}], [case({"start": "AACCGGTT", "end": "AACCGGTA", "bank": "AACCGGTA"}, 1), case({"start": "AACCGGTT", "end": "AAACGGTA", "bank": "AACCGGTA,AACCGCTA,AAACGGTA"}, 2), case({"start": "AAAAACCC", "end": "AACCCCCC", "bank": "AAAACCCC,AAACCCCC,AACCCCCC"}, 3)], lc("minimum-genetic-mutation"), "medium", {
+            "c": """static int lc_mgm_diff1(const char *a, const char *b) { int d = 0; for (int i = 0; i < 8; i++) if (a[i] != b[i]) d++; return d == 1; }
+int lc_min_genetic_mutation_steps(const char *start, const char *end, const char *bank) {
+    char genes[128][9]; int n = 0, i = 0, col = 0; while (bank[i] != '\\0') { col = 0; while (bank[i] != ',' && bank[i] != '\\0') genes[n][col++] = bank[i++]; genes[n][col] = '\\0'; n++; if (bank[i] == ',') i++; }
+    int q[128], dist[128], seen[128] = {0}, h = 0, t = 0; for (int k = 0; k < n; k++) if (lc_mgm_diff1(start, genes[k])) { q[t] = k; dist[t++] = 1; seen[k] = 1; } while (h < t) { int v = q[h], d = dist[h++]; int same = 1; for (int k = 0; k < 8; k++) if (genes[v][k] != end[k]) same = 0; if (same) return d; for (int to = 0; to < n; to++) if (!seen[to] && lc_mgm_diff1(genes[v], genes[to])) { seen[to] = 1; q[t] = to; dist[t++] = d + 1; } } return -1;
+}""",
+            "java": """class LcMinGeneticMutationSteps {
+    static boolean diff1(String a, String b) { int d = 0; for (int i = 0; i < 8; i++) if (a.charAt(i) != b.charAt(i)) d++; return d == 1; }
+    public static int lc_min_genetic_mutation_steps(String start, String end, String bank) {
+        String[] genes = bank.split(","); int[] q = new int[genes.length], dist = new int[genes.length]; boolean[] seen = new boolean[genes.length]; int h = 0, t = 0; for (int i = 0; i < genes.length; i++) if (diff1(start, genes[i])) { q[t] = i; dist[t++] = 1; seen[i] = true; } while (h < t) { int v = q[h], d = dist[h++]; if (genes[v].equals(end)) return d; for (int to = 0; to < genes.length; to++) if (!seen[to] && diff1(genes[v], genes[to])) { seen[to] = true; q[t] = to; dist[t++] = d + 1; } } return -1;
+    }
+}""",
+            "rust": """pub fn lc_min_genetic_mutation_steps(start: &str, end: &str, bank: &str) -> i32 {
+    fn diff1(a: &str, b: &str) -> bool { a.bytes().zip(b.bytes()).filter(|(x, y)| x != y).count() == 1 }
+    let genes: Vec<&str> = bank.split(',').collect(); let mut q: Vec<(usize, i32)> = Vec::new(); let mut seen = vec![false; genes.len()]; for i in 0..genes.len() { if diff1(start, genes[i]) { q.push((i, 1)); seen[i] = true; } } let mut h = 0usize; while h < q.len() { let (v, d) = q[h]; h += 1; if genes[v] == end { return d; } for to in 0..genes.len() { if !seen[to] && diff1(genes[v], genes[to]) { seen[to] = true; q.push((to, d + 1)); } } } -1
+}""",
+        }),
+        Problem("lc_eventual_safe_nodes_count", "LC Eventual Safe Nodes Count", "Return how many nodes are eventually safe in a directed graph.", ["`edges` is semicolon-separated `from,to` pairs.", "Nodes with no outgoing edges are terminal and safe."], "int", [{"name": "n", "type": "int"}, {"name": "edges", "type": "string"}], [case({"n": 7, "edges": "0,1;0,2;1,2;1,3;2,5;3,0;3,4;4,5"}, 4), case({"n": 4, "edges": "0,1;1,2;2,3"}, 4), case({"n": 3, "edges": "0,1;1,0"}, 1)], lc("find-eventual-safe-states"), "medium", {
+            "c": """int lc_eventual_safe_nodes_count(int n, const char *edges) {
+    int rev[128][128] = {{0}}, revn[128] = {0}, out[128] = {0}, i = 0; while (edges[i] != '\\0') { int a = 0, b = 0; while (edges[i] >= '0' && edges[i] <= '9') { a = a * 10 + edges[i] - '0'; i++; } if (edges[i] == ',') i++; while (edges[i] >= '0' && edges[i] <= '9') { b = b * 10 + edges[i] - '0'; i++; } rev[b][revn[b]++] = a; out[a]++; if (edges[i] == ';') i++; } int q[128], h = 0, t = 0; for (int v = 0; v < n; v++) if (out[v] == 0) q[t++] = v; while (h < t) { int v = q[h++]; for (int k = 0; k < revn[v]; k++) if (--out[rev[v][k]] == 0) q[t++] = rev[v][k]; } return t;
+}""",
+            "java": """class LcEventualSafeNodesCount {
+    public static int lc_eventual_safe_nodes_count(int n, String edges) {
+        int[][] rev = new int[n][n]; int[] revn = new int[n], out = new int[n]; for (String e : edges.split(";")) { String[] p = e.split(","); int a = Integer.parseInt(p[0]), b = Integer.parseInt(p[1]); rev[b][revn[b]++] = a; out[a]++; } int[] q = new int[n]; int h = 0, t = 0; for (int v = 0; v < n; v++) if (out[v] == 0) q[t++] = v; while (h < t) { int v = q[h++]; for (int k = 0; k < revn[v]; k++) if (--out[rev[v][k]] == 0) q[t++] = rev[v][k]; } return t;
+    }
+}""",
+            "rust": """pub fn lc_eventual_safe_nodes_count(n: i32, edges: &str) -> i32 {
+    let nn = n as usize; let mut rev = vec![Vec::<usize>::new(); nn]; let mut out = vec![0; nn]; for e in edges.split(';') { let p: Vec<usize> = e.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); rev[p[1]].push(p[0]); out[p[0]] += 1; } let mut q = Vec::new(); for v in 0..nn { if out[v] == 0 { q.push(v); } } let mut h = 0usize; while h < q.len() { let v = q[h]; h += 1; for &pre in &rev[v] { out[pre] -= 1; if out[pre] == 0 { q.push(pre); } } } q.len() as i32
+}""",
+        }),
+        Problem("lc_min_height_trees_root_count", "LC Minimum Height Trees Root Count", "Return the number of roots that produce minimum-height trees.", ["`edges` is semicolon-separated undirected `u,v` pairs.", "The graph is a tree with `n` nodes."], "int", [{"name": "n", "type": "int"}, {"name": "edges", "type": "string"}], [case({"n": 4, "edges": "1,0;1,2;1,3"}, 1), case({"n": 6, "edges": "3,0;3,1;3,2;3,4;5,4"}, 2), case({"n": 2, "edges": "0,1"}, 2)], lc("minimum-height-trees"), "medium", {
+            "c": """int lc_min_height_trees_root_count(int n, const char *edges) {
+    int g[128][128] = {{0}}, deg[128] = {0}, i = 0; while (edges[i] != '\\0') { int a = 0, b = 0; while (edges[i] >= '0' && edges[i] <= '9') { a = a * 10 + edges[i] - '0'; i++; } if (edges[i] == ',') i++; while (edges[i] >= '0' && edges[i] <= '9') { b = b * 10 + edges[i] - '0'; i++; } g[a][b] = g[b][a] = 1; deg[a]++; deg[b]++; if (edges[i] == ';') i++; } int left = n, leaves[128], count = 0; for (int v = 0; v < n; v++) if (deg[v] <= 1) leaves[count++] = v; while (left > 2) { left -= count; int next[128], nc = 0; for (int k = 0; k < count; k++) { int v = leaves[k]; for (int to = 0; to < n; to++) if (g[v][to] && --deg[to] == 1) next[nc++] = to; } for (int k = 0; k < nc; k++) leaves[k] = next[k]; count = nc; } return left;
+}""",
+            "java": """class LcMinHeightTreesRootCount {
+    public static int lc_min_height_trees_root_count(int n, String edges) {
+        int[][] g = new int[n][n]; int[] deg = new int[n]; for (String e : edges.split(";")) { String[] p = e.split(","); int a = Integer.parseInt(p[0]), b = Integer.parseInt(p[1]); g[a][b] = g[b][a] = 1; deg[a]++; deg[b]++; } int left = n, count = 0; int[] leaves = new int[n]; for (int v = 0; v < n; v++) if (deg[v] <= 1) leaves[count++] = v; while (left > 2) { left -= count; int[] next = new int[n]; int nc = 0; for (int k = 0; k < count; k++) for (int to = 0; to < n; to++) if (g[leaves[k]][to] == 1 && --deg[to] == 1) next[nc++] = to; leaves = next; count = nc; } return left;
+    }
+}""",
+            "rust": """pub fn lc_min_height_trees_root_count(n: i32, edges: &str) -> i32 {
+    let nn = n as usize; let mut g = vec![Vec::<usize>::new(); nn]; let mut deg = vec![0; nn]; for e in edges.split(';') { let p: Vec<usize> = e.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); g[p[0]].push(p[1]); g[p[1]].push(p[0]); deg[p[0]] += 1; deg[p[1]] += 1; } let mut left = nn; let mut leaves: Vec<usize> = (0..nn).filter(|&v| deg[v] <= 1).collect(); while left > 2 { left -= leaves.len(); let mut next = Vec::new(); for &v in &leaves { for &to in &g[v] { deg[to] -= 1; if deg[to] == 1 { next.push(to); } } } leaves = next; } left as i32
+}""",
+        }),
+        Problem("luogu_p1047_remaining_trees", "Luogu P1047 Remaining Trees", "Return how many integer tree positions remain after removing all interval-covered positions.", ["The road has tree positions from `0` through `length`, inclusive.", "`intervals` is semicolon-separated `left,right` records with inclusive endpoints."], "int", [{"name": "length", "type": "int"}, {"name": "intervals", "type": "string"}], [case({"length": 500, "intervals": "150,300;100,200;470,471"}, 298), case({"length": 10, "intervals": "0,0;10,10"}, 9), case({"length": 5, "intervals": "1,3"}, 3)], luogu("P1047"), "easy", {
+            "c": """int luogu_p1047_remaining_trees(int length, const char *intervals) {
+    int removed[10001] = {0}, i = 0; while (intervals[i] != '\\0') { int l = 0, r = 0; while (intervals[i] >= '0' && intervals[i] <= '9') { l = l * 10 + intervals[i] - '0'; i++; } if (intervals[i] == ',') i++; while (intervals[i] >= '0' && intervals[i] <= '9') { r = r * 10 + intervals[i] - '0'; i++; } for (int x = l; x <= r && x <= length; x++) removed[x] = 1; if (intervals[i] == ';') i++; } int ans = 0; for (int x = 0; x <= length; x++) if (!removed[x]) ans++; return ans;
+}""",
+            "java": """class LuoguP1047RemainingTrees {
+    public static int luogu_p1047_remaining_trees(int length, String intervals) {
+        boolean[] removed = new boolean[length + 1]; for (String rec : intervals.split(";")) { String[] p = rec.split(","); int l = Integer.parseInt(p[0]), r = Integer.parseInt(p[1]); for (int x = l; x <= r && x <= length; x++) removed[x] = true; } int ans = 0; for (int x = 0; x <= length; x++) if (!removed[x]) ans++; return ans;
+    }
+}""",
+            "rust": """pub fn luogu_p1047_remaining_trees(length: i32, intervals: &str) -> i32 {
+    let mut removed = vec![false; length as usize + 1]; for rec in intervals.split(';') { let p: Vec<usize> = rec.split(',').map(|x| x.parse::<usize>().unwrap()).collect(); let mut x = p[0]; while x <= p[1] && x <= length as usize { removed[x] = true; x += 1; } } removed.iter().filter(|&&x| !x).count() as i32
+}""",
+        }),
+        Problem("luogu_p1217_prime_pal_count", "Luogu P1217 Prime Palindrome Count", "Return how many palindromic primes lie in `[a,b]`.", ["This follows the prime-palindrome search task from Luogu P1217.", "`a <= b`."], "int", [{"name": "a", "type": "int"}, {"name": "b", "type": "int"}], [case({"a": 5, "b": 500}, 12), case({"a": 1, "b": 10}, 4), case({"a": 100, "b": 200}, 5)], luogu("P1217"), "medium", {
+            "c": """static int luogu_p1217_pal(int x) { int r = 0, y = x; while (y > 0) { r = r * 10 + y % 10; y /= 10; } return r == x; }
+static int luogu_p1217_prime(int x) { if (x < 2) return 0; for (int d = 2; d * d <= x; d++) if (x % d == 0) return 0; return 1; }
+int luogu_p1217_prime_pal_count(int a, int b) { int count = 0; for (int x = a; x <= b; x++) if (luogu_p1217_pal(x) && luogu_p1217_prime(x)) count++; return count; }""",
+            "java": """class LuoguP1217PrimePalCount {
+    static boolean pal(int x) { int r = 0, y = x; while (y > 0) { r = r * 10 + y % 10; y /= 10; } return r == x; }
+    static boolean prime(int x) { if (x < 2) return false; for (int d = 2; d * d <= x; d++) if (x % d == 0) return false; return true; }
+    public static int luogu_p1217_prime_pal_count(int a, int b) { int count = 0; for (int x = a; x <= b; x++) if (pal(x) && prime(x)) count++; return count; }
+}""",
+            "rust": """pub fn luogu_p1217_prime_pal_count(a: i32, b: i32) -> i32 {
+    fn pal(x: i32) -> bool { let mut r = 0; let mut y = x; while y > 0 { r = r * 10 + y % 10; y /= 10; } r == x }
+    fn prime(x: i32) -> bool { if x < 2 { return false; } let mut d = 2; while d * d <= x { if x % d == 0 { return false; } d += 1; } true }
+    let mut count = 0; let mut x = a; while x <= b { if pal(x) && prime(x) { count += 1; } x += 1; } count
+}""",
+        }),
+        Problem("luogu_p1423_swim_days", "Luogu P1423 Swim Days", "Return the first day on which cumulative swimming distance reaches the target distance.", ["`x_times_100` encodes the Luogu decimal distance as `x * 100`.", "The first day distance is `2.0`; each next day is `98%` of the previous day."], "int", [{"name": "x_times_100", "type": "int"}], [case({"x_times_100": 200}, 1), case({"x_times_100": 430}, 3), case({"x_times_100": 1000}, 6)], luogu("P1423"), "easy", {
+            "c": """int luogu_p1423_swim_days(int x_times_100) {
+    double x = x_times_100 / 100.0; double sum = 0.0, day_distance = 2.0; int days = 0; while (sum < x) { sum += day_distance; day_distance *= 0.98; days++; } return days;
+}""",
+            "java": """class LuoguP1423SwimDays {
+    public static int luogu_p1423_swim_days(int x_times_100) {
+        double x = x_times_100 / 100.0;
+        double sum = 0.0, dayDistance = 2.0; int days = 0; while (sum < x) { sum += dayDistance; dayDistance *= 0.98; days++; } return days;
+    }
+}""",
+            "rust": """pub fn luogu_p1423_swim_days(x_times_100: i32) -> i32 {
+    let x = x_times_100 as f64 / 100.0;
+    let mut sum = 0.0; let mut day_distance = 2.0; let mut days = 0; while sum < x { sum += day_distance; day_distance *= 0.98; days += 1; } days
+}""",
+        }),
+    ]
+
+
 def infer_difficulty(data: dict) -> str:
     if data.get("difficulty") in DIFFICULTIES:
         return data["difficulty"]
@@ -2587,7 +2910,20 @@ def main() -> None:
         + more_real_source_problems_24()
         + more_real_source_problems_25()
         + more_real_source_problems_26()
+        + more_real_source_problems_27()
+        + more_real_source_problems_28()
+        + more_real_source_problems_29()
     )
+    duplicate_source_variants = {
+        "lc_coin_change_ii_ways_csv",
+        "lc_unique_paths_obstacles_grid",
+        "lc_course_schedule_possible",
+        "lc_minimum_total_triangle_csv",
+        "exercism_sieve_prime_count",
+        "exercism_prime_factors_sum",
+        "exercism_largest_series_product",
+    }
+    new_problems = [p for p in new_problems if p.name not in duplicate_source_variants]
     names = [p.name for p in new_problems]
     if len(names) != len(set(names)):
         raise ValueError("duplicate new problem names")

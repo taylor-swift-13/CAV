@@ -1,0 +1,47 @@
+{
+  "name": "luogu_p1217_prime_pal_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "a",
+      "type": "int"
+    },
+    {
+      "name": "b",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "a": 5,
+        "b": 500
+      },
+      "expected": 12
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 1,
+        "b": 10
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "a": 100,
+        "b": 200
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P1217",
+    "url": "https://www.luogu.com.cn/problem/P1217",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

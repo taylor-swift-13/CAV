@@ -5957,6 +5957,27 @@
       }
     },
     {
+      "name": "lc_can_i_win_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "max_choosable_integer",
+          "type": "int"
+        },
+        {
+          "name": "desired_total",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "can-i-win",
+        "url": "https://leetcode.com/problems/can-i-win/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_can_jump_csv",
       "return_type": "bool",
       "params": [
@@ -6543,6 +6564,27 @@
       }
     },
     {
+      "name": "lc_eventual_safe_nodes_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-eventual-safe-states",
+        "url": "https://leetcode.com/problems/find-eventual-safe-states/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_excel_column_number",
       "return_type": "int",
       "params": [
@@ -6649,6 +6691,27 @@
         "name": "LeetCode",
         "slug": "find-peak-element",
         "url": "https://leetcode.com/problems/find-peak-element/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_find_town_judge",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "trust",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-the-town-judge",
+        "url": "https://leetcode.com/problems/find-the-town-judge/",
         "license": "local rewrite"
       }
     },
@@ -6977,6 +7040,23 @@
       }
     },
     {
+      "name": "lc_jump_game_ii_min_jumps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "jump-game-ii",
+        "url": "https://leetcode.com/problems/jump-game-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_keys_and_rooms_bool",
       "return_type": "bool",
       "params": [
@@ -6990,6 +7070,23 @@
         "name": "LeetCode",
         "slug": "keys-and-rooms",
         "url": "https://leetcode.com/problems/keys-and-rooms/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_knight_dialer_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "knight-dialer",
+        "url": "https://leetcode.com/problems/knight-dialer/",
         "license": "local rewrite"
       }
     },
@@ -7108,6 +7205,23 @@
         "name": "LeetCode",
         "slug": "largest-rectangle-in-histogram",
         "url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_last_stone_weight_ii_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "stones",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "last-stone-weight-ii",
+        "url": "https://leetcode.com/problems/last-stone-weight-ii/",
         "license": "local rewrite"
       }
     },
@@ -7705,6 +7819,52 @@
       }
     },
     {
+      "name": "lc_min_genetic_mutation_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "start",
+          "type": "string"
+        },
+        {
+          "name": "end",
+          "type": "string"
+        },
+        {
+          "name": "bank",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-genetic-mutation",
+        "url": "https://leetcode.com/problems/minimum-genetic-mutation/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_height_trees_root_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-height-trees",
+        "url": "https://leetcode.com/problems/minimum-height-trees/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_min_path_sum_grid2x3",
       "return_type": "int",
       "params": [
@@ -7738,6 +7898,23 @@
         "name": "LeetCode",
         "slug": "minimum-path-sum",
         "url": "https://leetcode.com/problems/minimum-path-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_score_triangulation_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "values",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-score-triangulation-of-polygon",
+        "url": "https://leetcode.com/problems/minimum-score-triangulation-of-polygon/",
         "license": "local rewrite"
       }
     },
@@ -7940,6 +8117,27 @@
       }
     },
     {
+      "name": "lc_num_ways_stay_same_place",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "steps",
+          "type": "int"
+        },
+        {
+          "name": "arr_len",
+          "type": "int"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-ways-to-stay-in-the-same-place-after-some-steps",
+        "url": "https://leetcode.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_number_of_islands_rows",
       "return_type": "int",
       "params": [
@@ -8012,6 +8210,39 @@
         "name": "LeetCode",
         "slug": "ones-and-zeroes",
         "url": "https://leetcode.com/problems/ones-and-zeroes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_out_boundary_paths_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "max_move",
+          "type": "int"
+        },
+        {
+          "name": "start_row",
+          "type": "int"
+        },
+        {
+          "name": "start_column",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "out-of-boundary-paths",
+        "url": "https://leetcode.com/problems/out-of-boundary-paths/",
         "license": "local rewrite"
       }
     },
@@ -8160,6 +8391,23 @@
       }
     },
     {
+      "name": "lc_predict_winner_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "predict-the-winner",
+        "url": "https://leetcode.com/problems/predict-the-winner/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_product_except_self_sum_csv",
       "return_type": "int",
       "params": [
@@ -8173,6 +8421,35 @@
         "name": "LeetCode",
         "slug": "product-of-array-except-self",
         "url": "https://leetcode.com/problems/product-of-array-except-self/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_profitable_schemes_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "min_profit",
+          "type": "int"
+        },
+        {
+          "name": "group",
+          "type": "string"
+        },
+        {
+          "name": "profit",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "profitable-schemes",
+        "url": "https://leetcode.com/problems/profitable-schemes/",
         "license": "local rewrite"
       }
     },
@@ -8274,6 +8551,23 @@
         "name": "LeetCode",
         "slug": "ransom-note",
         "url": "https://leetcode.com/problems/ransom-note/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_redundant_connection_edge_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "redundant-connection",
+        "url": "https://leetcode.com/problems/redundant-connection/",
         "license": "local rewrite"
       }
     },
@@ -9159,6 +9453,69 @@
       }
     },
     {
+      "name": "luogu_p1003_carpet_top_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "carpets",
+          "type": "string"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1003",
+        "url": "https://www.luogu.com.cn/problem/P1003",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1014_cantor_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1014",
+        "url": "https://www.luogu.com.cn/problem/P1014",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1047_remaining_trees",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "length",
+          "type": "int"
+        },
+        {
+          "name": "intervals",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1047",
+        "url": "https://www.luogu.com.cn/problem/P1047",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "luogu_p1090_merge_fruit_cost_csv",
       "return_type": "int",
       "params": [
@@ -9172,6 +9529,27 @@
         "name": "Luogu",
         "slug": "P1090",
         "url": "https://www.luogu.com.cn/problem/P1090",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1217_prime_pal_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1217",
+        "url": "https://www.luogu.com.cn/problem/P1217",
         "license": "local rewrite"
       }
     },
@@ -9193,6 +9571,23 @@
         "name": "Luogu",
         "slug": "P1421",
         "url": "https://www.luogu.com.cn/problem/P1421",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1423_swim_days",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x_times_100",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1423",
+        "url": "https://www.luogu.com.cn/problem/P1423",
         "license": "local rewrite"
       }
     },
@@ -9239,6 +9634,27 @@
         "name": "Luogu",
         "slug": "P1803",
         "url": "https://www.luogu.com.cn/problem/P1803",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1909_pencil_min_cost",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "options",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1909",
+        "url": "https://www.luogu.com.cn/problem/P1909",
         "license": "local rewrite"
       }
     },
