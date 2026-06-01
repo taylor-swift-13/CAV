@@ -102,5 +102,6 @@
     "slug": "maximum-nesting-depth-of-the-parentheses",
     "url": "https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

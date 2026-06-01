@@ -105,5 +105,6 @@
     "slug": "goal-parser-interpretation",
     "url": "https://leetcode.com/problems/goal-parser-interpretation/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

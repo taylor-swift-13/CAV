@@ -1,0 +1,63 @@
+{
+  "name": "lc_edit_distance_value",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "word1",
+      "type": "string"
+    },
+    {
+      "name": "word2",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "horse",
+        "word2": "ros"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "intention",
+        "word2": "execution"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "",
+        "word2": "abc"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "abc",
+        "word2": "abc"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "word1": "abc",
+        "word2": "yabd"
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "edit-distance",
+    "url": "https://leetcode.com/problems/edit-distance/",
+    "license": "local rewrite"
+  },
+  "difficulty": "hard"
+}

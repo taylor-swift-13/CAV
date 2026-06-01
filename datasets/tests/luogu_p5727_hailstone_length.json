@@ -1,0 +1,40 @@
+{
+  "name": "luogu_p5727_hailstone_length",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10
+      },
+      "expected": 7
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5727",
+    "url": "https://www.luogu.com.cn/problem/P5727",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

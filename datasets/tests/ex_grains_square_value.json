@@ -1,0 +1,40 @@
+{
+  "name": "ex_grains_square_value",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "square",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "square": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "square": 2
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "square": 16
+      },
+      "expected": 32768
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "grains",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/grains",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

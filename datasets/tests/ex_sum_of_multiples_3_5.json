@@ -1,0 +1,40 @@
+{
+  "name": "ex_sum_of_multiples_3_5",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "limit",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "limit": 10
+      },
+      "expected": 23
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "limit": 1
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "limit": 20
+      },
+      "expected": 78
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "sum-of-multiples",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/sum-of-multiples",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

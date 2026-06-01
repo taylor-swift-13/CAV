@@ -113,5 +113,6 @@
     "slug": "merge-two-sorted-lists",
     "url": "https://leetcode.com/problems/merge-two-sorted-lists/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

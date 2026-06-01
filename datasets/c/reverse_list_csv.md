@@ -21,6 +21,8 @@ Treat comma-separated integer string `list` as a linked list and return its valu
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
+#include <stdio.h>
 char *reverse_list_csv(const char *list) {
     int values[64];
     int n = 0;

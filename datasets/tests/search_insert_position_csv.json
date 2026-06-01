@@ -113,5 +113,6 @@
     "slug": "search-insert-position",
     "url": "https://leetcode.com/problems/search-insert-position/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

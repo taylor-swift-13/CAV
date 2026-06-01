@@ -99,5 +99,6 @@
     "slug": "power-of-two",
     "url": "https://leetcode.com/problems/power-of-two/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

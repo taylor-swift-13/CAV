@@ -1,0 +1,47 @@
+{
+  "name": "sg_repeated_char_first_index",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abca"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "bcaba"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcd"
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aabb"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/RepeatedCharNested",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/RepeatedCharNested/RepeatedCharNested.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "medium"
+}

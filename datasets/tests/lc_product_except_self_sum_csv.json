@@ -1,0 +1,40 @@
+{
+  "name": "lc_product_except_self_sum_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3,4"
+      },
+      "expected": 50
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,1,0,-3,3"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,3"
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "product-of-array-except-self",
+    "url": "https://leetcode.com/problems/product-of-array-except-self/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

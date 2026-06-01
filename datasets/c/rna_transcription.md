@@ -21,6 +21,7 @@ Return the RNA complement of a DNA string using `G->C`, `C->G`, `T->A`, and `A->
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *rna_transcription(const char *dna) {
     int n = 0;
     while (dna[n] != '\0') n++;

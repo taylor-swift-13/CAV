@@ -102,5 +102,6 @@
     "slug": "count-positive",
     "url": "https://github.com/thanhlecongg/FormalBench/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

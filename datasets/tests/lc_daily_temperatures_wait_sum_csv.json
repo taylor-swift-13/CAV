@@ -1,0 +1,40 @@
+{
+  "name": "lc_daily_temperatures_wait_sum_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "temps",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "temps": "73,74,75,71,69,72,76,73"
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "temps": "30,40,50,60"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "temps": "30,60,90"
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "daily-temperatures",
+    "url": "https://leetcode.com/problems/daily-temperatures/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

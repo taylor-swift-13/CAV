@@ -1,0 +1,33 @@
+{
+  "name": "lc_toeplitz_matrix_bool_rows",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1,2,3,4;5,1,2,3;9,5,1,2"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1,2;2,2"
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "toeplitz-matrix",
+    "url": "https://leetcode.com/problems/toeplitz-matrix/",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

@@ -42,5 +42,6 @@
     "slug": "FormalBenchHF/base/programs/CountRectangles.java",
     "url": "https://github.com/thanhlecongg/FormalBench/",
     "license": "local rewrite from SESpec java_flat"
-  }
+  },
+  "difficulty": "medium"
 }

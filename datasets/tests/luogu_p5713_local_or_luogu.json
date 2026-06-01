@@ -1,0 +1,40 @@
+{
+  "name": "luogu_p5713_local_or_luogu",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "x",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "x": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 6
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 10
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5713",
+    "url": "https://www.luogu.com.cn/problem/P5713",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

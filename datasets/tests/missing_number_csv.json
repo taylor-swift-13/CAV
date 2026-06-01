@@ -116,5 +116,6 @@
     "slug": "missing-number",
     "url": "https://leetcode.com/problems/missing-number/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

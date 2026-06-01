@@ -1,0 +1,47 @@
+{
+  "name": "ex_nucleotide_count_char",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "dna",
+      "type": "string"
+    },
+    {
+      "name": "target",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "dna": "GATTACA",
+        "target": "A"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "dna": "CCCCC",
+        "target": "C"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "dna": "",
+        "target": "G"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "nucleotide-count",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/nucleotide-count",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

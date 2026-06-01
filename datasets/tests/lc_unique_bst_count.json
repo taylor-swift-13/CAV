@@ -1,0 +1,40 @@
+{
+  "name": "lc_unique_bst_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5
+      },
+      "expected": 42
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "unique-binary-search-trees",
+    "url": "https://leetcode.com/problems/unique-binary-search-trees/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

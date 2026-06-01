@@ -99,5 +99,6 @@
     "slug": "reverse-vowels-of-a-string",
     "url": "https://leetcode.com/problems/reverse-vowels-of-a-string/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

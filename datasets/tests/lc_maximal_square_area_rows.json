@@ -1,0 +1,40 @@
+{
+  "name": "lc_maximal_square_area_rows",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "10100;10111;11111;10010"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "01;10"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": ""
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "maximal-square",
+    "url": "https://leetcode.com/problems/maximal-square/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

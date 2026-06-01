@@ -21,6 +21,7 @@ Return the binary sum of nonempty binary strings `a` and `b`.
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *add_binary_strings(const char *a, const char *b) {
     int na = 0, nb = 0;
     while (a[na] != '\0') na++;

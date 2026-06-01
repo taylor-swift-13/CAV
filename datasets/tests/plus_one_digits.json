@@ -99,5 +99,6 @@
     "slug": "plus-one",
     "url": "https://leetcode.com/problems/plus-one/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

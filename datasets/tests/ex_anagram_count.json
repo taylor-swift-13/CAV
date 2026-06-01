@@ -1,0 +1,47 @@
+{
+  "name": "ex_anagram_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "subject",
+      "type": "string"
+    },
+    {
+      "name": "candidates",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "subject": "listen",
+        "candidates": "enlists;google;inlets;banana"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "subject": "master",
+        "candidates": "stream;pigeon;maters"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "subject": "BANANA",
+        "candidates": "banana;Banana"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "anagram",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/anagram",
+    "license": "MIT"
+  },
+  "difficulty": "medium"
+}

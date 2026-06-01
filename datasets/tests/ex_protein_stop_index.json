@@ -1,0 +1,40 @@
+{
+  "name": "ex_protein_stop_index",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rna",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rna": "AUGUUUUAA"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rna": "AUGUUUUGG"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rna": "UAA"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "protein-translation",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/protein-translation",
+    "license": "MIT"
+  },
+  "difficulty": "medium"
+}

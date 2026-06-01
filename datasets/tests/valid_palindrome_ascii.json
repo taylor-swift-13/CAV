@@ -99,5 +99,6 @@
     "slug": "valid-palindrome",
     "url": "https://leetcode.com/problems/valid-palindrome/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

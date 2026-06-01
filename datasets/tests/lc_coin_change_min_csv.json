@@ -1,0 +1,47 @@
+{
+  "name": "lc_coin_change_min_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "coins",
+      "type": "string"
+    },
+    {
+      "name": "amount",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "coins": "1,2,5",
+        "amount": 11
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "coins": "2",
+        "amount": 3
+      },
+      "expected": -1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "coins": "1",
+        "amount": 0
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "coin-change",
+    "url": "https://leetcode.com/problems/coin-change/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

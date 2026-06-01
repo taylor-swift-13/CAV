@@ -99,5 +99,6 @@
     "slug": "number-of-good-pairs",
     "url": "https://leetcode.com/problems/number-of-good-pairs/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

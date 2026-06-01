@@ -105,5 +105,6 @@
     "slug": "richest-customer-wealth",
     "url": "https://leetcode.com/problems/richest-customer-wealth/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

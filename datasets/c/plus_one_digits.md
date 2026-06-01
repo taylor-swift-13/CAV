@@ -21,6 +21,7 @@ Return the decimal digit string representing one more than nonnegative integer s
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *plus_one_digits(const char *digits) {
     int n = 0;
     while (digits[n] != '\0') n++;

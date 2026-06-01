@@ -102,5 +102,6 @@
     "slug": "count-asterisks",
     "url": "https://leetcode.com/problems/count-asterisks/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

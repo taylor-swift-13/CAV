@@ -55,5 +55,6 @@
     "slug": "FormalBenchHF/base/programs/FindOddPair.java",
     "url": "https://github.com/thanhlecongg/FormalBench/",
     "license": "local rewrite from SESpec java_flat"
-  }
+  },
+  "difficulty": "medium"
 }

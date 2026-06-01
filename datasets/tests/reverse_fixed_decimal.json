@@ -105,5 +105,6 @@
     "slug": "P5705",
     "url": "https://www.luogu.com.cn/problem/P5705",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

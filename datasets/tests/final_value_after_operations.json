@@ -102,5 +102,6 @@
     "slug": "final-value-of-variable-after-performing-operations",
     "url": "https://leetcode.com/problems/final-value-of-variable-after-performing-operations/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

@@ -1,0 +1,47 @@
+{
+  "name": "ex_prime_factors_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 12
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 60
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 97
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "prime-factors",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/prime-factors",
+    "license": "MIT"
+  },
+  "difficulty": "medium"
+}

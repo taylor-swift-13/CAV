@@ -1,0 +1,40 @@
+{
+  "name": "lc_min_cost_climbing_stairs_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "cost",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "cost": "10,15,20"
+      },
+      "expected": 15
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "cost": "1,100,1,1,1,100,1,1,100,1"
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "cost": "0,0"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "min-cost-climbing-stairs",
+    "url": "https://leetcode.com/problems/min-cost-climbing-stairs/",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

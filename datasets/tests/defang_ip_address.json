@@ -105,5 +105,6 @@
     "slug": "defanging-an-ip-address",
     "url": "https://leetcode.com/problems/defanging-an-ip-address/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

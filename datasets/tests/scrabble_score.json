@@ -157,5 +157,6 @@
     "slug": "scrabble-score",
     "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/scrabble-score",
     "license": "MIT"
-  }
+  },
+  "difficulty": "easy"
 }

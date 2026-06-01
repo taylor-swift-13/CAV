@@ -58,5 +58,6 @@
     "slug": "FormalBenchHF/base/programs/FindNthDigit.java",
     "url": "https://github.com/thanhlecongg/FormalBench/",
     "license": "local rewrite from SESpec java_flat"
-  }
+  },
+  "difficulty": "easy"
 }

@@ -21,6 +21,7 @@ Return the reverse of a short decimal string, preserving every character exactly
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *reverse_fixed_decimal(const char *s) {
     int n = 0;
     while (s[n] != '\0') n++;

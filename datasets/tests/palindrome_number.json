@@ -99,5 +99,6 @@
     "slug": "palindrome-number",
     "url": "https://leetcode.com/problems/palindrome-number/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

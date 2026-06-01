@@ -74,5 +74,6 @@
     "slug": "FormalBenchHF/base/programs/Lcm.java",
     "url": "https://github.com/thanhlecongg/FormalBench/",
     "license": "local rewrite from SESpec java_flat"
-  }
+  },
+  "difficulty": "medium"
 }

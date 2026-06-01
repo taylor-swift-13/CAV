@@ -113,5 +113,6 @@
     "slug": "two-sum",
     "url": "https://leetcode.com/problems/two-sum/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

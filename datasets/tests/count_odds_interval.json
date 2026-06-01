@@ -116,5 +116,6 @@
     "slug": "count-odd-numbers-in-an-interval-range",
     "url": "https://leetcode.com/problems/count-odd-numbers-in-an-interval-range/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

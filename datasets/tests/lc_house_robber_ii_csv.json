@@ -1,0 +1,40 @@
+{
+  "name": "lc_house_robber_ii_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,3,2"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3,1"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1"
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "house-robber-ii",
+    "url": "https://leetcode.com/problems/house-robber-ii/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

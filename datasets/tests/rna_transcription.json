@@ -144,5 +144,6 @@
     "slug": "rna-transcription",
     "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/rna-transcription",
     "license": "MIT"
-  }
+  },
+  "difficulty": "easy"
 }

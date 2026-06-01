@@ -116,5 +116,6 @@
     "slug": "shuffle-string",
     "url": "https://leetcode.com/problems/shuffle-string/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

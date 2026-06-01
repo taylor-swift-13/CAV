@@ -102,5 +102,6 @@
     "slug": "sum-multiples",
     "url": "https://leetcode.com/problems/sum-multiples/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

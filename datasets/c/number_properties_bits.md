@@ -21,6 +21,8 @@ Return four space-separated bits describing simple divisibility properties of in
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
+#include <stdio.h>
 char *number_properties_bits(int n) {
     int a = (n % 2 == 0);
     int b = (n > 4 && n <= 12);

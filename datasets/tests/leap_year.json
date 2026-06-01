@@ -144,5 +144,6 @@
     "slug": "leap",
     "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/leap",
     "license": "MIT"
-  }
+  },
+  "difficulty": "easy"
 }

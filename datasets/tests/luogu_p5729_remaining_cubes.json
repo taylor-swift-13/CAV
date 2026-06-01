@@ -1,0 +1,61 @@
+{
+  "name": "luogu_p5729_remaining_cubes",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "w",
+      "type": "int"
+    },
+    {
+      "name": "x",
+      "type": "int"
+    },
+    {
+      "name": "h",
+      "type": "int"
+    },
+    {
+      "name": "cuts",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "w": 2,
+        "x": 2,
+        "h": 2,
+        "cuts": "1,1,1,1,1,1"
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "w": 3,
+        "x": 3,
+        "h": 3,
+        "cuts": "1,1,1,3,3,1;2,2,2,2,2,3"
+      },
+      "expected": 16
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "w": 2,
+        "x": 2,
+        "h": 1,
+        "cuts": ""
+      },
+      "expected": 4
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5729",
+    "url": "https://www.luogu.com.cn/problem/P5729",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

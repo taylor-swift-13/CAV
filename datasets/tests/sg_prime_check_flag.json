@@ -1,0 +1,47 @@
+{
+  "name": "sg_prime_check_flag",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 9
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 17
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/PrimeCheck",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/PrimeCheck/PrimeCheck.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "medium"
+}

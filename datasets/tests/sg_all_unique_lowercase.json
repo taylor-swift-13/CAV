@@ -1,0 +1,47 @@
+{
+  "name": "sg_all_unique_lowercase",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abc"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abca"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "expected": true
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/IsAllUnique",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/IsAllUnique/IsAllUnique.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "medium"
+}

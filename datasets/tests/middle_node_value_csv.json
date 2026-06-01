@@ -99,5 +99,6 @@
     "slug": "middle-of-the-linked-list",
     "url": "https://leetcode.com/problems/middle-of-the-linked-list/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

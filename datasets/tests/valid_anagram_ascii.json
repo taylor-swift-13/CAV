@@ -116,5 +116,6 @@
     "slug": "valid-anagram",
     "url": "https://leetcode.com/problems/valid-anagram/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

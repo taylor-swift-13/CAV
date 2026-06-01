@@ -1,0 +1,75 @@
+{
+  "name": "sg_total_rectangle_area",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "ax1",
+      "type": "int"
+    },
+    {
+      "name": "ay1",
+      "type": "int"
+    },
+    {
+      "name": "ax2",
+      "type": "int"
+    },
+    {
+      "name": "ay2",
+      "type": "int"
+    },
+    {
+      "name": "bx1",
+      "type": "int"
+    },
+    {
+      "name": "by1",
+      "type": "int"
+    },
+    {
+      "name": "bx2",
+      "type": "int"
+    },
+    {
+      "name": "by2",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "ax1": -3,
+        "ay1": 0,
+        "ax2": 3,
+        "ay2": 4,
+        "bx1": 0,
+        "by1": -1,
+        "bx2": 9,
+        "by2": 2
+      },
+      "expected": 45
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "ax1": 0,
+        "ay1": 0,
+        "ax2": 1,
+        "ay2": 1,
+        "bx1": 2,
+        "by1": 2,
+        "bx2": 3,
+        "by2": 3
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/ComputeArea",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/ComputeArea/ComputeArea.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "medium"
+}

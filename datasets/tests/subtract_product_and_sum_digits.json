@@ -102,5 +102,6 @@
     "slug": "subtract-the-product-and-sum-of-digits-of-an-integer",
     "url": "https://leetcode.com/problems/subtract-the-product-and-sum-of-digits-of-an-integer/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

@@ -105,5 +105,6 @@
     "slug": "check-if-the-sentence-is-pangram",
     "url": "https://leetcode.com/problems/check-if-the-sentence-is-pangram/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

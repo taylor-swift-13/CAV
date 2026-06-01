@@ -21,6 +21,8 @@ Return the running sum of comma-separated integer array `nums`.
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
+#include <stdio.h>
 char *running_sum_csv(const char *nums) {
     char *out = (char *)malloc(512);
     int pos = 0, first = 1, sum = 0, i = 0;

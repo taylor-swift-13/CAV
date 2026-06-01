@@ -21,6 +21,7 @@ Interpret a command string where `G` maps to `G`, `()` maps to `o`, and `(al)` m
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *goal_parser_interpret(const char *command) {
     int n = 0;
     while (command[n] != '\0') n++;

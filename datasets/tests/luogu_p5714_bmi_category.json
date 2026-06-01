@@ -1,0 +1,47 @@
+{
+  "name": "luogu_p5714_bmi_category",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "m",
+      "type": "int"
+    },
+    {
+      "name": "h",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "m": 70,
+        "h": 170
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "m": 45,
+        "h": 170
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "m": 90,
+        "h": 170
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5714",
+    "url": "https://www.luogu.com.cn/problem/P5714",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

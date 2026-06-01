@@ -1,0 +1,40 @@
+{
+  "name": "ex_perfect_number_code",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 6
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 12
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 8
+      },
+      "expected": 3
+    }
+  ],
+  "source": {
+    "name": "Exercism",
+    "slug": "perfect-numbers",
+    "url": "https://github.com/exercism/problem-specifications/tree/main/exercises/perfect-numbers",
+    "license": "MIT"
+  },
+  "difficulty": "easy"
+}

@@ -21,6 +21,7 @@ Return the defanged form of an IPv4 address by replacing each `.` with `[.]`.
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *defang_ip_address(const char *address) {
     int n = 0, dots = 0;
     while (address[n] != '\0') { if (address[n] == '.') dots++; n++; }

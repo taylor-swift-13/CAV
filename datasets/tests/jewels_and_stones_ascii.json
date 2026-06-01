@@ -116,5 +116,6 @@
     "slug": "jewels-and-stones",
     "url": "https://leetcode.com/problems/jewels-and-stones/",
     "license": "local rewrite"
-  }
+  },
+  "difficulty": "easy"
 }

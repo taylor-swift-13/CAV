@@ -21,6 +21,8 @@ Given comma-separated XOR-encoded values and the first original value, return th
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
+#include <stdio.h>
 char *decode_xored_array_csv(const char *encoded, int first) {
     char *out = (char *)malloc(512);
     int pos = sprintf(out, "%d", first);

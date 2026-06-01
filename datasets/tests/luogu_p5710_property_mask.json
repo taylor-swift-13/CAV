@@ -1,0 +1,47 @@
+{
+  "name": "luogu_p5710_property_mask",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "x",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "x": 6
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 3
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 4
+      },
+      "expected": 6
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "x": 5
+      },
+      "expected": 6
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P5710",
+    "url": "https://www.luogu.com.cn/problem/P5710",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

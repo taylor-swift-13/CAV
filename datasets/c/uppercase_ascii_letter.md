@@ -21,6 +21,7 @@ Convert a lowercase ASCII letter to uppercase and return it as a one-character s
 ## Reference Implementation
 
 ```c
+#include <stdlib.h>
 char *uppercase_ascii_letter(const char *letter) {
     char *out = (char *)malloc(2);
     char c = letter[0];

@@ -1,0 +1,47 @@
+{
+  "name": "sg_check_a_before_b",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aaabbb"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abab"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "bbb"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": ""
+      },
+      "expected": true
+    }
+  ],
+  "source": {
+    "name": "SpecGenBench",
+    "slug": "SpecGenBench/common/CheckABeforeB",
+    "url": "file:///home/yangfp/Arc/represent/external/specgen-artifact/benchmark/SpecGenBench/common/CheckABeforeB/CheckABeforeB.java",
+    "license": "local three-language rewrite from local external benchmark"
+  },
+  "difficulty": "easy"
+}
