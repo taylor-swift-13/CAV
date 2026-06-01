@@ -1,0 +1,40 @@
+{
+  "name": "lc_min_deletions_unique_freq",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aab"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aaabbbcc"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "ceabaacb"
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "minimum-deletions-to-make-character-frequencies-unique",
+    "url": "https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

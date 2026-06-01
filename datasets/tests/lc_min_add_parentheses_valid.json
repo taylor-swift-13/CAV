@@ -1,0 +1,40 @@
+{
+  "name": "lc_min_add_parentheses_valid",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "())"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "((("
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "()"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "minimum-add-to-make-parentheses-valid",
+    "url": "https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

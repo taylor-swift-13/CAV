@@ -1,0 +1,40 @@
+{
+  "name": "lc_pal_partition_min_cut",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aab"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "ab"
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "palindrome-partitioning-ii",
+    "url": "https://leetcode.com/problems/palindrome-partitioning-ii/",
+    "license": "local rewrite"
+  },
+  "difficulty": "hard"
+}

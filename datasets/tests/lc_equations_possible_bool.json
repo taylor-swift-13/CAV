@@ -1,0 +1,40 @@
+{
+  "name": "lc_equations_possible_bool",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "equations",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "equations": "a==b;b!=a"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "equations": "b==a;a==b"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "equations": "a==b;b==c;a!=c"
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "satisfiability-of-equality-equations",
+    "url": "https://leetcode.com/problems/satisfiability-of-equality-equations/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

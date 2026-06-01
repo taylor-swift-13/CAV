@@ -1,0 +1,40 @@
+{
+  "name": "lc_max_subarray_circular_sum_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,-2,3,-2"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "5,-3,5"
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-3,-2,-3"
+      },
+      "expected": -2
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "maximum-sum-circular-subarray",
+    "url": "https://leetcode.com/problems/maximum-sum-circular-subarray/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

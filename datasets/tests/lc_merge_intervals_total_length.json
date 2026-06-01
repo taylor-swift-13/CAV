@@ -1,0 +1,40 @@
+{
+  "name": "lc_merge_intervals_total_length",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "intervals",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "intervals": "1,3;2,6;8,10;15,18"
+      },
+      "expected": 10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "intervals": "1,4;4,5"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "intervals": "1,4;0,2;3,5"
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "merge-intervals",
+    "url": "https://leetcode.com/problems/merge-intervals/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "lc_contiguous_array_max_len_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,1"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,1,0"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,0,1,0,0,0,1,1"
+      },
+      "expected": 6
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "contiguous-array",
+    "url": "https://leetcode.com/problems/contiguous-array/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

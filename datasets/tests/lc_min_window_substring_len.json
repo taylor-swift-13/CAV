@@ -1,0 +1,47 @@
+{
+  "name": "lc_min_window_substring_len",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    },
+    {
+      "name": "t",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "ADOBECODEBANC",
+        "t": "ABC"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a",
+        "t": "a"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "a",
+        "t": "aa"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "minimum-window-substring",
+    "url": "https://leetcode.com/problems/minimum-window-substring/",
+    "license": "local rewrite"
+  },
+  "difficulty": "hard"
+}

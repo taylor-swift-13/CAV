@@ -1,0 +1,40 @@
+{
+  "name": "lc_maximum_erasure_value_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "4,2,4,5,6"
+      },
+      "expected": 17
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "5,2,1,2,5,2,1,2,5"
+      },
+      "expected": 8
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3"
+      },
+      "expected": 6
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "maximum-erasure-value",
+    "url": "https://leetcode.com/problems/maximum-erasure-value/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

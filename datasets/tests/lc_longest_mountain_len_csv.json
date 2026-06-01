@@ -1,0 +1,40 @@
+{
+  "name": "lc_longest_mountain_len_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "arr",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "arr": "2,1,4,7,3,2,5"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": "2,2,2"
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": "0,1,2,3,4,5,4,3,2,1,0"
+      },
+      "expected": 11
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "longest-mountain-in-array",
+    "url": "https://leetcode.com/problems/longest-mountain-in-array/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}
