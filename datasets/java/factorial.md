@@ -17,7 +17,7 @@
 
 ```java
 class Factorial {
-    public static int fac(int n) {
+    public static int factorial(int n) {
         int i;
         int res = 1;
 

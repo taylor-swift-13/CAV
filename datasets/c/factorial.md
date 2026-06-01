@@ -16,7 +16,7 @@
 ## 参考实现
 
 ```c
-int fac(int n) {
+int factorial(int n) {
     int i;
     int res = 1;
 

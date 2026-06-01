@@ -16,7 +16,7 @@
 ## 参考实现
 
 ```rust
-pub fn fac(n: i32) -> i32 {
+pub fn factorial(n: i32) -> i32 {
     let mut i: i32;
     let mut res: i32 = 1;
 

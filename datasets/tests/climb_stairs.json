@@ -1,6 +1,6 @@
 {
   "name": "climb_stairs",
-  "function": "climbStairs",
+  "function": "climb_stairs",
   "return_type": "int",
   "params": [
     {
