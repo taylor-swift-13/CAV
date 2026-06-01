@@ -5,7 +5,9 @@ description: Evaluate an existing C/QCP implementation against concrete positive
 
 跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 eval-specific 内容。
 
-按需读：`experiences/general/EVAL/README.md`、`experiences/general/AUDIT/README.md`、`experiences/general/CONTRACT/README.md`。不修改实现、contract 或 `.v` 文件。
+按需读：`experiences/general/EVAL/README.md`、`experiences/general/AUDIT/README.md`、`experiences/general/CONTRACT/README.md`。实现、contract 和 `.v` 文件作为只读语义目标。
+
+阶段职责：eval 负责 spec-test 和整体语义 judge，判断 spec 是否 sound / complete。contract runner 负责 QCP wellformed、companion `.v` 编译、verify 阶段注释检查和 `.v` 假设检查。eval 的 Coq 使用场景是本文件 §4.1 的 `compute_queries`，用于对具体闭式项做 `vm_compute`。
 
 ## 1. 输入
 
@@ -53,7 +55,7 @@ Schema：
 
 ### 4.1 `needs_judge` 是可计算 Coq 项时，转 compute_queries
 
-如果 `needs_judge` 子句的真伪可以归约到「对当前 case 的具体闭式 Coq term `vm_compute` 求值」（典型：递归函数应用到字面量、复杂 list 操作的归一形式），**不要凭直觉判 pass/fail**。append 到 `evaluation/compute_queries.json`：
+如果 `needs_judge` 子句的真伪可以归约到「对当前 case 的具体闭式 Coq term `vm_compute` 求值」（典型：递归函数应用到字面量、复杂 list 操作的归一形式），把该计算任务 append 到 `evaluation/compute_queries.json`，由 runner 用 `vm_compute` 给出归一结果：
 
 ```json
 {"queries": [
@@ -63,7 +65,7 @@ Schema：
 ]}
 ```
 
-runner 会对每条 query 跑 `vm_compute` 并触发 finalize pass。这一轮先把这些子句留作 `needs_judge`，**不要**在还有 computable 子句未解时就给 `Correct` verdict。
+runner 会对每条 query 跑 `vm_compute` 并触发 finalize pass。这一轮先把这些子句留作 `needs_judge`；`Correct` verdict 需要所有 computable 子句都有决定性结果。
 
 ## 5. LLM Judge（写入 `logs/final_result.md`）
 
@@ -71,6 +73,8 @@ spec-test 通过还不够。必须再做整体 judge，判断 contract 是否真
 
 逐项判断并在 `logs/final_result.md` 写出 `Pass` / `Fail` / `Inconclusive` 和一句依据：
 
+- `Precondition strength`: 前条件是否过强，导致合法输入情况不能被刻画；最强错误形态是 `requires false`。
+- `Postcondition strength`: 后条件是否过弱或 trivial，导致不能刻画程序行为；最弱错误形态是 `ensures true`。
 - `Soundness`: 正确程序的所有输入输出是否都满足 spec。
 - `Positive coverage`: 所有正例是否都满足 spec。
 - `Parameter coverage`: spec 是否约束了所有输入、输出和必要后状态参数。
@@ -101,12 +105,12 @@ Spec verdict: Correct|Buggy|Inconclusive
 Judge verdict: Pass|Fail|Inconclusive
 ```
 
-## 7. Anti-Cheating
+## 7. Eval Integrity
 
-- 不为了让 case pass 而重写 contract
-- 不把「unreachable code」trick 当合法 negative case
-- 不在自己也不确定时硬写 `Correct`
-- 经验沉淀属于末尾 consolidate 阶段；不写 `experiences/`
+- eval 产物只写入当前 eval workspace 的 `cases/`、`evaluation/` 和 `logs/`。
+- negative case 表示具体被拒绝的输入或错误声称的输出/后状态。
+- `Correct` verdict 需要 spec-test 和 LLM judge 都给出决定性通过依据。
+- 经验沉淀属于末尾 consolidate 阶段。
 
 ## 8. 完成判据
 

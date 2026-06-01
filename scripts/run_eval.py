@@ -133,6 +133,11 @@ def build_prompt(
         f"- Evaluation directory: `{workspace_path / 'evaluation'}`",
         f"- Required positive cases: `{num_positive}`",
         f"- Required negative cases: `{num_negative}`",
+        "",
+        "Stage boundary:",
+        "- Eval only judges semantic adequacy by spec-test and the final LLM judge.",
+        "- Contract runner owns check_spec_wellformed, coqc parse/compile gate for input/<name>.v, verify-annotation scan, and forbidden-assumption scan.",
+        "- Eval owns spec-test, final semantic judge, and compute_queries/vm_compute for concrete closed terms.",
     ]
     if compute_results is not None:
         lines += [

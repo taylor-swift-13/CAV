@@ -22,7 +22,7 @@
 **写**（只写下列位置）：
 
 - 当前 workspace 的 `logs/*`
-- stage 特有的工作面（详见各 `SKILL.md`，例如 verify 的 `annotated/...c` + `coq/generated/<name>_proof_manual.v`、contract 的 `input/<name>.c`/`.v`、eval 的 `cases/` + `evaluation/`、audit 的 `audit/findings.md` + `logs/final_result.md`）
+- stage 特有的工作面（详见各 `SKILL.md`，例如 verify 的 `annotated/...c` + `coq/generated/<name>_proof_manual.v`、contract 的 `input/<name>.c`/`.v`、eval 的 `cases/` + `evaluation/`）
 - **不写** `scripts/`、其它 stage 的 workspace、`QualifiedCProgramming/` 源码
 
 ## 2. `experiences/` 全程只读

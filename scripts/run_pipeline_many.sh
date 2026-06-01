@@ -125,6 +125,8 @@ status_label() {
     30) echo "contract_ill_formed" ;;
     31) echo "contract_input_v_coq" ;;
     32) echo "contract_missing_input" ;;
+    33) echo "contract_verify_annotation" ;;
+    34) echo "contract_input_v_forbidden_assumption" ;;
     30) echo "missing_input" ;;
     40) echo "verify" ;;
     *) echo "unknown_$1" ;;

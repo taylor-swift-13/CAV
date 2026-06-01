@@ -26,8 +26,8 @@ DEFAULT_CLAUDE_MODEL = "sonnet"
 # Which workspace prefixes feed each scope.
 SCOPE_PREFIXES: dict[str, tuple[str, ...]] = {
     "contract": ("contract_", "eval_"),
-    "verify": ("verify_", "audit_"),
-    "all": ("contract_", "eval_", "verify_", "audit_"),
+    "verify": ("verify_",),
+    "all": ("contract_", "eval_", "verify_"),
 }
 
 

@@ -25,7 +25,7 @@
 
 - §4.5a（10 次探索预算 try-first）继续生效；
 - §4.5b 的 tactic 起手式直接套用；
-- attempt > 1 时按 `MODE_RETRY.md` 继续；prompt 带 `Audit findings:` 块时按 `MODE_RERUN_AUDIT.md` 继续。
+- attempt > 1 或 prompt 带 `Restart feedback` 时按 `MODE_RETRY.md` 继续。
 
 ## 完成判据
 

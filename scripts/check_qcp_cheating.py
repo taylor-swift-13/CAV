@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """Conservative deterministic cheating scanner for QCP verify artifacts.
 
-Importable scan library (used by ``audit_qcp.py``) plus a standalone CLI. Pure,
-side-effect-free functions flag the suspicious patterns the audit stage surfaces
-before the agent adjudicates. The agent reads the findings plus the copied files
-and renders the final verdict; this module never edits anything and never
-decides the verdict itself.
+Importable scan library used by the verify audit check plus a standalone CLI. Pure,
+side-effect-free functions flag proof-bypass patterns used by the verify runner deterministic audit check.
 
-Categories (matching ``skills/audit/SKILL.md``):
+Categories:
 
   * ``proof_stub``        — ``Admitted.`` / ``admit`` / ``Abort.`` in
                             ``proof_manual.v`` ONLY. ``proof_auto.v`` is
