@@ -54,6 +54,20 @@ def read_line_value(path: Path, marker: str) -> str | None:
     return None
 
 
+def read_eval_gate(eval_ws: Path) -> tuple[str | None, str | None, bool]:
+    final_result = eval_ws / "logs" / "final_result.md"
+    metrics = eval_ws / "logs" / "metrics.md"
+    spec_verdict = read_line_value(final_result, "Spec verdict:")
+    judge_verdict = read_line_value(final_result, "Judge verdict:")
+    runner_success = False
+    if metrics.exists():
+        runner_success = any(
+            line.strip() == "Final Result: Success"
+            for line in metrics.read_text(encoding="utf-8", errors="replace").splitlines()
+        )
+    return spec_verdict, judge_verdict, runner_success
+
+
 def write_findings(dest: Path, *, title: str, sources: list[Path]) -> Path:
     """Concatenate critic outputs into one restart-context file for the solver."""
     parts = [f"# {title}\n"]
@@ -85,6 +99,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--config", default=None)
     p.add_argument("--agent", choices=["codex", "claude"], default=None)
     p.add_argument("--model", default=None)
+    p.add_argument("--reasoning-effort", default=None)
     p.add_argument("--dry-run", action="store_true")
     return p
 
@@ -97,6 +112,8 @@ def common_flags(args) -> list[str]:
         flags += ["--agent", args.agent]
     if args.model:
         flags += ["--model", args.model]
+    if args.reasoning_effort:
+        flags += ["--reasoning-effort", args.reasoning_effort]
     if args.dry_run:
         flags += ["--dry-run"]
     return flags
@@ -123,6 +140,8 @@ def main() -> int:
 
     # ---- Contract block (contract -> eval) ----
     eval_verdict = None
+    judge_verdict = None
+    eval_runner_success = False
     if is_raw:
         restart_file = None
         for rnd in range(1, args.contract_rounds + 1):
@@ -164,21 +183,34 @@ def main() -> int:
             ecmd = [sys.executable, str(SCRIPTS / "run_eval.py"), str(input_c),
                     "--function-name", name, "--timestamp", ets, "--workspace-name", name,
                     "--timeout-seconds", str(args.eval_timeout), *cf]
-            run_stage(ecmd)
+            eval_rc = run_stage(ecmd)
             workspaces.append(eval_ws)
-            eval_verdict = read_line_value(eval_ws / "logs" / "final_result.md", "Spec verdict:")
-            emit(f"contract round {rnd}: eval verdict={eval_verdict}")
+            eval_verdict, judge_verdict, eval_runner_success = read_eval_gate(eval_ws)
+            emit(
+                f"contract round {rnd}: eval rc={eval_rc} "
+                f"spec={eval_verdict} judge={judge_verdict} runner_success={eval_runner_success}"
+            )
             if args.dry_run:
                 break  # wiring exercised; no real verdict to gate on
-            if eval_verdict == "Correct":
+            if eval_rc == 0 and eval_verdict == "Correct" and judge_verdict == "Pass" and eval_runner_success:
                 break
             if rnd < args.contract_rounds:
                 restart_file = write_findings(
                     pipeline_dir / f"eval_findings_r{rnd}.md", title=f"Eval findings (round {rnd})",
-                    sources=[eval_ws / "logs" / "final_result.md", eval_ws / "evaluation" / "evaluation.json"])
+                    sources=[
+                        eval_ws / "logs" / "final_result.md",
+                        eval_ws / "logs" / "metrics.md",
+                        eval_ws / "evaluation" / "evaluation.json",
+                    ])
 
-        if not args.skip_eval and not args.dry_run and eval_verdict != "Correct" and not args.force:
-            emit(f"contract gate not met (eval verdict={eval_verdict}); stopping before verify (use --force to continue)")
+        if not args.skip_eval and not args.dry_run and (
+            eval_verdict != "Correct" or judge_verdict != "Pass" or not eval_runner_success
+        ) and not args.force:
+            emit(
+                "contract gate not met "
+                f"(spec={eval_verdict}, judge={judge_verdict}, runner_success={eval_runner_success}); "
+                "stopping before verify (use --force to continue)"
+            )
             _finish(workspaces, pipeline_dir, args, name, status="contract_gate_failed")
             return 1
     else:
@@ -238,6 +270,10 @@ def _finish(workspaces, pipeline_dir, args, name, *, status) -> None:
             ccmd += ["--config", args.config]
         if args.agent:
             ccmd += ["--agent", args.agent]
+        if args.model:
+            ccmd += ["--model", args.model]
+        if args.reasoning_effort:
+            ccmd += ["--reasoning-effort", args.reasoning_effort]
         run_stage(ccmd)
 
     # ---- Cost summary ----
