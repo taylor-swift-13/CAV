@@ -7736,6 +7736,23 @@
       }
     },
     {
+      "name": "luogu_p1090_merge_fruit_cost_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "piles",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1090",
+        "url": "https://www.luogu.com.cn/problem/P1090",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "luogu_p1421_pencil_count",
       "return_type": "int",
       "params": [
@@ -7782,6 +7799,98 @@
         "name": "Luogu",
         "slug": "P1425",
         "url": "https://www.luogu.com.cn/problem/P1425",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1803_interval_schedule_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "intervals",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1803",
+        "url": "https://www.luogu.com.cn/problem/P1803",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p2678_jump_stone_distance",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "length",
+          "type": "int"
+        },
+        {
+          "name": "stones",
+          "type": "string"
+        },
+        {
+          "name": "remove",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P2678",
+        "url": "https://www.luogu.com.cn/problem/P2678",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p3366_mst_weight",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P3366",
+        "url": "https://www.luogu.com.cn/problem/P3366",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p3371_shortest_path",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        },
+        {
+          "name": "s",
+          "type": "int"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P3371",
+        "url": "https://www.luogu.com.cn/problem/P3371",
         "license": "local rewrite"
       }
     },
