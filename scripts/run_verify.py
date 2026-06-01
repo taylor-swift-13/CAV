@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -13,6 +14,7 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agent_config
 import agent_metrics
+import check_qcp_cheating
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -143,7 +145,7 @@ def build_prompt(
     if attempt > 1:
         lines += ["", f"Attempt: {attempt} (retry — also follow MODE_RETRY.md per SKILL.md §4.5c)."]
     if restart_context:
-        lines += ["", "Audit findings (also follow MODE_RERUN_AUDIT.md per SKILL.md §4.5c):", restart_context.rstrip()]
+        lines += ["", "Restart feedback:", restart_context.rstrip()]
     return "\n".join(lines) + "\n"
 
 
@@ -249,14 +251,14 @@ def append_continue(logs_dir: Path, kind: str, text: str) -> Path:
 def verify_retry_feedback(attempt: int, detail: str, workspace_path: Path, function_name: str) -> str:
     generated_dir = workspace_path / "coq" / "generated"
     return "\n".join([
-        f"Verify attempt {attempt} failed the runner completion gate.",
+        f"Verify attempt {attempt} failed the runner audit check.",
         "",
         f"- Detail: `{detail}`",
         f"- Generated dir: `{generated_dir}`",
         f"- Proof manual: `{generated_dir / f'{function_name}_proof_manual.v'}`",
         f"- Goal check: `{generated_dir / f'{function_name}_goal_check.v'}`",
         "",
-        "Required next action: fix annotation/proof so symexec outputs exist, proof_manual has no admitted/axiom/abort placeholder, and all generated Coq files compile.",
+        "Required next action: fix annotation/proof so symexec outputs exist, proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation.",
     ])
 
 
@@ -285,7 +287,7 @@ def verify_workspace_completed(workspace_path: Path) -> tuple[bool, str]:
     return False, "metrics_missing_final_result"
 
 
-def verify_completion_gate(workspace_path: Path, function_name: str, input_v_path: Path | None) -> tuple[bool, str]:
+def verify_proof_artifact_check(workspace_path: Path, function_name: str, input_v_path: Path | None) -> tuple[bool, str]:
     generated_dir = workspace_path / "coq" / "generated"
     required = [generated_dir / f"{function_name}_{suffix}.v" for suffix in ("goal", "proof_auto", "proof_manual", "goal_check")]
     missing = [str(path) for path in required if not path.exists()]
@@ -296,12 +298,221 @@ def verify_completion_gate(workspace_path: Path, function_name: str, input_v_pat
         return False, f"proof_manual_has_obligations:{generated_dir / f'{function_name}_proof_manual.v'}"
 
     ok, compile_logs = compile_generated(workspace_path, function_name, input_v_path)
-    log_path = workspace_path / "logs" / "completion_gate_coqc.log"
+    log_path = workspace_path / "logs" / "audit_check_coqc.log"
     log_path.write_text("\n\n".join(compile_logs) + "\n", encoding="utf-8")
     if not ok:
-        return False, f"completion_gate_coqc_failed:{log_path}"
+        return False, f"audit_check_coqc_failed:{log_path}"
 
-    return True, f"completion_gate_success:{log_path}"
+    return True, f"audit_check_success:{log_path}"
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def normalize_c_without_annotations(text: str) -> str:
+    """Remove comments/QCP annotations and whitespace to compare executable C."""
+    text = re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
+    text = re.sub(r"//.*", "", text)
+    return re.sub(r"\s+", "", text)
+
+
+def source_integrity_gate(
+    *,
+    workspace_path: Path,
+    input_path: Path,
+    input_v_path: Path | None,
+    annotated_c_path: Path,
+) -> tuple[bool, str]:
+    """Deterministically reject verify runs that modify contract or implementation."""
+    logs_dir = workspace_path / "logs"
+    log_path = logs_dir / "source_integrity_gate.log"
+    original_c = workspace_path / "original" / input_path.name
+    details: list[str] = []
+
+    if not original_c.exists():
+        details.append(f"missing original C copy: {original_c}")
+    elif file_sha256(original_c) != file_sha256(input_path):
+        details.append(f"input C changed after verify bootstrap: {input_path}")
+
+    if input_v_path is not None:
+        original_v = workspace_path / "original" / input_v_path.name
+        if not original_v.exists():
+            details.append(f"missing original V copy: {original_v}")
+        elif file_sha256(original_v) != file_sha256(input_v_path):
+            details.append(f"input V changed after verify bootstrap: {input_v_path}")
+
+    if not annotated_c_path.exists():
+        details.append(f"missing annotated C: {annotated_c_path}")
+    elif original_c.exists():
+        original_text = original_c.read_text(encoding="utf-8", errors="replace")
+        annotated_text = annotated_c_path.read_text(encoding="utf-8", errors="replace")
+
+        findings = check_qcp_cheating.scan_contract_weakening(original_text, annotated_text)
+        for finding in findings:
+            details.append(f"{finding['category']}: {finding['message']}")
+
+        if normalize_c_without_annotations(original_text) != normalize_c_without_annotations(annotated_text):
+            details.append("annotated C changes executable implementation after removing comments/QCP annotations")
+
+    if details:
+        log_path.write_text("Source integrity gate failed:\n- " + "\n- ".join(details) + "\n", encoding="utf-8")
+        return False, f"source_integrity_failed:{log_path}"
+
+    log_path.write_text("Source integrity gate passed.\n", encoding="utf-8")
+    return True, f"source_integrity_success:{log_path}"
+
+
+def fingerprint_gate(workspace_path: Path, function_name: str) -> tuple[bool, str]:
+    log_path = workspace_path / "logs" / "fingerprint_gate.log"
+    path = workspace_path / "logs" / "workspace_fingerprint.json"
+    details: list[str] = []
+    if not path.exists():
+        details.append(f"missing fingerprint: {path}")
+    else:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            details.append(f"fingerprint is not valid JSON: {exc}")
+        else:
+            required_strings = ("workspace", "stage", "input_c", "original_c", "annotated_c", "function_name", "semantic_description")
+            for key in required_strings:
+                value = data.get(key)
+                if not isinstance(value, str) or not value.strip():
+                    details.append(f"fingerprint field `{key}` must be a non-empty string")
+            if data.get("stage") != "verify":
+                details.append("fingerprint field `stage` must be `verify`")
+            if data.get("function_name") != function_name:
+                details.append(f"fingerprint function_name mismatch: {data.get('function_name')!r} != {function_name!r}")
+            keywords = data.get("keywords")
+            if not isinstance(keywords, dict) or not keywords:
+                details.append("fingerprint field `keywords` must be a non-empty object")
+            contract_source = data.get("contract_source")
+            if contract_source != "contract_input_c":
+                details.append("fingerprint field `contract_source` must be `contract_input_c`")
+            if data.get("assume_contract_is_correct") is not True:
+                details.append("fingerprint field `assume_contract_is_correct` must be true")
+
+    if details:
+        log_path.write_text("Fingerprint gate failed:\n- " + "\n- ".join(details) + "\n", encoding="utf-8")
+        return False, f"fingerprint_failed:{log_path}"
+    log_path.write_text("Fingerprint gate passed.\n", encoding="utf-8")
+    return True, f"fingerprint_success:{log_path}"
+
+
+def symexec_freshness_gate(
+    *,
+    workspace_path: Path,
+    annotated_c_path: Path,
+    function_name: str,
+    timeout_seconds: int = 120,
+) -> tuple[bool, str]:
+    """Regenerate deterministic symexec artifacts from current annotated C and compare."""
+    logs_dir = workspace_path / "logs"
+    log_path = logs_dir / "symexec_freshness_gate.json"
+    annotated_abs = annotated_c_path.resolve()
+    annotated_hash = file_sha256(annotated_abs) if annotated_abs.exists() else ""
+    current_dir = workspace_path / "coq" / "generated"
+    fresh_root = logs_dir / "fresh_symexec"
+    fresh_dir = fresh_root / "generated"
+    if fresh_root.exists():
+        shutil.rmtree(fresh_root)
+    fresh_dir.mkdir(parents=True, exist_ok=True)
+
+    logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
+    cmd = [
+        str(REPO_ROOT / "QualifiedCProgramming" / "linux-binary" / "symexec"),
+        f"--goal-file={(fresh_dir / f'{function_name}_goal.v').resolve()}",
+        f"--proof-auto-file={(fresh_dir / f'{function_name}_proof_auto.v').resolve()}",
+        f"--proof-manual-file={(fresh_dir / f'{function_name}_proof_manual.v').resolve()}",
+        f"--coq-logic-path={logic_path}",
+        "-slp", str(REPO_ROOT / "annotated") + "/", "SimpleC.EE.CAV",
+        f"--input-file={annotated_abs}",
+        "--no-exec-info",
+    ]
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=REPO_ROOT / "QualifiedCProgramming",
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout_seconds,
+        )
+        rc, out, err = proc.returncode, proc.stdout, proc.stderr
+    except subprocess.TimeoutExpired:
+        rc, out, err = 124, "", f"symexec freshness check timed out after {timeout_seconds}s"
+    except OSError as exc:
+        rc, out, err = 127, "", f"symexec not runnable: {exc}"
+
+    compared: list[dict[str, str | bool]] = []
+    details: list[str] = []
+    if rc != 0:
+        details.append(f"fresh symexec failed with exit {rc}")
+    else:
+        for suffix in ("goal", "proof_auto", "goal_check"):
+            current = current_dir / f"{function_name}_{suffix}.v"
+            fresh = fresh_dir / f"{function_name}_{suffix}.v"
+            if not current.exists() or not fresh.exists():
+                details.append(f"missing {suffix} artifact for freshness comparison")
+                compared.append({"suffix": suffix, "match": False, "current": str(current), "fresh": str(fresh)})
+                continue
+            current_hash = file_sha256(current)
+            fresh_hash = file_sha256(fresh)
+            match = current_hash == fresh_hash
+            compared.append({
+                "suffix": suffix,
+                "match": match,
+                "current": str(current),
+                "fresh": str(fresh),
+                "current_sha256": current_hash,
+                "fresh_sha256": fresh_hash,
+            })
+            if not match:
+                details.append(f"{suffix} artifact does not match fresh symexec output for current annotated C")
+
+    doc = {
+        "annotated_c": str(annotated_abs),
+        "annotated_sha256": annotated_hash,
+        "symexec_exit": rc,
+        "stdout": out,
+        "stderr": err,
+        "compared": compared,
+        "ok": not details,
+    }
+    log_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if details:
+        return False, f"symexec_freshness_failed:{log_path}"
+    return True, f"symexec_freshness_success:{log_path}"
+
+
+def verify_audit_check(
+    *,
+    workspace_path: Path,
+    function_name: str,
+    input_path: Path,
+    input_v_path: Path | None,
+    annotated_c_path: Path,
+) -> tuple[bool, str]:
+    checks = [
+        verify_proof_artifact_check(workspace_path, function_name, input_v_path),
+        source_integrity_gate(
+            workspace_path=workspace_path,
+            input_path=input_path,
+            input_v_path=input_v_path,
+            annotated_c_path=annotated_c_path,
+        ),
+        fingerprint_gate(workspace_path, function_name),
+        symexec_freshness_gate(
+            workspace_path=workspace_path,
+            annotated_c_path=annotated_c_path,
+            function_name=function_name,
+        ),
+    ]
+    failures = [detail for ok, detail in checks if not ok]
+    if failures:
+        return False, ";".join(failures)
+    return True, ";".join(detail for _, detail in checks)
 
 
 def copy_if_exists(src: Path, dst: Path) -> None:
@@ -511,6 +722,17 @@ def try_trivial_fast_path(
         emit_log("trivial_fast_path_failed stage=coqc")
         return False, 0
 
+    gates_ok, gates_detail = verify_audit_check(
+        workspace_path=workspace_path,
+        function_name=function_name,
+        input_path=input_path,
+        input_v_path=input_v_path,
+        annotated_c_path=annotated_c_path,
+    )
+    if not gates_ok:
+        emit_log(f"trivial_fast_path_failed stage=audit_check detail={gates_detail}")
+        return False, 0
+
     coq_runner.clean_compile_artifacts(workspace_path / "coq")
     issues = workspace_path / "logs" / "issues.md"
     issues.write_text(
@@ -610,7 +832,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--codex-bin", default=None, help="Codex CLI binary.")
     parser.add_argument("--claude-bin", default=None, help="Claude CLI binary.")
     parser.add_argument("--timeout-seconds", type=int, default=3600, help="Kill the external agent run if it exceeds this wall-clock timeout.")
-    parser.add_argument("--restart-context-file", default=None, help="File whose content (e.g. audit critic findings) is injected into the round-1 prompt on a re-run.")
+    parser.add_argument("--restart-context-file", default=None, help="File whose content (e.g. audit check feedback) is injected into the round-1 prompt on a re-run.")
     return parser
 
 
@@ -887,7 +1109,13 @@ def main() -> int:
         else:
             emit_log(f"agent_exec_completed attempt={attempt} exit_code=0")
 
-        completed, detail = verify_completion_gate(workspace_path, function_name, input_v_path)
+        completed, detail = verify_audit_check(
+            workspace_path=workspace_path,
+            function_name=function_name,
+            input_path=input_path,
+            input_v_path=input_v_path,
+            annotated_c_path=annotated_c_path,
+        )
         if completed:
             emit_log(f"verify_completed={detail}")
             if args.export_examples:

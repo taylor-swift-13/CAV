@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """Closed-loop multi-agent orchestrator for the C/QCP flow.
 
-Two critic-gated blocks plus an experience pass:
+One critic-gated contract block plus a deterministic verify audit check:
 
   * Contract block: ``run_contract`` -> ``run_eval``. If the eval critic does not
     return ``Spec verdict: Correct`` and rounds remain, re-run the contract with
     the eval findings injected (``--restart-context-file``).
-  * Verify block: ``run_verify`` -> ``run_audit``. If the audit critic does not
-    return ``VerifiedClean``/``VerifiedWithWarnings`` and rounds remain, re-run
-    verify with the audit findings injected.
+  * Verify block: ``run_verify``. The verify runner's deterministic audit check
+    is the post-verify gate.
   * Consolidate: feed every stage workspace to ``run_consolidate --scope all``.
   * Cost: roll every workspace up with ``agent_metrics.write_pipeline_cost_summary``.
 
@@ -81,18 +80,15 @@ def write_findings(dest: Path, *, title: str, sources: list[Path]) -> Path:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Closed-loop contract↔eval / verify↔audit orchestrator.")
+    p = argparse.ArgumentParser(description="Closed-loop contract↔eval / verify-audit-check orchestrator.")
     p.add_argument("target", help="raw/<name>.md (full flow) or input/<name>.c (skip contract).")
     p.add_argument("--function-name")
     p.add_argument("--contract-rounds", type=int, default=2)
-    p.add_argument("--verify-rounds", type=int, default=2)
     p.add_argument("--contract-timeout", type=int, default=300)
     p.add_argument("--eval-timeout", type=int, default=900)
     p.add_argument("--verify-timeout", type=int, default=3600)
-    p.add_argument("--audit-timeout", type=int, default=900)
     p.add_argument("--consolidate-timeout", type=int, default=600)
     p.add_argument("--skip-eval", action="store_true", help="Run contract without the eval gate.")
-    p.add_argument("--skip-audit", action="store_true", help="Run verify without the audit gate.")
     p.add_argument("--no-consolidate", action="store_true")
     p.add_argument("--no-export", action="store_true", help="Do not export verified workspaces into experiences/end-end/.")
     p.add_argument("--force", action="store_true", help="Continue to verify even if eval never reaches Correct.")
@@ -161,7 +157,7 @@ def main() -> int:
                 if rnd < args.contract_rounds:
                     restart_file = write_findings(
                         pipeline_dir / f"contract_findings_r{rnd}.md",
-                        title=f"Contract completion gate findings (round {rnd})",
+                        title=f"Contract syntax check findings (round {rnd})",
                         sources=[
                             contract_ws / "logs" / "issues.md",
                             contract_ws / "logs" / "metrics.md",
@@ -171,7 +167,7 @@ def main() -> int:
                         ],
                     )
                     continue
-                _finish(workspaces, pipeline_dir, args, name, status="contract_gate_failed")
+                _finish(workspaces, pipeline_dir, args, name, status="contract_syntax_check_failed")
                 return 1
 
             if args.skip_eval:
@@ -211,52 +207,25 @@ def main() -> int:
                 f"(spec={eval_verdict}, judge={judge_verdict}, runner_success={eval_runner_success}); "
                 "stopping before verify (use --force to continue)"
             )
-            _finish(workspaces, pipeline_dir, args, name, status="contract_gate_failed")
+            _finish(workspaces, pipeline_dir, args, name, status="contract_syntax_check_failed")
             return 1
     else:
         input_c = target
 
-    # ---- Verify block (verify -> audit) ----
-    audit_verdict = None
-    restart_file = None
-    for rnd in range(1, args.verify_rounds + 1):
-        ts = f"{base_ts}v{rnd}"
-        verify_ws = OUTPUT_ROOT / f"verify_{ts}_{name}"
-        cmd = [sys.executable, str(SCRIPTS / "run_verify.py"), str(input_c),
-               "--function-name", name, "--timestamp", ts, "--workspace-name", name,
-               "--timeout-seconds", str(args.verify_timeout), *cf]
-        if not args.no_export and not args.dry_run:
-            cmd += ["--export-examples"]
-        if restart_file:
-            cmd += ["--restart-context-file", str(restart_file)]
-        if run_stage(cmd) != 0:
-            emit(f"verify round {rnd} returned nonzero")
-        workspaces.append(verify_ws)
+    # ---- Verify block (run_verify owns retry and deterministic audit check) ----
+    ts = f"{base_ts}v"
+    verify_ws = OUTPUT_ROOT / f"verify_{ts}_{name}"
+    cmd = [sys.executable, str(SCRIPTS / "run_verify.py"), str(input_c),
+           "--function-name", name, "--timestamp", ts, "--workspace-name", name,
+           "--timeout-seconds", str(args.verify_timeout), *cf]
+    if not args.no_export and not args.dry_run:
+        cmd += ["--export-examples"]
+    verify_rc = run_stage(cmd)
+    workspaces.append(verify_ws)
+    verify_ok = verify_rc == 0 or args.dry_run
+    emit(f"verify audit_check={'passed' if verify_ok else f'failed exit={verify_rc}'}")
 
-        if args.skip_audit:
-            audit_verdict = "VerifiedClean"  # gate bypassed
-            break
-
-        ats = f"{base_ts}a{rnd}"
-        audit_ws = OUTPUT_ROOT / f"audit_{ats}_{name}"
-        acmd = [sys.executable, str(SCRIPTS / "run_audit.py"), str(verify_ws),
-                "--function-name", name, "--timestamp", ats, "--workspace-name", name,
-                "--timeout-seconds", str(args.audit_timeout), *cf]
-        run_stage(acmd)
-        workspaces.append(audit_ws)
-        audit_verdict = read_line_value(audit_ws / "logs" / "final_result.md", "Audit verdict:")
-        emit(f"verify round {rnd}: audit verdict={audit_verdict}")
-        if args.dry_run:
-            audit_verdict = "VerifiedClean"  # wiring exercised; no real verdict to gate on
-            break
-        if audit_verdict in ("VerifiedClean", "VerifiedWithWarnings"):
-            break
-        if rnd < args.verify_rounds:
-            restart_file = write_findings(
-                pipeline_dir / f"audit_findings_r{rnd}.md", title=f"Audit findings (round {rnd})",
-                sources=[audit_ws / "logs" / "final_result.md", audit_ws / "audit" / "findings.json"])
-
-    status = "success" if audit_verdict in ("VerifiedClean", "VerifiedWithWarnings") else "audit_gate_failed"
+    status = "success" if verify_ok else "audit_check_failed"
     _finish(workspaces, pipeline_dir, args, name, status=status)
     return 0 if status == "success" else 1
 

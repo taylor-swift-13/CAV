@@ -78,7 +78,7 @@ In each workspace, inspect at least:
 - reasoning logs such as `reasoning.md`, `annotation_reasoning.md`,
   `proof_reasoning.md`, `test_reasoning.md`, `continue.md`
 - compile or replay logs
-- audit findings when present
+- verify audit-check feedback when present
 
 For **efficiency lessons** specifically, also inspect
 `logs/agent_stdout_*.jsonl` (the upstream stage agent's harness transcript).

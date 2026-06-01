@@ -3,6 +3,7 @@ import argparse
 import datetime as dt
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -25,6 +26,8 @@ DEFAULT_REASONING_EFFORT = "medium"
 CONTRACT_ILL_FORMED_EXIT = 30
 CONTRACT_COQ_EXIT = 31
 CONTRACT_MISSING_INPUT_EXIT = 32
+CONTRACT_VERIFY_ANNOTATION_EXIT = 33
+CONTRACT_V_FORBIDDEN_ASSUMPTION_EXIT = 34
 NOISE_PATTERNS = [
     "WARNING: proceeding, even though we could not update PATH: Read-only file system",
     "failed to renew cache TTL: Read-only file system",
@@ -149,7 +152,7 @@ def build_prompt(
         f"- Optional output V: `{target_v_path}`",
     ]
     if attempt > 1:
-        lines += ["", f"Attempt: {attempt} (retry — the previous contract attempt failed its completion gate)."]
+        lines += ["", f"Attempt: {attempt} (retry — the previous contract attempt failed its syntax check)."]
     if restart_context:
         lines += ["", "Restart feedback (must be addressed before finishing this contract run):", restart_context.rstrip()]
     return "\n".join(lines) + "\n"
@@ -190,7 +193,7 @@ def write_metrics(
         f"- Reasoning effort: `{reasoning_effort}`",
         f"- Output C: `{target_c}`",
         f"- Output V: `{target_v if target_v.exists() else '<not created>'}`",
-        f"- Spec well-formedness gate: `{wellformed}` (symexec exit `{wellformed_exit if wellformed_exit is not None else 'n/a'}`)",
+        f"- Contract syntax check wellformed gate: `{wellformed}` (symexec exit `{wellformed_exit if wellformed_exit is not None else 'n/a'}`)",
         f"- Prompt file: `{prompt_path}`",
         f"- Agent stdout: `{stdout_jsonl}`",
         f"- Agent stderr: `{stderr_log}`",
@@ -237,14 +240,14 @@ def update_issues_on_wellformed_failure(issues_md: Path, detail: str, target_c: 
     issues_md.write_text(existing + block, encoding="utf-8")
 
 
-def update_issues_on_contract_gate_failure(issues_md: Path, stage: str, exit_code: int, detail: str) -> None:
+def update_issues_on_contract_syntax_check_failure(issues_md: Path, stage: str, exit_code: int, detail: str) -> None:
     issues_md.parent.mkdir(parents=True, exist_ok=True)
     if issues_md.exists():
         existing = issues_md.read_text(encoding="utf-8").rstrip() + "\n\n"
     else:
         existing = "# Contract Issues\n\n"
     block = (
-        "## Contract Completion Gate Failure\n\n"
+        "## Contract Syntax Check Failure\n\n"
         f"- Stage: `{stage}`\n"
         f"- Exit code: `{exit_code}`\n"
         f"- Detail: `{detail}`\n\n"
@@ -271,17 +274,75 @@ def check_input_v_if_present(input_v: Path, workspace_path: Path) -> tuple[bool,
     return False, rc, f"input V failed to compile: {log_path}"
 
 
-def run_contract_completion_gate(target_c: Path, target_v: Path, workspace_path: Path) -> tuple[bool, int, str, str, int | None]:
+def check_no_verify_annotations(input_c: Path, workspace_path: Path) -> tuple[bool, str]:
+    """Contract output must not contain verify-stage Inv/Assert/which-implies blocks."""
+    text = input_c.read_text(encoding="utf-8", errors="replace")
+    log_path = workspace_path / "logs" / "contract_annotation_gate.log"
+    findings: list[str] = []
+    for match in re.finditer(r"/\*@(.*?)\*/", text, flags=re.DOTALL):
+        body = match.group(1)
+        line = text[:match.start()].count("\n") + 1
+        if re.search(r"\bInv\b|\bAssert\b|\bwhich\s+implies\b", body, flags=re.IGNORECASE):
+            snippet = re.sub(r"\s+", " ", body).strip()[:300]
+            findings.append(f"line {line}: {snippet}")
+    if findings:
+        log_path.write_text(
+            "Contract annotation gate failed: verify-stage annotation found in input C.\n"
+            + "\n".join(f"- {item}" for item in findings)
+            + "\n",
+            encoding="utf-8",
+        )
+        return False, f"verify-stage annotation in contract C: {log_path}"
+    log_path.write_text("Contract annotation gate passed.\n", encoding="utf-8")
+    return True, f"contract annotation gate passed: {log_path}"
+
+
+def check_input_v_has_only_definitions(input_v: Path, workspace_path: Path) -> tuple[bool, str]:
+    """Optional input .v may define logic, but must not introduce assumptions."""
+    if not input_v.exists():
+        return True, "input V not present"
+    text = input_v.read_text(encoding="utf-8", errors="replace")
+    log_path = workspace_path / "logs" / "input_v_definition_gate.log"
+    forbidden = re.compile(
+        r"^\s*(Axiom|Hypothesis|Parameter|Parameters|Conjecture|Variable|Variables|Declare)\b"
+        r"|\b(Admitted|admit|Abort)\b",
+        flags=re.MULTILINE,
+    )
+    findings = []
+    lines = text.splitlines()
+    for match in forbidden.finditer(text):
+        line_no = text[:match.start()].count("\n") + 1
+        line = lines[line_no - 1].strip() if line_no <= len(lines) else match.group(0)
+        findings.append(f"line {line_no}: {line[:300]}")
+    if findings:
+        log_path.write_text(
+            "Input V definition gate failed: .v contains assumptions/stubs instead of definitions only.\n"
+            + "\n".join(f"- {item}" for item in findings)
+            + "\n",
+            encoding="utf-8",
+        )
+        return False, f"input V contains forbidden assumptions/stubs: {log_path}"
+    log_path.write_text("Input V definition gate passed.\n", encoding="utf-8")
+    return True, f"input V definition gate passed: {log_path}"
+
+
+def run_contract_syntax_check(target_c: Path, target_v: Path, workspace_path: Path) -> tuple[bool, int, str, str, int | None]:
     if not target_c.exists():
         return False, CONTRACT_MISSING_INPUT_EXIT, f"missing generated C: {target_c}", "not_run", None
+    annotation_ok, annotation_detail = check_no_verify_annotations(target_c, workspace_path)
+    if not annotation_ok:
+        return False, CONTRACT_VERIFY_ANNOTATION_EXIT, annotation_detail, "not_run", None
     wellformed, wellformed_exit, wf_detail = check_spec_wellformed.check(target_c)
     emit_log(f"wellformed={wellformed} symexec_exit={wellformed_exit} detail={wf_detail}")
     if wellformed != "well_formed":
         return False, CONTRACT_ILL_FORMED_EXIT, wf_detail, wellformed, wellformed_exit
+    v_def_ok, v_def_detail = check_input_v_has_only_definitions(target_v, workspace_path)
+    if not v_def_ok:
+        return False, CONTRACT_V_FORBIDDEN_ASSUMPTION_EXIT, v_def_detail, wellformed, wellformed_exit
     v_ok, v_exit, v_detail = check_input_v_if_present(target_v, workspace_path)
     if not v_ok:
         return False, CONTRACT_COQ_EXIT, f"{v_detail} (coqc exit {v_exit})", wellformed, wellformed_exit
-    return True, 0, v_detail, wellformed, wellformed_exit
+    return True, 0, f"{annotation_detail}; {v_def_detail}; {v_detail}", wellformed, wellformed_exit
 
 
 def append_continue(logs_dir: Path, kind: str, text: str) -> Path:
@@ -310,7 +371,7 @@ def contract_retry_feedback(
         f"Contract attempt {attempt} failed.",
         "",
         f"- Agent exit code: `{proc_returncode}`",
-        f"- Wellformed gate: `{wellformed}`",
+        f"- Syntax check wellformed gate: `{wellformed}`",
         f"- Symexec exit: `{wellformed_exit if wellformed_exit is not None else 'n/a'}`",
     ]
     if detail:
@@ -326,7 +387,7 @@ def contract_retry_feedback(
         ])
     lines.extend([
         "",
-        "Required next action: regenerate or edit the contract so the QCP wellformed gate passes before eval or verify starts.",
+        "Required next action: regenerate or edit the contract so input C has no verify-stage Inv/Assert/which-implies annotations, optional input V contains definitions only, and the QCP wellformed gate passes before eval or verify starts.",
     ])
     return "\n".join(lines)
 
@@ -597,7 +658,7 @@ def main() -> int:
         gate_detail = failure_detail
         if proc_returncode == 0:
             try:
-                gate_ok, gate_exit, gate_detail, wellformed, wellformed_exit = run_contract_completion_gate(
+                gate_ok, gate_exit, gate_detail, wellformed, wellformed_exit = run_contract_syntax_check(
                     target_c_path,
                     target_v_path,
                     workspace_path,
@@ -605,8 +666,8 @@ def main() -> int:
             except Exception as exc:  # noqa: BLE001
                 gate_ok = False
                 gate_exit = CONTRACT_ILL_FORMED_EXIT
-                gate_detail = f"contract completion gate failed unexpectedly: {exc}"
-                emit_log(f"contract_gate_failed_unexpected: {exc}")
+                gate_detail = f"contract syntax check failed unexpectedly: {exc}"
+                emit_log(f"contract_syntax_check_failed_unexpected: {exc}")
 
         if proc_returncode == 0 and gate_ok:
             status = "Success"
@@ -623,11 +684,11 @@ def main() -> int:
                     target_c_path,
                 )
             else:
-                update_issues_on_contract_gate_failure(
+                update_issues_on_contract_syntax_check_failure(
                     issues_path(workspace_path),
-                    "contract-completion-gate",
+                    "contract-syntax-check",
                     proc_returncode,
-                    gate_detail or "contract completion gate failed",
+                    gate_detail or "contract syntax check failed",
                 )
         else:
             update_issues_on_failure(
