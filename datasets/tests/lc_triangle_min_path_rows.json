@@ -1,0 +1,40 @@
+{
+  "name": "lc_triangle_min_path_rows",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "2;3,4;6,5,7;4,1,8,3"
+      },
+      "expected": 11
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "-10"
+      },
+      "expected": -10
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1;2,3;3,6,1"
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "triangle",
+    "url": "https://leetcode.com/problems/triangle/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

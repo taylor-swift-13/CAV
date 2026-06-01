@@ -6248,6 +6248,31 @@
       }
     },
     {
+      "name": "lc_insert_interval_total_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "intervals",
+          "type": "string"
+        },
+        {
+          "name": "new_start",
+          "type": "int"
+        },
+        {
+          "name": "new_end",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "insert-interval",
+        "url": "https://leetcode.com/problems/insert-interval/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_integer_break_max_product",
       "return_type": "int",
       "params": [
@@ -6519,6 +6544,44 @@
       }
     },
     {
+      "name": "lc_max_profit_fee_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "prices",
+          "type": "string"
+        },
+        {
+          "name": "fee",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "best-time-to-buy-and-sell-stock-with-transaction-fee",
+        "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_subarray_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-subarray",
+        "url": "https://leetcode.com/problems/maximum-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_maximal_rectangle_area_rows",
       "return_type": "int",
       "params": [
@@ -6549,6 +6612,23 @@
         "name": "LeetCode",
         "slug": "maximal-square",
         "url": "https://leetcode.com/problems/maximal-square/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_merge_intervals_total_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "intervals",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "merge-intervals",
+        "url": "https://leetcode.com/problems/merge-intervals/",
         "license": "local rewrite"
       }
     },
@@ -6713,6 +6793,23 @@
         "name": "LeetCode",
         "slug": "number-of-islands",
         "url": "https://leetcode.com/problems/number-of-islands/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_palindromic_substrings_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "palindromic-substrings",
+        "url": "https://leetcode.com/problems/palindromic-substrings/",
         "license": "local rewrite"
       }
     },
@@ -6882,6 +6979,27 @@
         "name": "LeetCode",
         "slug": "rotate-array",
         "url": "https://leetcode.com/problems/rotate-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_search_matrix_bool_rows",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "search-a-2d-matrix",
+        "url": "https://leetcode.com/problems/search-a-2d-matrix/",
         "license": "local rewrite"
       }
     },
@@ -7139,6 +7257,23 @@
       }
     },
     {
+      "name": "lc_triangle_min_path_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "triangle",
+        "url": "https://leetcode.com/problems/triangle/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_unique_bst_count",
       "return_type": "int",
       "params": [
@@ -7173,6 +7308,23 @@
         "name": "LeetCode",
         "slug": "unique-paths",
         "url": "https://leetcode.com/problems/unique-paths/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_unique_paths_obstacles_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "unique-paths-ii",
+        "url": "https://leetcode.com/problems/unique-paths-ii/",
         "license": "local rewrite"
       }
     },
