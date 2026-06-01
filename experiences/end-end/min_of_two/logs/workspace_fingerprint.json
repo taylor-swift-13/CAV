@@ -9,21 +9,9 @@
   "program_sha256": "aa3a610b17ba21099662e84a683e4a0976f8672f8466d039e6841de5dbc12241",
   "semantic_description": "Computes the minimum of two int inputs without modifying memory. The method is read-only, uses a single if branch on the input order, returns a when a is less than or equal to b and returns b otherwise, including equality choosing a. The JML proof is a scalar case split over the branch condition with pure arithmetic/order reasoning and no heap mutation.",
   "keywords": {
-    "algorithm_family": "selection",
-    "control_flow": "if",
-    "data_shape": "scalar_only",
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "case_split",
-      "pure_arithmetic",
-      "range_bound"
-    ],
-    "numeric_properties": "int_range",
-    "edge_case_behavior": "branch_on_order",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
-    ]
+    "problem_kind": "min_max",
+    "data": "scalar",
+    "pattern": "branch"
   },
   "assume_contract_is_correct": true,
   "contract_source": "contract_input_java",

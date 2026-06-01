@@ -31,81 +31,16 @@ NOISE_PATTERNS = [
     "failed to connect to websocket: IO error: Connection reset by peer",
 ]
 CONTROLLED_KEYWORDS = {
-    "algorithm_family": {
-        "identity",
-        "selection",
-        "counting",
-        "accumulation",
-        "arithmetic_series",
-        "factorial",
-        "prefix_sum",
-        "simulation",
-        "search",
-        "two_pointers",
-        "dynamic_programming",
-        "greedy",
-        "recursion",
+    "problem_kind": {
+        "identity", "min_max", "count", "sum", "product", "search", "compare",
+        "transform", "partition", "sort", "prefix", "dp", "math",
     },
-    "control_flow": {
-        "straight_line",
-        "if",
-        "ternary",
-        "for_loop",
-        "while_loop",
-        "do_while",
-        "nested_loop",
-        "recursion",
+    "data": {
+        "scalar", "array", "string", "matrix", "linked_list", "tree", "graph",
     },
-    "data_shape": {
-        "scalar_only",
-        "array",
-        "string",
-        "pointer",
-        "struct",
-        "linked_list",
-        "tree",
-        "graph",
-    },
-    "semantic_intent": {
-        "return_input",
-        "return_max",
-        "count_iterations",
-        "sum_1_to_n",
-        "sum_even_series",
-        "compute_factorial",
-        "preserve_input",
-        "in_place_update",
-    },
-    "proof_pattern": {
-        "pure_arithmetic",
-        "loop_invariant",
-        "case_split",
-        "termination_by_bound",
-        "closed_form",
-        "monotonicity",
-        "range_bound",
-        "heap_reasoning",
-    },
-    "numeric_properties": {
-        "nonnegative_input",
-        "overflow_guard",
-        "int_range",
-        "monotone_accumulator",
-        "exact_closed_form",
-    },
-    "edge_case_behavior": {
-        "returns_zero_on_nonpositive",
-        "returns_input_on_nonpositive",
-        "defined_for_nonnegative_only",
-        "branch_on_order",
-        "empty_loop_possible",
-    },
-    "verification_status": {
-        "goal_check_passed",
-        "proof_check_passed",
-        "manual_witness_needed",
-        "auto_proof_contains_admitted",
-        "generated_goal_contains_axioms",
+    "pattern": {
+        "straight_line", "branch", "single_loop", "nested_loop", "two_pointers",
+        "sliding_window", "prefix_scan", "binary_search", "recursion", "state_machine",
     },
 }
 
@@ -253,6 +188,9 @@ def validate_fingerprint(workspace: Path) -> tuple[bool, str]:
     keywords = data.get("keywords")
     if not isinstance(keywords, dict) or not keywords:
         return False, "fingerprint keywords must be a non-empty object"
+    missing = sorted(set(CONTROLLED_KEYWORDS) - set(keywords))
+    if missing:
+        return False, "fingerprint keywords missing required keys: " + ",".join(missing)
 
     for key, value in keywords.items():
         allowed_values = CONTROLLED_KEYWORDS.get(key)

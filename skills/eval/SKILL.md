@@ -166,11 +166,15 @@ Write `logs/final_result.md` with one of:
 The spec-test verdict is not enough by itself. Also judge whether the JML spec
 soundly and completely characterizes the intended method behavior.
 
-Check all eight items and write `Pass` / `Fail` / `Inconclusive` with a short
+Check all nine items and write `Pass` / `Fail` / `Inconclusive` with a short
 reason in `logs/final_result.md`:
 
 - `Precondition strength`: preconditions are not too strong and do not exclude
   valid input cases; the strongest bad form is `requires false`.
+- `Precondition safety`: preconditions are strong enough to exclude runtime
+  errors such as division by zero, null dereference, out-of-bounds array
+  access, invalid object/array state, and arithmetic exceptional cases relevant
+  to the implementation.
 - `Postcondition strength`: postconditions are not too weak or trivial and
   actually characterize behavior; the weakest bad form is `ensures true`.
 - `Soundness`: every input/output of the correct program satisfies the spec.
@@ -191,7 +195,7 @@ over-strong preconditions that exclude valid inputs, `false ==> P`, and
 empty-range quantifiers must fail the semantic judge when they make the spec
 unsound or incomplete for the raw task.
 
-Only if all eight items are `Pass`, write:
+Only if all nine items are `Pass`, write:
 
 ```text
 Judge verdict: Pass

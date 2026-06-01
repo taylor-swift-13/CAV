@@ -9,24 +9,9 @@
   "program_sha256": "ca40050128ae2bd4a145cbd0c5358bc612324584e8df482bc6deabff7ea0793a",
   "semantic_description": "Computes the absolute value of an int except Integer.MIN_VALUE. The method is read-only, uses an if branch, returns x when x is nonnegative and -x otherwise, and relies on the precondition overflow guard to make negation safe. The proof is straight scalar case splitting over the branch condition with integer range reasoning and no heap mutation.",
   "keywords": {
-    "algorithm_family": "selection",
-    "control_flow": "if",
-    "data_shape": "scalar_only",
-    "semantic_intent": "return_input",
-    "proof_pattern": [
-      "case_split",
-      "pure_arithmetic",
-      "range_bound"
-    ],
-    "numeric_properties": [
-      "overflow_guard",
-      "int_range"
-    ],
-    "edge_case_behavior": "branch_on_order",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
-    ]
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "branch"
   },
   "assume_contract_is_correct": true,
   "contract_source": "contract_input_java",

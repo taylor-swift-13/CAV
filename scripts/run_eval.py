@@ -187,22 +187,8 @@ Rules:
   `Spec verdict: Correct` (all positives pass, all negatives fail),
   `Spec verdict: Buggy` (a positive failed or a negative passed),
   `Spec verdict: Inconclusive` (a judged clause stays inconclusive).
-- After the spec-test, run the same LLM judge as the C eval flow. Judge whether
-  the spec is sound and complete for the intended method behavior:
-  * Precondition strength: preconditions are not too strong and do not exclude
-    valid input cases; the strongest bad form is `requires false`.
-  * Postcondition strength: postconditions are not too weak or trivial and
-    actually characterize behavior; the weakest bad form is `ensures true`.
-  * Soundness: every input/output of the correct program satisfies the spec.
-  * Positive coverage: all positive cases satisfy the spec.
-  * Parameter coverage: all input, output, and necessary post-state parameters
-    are constrained by the spec.
-  * Path coverage: all method paths / branches are covered.
-  * Negative rejection: all negative cases are rejected by the spec.
-  * Completeness: any implementation satisfying the spec is a correct solution
-    to this problem.
-  Write `Judge verdict: Pass` only if all eight items pass. Otherwise write
-  `Judge verdict: Fail`; use `Judge verdict: Inconclusive` if undecidable.
+- After the spec-test, run the LLM Judge exactly as specified in the skill.
+  The skill is authoritative for the judge checklist and `Judge verdict`.
 - Generated eval artifacts are case/evaluation/report files under `{logs_dir}`
   and the eval workspace.
 - Write `test_reasoning.md`, `issues.md`, `final_result.md`, `metrics.md` under

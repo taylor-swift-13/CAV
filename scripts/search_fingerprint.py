@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Search experience fingerprints by the four-field algorithm fingerprint.
+"""Search Java/OpenJML experience fingerprints by the shared C/JAVA schema.
 
 Two layouts are supported, sharing the same JSON schema for the fields used in
 ranking (``semantic_description`` + controlled-vocab ``keywords``):
 
 - **end-end** (``experiences/end-end/<case>/logs/workspace_fingerprint.json``):
-  per-workspace fingerprint, with paths to the C/Coq/log artifacts.
+  per-workspace fingerprint, with paths to the Java/log artifacts.
 - **general** (``experiences/general/<NAME>/<N>/<slug>.fingerprint``):
   per-experience fingerprint, sibling to ``<slug>.md`` describing one topical
   experience write-up.
@@ -117,22 +117,22 @@ def detect_layout(fp_path: Path) -> str:
     return "unknown"
 
 
-def artifact_paths(fp_path: Path, layout: str, function_name: str) -> dict[str, str]:
+def artifact_paths(fp_path: Path, layout: str, target_name: str) -> dict[str, str]:
     """Per-layout artifact paths for the result entry."""
     if layout == "end-end":
         case_dir = fp_path.parents[1]
-        generated = case_dir / "coq" / "generated"
+        original_dir = case_dir / "original"
+        verified_dir = case_dir / "verified"
+        original_java = next(iter(sorted(original_dir.glob("*.java"))), original_dir / f"{target_name}.java")
+        verified_java = next(iter(sorted(verified_dir.glob("*.java"))), verified_dir / f"{target_name}.java")
         return {
             "layout": "end-end",
             "case_dir": str(case_dir),
             "fingerprint": str(fp_path),
             "annotation_reasoning": str(case_dir / "logs" / "annotation_reasoning.md"),
-            "proof_reasoning": str(case_dir / "logs" / "proof_reasoning.md"),
             "issues": str(case_dir / "logs" / "issues.md"),
-            "original_c": str(case_dir / "original" / f"{function_name}.c"),
-            "annotated_c": str(case_dir / "annotated" / f"{function_name}.c"),
-            "proof_manual": str(generated / f"{function_name}_proof_manual.v"),
-            "generated_dir": str(generated),
+            "original_java": str(original_java),
+            "verified_java": str(verified_java),
         }
     if layout == "general":
         # fp_path: .../general/<NAME>/<N>/<slug>.fingerprint
@@ -195,14 +195,14 @@ def search(query: dict[str, Any], roots: list[Path], *, min_keyword_matches: int
             score = matches * 100 + round(overlap * 100, 2)
             layout = detect_layout(fp_path)
             if layout == "end-end":
-                function_name = cand.get("function_name") if isinstance(cand.get("function_name"), str) else fp_path.parents[1].name
-                identifier = function_name
+                target_name = cand.get("class_name") if isinstance(cand.get("class_name"), str) else fp_path.parents[1].name
+                identifier = target_name
             elif layout == "general":
-                function_name = ""
+                target_name = ""
                 # fp_path: .../<NAME>/<N>/<slug>.fingerprint  →  identifier "<NAME>/<N>/<slug>"
                 identifier = f"{fp_path.parents[1].name}/{fp_path.parents[0].name}/{fp_path.stem}"
             else:
-                function_name = ""
+                target_name = ""
                 identifier = fp_path.stem
             results.append({
                 "score": score,
@@ -211,10 +211,10 @@ def search(query: dict[str, Any], roots: list[Path], *, min_keyword_matches: int
                 "keyword_matches": matches,
                 "matched_keywords": matched_fields,
                 "semantic_overlap": round(overlap, 4),
-                "function_name": function_name,
+                "target_name": target_name,
                 "keywords": {k: cand_kw.get(k) for k in KEYS if k in cand_kw},
                 "semantic_description": cand_desc,
-                "paths": artifact_paths(fp_path, layout, function_name),
+                "paths": artifact_paths(fp_path, layout, target_name),
             })
 
     results.sort(key=lambda r: (-r["keyword_matches"], -r["semantic_overlap"], r["identifier"]))
