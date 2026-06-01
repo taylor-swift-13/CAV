@@ -14,7 +14,7 @@
 ## 参考实现
 
 ```c
-int climbStairs(int n) {
+int climb_stairs(int n) {
     if (n <= 1) return 1;
     int prev2 = 1; // 代表 dp[i-2]
     int prev1 = 1; // 代表 dp[i-1]

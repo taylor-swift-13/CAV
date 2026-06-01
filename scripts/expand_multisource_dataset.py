@@ -1884,6 +1884,8 @@ def normalize_json_files() -> list[dict]:
     problems = []
     for path in sorted((DATASETS / "tests").glob("*.json")):
         data = json.loads(path.read_text(encoding="utf-8"))
+        if data.get("name") in {"climb_stairs", "factorial"}:
+            data["function"] = data["name"]
         data["difficulty"] = infer_difficulty(data)
         if not data.get("source"):
             data["source"] = DEFAULT_LOCAL_SOURCE
