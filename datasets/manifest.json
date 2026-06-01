@@ -5758,6 +5758,23 @@
       }
     },
     {
+      "name": "lc_arrows_burst_balloons_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "points",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-number-of-arrows-to-burst-balloons",
+        "url": "https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_asteroid_collision_survivors_count_csv",
       "return_type": "int",
       "params": [
@@ -5771,6 +5788,27 @@
         "name": "LeetCode",
         "slug": "asteroid-collision",
         "url": "https://leetcode.com/problems/asteroid-collision/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_boats_rescue_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "people",
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "boats-to-save-people",
+        "url": "https://leetcode.com/problems/boats-to-save-people/",
         "license": "local rewrite"
       }
     },
@@ -6449,6 +6487,35 @@
       }
     },
     {
+      "name": "lc_ipo_max_capital_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "w",
+          "type": "int"
+        },
+        {
+          "name": "profits",
+          "type": "string"
+        },
+        {
+          "name": "capital",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "ipo",
+        "url": "https://leetcode.com/problems/ipo/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_island_perimeter_rows",
       "return_type": "int",
       "params": [
@@ -6542,6 +6609,27 @@
         "name": "LeetCode",
         "slug": "kth-largest-element-in-an-array",
         "url": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_kth_smallest_matrix_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "kth-smallest-element-in-a-sorted-matrix",
+        "url": "https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/",
         "license": "local rewrite"
       }
     },
@@ -6699,6 +6787,27 @@
         "name": "LeetCode",
         "slug": "longest-valid-parentheses",
         "url": "https://leetcode.com/problems/longest-valid-parentheses/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_magnetic_force_balls_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "position",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "magnetic-force-between-two-balls",
+        "url": "https://leetcode.com/problems/magnetic-force-between-two-balls/",
         "license": "local rewrite"
       }
     },
@@ -6873,6 +6982,31 @@
         "name": "LeetCode",
         "slug": "min-cost-climbing-stairs",
         "url": "https://leetcode.com/problems/min-cost-climbing-stairs/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_days_bouquets_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "bloom_day",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-number-of-days-to-make-m-bouquets",
+        "url": "https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/",
         "license": "local rewrite"
       }
     },
@@ -7421,6 +7555,27 @@
       }
     },
     {
+      "name": "lc_ship_capacity_days_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "weights",
+          "type": "string"
+        },
+        {
+          "name": "days",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "capacity-to-ship-packages-within-d-days",
+        "url": "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_shortest_path_binary_matrix_rows",
       "return_type": "int",
       "params": [
@@ -7468,6 +7623,27 @@
         "name": "LeetCode",
         "slug": "sort-colors",
         "url": "https://leetcode.com/problems/sort-colors/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_split_array_largest_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "split-array-largest-sum",
+        "url": "https://leetcode.com/problems/split-array-largest-sum/",
         "license": "local rewrite"
       }
     },
