@@ -5913,6 +5913,27 @@
       }
     },
     {
+      "name": "lc_coin_change2_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "amount",
+          "type": "int"
+        },
+        {
+          "name": "coins",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "coin-change-ii",
+        "url": "https://leetcode.com/problems/coin-change-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_coin_change_min_csv",
       "return_type": "int",
       "params": [
@@ -6099,6 +6120,27 @@
         "name": "LeetCode",
         "slug": "delete-and-earn",
         "url": "https://leetcode.com/problems/delete-and-earn/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_distinct_subsequences_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "t",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "distinct-subsequences",
+        "url": "https://leetcode.com/problems/distinct-subsequences/",
         "license": "local rewrite"
       }
     },
@@ -6365,6 +6407,31 @@
       }
     },
     {
+      "name": "lc_interleaving_string_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s1",
+          "type": "string"
+        },
+        {
+          "name": "s2",
+          "type": "string"
+        },
+        {
+          "name": "s3",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "interleaving-string",
+        "url": "https://leetcode.com/problems/interleaving-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_island_perimeter_rows",
       "return_type": "int",
       "params": [
@@ -6441,6 +6508,23 @@
         "name": "LeetCode",
         "slug": "kth-largest-element-in-an-array",
         "url": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_largest_rectangle_area_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "heights",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "largest-rectangle-in-histogram",
+        "url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
         "license": "local rewrite"
       }
     },
@@ -6564,6 +6648,23 @@
         "name": "LeetCode",
         "slug": "longest-substring-without-repeating-characters",
         "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_valid_parentheses_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-valid-parentheses",
+        "url": "https://leetcode.com/problems/longest-valid-parentheses/",
         "license": "local rewrite"
       }
     },
@@ -6721,6 +6822,23 @@
         "name": "LeetCode",
         "slug": "min-cost-climbing-stairs",
         "url": "https://leetcode.com/problems/min-cost-climbing-stairs/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_falling_path_sum_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-falling-path-sum",
+        "url": "https://leetcode.com/problems/minimum-falling-path-sum/",
         "license": "local rewrite"
       }
     },
@@ -6893,6 +7011,23 @@
         "name": "LeetCode",
         "slug": "number-of-islands",
         "url": "https://leetcode.com/problems/number-of-islands/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_number_of_lis_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-longest-increasing-subsequence",
+        "url": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/",
         "license": "local rewrite"
       }
     },
@@ -7303,6 +7438,23 @@
         "name": "LeetCode",
         "slug": "subarray-sum-equals-k",
         "url": "https://leetcode.com/problems/subarray-sum-equals-k/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_sum_subarray_mins_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "sum-of-subarray-minimums",
+        "url": "https://leetcode.com/problems/sum-of-subarray-minimums/",
         "license": "local rewrite"
       }
     },
