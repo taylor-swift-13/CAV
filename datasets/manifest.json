@@ -2173,7 +2173,7 @@
         }
       ],
       "difficulty": "medium",
-      "function": "climbStairs",
+      "function": "climb_stairs",
       "source": {
         "name": "CAV-JAVA local dataset",
         "slug": "datasets/local",
@@ -3202,7 +3202,7 @@
         }
       ],
       "difficulty": "easy",
-      "function": "fac",
+      "function": "factorial",
       "source": {
         "name": "CAV-JAVA local dataset",
         "slug": "datasets/local",

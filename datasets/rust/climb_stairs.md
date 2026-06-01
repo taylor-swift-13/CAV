@@ -14,7 +14,7 @@
 ## 参考实现
 
 ```rust
-pub fn climbStairs(n: i32) -> i32 {
+pub fn climb_stairs(n: i32) -> i32 {
     if n <= 1 { return 1; }
     let mut prev2: i32 = 1; // 代表 dp[i-2]
     let mut prev1: i32 = 1; // 代表 dp[i-1]
