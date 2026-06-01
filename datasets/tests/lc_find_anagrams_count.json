@@ -1,0 +1,47 @@
+{
+  "name": "lc_find_anagrams_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    },
+    {
+      "name": "p",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "cbaebabacd",
+        "p": "abc"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "abab",
+        "p": "ab"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "aaaa",
+        "p": "aa"
+      },
+      "expected": 3
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "find-all-anagrams-in-a-string",
+    "url": "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

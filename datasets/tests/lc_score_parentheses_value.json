@@ -1,0 +1,47 @@
+{
+  "name": "lc_score_parentheses_value",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "()"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(())"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "()()"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(()(()))"
+      },
+      "expected": 6
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "score-of-parentheses",
+    "url": "https://leetcode.com/problems/score-of-parentheses/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

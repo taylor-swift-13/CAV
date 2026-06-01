@@ -1,0 +1,47 @@
+{
+  "name": "lc_nice_subarrays_count_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    },
+    {
+      "name": "k",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,1,2,1,1",
+        "k": 3
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,4,6",
+        "k": 1
+      },
+      "expected": 0
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,2,2,1,2,2,1,2,2,2",
+        "k": 2
+      },
+      "expected": 16
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "count-number-of-nice-subarrays",
+    "url": "https://leetcode.com/problems/count-number-of-nice-subarrays/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

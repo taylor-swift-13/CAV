@@ -1,0 +1,47 @@
+{
+  "name": "lc_binary_subarrays_sum_count_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    },
+    {
+      "name": "goal",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,0,1,0,1",
+        "goal": 2
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "0,0,0,0,0",
+        "goal": 0
+      },
+      "expected": 15
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,1,1",
+        "goal": 2
+      },
+      "expected": 2
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "binary-subarrays-with-sum",
+    "url": "https://leetcode.com/problems/binary-subarrays-with-sum/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

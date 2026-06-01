@@ -1,0 +1,40 @@
+{
+  "name": "lc_fruit_into_baskets_len_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "fruits",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "fruits": "1,2,1"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "fruits": "0,1,2,2"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "fruits": "1,2,3,2,2"
+      },
+      "expected": 4
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "fruit-into-baskets",
+    "url": "https://leetcode.com/problems/fruit-into-baskets/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

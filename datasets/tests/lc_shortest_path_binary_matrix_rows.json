@@ -1,0 +1,40 @@
+{
+  "name": "lc_shortest_path_binary_matrix_rows",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "01;10"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "001;110;110"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1"
+      },
+      "expected": -1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "shortest-path-in-binary-matrix",
+    "url": "https://leetcode.com/problems/shortest-path-in-binary-matrix/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

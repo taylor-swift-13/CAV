@@ -1,0 +1,40 @@
+{
+  "name": "lc_number_of_lis_count_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,3,5,4,7"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "2,2,2,2,2"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,4,3,5,4,7,2"
+      },
+      "expected": 3
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "number-of-longest-increasing-subsequence",
+    "url": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

@@ -1,0 +1,26 @@
+# LC Path With Minimum Effort Rows
+
+## Problem
+
+Return the minimum possible maximum absolute height difference along a path.
+
+## Requirements
+
+- Heights are encoded as semicolon-separated comma rows.
+- Moves are 4-directional from top-left to bottom-right.
+
+## Source
+
+- Source: LeetCode problem `path-with-minimum-effort`.
+- URL: https://leetcode.com/problems/path-with-minimum-effort/
+- License note: local rewrite.
+- Difficulty: medium.
+- Style: HumanEval-like short single-function task; not HumanEval or MBPP.
+
+## Reference Implementation
+
+```rust
+pub fn lc_minimum_effort_path_rows(rows: &str) -> i32 {
+    let a: Vec<Vec<i32>> = rows.split(';').map(|r| r.split(',').map(|x| x.parse::<i32>().unwrap()).collect()).collect(); let r = a.len(); let c = a[0].len(); let total = r * c; let mut dist = vec![1000000000; total]; let mut used = vec![false; total]; dist[0] = 0; let dirs = [(1i32,0i32),(-1,0),(0,1),(0,-1)]; let mut step = 0usize; while step < total { let mut node = total; let mut i = 0usize; while i < total { if !used[i] && (node == total || dist[i] < dist[node]) { node = i; } i += 1; } if node == total - 1 { break; } used[node] = true; let x = node / c; let y = node % c; for &(dx,dy) in dirs.iter() { let nx = x as i32 + dx; let ny = y as i32 + dy; if nx >= 0 && nx < r as i32 && ny >= 0 && ny < c as i32 { let ni = nx as usize * c + ny as usize; let diff = (a[x][y] - a[nx as usize][ny as usize]).abs(); let nd = dist[node].max(diff); if nd < dist[ni] { dist[ni] = nd; } } } step += 1; } dist[total - 1]
+}
+```
