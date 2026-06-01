@@ -133,9 +133,27 @@ def main() -> int:
                    "--timeout-seconds", str(args.contract_timeout), *cf]
             if restart_file:
                 cmd += ["--restart-context-file", str(restart_file)]
-            if run_stage(cmd) != 0:
-                emit(f"contract round {rnd} returned nonzero")
+            contract_rc = run_stage(cmd)
             workspaces.append(contract_ws)
+            if contract_rc != 0:
+                emit(f"contract round {rnd} returned nonzero; skipping eval/verify for this round")
+                if args.dry_run:
+                    break
+                if rnd < args.contract_rounds:
+                    restart_file = write_findings(
+                        pipeline_dir / f"contract_findings_r{rnd}.md",
+                        title=f"Contract completion gate findings (round {rnd})",
+                        sources=[
+                            contract_ws / "logs" / "issues.md",
+                            contract_ws / "logs" / "metrics.md",
+                            contract_ws / "logs" / "continue.md",
+                            contract_ws / "input" / f"{name}.c",
+                            contract_ws / "input" / f"{name}.v",
+                        ],
+                    )
+                    continue
+                _finish(workspaces, pipeline_dir, args, name, status="contract_gate_failed")
+                return 1
 
             if args.skip_eval:
                 eval_verdict = "Correct"  # gate bypassed

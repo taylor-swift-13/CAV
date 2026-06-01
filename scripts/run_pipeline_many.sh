@@ -88,9 +88,13 @@ run_one() {
   fi
 
   echo "[contract-verify-many] contract start name=$name"
-  if ! python3 "$CONTRACT_SCRIPT" "$RAW_PATH" --function-name "$name"; then
-    echo "[contract-verify-many] contract failed name=$name" >&2
-    return 20
+  set +e
+  python3 "$CONTRACT_SCRIPT" "$RAW_PATH" --function-name "$name"
+  contract_rc=$?
+  set -e
+  if [[ $contract_rc -ne 0 ]]; then
+    echo "[contract-verify-many] contract failed name=$name rc=$contract_rc" >&2
+    return "$contract_rc"
   fi
   echo "[contract-verify-many] contract done name=$name"
 
@@ -118,6 +122,9 @@ status_label() {
     0) echo "success" ;;
     10) echo "missing_raw" ;;
     20) echo "contract" ;;
+    30) echo "contract_ill_formed" ;;
+    31) echo "contract_input_v_coq" ;;
+    32) echo "contract_missing_input" ;;
     30) echo "missing_input" ;;
     40) echo "verify" ;;
     *) echo "unknown_$1" ;;

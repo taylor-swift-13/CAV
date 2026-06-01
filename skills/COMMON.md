@@ -31,7 +31,7 @@
 
 但**不得创建、写入、修改、或用 `cp`/`sed` 覆盖** `experiences/` 下任何文件——包括 `experiences/end-end/`（由 runner 的 export 步骤维护）和 `experiences/general/`（由末尾的 consolidate 阶段维护）。
 
-`logs/metrics.md` 一律写 `Experience updates: none`。
+Agent 的 `logs/metrics.md` 只写自判摘要：stage、verdict、简短依据、`Experience updates: none`、最后一行 `Final Result: Success/Fail`。runner 会复核并覆盖最终 metrics。
 
 ## 3. 效率约束
 
@@ -52,7 +52,7 @@
 
 ## 5. `Final Result` 行的硬格式
 
-每个 stage 的 `logs/metrics.md` **最后一行**必须是裸的：
+Agent 自判版和 runner 最终版的 `logs/metrics.md` **最后一行**都必须是裸的：
 
 ```
 Final Result: Success

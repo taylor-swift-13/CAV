@@ -155,6 +155,7 @@ def build_proof_only_prompt(
     workspace_path: Path,
     annotated_c_path: Path,
     attempt: int,
+    restart_context: str | None = None,
 ) -> str:
     lines = [
         f"Follow this skill as the complete workflow: {skill_path}",
@@ -166,6 +167,8 @@ def build_proof_only_prompt(
     ]
     if attempt > 1:
         lines += ["", f"Attempt: {attempt} (retry — also follow MODE_RETRY.md per SKILL.md §4.5c)."]
+    if restart_context:
+        lines += ["", "Restart feedback (must be addressed before finishing this verify run):", restart_context.rstrip()]
     return "\n".join(lines) + "\n"
 
 
@@ -230,6 +233,33 @@ def update_issues_on_failure(issues_path: Path, stage: str, exit_code: int, stde
     issues_path.write_text(existing + block, encoding="utf-8")
 
 
+def append_continue(logs_dir: Path, kind: str, text: str) -> Path:
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    path = logs_dir / "continue.md"
+    header = "# Continue Log\n\n" if not path.exists() else ""
+    stamp = iso_now()
+    section = f"## {kind} @ {stamp}\n\n{text.rstrip()}\n\n"
+    with path.open("a", encoding="utf-8") as f:
+        if header:
+            f.write(header)
+        f.write(section)
+    return path
+
+
+def verify_retry_feedback(attempt: int, detail: str, workspace_path: Path, function_name: str) -> str:
+    generated_dir = workspace_path / "coq" / "generated"
+    return "\n".join([
+        f"Verify attempt {attempt} failed the runner completion gate.",
+        "",
+        f"- Detail: `{detail}`",
+        f"- Generated dir: `{generated_dir}`",
+        f"- Proof manual: `{generated_dir / f'{function_name}_proof_manual.v'}`",
+        f"- Goal check: `{generated_dir / f'{function_name}_goal_check.v'}`",
+        "",
+        "Required next action: fix annotation/proof so symexec outputs exist, proof_manual has no admitted/axiom/abort placeholder, and all generated Coq files compile.",
+    ])
+
+
 def verify_workspace_completed(workspace_path: Path) -> tuple[bool, str]:
     metrics_md = metrics_path(workspace_path)
     if not metrics_md.exists():
@@ -253,6 +283,25 @@ def verify_workspace_completed(workspace_path: Path) -> tuple[bool, str]:
     if saw_fail:
         return False, "metrics_contains_final_result_fail"
     return False, "metrics_missing_final_result"
+
+
+def verify_completion_gate(workspace_path: Path, function_name: str, input_v_path: Path | None) -> tuple[bool, str]:
+    generated_dir = workspace_path / "coq" / "generated"
+    required = [generated_dir / f"{function_name}_{suffix}.v" for suffix in ("goal", "proof_auto", "proof_manual", "goal_check")]
+    missing = [str(path) for path in required if not path.exists()]
+    if missing:
+        return False, "missing_generated_files:" + ",".join(missing)
+
+    if proof_manual_has_obligations(generated_dir, function_name):
+        return False, f"proof_manual_has_obligations:{generated_dir / f'{function_name}_proof_manual.v'}"
+
+    ok, compile_logs = compile_generated(workspace_path, function_name, input_v_path)
+    log_path = workspace_path / "logs" / "completion_gate_coqc.log"
+    log_path.write_text("\n\n".join(compile_logs) + "\n", encoding="utf-8")
+    if not ok:
+        return False, f"completion_gate_coqc_failed:{log_path}"
+
+    return True, f"completion_gate_success:{log_path}"
 
 
 def copy_if_exists(src: Path, dst: Path) -> None:
@@ -370,7 +419,7 @@ def proof_file_has_obligations(proof_file: Path) -> bool:
     if not proof_file.exists():
         return True
     text = proof_file.read_text(encoding="utf-8", errors="replace")
-    return bool(re.search(r"\b(Admitted|admit|Abort)\b", text))
+    return bool(re.search(r"\b(Admitted|admit|Abort|Axiom)\b", text))
 
 
 def proof_manual_has_obligations(generated_dir: Path, function_name: str) -> bool:
@@ -687,6 +736,8 @@ def main() -> int:
         rc_path = Path(args.restart_context_file)
         if rc_path.exists():
             verify_restart_context = rc_path.read_text(encoding="utf-8", errors="replace")
+    if verify_restart_context:
+        append_continue(logs_dir, "overturn", verify_restart_context)
 
     while True:
         attempt += 1
@@ -702,6 +753,10 @@ def main() -> int:
         stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
         stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
         last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
+        retry_context = verify_restart_context
+        continue_path = logs_dir / "continue.md"
+        if continue_path.exists():
+            retry_context = continue_path.read_text(encoding="utf-8", errors="replace")
         if proof_only_mode:
             prompt = build_proof_only_prompt(
                 skill_path,
@@ -711,6 +766,7 @@ def main() -> int:
                 workspace_path,
                 annotated_c_path,
                 attempt,
+                retry_context,
             )
         else:
             prompt = build_prompt(
@@ -721,7 +777,7 @@ def main() -> int:
                 workspace_path,
                 annotated_c_path,
                 attempt,
-                verify_restart_context,
+                retry_context,
             )
         ensure_parent(prompt_path)
         prompt_path.write_text(prompt, encoding="utf-8")
@@ -831,7 +887,7 @@ def main() -> int:
         else:
             emit_log(f"agent_exec_completed attempt={attempt} exit_code=0")
 
-        completed, detail = verify_workspace_completed(workspace_path)
+        completed, detail = verify_completion_gate(workspace_path, function_name, input_v_path)
         if completed:
             emit_log(f"verify_completed={detail}")
             if args.export_examples:
@@ -852,6 +908,11 @@ def main() -> int:
 
         emit_log(
             f"verify_incomplete_retrying attempt={attempt} detail={detail} remaining_seconds={max(0, int(total_budget_seconds - elapsed_total))}"
+        )
+        append_continue(
+            logs_dir,
+            f"retry-after-attempt-{attempt}",
+            verify_retry_feedback(attempt, detail, workspace_path, function_name),
         )
 
     # experiences/general/COMPILE/README.md §10: drop coqc intermediates (.vo/.glob/.aux) from the
