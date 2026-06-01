@@ -5843,6 +5843,23 @@
       }
     },
     {
+      "name": "lc_best_sightseeing_pair_score_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "values",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "best-sightseeing-pair",
+        "url": "https://leetcode.com/problems/best-sightseeing-pair/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_boats_rescue_count_csv",
       "return_type": "int",
       "params": [
@@ -6475,6 +6492,23 @@
       }
     },
     {
+      "name": "lc_fruit_into_baskets_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "fruits",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "fruit-into-baskets",
+        "url": "https://leetcode.com/problems/fruit-into-baskets/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_gas_station_start_csv",
       "return_type": "int",
       "params": [
@@ -6901,6 +6935,44 @@
       }
     },
     {
+      "name": "lc_longest_mountain_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-mountain-in-array",
+        "url": "https://leetcode.com/problems/longest-mountain-in-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_ones_k_flips_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "max-consecutive-ones-iii",
+        "url": "https://leetcode.com/problems/max-consecutive-ones-iii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_longest_palindrome_len",
       "return_type": "int",
       "params": [
@@ -7041,6 +7113,23 @@
       }
     },
     {
+      "name": "lc_max_product_subarray_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-product-subarray",
+        "url": "https://leetcode.com/problems/maximum-product-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_max_product_three_csv",
       "return_type": "int",
       "params": [
@@ -7075,6 +7164,23 @@
         "name": "LeetCode",
         "slug": "best-time-to-buy-and-sell-stock-with-transaction-fee",
         "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_subarray_circular_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-sum-circular-subarray",
+        "url": "https://leetcode.com/problems/maximum-sum-circular-subarray/",
         "license": "local rewrite"
       }
     },
@@ -7395,6 +7501,31 @@
       }
     },
     {
+      "name": "lc_num_dice_rolls_target",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-dice-rolls-with-target-sum",
+        "url": "https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_number_of_islands_rows",
       "return_type": "int",
       "params": [
@@ -7442,6 +7573,31 @@
         "name": "LeetCode",
         "slug": "number-of-provinces",
         "url": "https://leetcode.com/problems/number-of-provinces/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_ones_zeroes_max_form",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "strs",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "ones-and-zeroes",
+        "url": "https://leetcode.com/problems/ones-and-zeroes/",
         "license": "local rewrite"
       }
     },
@@ -8130,6 +8286,23 @@
       }
     },
     {
+      "name": "lc_turbulent_subarray_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-turbulent-subarray",
+        "url": "https://leetcode.com/problems/longest-turbulent-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_unique_bst_count",
       "return_type": "int",
       "params": [
@@ -8249,6 +8422,23 @@
         "name": "LeetCode",
         "slug": "valid-sudoku",
         "url": "https://leetcode.com/problems/valid-sudoku/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_wiggle_max_length_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "wiggle-subsequence",
+        "url": "https://leetcode.com/problems/wiggle-subsequence/",
         "license": "local rewrite"
       }
     },
