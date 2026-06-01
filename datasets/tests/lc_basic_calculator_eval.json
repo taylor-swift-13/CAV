@@ -1,0 +1,40 @@
+{
+  "name": "lc_basic_calculator_eval",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "1 + 1"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": " 2-1 + 2 "
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": "(1+(4+5+2)-3)+(6+8)"
+      },
+      "expected": 23
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "basic-calculator",
+    "url": "https://leetcode.com/problems/basic-calculator/",
+    "license": "local rewrite"
+  },
+  "difficulty": "hard"
+}

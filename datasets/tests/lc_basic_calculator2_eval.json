@@ -1,0 +1,40 @@
+{
+  "name": "lc_basic_calculator2_eval",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "s",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "s": "3+2*2"
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": " 3/2 "
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "s": " 3+5 / 2 "
+      },
+      "expected": 5
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "basic-calculator-ii",
+    "url": "https://leetcode.com/problems/basic-calculator-ii/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

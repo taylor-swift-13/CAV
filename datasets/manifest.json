@@ -5792,6 +5792,57 @@
       }
     },
     {
+      "name": "lc_atoi_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "string-to-integer-atoi",
+        "url": "https://leetcode.com/problems/string-to-integer-atoi/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_basic_calculator2_eval",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "basic-calculator-ii",
+        "url": "https://leetcode.com/problems/basic-calculator-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_basic_calculator_eval",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "basic-calculator",
+        "url": "https://leetcode.com/problems/basic-calculator/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_boats_rescue_count_csv",
       "return_type": "int",
       "params": [
@@ -6014,6 +6065,27 @@
       }
     },
     {
+      "name": "lc_compare_version_result",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "version1",
+          "type": "string"
+        },
+        {
+          "name": "version2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "compare-version-numbers",
+        "url": "https://leetcode.com/problems/compare-version-numbers/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_container_max_water",
       "return_type": "int",
       "params": [
@@ -6200,6 +6272,27 @@
       }
     },
     {
+      "name": "lc_divide_two_integers_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "dividend",
+          "type": "int"
+        },
+        {
+          "name": "divisor",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "divide-two-integers",
+        "url": "https://leetcode.com/problems/divide-two-integers/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_edit_distance_value",
       "return_type": "int",
       "params": [
@@ -6234,6 +6327,23 @@
         "name": "LeetCode",
         "slug": "evaluate-reverse-polish-notation",
         "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_excel_column_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "title",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "excel-sheet-column-number",
+        "url": "https://leetcode.com/problems/excel-sheet-column-number/",
         "license": "local rewrite"
       }
     },
@@ -6969,6 +7079,23 @@
       }
     },
     {
+      "name": "lc_min_add_parentheses_valid",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-add-to-make-parentheses-valid",
+        "url": "https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_min_cost_climbing_stairs_csv",
       "return_type": "int",
       "params": [
@@ -7492,6 +7619,23 @@
         "name": "LeetCode",
         "slug": "rotting-oranges",
         "url": "https://leetcode.com/problems/rotting-oranges/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_score_parentheses_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "score-of-parentheses",
+        "url": "https://leetcode.com/problems/score-of-parentheses/",
         "license": "local rewrite"
       }
     },
