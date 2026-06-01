@@ -1,0 +1,40 @@
+{
+  "name": "lc_max_distance_from_land_rows",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "101;000;101"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "100;000;000"
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "111;111;111"
+      },
+      "expected": -1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "as-far-from-land-as-possible",
+    "url": "https://leetcode.com/problems/as-far-from-land-as-possible/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

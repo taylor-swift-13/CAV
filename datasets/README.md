@@ -1,11 +1,11 @@
 # Combined Algorithm Dataset
 
-- Problems: 539
+- Problems: 545
 - Languages: C, Java, Rust
 - Layout: one Markdown file per problem per language in `c/`, `java/`, and `rust/`.
 - Tests: shared JSON files in `tests/`.
 - Difficulty: every problem has a `difficulty` field in `tests/*.json` and `manifest.json`.
-- Difficulty counts: easy 305, medium 222, hard 12.
-- Source counts: CAV-JAVA local dataset 175, LeetCode 156, Luogu 37, FormalBench 109, SpecGenBench 20, Exercism 42.
+- Difficulty counts: easy 305, medium 227, hard 13.
+- Source counts: CAV-JAVA local dataset 175, LeetCode 162, Luogu 37, FormalBench 109, SpecGenBench 20, Exercism 42.
 - Source attribution: every problem includes a `source` field in `tests/*.json` and `manifest.json`.
 - Generation: `python3 scripts/expand_multisource_dataset.py`

@@ -6314,6 +6314,23 @@
       }
     },
     {
+      "name": "lc_graph_bipartite_bool_matrix",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "is-graph-bipartite",
+        "url": "https://leetcode.com/problems/is-graph-bipartite/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_h_index_csv",
       "return_type": "int",
       "params": [
@@ -6466,6 +6483,23 @@
         "name": "LeetCode",
         "slug": "isomorphic-strings",
         "url": "https://leetcode.com/problems/isomorphic-strings/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_keys_and_rooms_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rooms",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "keys-and-rooms",
+        "url": "https://leetcode.com/problems/keys-and-rooms/",
         "license": "local rewrite"
       }
     },
@@ -6699,6 +6733,23 @@
         "name": "LeetCode",
         "slug": "max-area-of-island",
         "url": "https://leetcode.com/problems/max-area-of-island/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_distance_from_land_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "as-far-from-land-as-possible",
+        "url": "https://leetcode.com/problems/as-far-from-land-as-possible/",
         "license": "local rewrite"
       }
     },
@@ -6939,6 +6990,23 @@
       }
     },
     {
+      "name": "lc_minimum_effort_path_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "path-with-minimum-effort",
+        "url": "https://leetcode.com/problems/path-with-minimum-effort/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_monotonic_array_bool_csv",
       "return_type": "bool",
       "params": [
@@ -7134,6 +7202,27 @@
         "name": "LeetCode",
         "slug": "permutation-in-string",
         "url": "https://leetcode.com/problems/permutation-in-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_possible_bipartition_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "dislikes",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "possible-bipartition",
+        "url": "https://leetcode.com/problems/possible-bipartition/",
         "license": "local rewrite"
       }
     },
@@ -7455,6 +7544,23 @@
         "name": "LeetCode",
         "slug": "sum-of-subarray-minimums",
         "url": "https://leetcode.com/problems/sum-of-subarray-minimums/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_swim_rising_water_time_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "swim-in-rising-water",
+        "url": "https://leetcode.com/problems/swim-in-rising-water/",
         "license": "local rewrite"
       }
     },
