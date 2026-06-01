@@ -32,7 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agent_config
 import agent_metrics
 import experience_consolidate
-from run_eval import read_spec_verdict
+from run_eval import read_judge_verdict, read_spec_verdict
 from run_audit import read_audit_verdict
 
 
@@ -72,17 +72,20 @@ CRITIC_OVERTURN = "overturn"
 CRITIC_INCONCLUSIVE = "inconclusive"
 
 
-def classify_eval(eval_ws: Path | None) -> tuple[str, str | None]:
-    """Map a spec-test eval workspace to (outcome, verdict)."""
+def classify_eval(eval_ws: Path | None) -> tuple[str, str]:
+    """Map a spec-test + judge eval workspace to (outcome, detail)."""
     if eval_ws is None:
-        return CRITIC_INCONCLUSIVE, None
-    verdict = read_spec_verdict(eval_ws / "logs" / "final_result.md")
-    if verdict == "Buggy":
-        return CRITIC_OVERTURN, verdict
-    if verdict == "Correct":
-        return CRITIC_OK, verdict
+        return CRITIC_INCONCLUSIVE, "spec=None judge=None"
+    final_result = eval_ws / "logs" / "final_result.md"
+    verdict = read_spec_verdict(final_result)
+    judge = read_judge_verdict(final_result)
+    detail = f"spec={verdict} judge={judge}"
+    if verdict == "Correct" and judge == "Pass":
+        return CRITIC_OK, detail
+    if verdict == "Buggy" or judge == "Fail":
+        return CRITIC_OVERTURN, detail
     # "Inconclusive", or no decisive verdict (crash / missing file).
-    return CRITIC_INCONCLUSIVE, verdict
+    return CRITIC_INCONCLUSIVE, detail
 
 
 def classify_audit(audit_ws: Path | None) -> tuple[str, str | None]:
@@ -179,7 +182,7 @@ def run_contract_block(
         if eval_ws:
             workspaces.append(eval_ws)
         outcome, verdict = classify_eval(eval_ws)
-        emit(f"eval outcome={outcome} verdict={verdict}")
+        emit(f"eval outcome={outcome} {verdict}")
         if outcome == CRITIC_OVERTURN:
             eval_findings = write_findings(
                 pipeline_logs, f"eval_overturn_{overturn + 1}",
@@ -190,7 +193,7 @@ def run_contract_block(
         if outcome == CRITIC_INCONCLUSIVE:
             # Do not certify on an undecided critic, and do not loop on it.
             return BlockResult("Fail", f"eval inconclusive (verdict={verdict}); spec not validated", workspaces)
-        return BlockResult("Success", f"eval verdict={verdict}", workspaces)
+        return BlockResult("Success", f"eval {verdict}", workspaces)
 
     return BlockResult("Fail", f"max overturn rounds ({max_overturn}) exhausted at contract", workspaces)
 

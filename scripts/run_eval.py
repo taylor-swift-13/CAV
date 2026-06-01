@@ -191,6 +191,18 @@ Rules:
   `Spec verdict: Correct` (all positives pass, all negatives fail),
   `Spec verdict: Buggy` (a positive failed or a negative passed),
   `Spec verdict: Inconclusive` (a judged clause stays inconclusive).
+- After the spec-test, run the same LLM judge as the C eval flow. Judge whether
+  the spec is sound and complete for the intended method behavior:
+  * Soundness: every input/output of the correct program satisfies the spec.
+  * Positive coverage: all positive cases satisfy the spec.
+  * Parameter coverage: all input, output, and necessary post-state parameters
+    are constrained by the spec.
+  * Path coverage: all method paths / branches are covered.
+  * Negative rejection: all negative cases are rejected by the spec.
+  * Completeness: any implementation satisfying the spec is a correct solution
+    to this problem.
+  Write `Judge verdict: Pass` only if all six items pass. Otherwise write
+  `Judge verdict: Fail`; use `Judge verdict: Inconclusive` if undecidable.
 - Do not use assume, axiom, skipesc, nowarn, native, reflection, or
   unreachable-path tricks.
 - Write `test_reasoning.md`, `issues.md`, `final_result.md`, `metrics.md` under
@@ -223,15 +235,81 @@ def count_spec_test_cases(cases_json: Path) -> tuple[int, int, str | None]:
     return p, n, None
 
 
-def read_spec_verdict(final_result: Path) -> str | None:
+def read_final_result_value(final_result: Path, marker: str) -> str | None:
     if not final_result.exists():
         return None
     for raw in final_result.read_text(encoding="utf-8", errors="replace").splitlines():
-        # Tolerate markdown decoration: "## Spec verdict:", "- **Spec verdict:**", etc.
+        # Tolerate markdown decoration: "## Spec verdict:", "- **Judge verdict:**", etc.
         line = raw.strip().lstrip("#*->` ").strip()
-        if line.lower().startswith("spec verdict:"):
+        if line.lower().startswith(marker.lower()):
             return line.split(":", 1)[1].strip().strip("*`").strip()
     return None
+
+
+def read_spec_verdict(final_result: Path) -> str | None:
+    return read_final_result_value(final_result, "Spec verdict:")
+
+
+def read_judge_verdict(final_result: Path) -> str | None:
+    return read_final_result_value(final_result, "Judge verdict:")
+
+
+def validate_spec_test_artifacts(cases_json: Path, evaluation_json: Path, num_pos: int, num_neg: int) -> tuple[bool, str]:
+    if not cases_json.exists():
+        return False, f"cases.json not found at {cases_json}"
+    if not evaluation_json.exists():
+        return False, f"evaluation.json not found at {evaluation_json}"
+    try:
+        cases_doc = json.loads(cases_json.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return False, f"cases.json is not valid JSON: {exc}"
+    try:
+        eval_doc = json.loads(evaluation_json.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return False, f"evaluation.json is not valid JSON: {exc}"
+
+    positives = cases_doc.get("positive") if isinstance(cases_doc, dict) else None
+    negatives = cases_doc.get("negative") if isinstance(cases_doc, dict) else None
+    if not isinstance(positives, list) or len(positives) != num_pos:
+        return False, f"positive case count mismatch: {len(positives) if isinstance(positives, list) else 'missing'} != {num_pos}"
+    if not isinstance(negatives, list) or len(negatives) != num_neg:
+        return False, f"negative case count mismatch: {len(negatives) if isinstance(negatives, list) else 'missing'} != {num_neg}"
+
+    positive_ids = {str(c.get("id")) for c in positives if isinstance(c, dict) and c.get("id") is not None}
+    negative_ids = {str(c.get("id")) for c in negatives if isinstance(c, dict) and c.get("id") is not None}
+    expected_ids = positive_ids | negative_ids
+    eval_cases = eval_doc.get("cases") if isinstance(eval_doc, dict) else None
+    if not isinstance(eval_cases, list):
+        return False, "evaluation cases missing"
+    evaluated_ids = {str(c.get("id")) for c in eval_cases if isinstance(c, dict) and c.get("id") is not None}
+    missing = sorted(expected_ids - evaluated_ids)
+    if missing:
+        return False, "evaluation missing cases: " + ",".join(missing)
+
+    def effective_verdict(case: dict) -> str | None:
+        verdict = case.get("verdict")
+        if verdict != "needs_judge":
+            return verdict
+        judge = case.get("judge")
+        if not isinstance(judge, dict):
+            return None
+        return judge.get("verdict")
+
+    verdict_by_id = {
+        str(c.get("id")): effective_verdict(c)
+        for c in eval_cases
+        if isinstance(c, dict) and c.get("id") is not None
+    }
+    unresolved = sorted(cid for cid in expected_ids if verdict_by_id.get(cid) not in {"pass", "fail"})
+    if unresolved:
+        return False, "evaluation has unresolved cases: " + ",".join(unresolved)
+    positive_failures = sorted(cid for cid in positive_ids if verdict_by_id.get(cid) != "pass")
+    negative_failures = sorted(cid for cid in negative_ids if verdict_by_id.get(cid) != "fail")
+    if positive_failures:
+        return False, "positive cases not pass: " + ",".join(positive_failures)
+    if negative_failures:
+        return False, "negative cases not rejected: " + ",".join(negative_failures)
+    return True, "spec-test artifacts ok"
 
 
 def run_codex_agent(
@@ -571,36 +649,46 @@ def main() -> int:
         evaluation_present = evaluation_json.exists()
         if not evaluation_present:
             append_issue(logs_dir, "Missing evaluation output", f"Expected `{evaluation_json}`.")
+        artifacts_ok, artifacts_detail = validate_spec_test_artifacts(cases_json, evaluation_json, num_pos, num_neg)
+        if not artifacts_ok:
+            append_issue(logs_dir, "Spec-test artifact gate failed", artifacts_detail)
 
         spec_verdict = read_spec_verdict(logs_dir / "final_result.md")
+        judge_verdict = read_judge_verdict(logs_dir / "final_result.md")
         fully_run = (
             exit_code == 0
-            and positive_count == num_pos
-            and negative_count == num_neg
-            and evaluation_present
-            and spec_verdict in {"Correct", "Buggy"}
+            and artifacts_ok
+            and spec_verdict == "Correct"
+            and judge_verdict == "Pass"
         )
         status = "Success" if fully_run else "Fail"
         if fully_run:
-            judgment = f"spec-test reached a decisive verdict: {spec_verdict}."
+            judgment = f"spec-test and judge passed: spec={spec_verdict}, judge={judge_verdict}."
         elif spec_verdict == "Inconclusive":
             judgment = "spec-test verdict is Inconclusive (a judged clause stayed undecided); treated as Fail."
+        elif judge_verdict in {"Fail", "Inconclusive"}:
+            judgment = f"judge verdict is {judge_verdict}; treated as Fail."
+        elif spec_verdict == "Buggy":
+            judgment = "spec-test verdict is Buggy; treated as Fail and should overturn the contract."
         elif exit_code != 0:
             judgment = f"Agent exited with non-zero status ({exit_code}); spec-test did not complete."
         else:
-            judgment = "spec-test artifacts are incomplete; see issues.md."
+            judgment = "spec-test artifacts or judge verdict are incomplete; see issues.md."
 
         if not (logs_dir / "final_result.md").exists():
             (logs_dir / "final_result.md").write_text(
                 "# Eval Final Result (spec-test mode)\n\n"
                 "Spec verdict: Inconclusive\n"
+                "Judge verdict: Inconclusive\n"
                 "- Detail: agent did not author final_result.md\n",
                 encoding="utf-8",
             )
 
         extras = [
             ("Evaluation file present", str(evaluation_present).lower()),
+            ("Artifact gate", artifacts_detail),
             ("Spec verdict", spec_verdict if spec_verdict else "unset"),
+            ("Judge verdict", judge_verdict if judge_verdict else "unset"),
         ]
 
         if not (logs_dir / "test_reasoning.md").exists():

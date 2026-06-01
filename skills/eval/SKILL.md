@@ -157,6 +157,32 @@ Write `logs/final_result.md` with one of:
 - **Spec verdict: Inconclusive** — a judged clause stayed undecided. Record
   which clauses prevented a decisive verdict.
 
+## LLM Judge
+
+The spec-test verdict is not enough by itself. Also judge whether the JML spec
+soundly and completely characterizes the intended method behavior.
+
+Check all six items and write `Pass` / `Fail` / `Inconclusive` with a short
+reason in `logs/final_result.md`:
+
+- `Soundness`: every input/output of the correct program satisfies the spec.
+- `Positive coverage`: all positive cases satisfy the spec.
+- `Parameter coverage`: all input, output, and necessary post-state parameters
+  are constrained by the spec.
+- `Path coverage`: all method paths / branches are covered.
+- `Negative rejection`: all negative cases are rejected by the spec.
+- `Completeness`: any implementation satisfying the spec is a correct solution
+  to this problem.
+
+Only if all six items are `Pass`, write:
+
+```text
+Judge verdict: Pass
+```
+
+If any item fails, write `Judge verdict: Fail`. If any item cannot be decided,
+write `Judge verdict: Inconclusive`.
+
 ## Anti-Cheating Rules
 
 - No `assume`, `axiom`, `Admitted`, `skipesc`, broad `nowarn`, `native`,
@@ -187,7 +213,10 @@ Final Result: Fail
 - exactly the requested number of positive and negative cases are present in
   `cases/cases.json`;
 - `evaluation/evaluation.json` exists and covers every case;
-- the aggregated spec verdict is `Correct` or `Buggy` (either is decisive);
-- `Spec verdict: Inconclusive` is treated as `Final Result: Fail`.
+- the aggregated spec verdict is `Correct`;
+- `Judge verdict: Pass` is present.
+
+`Spec verdict: Buggy`, `Spec verdict: Inconclusive`, `Judge verdict: Fail`, and
+`Judge verdict: Inconclusive` are all treated as `Final Result: Fail`.
 
 If any condition is missing, write `Final Result: Fail`.
