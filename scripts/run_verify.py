@@ -644,28 +644,106 @@ def proof_manual_has_obligations(generated_dir: Path, function_name: str) -> boo
     return proof_file_has_obligations(generated_dir / f"{function_name}_proof_manual.v")
 
 
+STRATEGY_MODULE_BASES = ("int_array", "uint_array", "undef_uint_array", "array_shape")
+STRATEGY_SOURCE_DIR = coq_runner.QCP_SL_DIR / "examples" / "QCP_demos_human"
+STRATEGY_SOURCE_DIRS = (
+    coq_runner.QCP_SL_DIR / "examples" / "QCP_demos_human",
+    coq_runner.QCP_SL_DIR / "examples" / "QCP_demos_LLM",
+)
+
+
+def absolute_base_load_path_args() -> list[str]:
+    args: list[str] = []
+    for rel_path, prefix in coq_runner.BASE_LOAD_PATH:
+        args += ["-R", str((coq_runner.QCP_SL_DIR / rel_path).resolve()), prefix]
+    return args
+
+
+def run_coqc_with_cwd(
+    cwd: Path,
+    v_file: str,
+    *,
+    extra_args: list[str] | None = None,
+    timeout_seconds: int = 120,
+) -> tuple[int, str, str]:
+    cmd = [coq_runner.coqc_bin(), *(extra_args or []), *absolute_base_load_path_args(), v_file]
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=cwd,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired:
+        return 124, "", f"coqc timed out after {timeout_seconds}s"
+    except OSError as exc:
+        return 127, "", f"coqc not runnable: {exc}"
+    return proc.returncode, proc.stdout, proc.stderr
+
+
+def stage_strategy_deps(deps_dir: Path) -> None:
+    if deps_dir.exists():
+        shutil.rmtree(deps_dir)
+    deps_dir.mkdir(parents=True, exist_ok=True)
+
+    for source_dir in STRATEGY_SOURCE_DIRS:
+        coq_runner.clean_compile_artifacts(source_dir, recursive=False)
+
+    for base in STRATEGY_MODULE_BASES:
+        for kind in ("goal", "proof"):
+            src = STRATEGY_SOURCE_DIR / f"{base}_strategy_{kind}.v"
+            dst = deps_dir / src.name
+            shutil.copy2(src, dst)
+            if kind == "proof":
+                text = dst.read_text(encoding="utf-8")
+                text = re.sub(
+                    r"From SimpleC\.EE\.QCP_demos_(?:human|LLM) Require Import ([A-Za-z0-9_]+_strategy_goal)\.",
+                    r"Require Import \1.",
+                    text,
+                )
+                dst.write_text(text, encoding="utf-8")
+
+
 def compile_generated(workspace_path: Path, function_name: str, input_v_path: Path | None, timeout_seconds: int = 120) -> tuple[bool, list[str]]:
+    workspace_path = workspace_path.resolve()
     generated_dir = workspace_path / "coq" / "generated"
+    deps_dir = workspace_path / "coq" / "deps"
     original_dir = workspace_path / "original"
     logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
-    extra_q = [(str(original_dir), "")]
+    extra_q = [(str(original_dir), ""), (str(deps_dir), "")]
     extra_r = [(str(generated_dir), logic_path)]
     logs: list[str] = []
+    stage_strategy_deps(deps_dir)
+    coq_runner.clean_compile_artifacts(generated_dir, recursive=False)
 
-    if input_v_path is not None:
-        original_v = original_dir / input_v_path.name
-        rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
-        logs.append(f"$ coqc {original_v}\nrc={rc}\n{out}{err}")
-        if rc != 0:
-            return False, logs
+    try:
+        if input_v_path is not None:
+            original_v = original_dir / input_v_path.name
+            rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
+            logs.append(f"$ coqc {original_v}\nrc={rc}\n{out}{err}")
+            if rc != 0:
+                return False, logs
 
-    for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"):
-        path = generated_dir / f"{function_name}_{suffix}.v"
-        rc, out, err = coq_runner.run_coqc(path, extra_q=extra_q, extra_r=extra_r, timeout_seconds=timeout_seconds)
-        logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
-        if rc != 0:
-            return False, logs
-    return True, logs
+        for base in STRATEGY_MODULE_BASES:
+            for kind in ("goal", "proof"):
+                name = f"{base}_strategy_{kind}.v"
+                rc, out, err = run_coqc_with_cwd(deps_dir, name, timeout_seconds=timeout_seconds)
+                logs.append(f"$ (cd {deps_dir} && coqc {name})\nrc={rc}\n{out}{err}")
+                if rc != 0:
+                    return False, logs
+
+        for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"):
+            path = generated_dir / f"{function_name}_{suffix}.v"
+            rc, out, err = coq_runner.run_coqc(path, extra_q=extra_q, extra_r=extra_r, timeout_seconds=timeout_seconds)
+            logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
+            if rc != 0:
+                return False, logs
+        return True, logs
+    finally:
+        coq_runner.clean_compile_artifacts(deps_dir, recursive=False)
+        coq_runner.clean_compile_artifacts(generated_dir, recursive=False)
 
 
 def try_trivial_fast_path(
