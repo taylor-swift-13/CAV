@@ -1,11 +1,11 @@
 {
-  "workspace": "verify_20260528_202044_sll_head",
+  "workspace": "sll_head",
   "stage": "verify",
-  "input_c": "/home/yangfp/CAV-JAVA/input/sll_head.c",
+  "input_c": "original/sll_head.c",
   "input_v": "",
-  "original_c": "/home/yangfp/CAV-JAVA/output/verify_20260528_202044_sll_head/original/sll_head.c",
+  "original_c": "original/sll_head.c",
   "original_v": "",
-  "annotated_c": "/home/yangfp/CAV-JAVA/annotated/verify_20260528_202044_sll_head.c",
+  "annotated_c": "annotated/sll_head.c",
   "function_name": "sll_head",
   "semantic_description": "Loop-free function `sll_head` returning `p->data`.",
   "keywords": {

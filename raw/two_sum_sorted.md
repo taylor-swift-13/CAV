@@ -12,7 +12,7 @@
 - 函数不修改数组
 - 返回值只使用 `0` 或 `1`
 
-## 正确代码
+## 参考实现
 
 ```c
 int two_sum_sorted(int n, int *a, int target) {

@@ -12,7 +12,7 @@
 - `tri(2) = 1`
 - 对 `n >= 3`，`tri(n) = tri(n - 1) + tri(n - 2) + tri(n - 3)`
 
-## 正确代码
+## 参考实现
 
 ```c
 int tribonacci(int n) {

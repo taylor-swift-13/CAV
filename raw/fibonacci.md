@@ -11,7 +11,7 @@
 - `fib(1) = 1`
 - 对 `n >= 2`，`fib(n) = fib(n - 1) + fib(n - 2)`
 
-## 正确代码
+## 参考实现
 
 ```c
 int fibonacci(int n) {

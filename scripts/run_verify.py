@@ -652,20 +652,24 @@ def compile_generated(workspace_path: Path, function_name: str, input_v_path: Pa
     extra_r = [(str(generated_dir), logic_path)]
     logs: list[str] = []
 
-    if input_v_path is not None:
-        original_v = original_dir / input_v_path.name
-        rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
-        logs.append(f"$ coqc {original_v}\nrc={rc}\n{out}{err}")
-        if rc != 0:
-            return False, logs
+    try:
+        if input_v_path is not None:
+            original_v = original_dir / input_v_path.name
+            rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
+            logs.append(f"$ coqc {original_v}\nrc={rc}\n{out}{err}")
+            if rc != 0:
+                return False, logs
 
-    for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"):
-        path = generated_dir / f"{function_name}_{suffix}.v"
-        rc, out, err = coq_runner.run_coqc(path, extra_q=extra_q, extra_r=extra_r, timeout_seconds=timeout_seconds)
-        logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
-        if rc != 0:
-            return False, logs
-    return True, logs
+        for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"):
+            path = generated_dir / f"{function_name}_{suffix}.v"
+            rc, out, err = coq_runner.run_coqc(path, extra_q=extra_q, extra_r=extra_r, timeout_seconds=timeout_seconds)
+            logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
+            if rc != 0:
+                return False, logs
+        return True, logs
+    finally:
+        coq_runner.clean_compile_artifacts(original_dir, recursive=False)
+        coq_runner.clean_compile_artifacts(generated_dir, recursive=False)
 
 
 def try_trivial_fast_path(

@@ -13,7 +13,7 @@
 - 对 `n >= 2`，`fib(n) = fib(n - 1) + fib(n - 2)`
 - 每一步都对 `mod` 取模
 
-## 正确代码
+## 参考实现
 
 ```c
 int fibonacci_mod(int n, int mod) {

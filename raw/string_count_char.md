@@ -9,7 +9,7 @@
 - `s` 是合法的以 `'\0'` 结尾的字符串
 - 函数不修改字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_count_char(char *s, char c) {

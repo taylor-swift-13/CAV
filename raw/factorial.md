@@ -13,10 +13,10 @@
 -  0 <= `n` <= 10。
 - 参考实现假设结果不会超出 `int` 的表示范围。
 
-## 正确代码
+## 参考实现
 
 ```c
-int fac(int n) {
+int factorial(int n) {
     int i;
     int res = 1;
 

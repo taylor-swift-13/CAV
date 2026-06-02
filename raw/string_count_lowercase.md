@@ -10,7 +10,7 @@
 - 小写英文字母范围是 `'a'` 到 `'z'`
 - 函数不修改字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_count_lowercase(char *s) {

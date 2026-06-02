@@ -12,7 +12,7 @@
 - 若存在某个下标 `i` 满足 `a[i] == k`，返回 `1`
 - 否则返回 `0`
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_contains(int n, int *a, int k) {

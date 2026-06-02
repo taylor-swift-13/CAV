@@ -3,8 +3,8 @@ int abs_value(int x)
       x >= -2147483647 &&
       emp
     Ensure
-      0 <= __return &&
-      (__return == x@pre || __return == -x@pre) &&
+      (x@pre >= 0 => __return == x@pre) &&
+      (x@pre <  0 => __return == -x@pre) &&
       emp
 */
 {

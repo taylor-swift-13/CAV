@@ -11,7 +11,7 @@
 - 空数组和单元素数组都视为严格递增
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_is_strictly_increasing(int n, int *a) {

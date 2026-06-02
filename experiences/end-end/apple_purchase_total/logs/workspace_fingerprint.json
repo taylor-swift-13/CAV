@@ -1,0 +1,18 @@
+{
+  "workspace": "apple_purchase_total",
+  "stage": "verify",
+  "input_c": "original/apple_purchase_total.c",
+  "input_v": "",
+  "original_c": "original/apple_purchase_total.c",
+  "original_v": "",
+  "annotated_c": "annotated/apple_purchase_total.c",
+  "function_name": "apple_purchase_total",
+  "semantic_description": "Loop-free function `apple_purchase_total` returning `count * price`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "pointer",
+    "pattern": "straight_line"
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

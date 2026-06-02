@@ -10,7 +10,7 @@
 - 数组长度恰好是 `n`
 - 需要原地修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 void array_swap_ends(int n, int *a) {

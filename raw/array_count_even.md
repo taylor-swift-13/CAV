@@ -11,7 +11,7 @@
 - 函数不修改数组
 - 使用 `x % 2 == 0` 判断偶数
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_count_even(int n, int *a) {

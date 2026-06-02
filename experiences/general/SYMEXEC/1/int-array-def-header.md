@@ -1,15 +1,17 @@
-# `int_array_def.h` 是不应该放进 annotated C 的头文件
+# `int_array_def.h` 必须从 repo root 正确引用
 
-如果 `input/<name>.c` 包含 `#include "../../int_array_def.h"`（或其他路径的 `int_array_def.h`），在 `annotated/` 工作副本里必须删掉这行。
+如果数组题需要 `int_array_def.h`，`input/<name>.c` 必须写：
 
-原因：
-- `int_array_def.h` 是给 C 编译器用的 C-level 定义（不是标准库头文件）
-- `symexec` 的 include search path 找不到这个文件，无论设置哪个 `-slp` 或 include 路径
-- `IntArray::full`、`IntArray::missing_i` 等 separation logic 谓词是 symexec 内置的，通过 `load_builtin_int_array_strategy_lib` 加载，不需要任何头文件声明
+```c
+#include "../int_array_def.h"
+```
 
-操作：
-1. 在 `annotated/verify_<timestamp>_<name>.c` 里删掉 `#include "../../int_array_def.h"` 这一行
-2. 保留 `verification_stdlib.h` 和 `verification_list.h` 的 include（改成不带 `../../` 的 bare 名字即可）
-3. 重新跑 `symexec`
+原因：`input/` 和 `annotated/` 都只比 repo root 深一层，verify 的 source integrity gate 又要求 annotated C 保持 original/input C 的可执行实现不变。因此 contract 阶段必须一次性给出能在两个目录下解析的路径。
 
-不要尝试：修改 `-slp` 路径、设置 `INCLUDE_PATH` 环境变量、在 QCP 目录下创建 symlink 等——这些均无效。
+不要写：
+
+```c
+#include "../../int_array_def.h"
+```
+
+从 `annotated/verify_<timestamp>_<name>.c` 出发，这会越过 repo root，导致 `symexec` 报 `No such file ../../int_array_def.h`。也不要在 verify 阶段删除或改写这行 include；那会和 original/input C 不一致，被确定性 audit 拒绝。

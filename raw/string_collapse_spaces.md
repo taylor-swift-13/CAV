@@ -11,7 +11,7 @@
 - 非空格字符保持原顺序。
 - 输出字符串必须以 `'\0'` 结尾。
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_collapse_spaces(char *s, char *out) {

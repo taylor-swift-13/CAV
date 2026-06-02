@@ -7,10 +7,12 @@ VERIFY_SCRIPT="$ROOT/scripts/run_verify.py"
 
 EXPORT_EXAMPLES=1
 JOBS=1
+CONTRACT_TIMEOUT=300
+VERIFY_TIMEOUT=3600
 
 usage() {
   cat <<'EOF'
-usage: run_pipeline_many.sh [--no-export-examples] [--jobs N|-j N] <name1> [name2 ...]
+usage: run_pipeline_many.sh [--no-export-examples] [--jobs N|-j N] [--contract-timeout N] [--verify-timeout N] <name1> [name2 ...]
 
 For each <name>, run:
   1. python3 scripts/run_contract.py raw/<name>.md --function-name <name>
@@ -19,6 +21,8 @@ For each <name>, run:
 Options:
   --no-export-examples   Do not pass --export-examples to verify.
   --jobs N, -j N         Run up to N names concurrently. Default: 1.
+  --contract-timeout N   Contract-stage timeout in seconds. Default: 300.
+  --verify-timeout N     Verify-stage timeout in seconds. Default: 3600.
 EOF
 }
 
@@ -36,6 +40,24 @@ while [[ $# -gt 0 ]]; do
         exit 2
       fi
       JOBS="$2"
+      shift 2
+      ;;
+    --contract-timeout)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      CONTRACT_TIMEOUT="$2"
+      shift 2
+      ;;
+    --verify-timeout)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      VERIFY_TIMEOUT="$2"
       shift 2
       ;;
     -h|--help)
@@ -71,6 +93,16 @@ if ! [[ "$JOBS" =~ ^[0-9]+$ ]] || [[ "$JOBS" -lt 1 ]]; then
   exit 2
 fi
 
+if ! [[ "$CONTRACT_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_TIMEOUT" -lt 1 ]]; then
+  echo "--contract-timeout must be a positive integer: $CONTRACT_TIMEOUT" >&2
+  exit 2
+fi
+
+if ! [[ "$VERIFY_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$VERIFY_TIMEOUT" -lt 1 ]]; then
+  echo "--verify-timeout must be a positive integer: $VERIFY_TIMEOUT" >&2
+  exit 2
+fi
+
 cd "$ROOT"
 
 RUN_ID="$(date +%Y%m%d_%H%M%S)"
@@ -89,7 +121,7 @@ run_one() {
 
   echo "[contract-verify-many] contract start name=$name"
   set +e
-  python3 "$CONTRACT_SCRIPT" "$RAW_PATH" --function-name "$name"
+  python3 "$CONTRACT_SCRIPT" "$RAW_PATH" --function-name "$name" --timeout-seconds "$CONTRACT_TIMEOUT"
   contract_rc=$?
   set -e
   if [[ $contract_rc -ne 0 ]]; then
@@ -103,7 +135,7 @@ run_one() {
     return 30
   fi
 
-  VERIFY_CMD=(python3 "$VERIFY_SCRIPT" "$INPUT_PATH" --function-name "$name")
+  VERIFY_CMD=(python3 "$VERIFY_SCRIPT" "$INPUT_PATH" --function-name "$name" --timeout-seconds "$VERIFY_TIMEOUT")
   if [[ $EXPORT_EXAMPLES -eq 1 ]]; then
     VERIFY_CMD+=(--export-examples)
   fi
@@ -127,7 +159,7 @@ status_label() {
     32) echo "contract_missing_input" ;;
     33) echo "contract_verify_annotation" ;;
     34) echo "contract_input_v_forbidden_assumption" ;;
-    30) echo "missing_input" ;;
+    35) echo "contract_bad_include" ;;
     40) echo "verify" ;;
     *) echo "unknown_$1" ;;
   esac

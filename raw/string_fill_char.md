@@ -10,7 +10,7 @@
 - `s` 缓冲区长度至少是 `n + 1`
 - 需要原地写入字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_fill_char(int n, char c, char *s) {

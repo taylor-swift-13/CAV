@@ -35,15 +35,15 @@ _STARTED_RE = re.compile(r"Symbolic Execution into function")
 def prepare_input(src_c: Path, dst_c: Path) -> None:
     """Copy the contract C into a symexec-parseable form (experiences/general/SYMEXEC/1/int-array-def-header.md).
 
-    Drops the ``int_array_def.h`` include (a built-in symexec predicate, not a
-    header) and rewrites ``../../verification_*.h`` to bare names symexec finds
-    on its own search path.
+    Drops the ``int_array_def.h`` include for this temporary parse check and
+    rewrites repo-root ``verification_*.h`` includes (``../`` or legacy
+    ``../../`` forms) to bare names symexec finds on its own search path.
     """
     lines = []
     for line in src_c.read_text(encoding="utf-8", errors="replace").splitlines():
         if "int_array_def.h" in line:
             continue
-        line = re.sub(r'\.\./\.\./(verification_[a-z]+\.h)', r'\1', line)
+        line = re.sub(r'(?:\.\./)+(verification_[A-Za-z0-9_]+\.h)', r'\1', line)
         lines.append(line)
     dst_c.write_text("\n".join(lines) + "\n", encoding="utf-8")
 

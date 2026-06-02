@@ -11,7 +11,7 @@
 - 函数不修改数组
 - 偶数下标指 `0, 2, 4, ...`
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_sum_even_indices(int n, int *a) {

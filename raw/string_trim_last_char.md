@@ -10,7 +10,7 @@
 - `n` 是字符串当前长度
 - 需要原地修改字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_trim_last_char(int n, char *s) {

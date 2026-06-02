@@ -10,7 +10,7 @@
 - `k >= 1`
 - 枚举所有 `1 <= i <= n` 的整数
 
-## 正确代码
+## 参考实现
 
 ```c
 int count_multiples(int n, int k) {

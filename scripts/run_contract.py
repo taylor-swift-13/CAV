@@ -28,6 +28,13 @@ CONTRACT_COQ_EXIT = 31
 CONTRACT_MISSING_INPUT_EXIT = 32
 CONTRACT_VERIFY_ANNOTATION_EXIT = 33
 CONTRACT_V_FORBIDDEN_ASSUMPTION_EXIT = 34
+CONTRACT_BAD_INCLUDE_EXIT = 35
+ROOT_HEADER_INCLUDES = {
+    "verification_stdlib.h",
+    "verification_list.h",
+    "int_array_def.h",
+    "char_array_def.h",
+}
 NOISE_PATTERNS = [
     "WARNING: proceeding, even though we could not update PATH: Read-only file system",
     "failed to renew cache TTL: Read-only file system",
@@ -259,11 +266,14 @@ def update_issues_on_contract_syntax_check_failure(issues_md: Path, stage: str, 
 def check_input_v_if_present(input_v: Path, workspace_path: Path) -> tuple[bool, int | None, str]:
     if not input_v.exists():
         return True, None, "input V not present"
-    rc, out, err = coq_runner.run_coqc(
-        input_v,
-        extra_q=[(str(input_v.parent), "")],
-        timeout_seconds=120,
-    )
+    try:
+        rc, out, err = coq_runner.run_coqc(
+            input_v,
+            extra_q=[(str(input_v.parent), "")],
+            timeout_seconds=120,
+        )
+    finally:
+        coq_runner.clean_compile_artifacts(input_v.parent, recursive=False)
     log_path = workspace_path / "logs" / "input_v_coqc.log"
     log_path.write_text(
         f"$ coqc {input_v}\nrc={rc}\n\n# stdout\n{out}\n# stderr\n{err}\n",
@@ -295,6 +305,39 @@ def check_no_verify_annotations(input_c: Path, workspace_path: Path) -> tuple[bo
         return False, f"verify-stage annotation in contract C: {log_path}"
     log_path.write_text("Contract annotation gate passed.\n", encoding="utf-8")
     return True, f"contract annotation gate passed: {log_path}"
+
+
+def check_root_header_includes(input_c: Path, workspace_path: Path) -> tuple[bool, str]:
+    """Root headers must be reachable from both input/ and annotated/."""
+    text = input_c.read_text(encoding="utf-8", errors="replace")
+    log_path = workspace_path / "logs" / "contract_include_gate.log"
+    findings: list[str] = []
+    include_re = re.compile(r'^\s*#\s*include\s+"([^"]+)"', flags=re.MULTILINE)
+    lines = text.splitlines()
+    for match in include_re.finditer(text):
+        include_path = match.group(1)
+        header = Path(include_path).name
+        if header not in ROOT_HEADER_INCLUDES:
+            continue
+        expected = f"../{header}"
+        if include_path != expected:
+            line_no = text[:match.start()].count("\n") + 1
+            line = lines[line_no - 1].strip() if line_no <= len(lines) else match.group(0)
+            findings.append(
+                f"line {line_no}: `{line}` includes root header `{header}` as "
+                f"`{include_path}`; use `{expected}`"
+            )
+    if findings:
+        log_path.write_text(
+            "Contract include gate failed: root headers must be referenced from the repo root.\n"
+            "Files under input/ and annotated/ are both one directory below the repo root, so use ../<header>.\n"
+            + "\n".join(f"- {item}" for item in findings)
+            + "\n",
+            encoding="utf-8",
+        )
+        return False, f"bad root header include path: {log_path}"
+    log_path.write_text("Contract include gate passed.\n", encoding="utf-8")
+    return True, f"contract include gate passed: {log_path}"
 
 
 def check_input_v_has_only_definitions(input_v: Path, workspace_path: Path) -> tuple[bool, str]:
@@ -332,6 +375,9 @@ def run_contract_syntax_check(target_c: Path, target_v: Path, workspace_path: Pa
     annotation_ok, annotation_detail = check_no_verify_annotations(target_c, workspace_path)
     if not annotation_ok:
         return False, CONTRACT_VERIFY_ANNOTATION_EXIT, annotation_detail, "not_run", None
+    include_ok, include_detail = check_root_header_includes(target_c, workspace_path)
+    if not include_ok:
+        return False, CONTRACT_BAD_INCLUDE_EXIT, include_detail, "not_run", None
     wellformed, wellformed_exit, wf_detail = check_spec_wellformed.check(target_c)
     emit_log(f"wellformed={wellformed} symexec_exit={wellformed_exit} detail={wf_detail}")
     if wellformed != "well_formed":
@@ -342,7 +388,7 @@ def run_contract_syntax_check(target_c: Path, target_v: Path, workspace_path: Pa
     v_ok, v_exit, v_detail = check_input_v_if_present(target_v, workspace_path)
     if not v_ok:
         return False, CONTRACT_COQ_EXIT, f"{v_detail} (coqc exit {v_exit})", wellformed, wellformed_exit
-    return True, 0, f"{annotation_detail}; {v_def_detail}; {v_detail}", wellformed, wellformed_exit
+    return True, 0, f"{annotation_detail}; {include_detail}; {v_def_detail}; {v_detail}", wellformed, wellformed_exit
 
 
 def append_continue(logs_dir: Path, kind: str, text: str) -> Path:
@@ -387,7 +433,7 @@ def contract_retry_feedback(
         ])
     lines.extend([
         "",
-        "Required next action: regenerate or edit the contract so input C has no verify-stage Inv/Assert/which-implies annotations, optional input V contains definitions only, and the QCP wellformed gate passes before eval or verify starts.",
+        "Required next action: regenerate or edit the contract so input C has no verify-stage Inv/Assert/which-implies annotations, root headers use ../<header> from input/, optional input V contains definitions only, and the QCP wellformed gate passes before eval or verify starts.",
     ])
     return "\n".join(lines)
 
@@ -742,7 +788,7 @@ def main() -> int:
             "external-agent-run",
             failure_detail,
         )
-        if proc_returncode not in (CONTRACT_ILL_FORMED_EXIT, CONTRACT_COQ_EXIT, CONTRACT_MISSING_INPUT_EXIT):
+        if proc_returncode not in (CONTRACT_ILL_FORMED_EXIT, CONTRACT_COQ_EXIT, CONTRACT_MISSING_INPUT_EXIT, CONTRACT_BAD_INCLUDE_EXIT):
             update_issues_on_failure(
                 issues_path(workspace_path),
                 "external-agent-run",

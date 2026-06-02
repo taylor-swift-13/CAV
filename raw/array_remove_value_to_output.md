@@ -10,7 +10,7 @@
 - `out` 指向长度至少为 `n` 的输出数组。
 - 输入数组 `a` 不需要被修改。
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_remove_value_to_output(int n, int *a, int k, int *out) {

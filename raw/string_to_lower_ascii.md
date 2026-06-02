@@ -10,7 +10,7 @@
 - 只处理 ASCII 大写字母 `'A'` 到 `'Z'`
 - 函数原地修改字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_to_lower_ascii(char *s) {

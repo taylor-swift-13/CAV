@@ -16,7 +16,7 @@
 - 每次注释改动后都必须重新 `symexec`：看 3
 - `symexec` 失败时，先检查注释与控制点是否对齐：看 4
 - `symexec` 成功后先分流，不要机械回注释层：看 5
-- 顶层 `annotated/` 目录就是为避免头文件路径报错：看 6
+- `input/` 和 `annotated/` 都从 repo root 引用公共头文件：看 6
 - 公共 strategy 预编译后，不要再为每题重复 staging `coq/deps/`：看 7
 - witness 形状脏，通常是注释层信息组织不对：看 8
 - 当前 `goal_check` 没过时，不能把任务算完成：看 9
@@ -148,15 +148,29 @@ linux-binary/symexec \
 - 缺程序语义，回注释层
 - 缺纯命题桥接，不回注释层
 
-## 6. 顶层 `annotated/` 目录就是为避免头文件路径报错
+## 6. `input/` 和 `annotated/` 都从 repo root 引用公共头文件
 
 verify 的实际工作副本固定放在：
 
 - `annotated/verify_<timestamp>_<name>.c`
 
-它和 `input/` 是同层目录，所以像 `../../verification_stdlib.h` 这类相对头文件路径通常可以直接沿用，不需要再在每个 workspace 里手改 include。
+它和 `input/` 是同层目录，二者都只比 repo root 深一层。因此 root 下公共头文件必须统一写成：
 
-如果还报头文件找不到，优先检查：
+```c
+#include "../verification_stdlib.h"
+#include "../verification_list.h"
+```
+
+数组 / 字符串题确实需要 root 下定义文件时同理写：
+
+```c
+#include "../int_array_def.h"
+#include "../char_array_def.h"
+```
+
+不要写 `../../verification_stdlib.h`、`../../verification_list.h`、`../../int_array_def.h` 这类路径；从 `input/` 或 `annotated/` 出发它们会越过 repo root，进入 verify 后会报 `No such file`。这类错误应回 contract/source setup 修 include，不要在 verify 阶段改 annotated C，否则 source integrity gate 会拒绝。
+
+如果修正 include 后仍报头文件找不到，优先检查：
 
 - 当前 `qcp` / `symexec` 跑的是不是这个顶层 `annotated/*.c`
 - 是否误用了旧 workspace 里的历史 `annotated` 副本
@@ -351,4 +365,3 @@ QCP 前端在解析 invariant 时需要独立的符号表入口；仅有 `Import
 1. 如果一个 Coq 名字只出现在 `Ensure` 中、由 symexec 通过 postcondition 推导——可以只用 `Extern Coq`，不一定需要 `Import Coq`
 2. 如果一个 Coq 名字出现在 `Inv`、`Assert` 或 `which implies` 中——无论是否已经 `Import Coq`，都必须有 `Extern Coq` 声明
 3. 两者都写是安全的，不要依赖"Import 一定够"
-

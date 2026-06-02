@@ -11,7 +11,7 @@
 - 函数不修改数组
 - 返回值只使用 `0` 或 `1`
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_any_equal_sum(int n, int *a, int x, int y) {

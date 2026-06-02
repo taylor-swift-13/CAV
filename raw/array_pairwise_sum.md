@@ -10,7 +10,7 @@
 - `a`、`b` 和 `out` 的长度都恰好是 `n`
 - 函数不修改 `a` 和 `b`
 
-## 正确代码
+## 参考实现
 
 ```c
 void array_pairwise_sum(int n, int *a, int *b, int *out) {

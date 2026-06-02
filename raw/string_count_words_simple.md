@@ -10,7 +10,7 @@
 - 多个连续空格不产生空单词。
 - 前导空格和尾随空格不产生额外单词。
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_count_words_simple(char *s) {

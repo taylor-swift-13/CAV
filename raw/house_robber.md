@@ -11,7 +11,7 @@
 - 所有 `a[i] >= 0`
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int house_robber(int n, int *a) {

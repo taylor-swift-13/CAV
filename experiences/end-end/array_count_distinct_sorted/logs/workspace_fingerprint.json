@@ -1,0 +1,37 @@
+{
+  "workspace": "array_count_distinct_sorted",
+  "stage": "verify",
+  "input_c": "original/array_count_distinct_sorted.c",
+  "input_v": "original/array_count_distinct_sorted.v",
+  "original_c": "original/array_count_distinct_sorted.c",
+  "original_v": "original/array_count_distinct_sorted.v",
+  "annotated_c": "annotated/array_count_distinct_sorted.c",
+  "function_name": "array_count_distinct_sorted",
+  "semantic_description": "Function scans a sorted integer array a of length n without modifying it and returns the number of distinct adjacent-value runs. For n = 0 it returns 0 immediately. For n > 0 it initializes count to 1 and iterates i from 1 while i < n, incrementing count exactly when a[i] differs from a[i-1], then returns count. The required output relation is equality with array_count_distinct_sorted_spec(l), and the input array ownership/content is preserved.",
+  "keywords": {
+    "algorithm_family": "counting",
+    "control_flow": [
+      "if",
+      "while_loop"
+    ],
+    "data_shape": "array",
+    "semantic_intent": "preserve_input",
+    "proof_pattern": [
+      "loop_invariant",
+      "case_split",
+      "range_bound",
+      "heap_reasoning"
+    ],
+    "numeric_properties": [
+      "int_range",
+      "monotone_accumulator"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": [
+      "goal_check_passed",
+      "proof_check_passed"
+    ]
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

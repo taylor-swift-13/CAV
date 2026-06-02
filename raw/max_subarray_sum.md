@@ -11,7 +11,7 @@
 - 函数不修改数组
 - 使用 Kadane 算法
 
-## 正确代码
+## 参考实现
 
 ```c
 int max_subarray_sum(int n, int *a) {

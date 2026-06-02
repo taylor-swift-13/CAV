@@ -1,0 +1,36 @@
+{
+  "workspace": "array_init",
+  "stage": "verify",
+  "input_c": "original/array_init.c",
+  "input_v": "",
+  "original_c": "original/array_init.c",
+  "original_v": "",
+  "annotated_c": "annotated/array_init.c",
+  "function_name": "array_init",
+  "semantic_description": "array_init takes a nonnegative length n and a full integer array a with logical contents l of length n. It runs a single for loop from i = 0 to i < n, overwriting each element a[i] with 0. On return the array is still length n and every index in the valid range contains 0. The empty-loop case n == 0 is allowed and leaves the zero-length array predicate unchanged.",
+  "keywords": {
+    "algorithm_family": "simulation",
+    "control_flow": "for_loop",
+    "data_shape": [
+      "array",
+      "pointer"
+    ],
+    "semantic_intent": "in_place_update",
+    "proof_pattern": [
+      "loop_invariant",
+      "heap_reasoning",
+      "range_bound"
+    ],
+    "numeric_properties": [
+      "nonnegative_input",
+      "int_range"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": [
+      "goal_check_passed",
+      "proof_check_passed"
+    ]
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

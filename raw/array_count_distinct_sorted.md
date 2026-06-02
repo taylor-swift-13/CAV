@@ -10,7 +10,7 @@
 - 输入数组按非降序排列。
 - 如果 `n == 0`，返回 `0`。
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_count_distinct_sorted(int n, int *a) {

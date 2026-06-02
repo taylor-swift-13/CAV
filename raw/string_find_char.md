@@ -9,7 +9,7 @@
 - 输入是合法的 C 风格字符串
 - 函数不修改字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_find_char(char *s, char c) {

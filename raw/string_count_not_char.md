@@ -11,7 +11,7 @@
 - 只统计终止符之前的字符
 - 返回值等于满足 `s[i] != c` 的字符数量
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_count_not_char(char *s, char c) {

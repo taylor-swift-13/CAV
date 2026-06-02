@@ -1,0 +1,42 @@
+{
+  "workspace": "string_to_upper_ascii",
+  "stage": "verify",
+  "input_c": "original/string_to_upper_ascii.c",
+  "input_v": "",
+  "original_c": "original/string_to_upper_ascii.c",
+  "original_v": "",
+  "annotated_c": "annotated/string_to_upper_ascii.c",
+  "function_name": "string_to_upper_ascii",
+  "semantic_description": "Scans a null-terminated character array in place with a while(1) loop, stopping at the first zero byte. For each index before the terminator, lowercase ASCII letters 97..122 are replaced by value-32 and all other nonzero bytes are preserved. The terminator remains zero, the string length n is preserved, and the heap resource is the same CharArray::full buffer updated in place.",
+  "keywords": {
+    "algorithm_family": "simulation",
+    "control_flow": [
+      "while_loop",
+      "if"
+    ],
+    "data_shape": [
+      "string",
+      "array",
+      "pointer"
+    ],
+    "semantic_intent": "in_place_update",
+    "proof_pattern": [
+      "loop_invariant",
+      "case_split",
+      "range_bound",
+      "heap_reasoning"
+    ],
+    "numeric_properties": [
+      "overflow_guard",
+      "int_range"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": [
+      "manual_witness_needed",
+      "goal_check_passed",
+      "proof_check_passed"
+    ]
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

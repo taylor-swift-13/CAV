@@ -10,7 +10,7 @@
 - 否则返回 `0`
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int is_sorted_nondecreasing(int n, int *a) {

@@ -14,7 +14,7 @@
 - `a` 和 `b` 都非递减
 - 函数不修改 `a` 和 `b`
 
-## 正确代码
+## 参考实现
 
 ```c
 void merge_sorted_arrays(int n, int *a, int m, int *b, int *out) {

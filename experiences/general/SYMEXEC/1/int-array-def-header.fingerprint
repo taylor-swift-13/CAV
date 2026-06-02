@@ -1,5 +1,5 @@
 {
-  "semantic_description": "annotated 副本必须删除 #include int_array_def.h——它是 C-only 头文件，symexec 找不到；IntArray 谓词由 builtin strategy 加载",
+  "semantic_description": "数组题引用 root 下 int_array_def.h 时，input/ 与 annotated/ 都必须使用 ../int_array_def.h；../../ 会越过 repo root 并导致 symexec 找不到头文件。",
   "keywords": {
     "problem_kind": "transform",
     "data": "array",

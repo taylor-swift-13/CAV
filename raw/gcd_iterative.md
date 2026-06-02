@@ -11,7 +11,7 @@
 - `a` 和 `b` 不同时为 `0`
 - 使用 Euclid 算法
 
-## 正确代码
+## 参考实现
 
 ```c
 int gcd_iterative(int a, int b) {

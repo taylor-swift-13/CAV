@@ -11,7 +11,7 @@
 - 函数不修改数组
 - 如果存在多个匹配位置，返回最大的匹配下标
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_find_last_equal(int n, int *a, int k) {

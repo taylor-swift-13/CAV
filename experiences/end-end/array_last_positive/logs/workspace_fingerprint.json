@@ -1,0 +1,37 @@
+{
+  "workspace": "array_last_positive",
+  "stage": "verify",
+  "input_c": "original/array_last_positive.c",
+  "input_v": "",
+  "original_c": "original/array_last_positive.c",
+  "original_v": "",
+  "annotated_c": "annotated/array_last_positive.c",
+  "function_name": "array_last_positive",
+  "semantic_description": "Scans an integer array from left to right, preserving the input memory, and returns the last index whose element is positive. If the array is empty or every element is nonpositive, it returns -1. The implementation uses a single for loop with an if branch that updates ans to the current index when a[i] > 0.",
+  "keywords": {
+    "algorithm_family": "search",
+    "control_flow": [
+      "for_loop",
+      "if"
+    ],
+    "data_shape": [
+      "array",
+      "pointer"
+    ],
+    "semantic_intent": "preserve_input",
+    "proof_pattern": [
+      "loop_invariant",
+      "case_split",
+      "range_bound",
+      "heap_reasoning"
+    ],
+    "numeric_properties": [
+      "nonnegative_input",
+      "int_range"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": "goal_check_passed"
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

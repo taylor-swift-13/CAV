@@ -1,6 +1,9 @@
+#include "../verification_stdlib.h"
+
 int add_two(int a, int b)
 /*@ Require
-      -2147483648 <= a + b && a + b <= 2147483647 && emp
+      INT_MIN <= a + b &&
+      a + b <= INT_MAX && emp
     Ensure
       __return == a@pre + b@pre && emp
 */

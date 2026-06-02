@@ -10,7 +10,7 @@
 - `out` 有足够空间保存结果和结尾字符
 - 函数不修改 `s`
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_remove_char_to_output(char *s, char *out, char c) {

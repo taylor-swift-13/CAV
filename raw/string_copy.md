@@ -10,7 +10,7 @@
 - `dst` 有足够空间容纳整个字符串和结尾的 `'\0'`
 - 函数读取 `src`，写入 `dst`
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_copy(char *src, char *dst) {
