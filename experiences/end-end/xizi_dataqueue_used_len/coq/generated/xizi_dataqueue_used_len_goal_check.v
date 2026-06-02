@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260602_233819v_xizi_dataqueue_used_len Require Import xizi_dataqueue_used_len_goal xizi_dataqueue_used_len_proof_auto xizi_dataqueue_used_len_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_dataqueue_used_len_proof_auto.
+  Include xizi_dataqueue_used_len_proof_manual.
+End VC_Correctness.

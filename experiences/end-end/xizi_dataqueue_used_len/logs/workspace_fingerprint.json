@@ -1,0 +1,19 @@
+{
+  "workspace": "verify_20260602_233819v_xizi_dataqueue_used_len",
+  "stage": "verify",
+  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_dataqueue_used_len.c",
+  "input_v": "",
+  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260602_233819v_xizi_dataqueue_used_len/original/xizi_dataqueue_used_len.c",
+  "original_v": "",
+  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260602_233819v_xizi_dataqueue_used_len.c",
+  "function_name": "xizi_dataqueue_used_len",
+  "semantic_description": "Loop-free function `xizi_dataqueue_used_len` returning `(rear - front + max_len) % max_len`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "straight_line"
+  },
+  "verification_status": "goal_check_passed",
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}
