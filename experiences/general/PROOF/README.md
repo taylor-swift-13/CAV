@@ -33,6 +33,8 @@
 - 较新 symexec 版本生成的 `proof_manual.v` 格式差异：看 27
 - 直线函数没有 entail_wit 目标，proof_manual.v 始终为空：看 28
 - `entailer!` 后残留 `(p <> NULL)` 这类纯条件 → contract 层缺非空，不要在证明里硬抠：看 29
+- `%` 算术目标先确认生成的是 `Z.rem` 还是 `Z.mod`：看 30
+- 嵌套 `replace_Znth` 的 return witness 要把每一步 rewrite 的具体列表钉死：看 31
 
 ## 1. 证明范围
 
@@ -435,3 +437,62 @@ end
 - 把这个阻塞写进 `logs/issues.md`：`(<wit_name>) entailer! leaves (p_pre <> NULL); contract lacks non-null — see experiences/general/CONTRACT/1/pointer-deref-needs-non-null.md`；
 - **不要**自己改 contract / annotated C 绕过；那是 Contract 阶段的固定义务，verify 阶段越权改 contract 会让审计阶段反告 contract drift；
 - 把 `Final Result: Fail` 写到 `logs/metrics.md`，按 §1「contract gap」边界正常退出。
+
+## 30. `%` 算术目标先确认生成的是 `Z.rem` 还是 `Z.mod`（2026-06-02）
+
+QCP 生成的 `%` 目标不要默认按 `Z.mod` 处理。遇到这类直线标量 witness：
+
+- 先在当前 goal 里确认 `%` 展开后的**实际目标头**；
+- 如果目标是 `a % b = 0`、`a % b = a` 这类形状，但 `apply Z.mod_same` / `apply Z.mod_small` 报 unification mismatch，就优先怀疑当前 `%` 记号对应的是 `Z.rem`；
+- 这时改用 `Z.rem_same`、`Z.rem_small`，并用当前分支假设补上 `0 < b`、`0 <= a < b` 或 `a = b`。
+
+典型信号：
+
+- `rewrite Heq` 后 goal 已经规范成 `m % m = 0`；
+- `Z.mod_same` 仍报 `Unable to unify "? mod ? = 0" with "m % m = 0"`；
+- 换成 `Z.rem_same` / `Z.rem_small` 后立刻匹配。
+
+这条规则适用于：
+
+- contract 里直接使用 `%` 的纯算术函数；
+- `entailer!` 后只剩 `%` 的等式分支和严格小于分支；
+- proof 已经确认是运算符头不匹配，而不是边界条件缺失。
+
+## 31. 嵌套 `replace_Znth` 的 return witness 要把每一步 rewrite 的具体列表钉死（2026-06-02）
+
+如果 `return_wit` 的 existential witness 本身就是多层数组更新，例如：
+
+- `replace_Znth 0 x (replace_Znth 2 y (replace_Znth 1 x l))`
+- 或类似的“先写一格，再写状态位，再条件性回写另一格”
+
+那么 `entailer!` 之后不要直接写这种省略参数的脚本：
+
+- `rewrite Znth_replace_Znth_Same by lia`
+- `rewrite Znth_replace_Znth_Diff by lia`
+
+在这类 goal 里，Coq 往往无法从上下文唯一推断当前要穿过的是哪一层 `replace_Znth`，于是报：
+
+- `Tactic failure: Cannot find witness`
+
+更稳的写法是：
+
+1. 先给重复出现的更新值起局部别名，例如 `set (w := ...)`
+2. 对每一步 rewrite 都显式写出**当前那一层的完整列表参数**
+3. 先穿过最外层 `replace_Znth`，再穿过中间层，最后落到原始 `l`
+4. 每一步 side condition 同时把 `Zlength_replace_Znth` 展开给 `lia`
+
+典型形状：
+
+```coq
+rewrite (Znth_replace_Znth_diff 1 0 w 0
+  (replace_Znth 2 1 (replace_Znth 1 w l))) by ...;
+rewrite (Znth_replace_Znth_diff 1 2 1 0
+  (replace_Znth 1 w l)) by ...;
+rewrite (Znth_replace_Znth_same 1 w 0 l) by lia.
+```
+
+适用范围：
+
+- 直线数组写入函数的 `return_wit`
+- `IntArray.full` / `CharArray.full` 一类“后态 = 多层 `replace_Znth`”的 witness
+- 首个症状是 `entailer!` 后只剩 `Znth` 等式，但通用 rewrite lemma 仍无法实例化
