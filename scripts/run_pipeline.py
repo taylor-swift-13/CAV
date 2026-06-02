@@ -207,7 +207,7 @@ def main() -> int:
                 f"(spec={eval_verdict}, judge={judge_verdict}, runner_success={eval_runner_success}); "
                 "stopping before verify (use --force to continue)"
             )
-            _finish(workspaces, pipeline_dir, args, name, status="contract_syntax_check_failed")
+            _finish(workspaces, pipeline_dir, args, name, status="eval_gate_not_met")
             return 1
     else:
         input_c = target

@@ -708,7 +708,7 @@ def main() -> int:
             target_c=target_c_path,
         )
         append_continue(logs_dir, f"retry-after-attempt-{attempt}", feedback)
-        emit_log(f"contract_incomplete_retrying attempt={attempt} detail={failure_detail or wf_detail or proc_returncode}")
+        emit_log(f"contract_incomplete_retrying attempt={attempt} detail={failure_detail or gate_detail or proc_returncode}")
 
         if proc_returncode == 124:
             break
