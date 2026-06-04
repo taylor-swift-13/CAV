@@ -1151,9 +1151,10 @@ def main() -> int:
             verify_retry_feedback(attempt, detail, workspace_path, function_name),
         )
 
-    # experiences/general/COMPILE/README.md §10: drop coqc intermediates (.vo/.glob/.aux) from the
-    # workspace coq dirs, keeping .v sources. Never touches the shared QCP tree.
+    # experiences/general/COMPILE/README.md §10: drop coqc intermediates (.vo/.glob/.aux)
+    # from workspace dirs, keeping .v/.c sources. Never touches the shared QCP tree.
     removed = coq_runner.clean_compile_artifacts(workspace_path / "coq")
+    removed += coq_runner.clean_compile_artifacts(workspace_path / "original", recursive=False)
     emit_log(f"cleaned_compile_artifacts count={len(removed)}")
 
     overall_end_iso = iso_now()
