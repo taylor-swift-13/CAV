@@ -27,7 +27,8 @@
 - 只针对定位到的 blocker；
 - **保留**已通过的工作（symexec 不重跑、proof 不整段重写）；
 - 不动 fingerprint 已填好的字段（除非真的需要修正）。
+- 不要把“定位到新的 blocker”当作本轮完成。定位后必须立刻修它并重新跑对应 gate，直到主 SKILL §0 允许退出。
 
 ## 完成判据
 
-仍按主 SKILL §6。
+仍按主 SKILL §5 / §0。可继续推进的 retry blocker 不能以 `Final Result: Fail` 结束当前 agent run。
