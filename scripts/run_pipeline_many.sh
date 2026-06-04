@@ -2,23 +2,51 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CONTRACT_SCRIPT="$ROOT/scripts/run_contract.py"
-VERIFY_SCRIPT="$ROOT/scripts/run_verify.py"
+PIPELINE_SCRIPT="$ROOT/scripts/run_pipeline.py"
 
 EXPORT_EXAMPLES=1
+SKIP_EVAL=0
+SKIP_CONSOLIDATE=0
+FORCE=0
+DRY_RUN=0
 JOBS=1
+CONTRACT_ROUNDS=2
+CONTRACT_TIMEOUT=300
+EVAL_TIMEOUT=900
+VERIFY_TIMEOUT=3600
+CONSOLIDATE_TIMEOUT=600
+CONFIG=""
+AGENT=""
+MODEL=""
+REASONING_EFFORT=""
 
 usage() {
   cat <<'EOF'
-usage: run_pipeline_many.sh [--no-export-examples] [--jobs N|-j N] <name1> [name2 ...]
+usage: run_pipeline_many.sh [pipeline options] [--jobs N|-j N] <name1> [name2 ...]
 
-For each <name>, run:
-  1. python3 scripts/run_contract.py raw/<name>.md --function-name <name>
-  2. python3 scripts/run_verify.py input/<name>.c --function-name <name> [--export-examples]
+Multi-process wrapper for scripts/run_pipeline.py. For each <name>, run:
+  python3 scripts/run_pipeline.py raw/<name>.md --function-name <name>
+
+By default each item uses the full run_pipeline flow:
+  contract -> eval -> verify -> consolidate
 
 Options:
-  --no-export-examples   Do not pass --export-examples to verify.
   --jobs N, -j N         Run up to N names concurrently. Default: 1.
+  --contract-rounds N    Passed to run_pipeline.py. Default: 2.
+  --contract-timeout N   Passed to run_pipeline.py. Default: 300.
+  --eval-timeout N       Passed to run_pipeline.py. Default: 900.
+  --verify-timeout N     Passed to run_pipeline.py. Default: 3600.
+  --consolidate-timeout N
+                         Passed to run_pipeline.py. Default: 600.
+  --skip-eval            Passed to run_pipeline.py.
+  --skip-consolidate     Passed to run_pipeline.py.
+  --no-export-examples   Passed to run_pipeline.py as --no-export.
+  --force                Passed to run_pipeline.py.
+  --config PATH          Passed to run_pipeline.py.
+  --agent codex|claude   Passed to run_pipeline.py.
+  --model MODEL          Passed to run_pipeline.py.
+  --reasoning-effort E   Passed to run_pipeline.py.
+  --dry-run              Passed to run_pipeline.py.
 EOF
 }
 
@@ -29,6 +57,22 @@ while [[ $# -gt 0 ]]; do
       EXPORT_EXAMPLES=0
       shift
       ;;
+    --skip-eval)
+      SKIP_EVAL=1
+      shift
+      ;;
+    --skip-consolidate)
+      SKIP_CONSOLIDATE=1
+      shift
+      ;;
+    --force)
+      FORCE=1
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
     --jobs|-j)
       if [[ $# -lt 2 ]]; then
         echo "missing value for $1" >&2
@@ -36,6 +80,87 @@ while [[ $# -gt 0 ]]; do
         exit 2
       fi
       JOBS="$2"
+      shift 2
+      ;;
+    --contract-rounds)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      CONTRACT_ROUNDS="$2"
+      shift 2
+      ;;
+    --contract-timeout)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      CONTRACT_TIMEOUT="$2"
+      shift 2
+      ;;
+    --eval-timeout)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      EVAL_TIMEOUT="$2"
+      shift 2
+      ;;
+    --verify-timeout)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      VERIFY_TIMEOUT="$2"
+      shift 2
+      ;;
+    --consolidate-timeout)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      CONSOLIDATE_TIMEOUT="$2"
+      shift 2
+      ;;
+    --config)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      CONFIG="$2"
+      shift 2
+      ;;
+    --agent)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      AGENT="$2"
+      shift 2
+      ;;
+    --model)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      MODEL="$2"
+      shift 2
+      ;;
+    --reasoning-effort)
+      if [[ $# -lt 2 ]]; then
+        echo "missing value for $1" >&2
+        usage >&2
+        exit 2
+      fi
+      REASONING_EFFORT="$2"
       shift 2
       ;;
     -h|--help)
@@ -71,6 +196,36 @@ if ! [[ "$JOBS" =~ ^[0-9]+$ ]] || [[ "$JOBS" -lt 1 ]]; then
   exit 2
 fi
 
+if ! [[ "$CONTRACT_ROUNDS" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_ROUNDS" -lt 1 ]]; then
+  echo "--contract-rounds must be a positive integer: $CONTRACT_ROUNDS" >&2
+  exit 2
+fi
+
+if ! [[ "$CONTRACT_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_TIMEOUT" -lt 1 ]]; then
+  echo "--contract-timeout must be a positive integer: $CONTRACT_TIMEOUT" >&2
+  exit 2
+fi
+
+if ! [[ "$EVAL_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$EVAL_TIMEOUT" -lt 1 ]]; then
+  echo "--eval-timeout must be a positive integer: $EVAL_TIMEOUT" >&2
+  exit 2
+fi
+
+if ! [[ "$VERIFY_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$VERIFY_TIMEOUT" -lt 1 ]]; then
+  echo "--verify-timeout must be a positive integer: $VERIFY_TIMEOUT" >&2
+  exit 2
+fi
+
+if ! [[ "$CONSOLIDATE_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONSOLIDATE_TIMEOUT" -lt 1 ]]; then
+  echo "--consolidate-timeout must be a positive integer: $CONSOLIDATE_TIMEOUT" >&2
+  exit 2
+fi
+
+if [[ -n "$AGENT" && "$AGENT" != "codex" && "$AGENT" != "claude" ]]; then
+  echo "--agent must be codex or claude: $AGENT" >&2
+  exit 2
+fi
+
 cd "$ROOT"
 
 RUN_ID="$(date +%Y%m%d_%H%M%S)"
@@ -80,55 +235,49 @@ mkdir -p "$RUN_DIR"
 run_one() {
   local name="$1"
   RAW_PATH="raw/${name}.md"
-  INPUT_PATH="input/${name}.c"
 
   if [[ ! -f "$RAW_PATH" ]]; then
-    echo "[contract-verify-many] missing raw file: $RAW_PATH" >&2
+    echo "[pipeline-many] missing raw file: $RAW_PATH" >&2
     return 10
   fi
 
-  echo "[contract-verify-many] contract start name=$name"
+  local cmd=(python3 "$PIPELINE_SCRIPT" "$RAW_PATH" --function-name "$name")
+  cmd+=(--contract-rounds "$CONTRACT_ROUNDS")
+  cmd+=(--contract-timeout "$CONTRACT_TIMEOUT")
+  cmd+=(--eval-timeout "$EVAL_TIMEOUT")
+  cmd+=(--verify-timeout "$VERIFY_TIMEOUT")
+  cmd+=(--consolidate-timeout "$CONSOLIDATE_TIMEOUT")
+  [[ $SKIP_EVAL -eq 1 ]] && cmd+=(--skip-eval)
+  [[ $SKIP_CONSOLIDATE -eq 1 ]] && cmd+=(--skip-consolidate)
+  [[ $EXPORT_EXAMPLES -eq 0 ]] && cmd+=(--no-export)
+  [[ $FORCE -eq 1 ]] && cmd+=(--force)
+  [[ $DRY_RUN -eq 1 ]] && cmd+=(--dry-run)
+  [[ -n "$CONFIG" ]] && cmd+=(--config "$CONFIG")
+  [[ -n "$AGENT" ]] && cmd+=(--agent "$AGENT")
+  [[ -n "$MODEL" ]] && cmd+=(--model "$MODEL")
+  [[ -n "$REASONING_EFFORT" ]] && cmd+=(--reasoning-effort "$REASONING_EFFORT")
+
+  echo "[pipeline-many] pipeline start name=$name"
+  printf '[pipeline-many] $'
+  printf ' %q' "${cmd[@]}"
+  printf '\n'
   set +e
-  python3 "$CONTRACT_SCRIPT" "$RAW_PATH" --function-name "$name"
-  contract_rc=$?
+  "${cmd[@]}"
+  pipeline_rc=$?
   set -e
-  if [[ $contract_rc -ne 0 ]]; then
-    echo "[contract-verify-many] contract failed name=$name rc=$contract_rc" >&2
-    return "$contract_rc"
+  if [[ $pipeline_rc -ne 0 ]]; then
+    echo "[pipeline-many] pipeline failed name=$name rc=$pipeline_rc" >&2
+    return "$pipeline_rc"
   fi
-  echo "[contract-verify-many] contract done name=$name"
-
-  if [[ ! -f "$INPUT_PATH" ]]; then
-    echo "[contract-verify-many] missing generated input after contract: $INPUT_PATH" >&2
-    return 30
-  fi
-
-  VERIFY_CMD=(python3 "$VERIFY_SCRIPT" "$INPUT_PATH" --function-name "$name")
-  if [[ $EXPORT_EXAMPLES -eq 1 ]]; then
-    VERIFY_CMD+=(--export-examples)
-  fi
-
-  echo "[contract-verify-many] verify start name=$name"
-  if ! "${VERIFY_CMD[@]}"; then
-    echo "[contract-verify-many] verify failed name=$name" >&2
-    return 40
-  fi
-
-  echo "[contract-verify-many] verify done name=$name"
+  echo "[pipeline-many] pipeline done name=$name"
 }
 
 status_label() {
   case "$1" in
     0) echo "success" ;;
     10) echo "missing_raw" ;;
-    20) echo "contract" ;;
-    30) echo "contract_ill_formed" ;;
-    31) echo "contract_input_v_coq" ;;
-    32) echo "contract_missing_input" ;;
-    33) echo "contract_verify_annotation" ;;
-    34) echo "contract_input_v_forbidden_assumption" ;;
-    30) echo "missing_input" ;;
-    40) echo "verify" ;;
+    1) echo "pipeline" ;;
+    2) echo "usage" ;;
     *) echo "unknown_$1" ;;
   esac
 }
@@ -147,7 +296,7 @@ if [[ "$JOBS" -eq 1 ]]; then
     fi
   done
 else
-  echo "[contract-verify-many] running with jobs=$JOBS log_dir=$RUN_DIR"
+  echo "[pipeline-many] running with jobs=$JOBS log_dir=$RUN_DIR"
   for name in "${NAMES[@]}"; do
     while [[ "$(jobs -rp | wc -l)" -ge "$JOBS" ]]; do
       sleep 1
@@ -163,7 +312,7 @@ else
       printf '%s:%s\n' "$name" "$label" >"$status_file"
       exit 0
     ) &
-    echo "[contract-verify-many] launched name=$name pid=$! log=$log"
+    echo "[pipeline-many] launched name=$name pid=$! log=$log"
   done
 
   wait
@@ -173,7 +322,7 @@ else
     log="$RUN_DIR/${name}.log"
     if [[ ! -f "$status_file" ]]; then
       FAILURES+=("$name:missing_status")
-      echo "[contract-verify-many] failed name=$name reason=missing_status log=$log" >&2
+      echo "[pipeline-many] failed name=$name reason=missing_status log=$log" >&2
       continue
     fi
 
@@ -181,30 +330,30 @@ else
     label="${status#*:}"
     if [[ "$label" == "success" ]]; then
       SUCCESSES+=("$name")
-      echo "[contract-verify-many] done name=$name log=$log"
+      echo "[pipeline-many] done name=$name log=$log"
     else
       FAILURES+=("$name:$label")
-      echo "[contract-verify-many] failed name=$name reason=$label log=$log" >&2
+      echo "[pipeline-many] failed name=$name reason=$label log=$log" >&2
     fi
   done
 fi
 
-echo "[contract-verify-many] summary: total=${#NAMES[@]} success=${#SUCCESSES[@]} failure=${#FAILURES[@]}"
-echo "[contract-verify-many] logs: $RUN_DIR"
+echo "[pipeline-many] summary: total=${#NAMES[@]} success=${#SUCCESSES[@]} failure=${#FAILURES[@]}"
+echo "[pipeline-many] logs: $RUN_DIR"
 
 if [[ ${#SUCCESSES[@]} -gt 0 ]]; then
-  echo "[contract-verify-many] successes:"
+  echo "[pipeline-many] successes:"
   for success in "${SUCCESSES[@]}"; do
     echo "  $success"
   done
 fi
 
 if [[ ${#FAILURES[@]} -gt 0 ]]; then
-  echo "[contract-verify-many] failures:" >&2
+  echo "[pipeline-many] failures:" >&2
   for failure in "${FAILURES[@]}"; do
     echo "  $failure" >&2
   done
   exit 1
 fi
 
-echo "[contract-verify-many] all done"
+echo "[pipeline-many] all done"

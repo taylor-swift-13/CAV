@@ -139,6 +139,8 @@ def build_prompt(
     lines = [
         f"Follow this skill as the complete workflow: {skill_path}",
         "",
+        "Persistence requirement: do not finish this agent run merely because a repairable gate failed. If symexec/coqc/proof/manual-obligation feedback points to a concrete annotation or proof edit inside this workspace, keep editing and rerunning the relevant gate until success, a genuinely unrepairable contract/input blocker is found, or the external timeout stops you. A single new blocker is work to continue, not a reason to write Final Result: Fail.",
+        "",
         "Inputs:",
         _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
     ]
@@ -161,6 +163,8 @@ def build_proof_only_prompt(
 ) -> str:
     lines = [
         f"Follow this skill as the complete workflow: {skill_path}",
+        "",
+        "Persistence requirement: proof-only mode must keep proving while proof_manual.v can still be edited. Do not exit just because proof_manual_has_obligations remains, one theorem fails under coqc, or a tactic needs adjustment; continue the edit/compile loop until proof_manual.v has no placeholders and goal_check.v compiles, or until you identify a genuinely unprovable VC under the current contract.",
         "",
         "Mode: proof-only (also follow MODE_PROOF_ONLY.md per SKILL.md §4.5c).",
         "",
@@ -258,7 +262,7 @@ def verify_retry_feedback(attempt: int, detail: str, workspace_path: Path, funct
         f"- Proof manual: `{generated_dir / f'{function_name}_proof_manual.v'}`",
         f"- Goal check: `{generated_dir / f'{function_name}_goal_check.v'}`",
         "",
-        "Required next action: fix annotation/proof so symexec outputs exist, proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation.",
+        "Required next action: continue inside this same workspace until the concrete blocker is fixed. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
     ])
 
 
@@ -525,8 +529,8 @@ def copy_if_exists(src: Path, dst: Path) -> None:
 def export_example_if_needed(workspace_path: Path, function_name: str) -> tuple[bool, str]:
     """On verify success, copy the workspace into experiences/end-end/<name>/.
 
-    Inlined here (the Java pipeline does the same in run_verify); keeps only the
-    .v / .c / reasoning artifacts, never the compile intermediates.
+    Keeps only the .v / .c / reasoning artifacts, never the compile
+    intermediates.
     """
     target_dir = EXAMPLES_ROOT / function_name
     if target_dir.exists():
@@ -966,6 +970,7 @@ def main() -> int:
     claude_effort_supported = agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
     emit_log(f"reasoning_effort={reasoning_effort}")
     emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
+    emit_log(f"reasoning_effort_transport={agent_config.codex_reasoning_effort_transport(codex_bin, REPO_ROOT, agent_env, reasoning_effort)}")
     emit_log(f"claude_effort_supported={claude_effort_supported}")
     run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
     prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
@@ -1148,8 +1153,7 @@ def main() -> int:
                 ]
                 if model:
                     cmd.extend(["--model", model])
-                if reasoning_effort and reasoning_effort_supported:
-                    cmd.extend(["--reasoning-effort", reasoning_effort])
+                cmd.extend(agent_config.codex_reasoning_effort_args(codex_bin, REPO_ROOT, agent_env, reasoning_effort))
                 cmd.append("-")
                 with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
                     proc = subprocess.run(

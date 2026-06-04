@@ -80,7 +80,7 @@ def write_findings(dest: Path, *, title: str, sources: list[Path]) -> Path:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Closed-loop contract↔eval / verify-audit-check orchestrator.")
+    p = argparse.ArgumentParser(description="Full contract -> eval -> verify -> consolidate orchestrator.")
     p.add_argument("target", help="raw/<name>.md (full flow) or input/<name>.c (skip contract).")
     p.add_argument("--function-name")
     p.add_argument("--contract-rounds", type=int, default=2)
@@ -88,8 +88,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--eval-timeout", type=int, default=900)
     p.add_argument("--verify-timeout", type=int, default=3600)
     p.add_argument("--consolidate-timeout", type=int, default=600)
-    p.add_argument("--skip-eval", action="store_true", help="Run contract without the eval gate.")
-    p.add_argument("--no-consolidate", action="store_true")
+    p.add_argument("--skip-eval", action="store_true", help="Skip the eval gate before verify.")
+    p.add_argument("--skip-consolidate", action="store_true", help="Skip the final consolidate stage.")
     p.add_argument("--no-export", action="store_true", help="Do not export verified workspaces into experiences/end-end/.")
     p.add_argument("--force", action="store_true", help="Continue to verify even if eval never reaches Correct.")
     p.add_argument("--config", default=None)
@@ -232,7 +232,7 @@ def main() -> int:
 
 def _finish(workspaces, pipeline_dir, args, name, *, status) -> None:
     # ---- Consolidate ----
-    if not args.no_consolidate and not args.dry_run:
+    if not args.skip_consolidate and not args.dry_run:
         ccmd = [sys.executable, str(SCRIPTS / "run_consolidate.py"), *[str(w) for w in workspaces],
                 "--scope", "all", "--timeout-seconds", str(args.consolidate_timeout)]
         if args.config:

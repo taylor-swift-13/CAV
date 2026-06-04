@@ -21,6 +21,8 @@
 
 如果发现 generated VC 在当前 contract/VC 下确实不可证（典型表现：`entailer!` 剩 `(p <> NULL)` 这种 LHS 不带的纯条件），写阻塞到 `logs/issues.md` 然后以 `Final Result: Fail` 收尾——**不要**改 contract 或 annotation 绕过。那是 Contract 阶段的义务（见 `experiences/general/CONTRACT/README.md §15`）。
 
+普通的 `proof_manual.v` 还有 `Admitted`、某个 theorem 的 `coqc` 报错、`entailer!` / `lia` / witness tactic 暂时失败，都不是 proof-only 退出理由。只要能继续编辑 `proof_manual.v` 或添加允许范围内的 local helper，就必须继续证明并重新编译。
+
 ## 工作流仍按主 SKILL
 
 - §4.5a（10 次探索预算 try-first）继续生效；
