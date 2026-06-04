@@ -17,10 +17,11 @@ REASONING_EFFORT=""
 CODEX_BIN=""
 CLAUDE_BIN=""
 DRY_RUN=0
+SKIP_CONSOLIDATE=0
 
 usage() {
   cat <<'EOF'
-usage: run_pipeline_many.sh [--eval] [--audit] [--no-export-examples] [--timeout-seconds N] [--max-overturn-rounds N] [--jobs N|-j N] [--config PATH] [--agent codex|claude] [--model MODEL] [--reasoning-effort LEVEL] [--codex-bin PATH] [--claude-bin PATH] [--dry-run] <name1> [name2 ...]
+usage: run_pipeline_many.sh [--eval] [--audit] [--skip-consolidate] [--no-export-examples] [--timeout-seconds N] [--max-overturn-rounds N] [--jobs N|-j N] [--config PATH] [--agent codex|claude] [--model MODEL] [--reasoning-effort LEVEL] [--codex-bin PATH] [--claude-bin PATH] [--dry-run] <name1> [name2 ...]
 
 For each <name>, run:
   1. python3 scripts/run_pipeline.py raw/<name>.md --function-name <name>
@@ -30,6 +31,7 @@ For each <name>, run:
 Options:
   --eval                   Run eval between contract and verify.
   --audit                  Run audit after verify.
+  --skip-consolidate       Forwarded to run_pipeline.py.
   --no-export-examples     Do not pass --export-examples to verify.
   --timeout-seconds N      Total budget passed to each pipeline run. Default: 7200.
   --max-overturn-rounds N  Max critic overturn rounds per pipeline run. Default: 2.
@@ -53,6 +55,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --audit)
       RUN_AUDIT=1
+      shift
+      ;;
+    --skip-consolidate)
+      SKIP_CONSOLIDATE=1
       shift
       ;;
     --no-export-examples)
@@ -189,8 +195,11 @@ run_one() {
   if [[ "$DRY_RUN" -eq 1 ]]; then
     cmd+=(--dry-run)
   fi
+  if [[ "$SKIP_CONSOLIDATE" -eq 1 ]]; then
+    cmd+=(--skip-consolidate)
+  fi
 
-  echo "[pipeline-many] start name=$name eval=$RUN_EVAL audit=$RUN_AUDIT export=$EXPORT_EXAMPLES"
+  echo "[pipeline-many] start name=$name eval=$RUN_EVAL audit=$RUN_AUDIT export=$EXPORT_EXAMPLES skip_consolidate=$SKIP_CONSOLIDATE"
   if ! "${cmd[@]}"; then
     echo "[pipeline-many] failed name=$name" >&2
     return 20

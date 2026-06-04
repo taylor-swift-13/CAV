@@ -7,6 +7,33 @@ Use this workflow for the Java/OpenJML verify stage. This skill consumes an
 existing Java implementation/spec and repairs only the verified working copy
 until OpenJML ESC passes without cheating.
 
+## Exit Discipline
+
+Verify is a long iterative task. Do **not** end the current agent run merely
+because OpenJML, the anti-cheating scanner, fingerprint validation, or a local
+helper proof reports a concrete repairable blocker. If the blocker can be fixed
+by editing the verified working Java file or current workspace logs, keep
+running the loop: edit one focused thing, rerun the relevant gate, inspect the
+first remaining failure, and edit again.
+
+Only write `Final Result: Fail` and exit when one of these is true:
+
+- the original Java contract/implementation is missing, contradictory, or needs
+  a Contract-stage/user decision;
+- the current verification condition is genuinely unprovable under the allowed
+  write boundary, and the missing premise or semantic contradiction is recorded;
+- continuing would require editing files outside the verified working Java file
+  or current workspace logs;
+- the external timeout is close enough that another meaningful edit/gate cycle
+  cannot complete;
+- all feasible in-scope repairs are exhausted and a deterministic runner gate
+  still fails for a reason that cannot be advanced in this workspace.
+
+Ordinary OpenJML diagnostics, scanner findings that point to a specific allowed
+edit, missing fingerprint fields, failed loop invariants, arithmetic range
+failures, nullness/bounds failures, and helper-method proof failures are not
+exit reasons. They are the next work item for the same run.
+
 
 跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
 
@@ -134,7 +161,6 @@ Forbidden aids:
 
 - `assume`.
 - `axiom`.
-- `Admitted`.
 - `skipesc`.
 - broad `nowarn`.
 - `native` helpers.
@@ -181,8 +207,7 @@ Forbidden aids:
    - why the change follows from the program state.
 7. Edit only the verified Java file.
 8. Rerun anti-cheating scan and OpenJML.
-9. Repeat until both pass or the blocker is determined to require contract or
-   implementation changes outside verify scope.
+9. Repeat until both pass or the blocker satisfies `Exit Discipline`.
 
 ## Invariant Rules
 
@@ -253,7 +278,9 @@ very end of the flow by a dedicated unit (`scripts/experience_consolidate.py`).
 Write clear `logs/issues.md`, `logs/annotation_reasoning.md`,
 `logs/continue.md`, and `logs/summary.md` — the consolidation unit reads them.
 
-If any condition is missing, write `Final Result: Fail`.
+If any condition is missing, first apply `Exit Discipline`: continue fixing any
+repairable blocker in the same run. Write `Final Result: Fail` only for a
+genuinely out-of-scope, unprovable, or timeout-limited blocker.
 
 ## Iteration / Restart / Resume
 

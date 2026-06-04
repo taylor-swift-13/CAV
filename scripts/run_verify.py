@@ -141,6 +141,14 @@ def build_prompt(
 
 {intro}
 
+Persistence requirement:
+- Do not finish this agent run merely because a repairable OpenJML, scanner,
+  fingerprint, or helper-proof gate failed.
+- If the feedback points to a concrete allowed edit in `{verified_java}` or
+  `{logs}`, fix it, rerun the relevant gate, and repeat.
+- A single new blocker is work to continue in this run, not a reason to write
+  `Final Result: Fail`.
+
 Inputs:
 - Original Java: `{original_java}`
 - Verified working Java: `{verified_java}`
@@ -149,11 +157,12 @@ Inputs:
 
 Iteration rules:
 - Keep iterating in this same workspace until OpenJML ESC and the anti-cheating
-  scan both pass, or the time budget is exhausted.
+  scan both pass, the time budget is exhausted, or you have recorded a genuinely
+  out-of-scope/unprovable blocker under the skill's Exit Discipline.
 - On every round, before editing, append a fresh section to `{logs / 'continue.md'}`
   (never overwrite): why the previous round did not finish, the concrete blocker
   now, the next step, and the plan, citing concrete evidence (file:line, exact
-  OpenJML message, the C/JML or Coq snippet).
+  OpenJML message, and the relevant Java/JML snippet).
 - At the end of each round, write `{logs / 'summary.md'}`: what you did, current
   proof state, and where you are stuck (used to resume on restart).
 - Preserve correct work; only change what the current blocker needs.
@@ -163,7 +172,7 @@ Hard success gate:
 - Read `/home/yangfp/CAV-JAVA/experiences/INDEX.md`, then fill `{logs / 'workspace_fingerprint.json'}` with a non-empty `semantic_description` and non-empty controlled `keywords`.
 - Record any relevant completed example path in `{logs / 'annotation_reasoning.md'}`.
 - Preserve baseline contract clauses from the original Java file.
-- Do not use assume, axiom, Admitted, skipesc, nowarn, native, reflection, or unchecked helpers.
+- Do not use assume, axiom, skipesc, nowarn, native, reflection, or unchecked helpers.
 - Do not record experience yourself; experience is consolidated once at the end
   of the flow by a dedicated unit.
 - Run `scripts/check_jml_cheating.py --baseline {original_java} {verified_java}`.

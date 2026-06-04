@@ -281,6 +281,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--codex-bin", default=None)
     p.add_argument("--claude-bin", default=None)
     p.add_argument("--export-examples", action="store_true")
+    p.add_argument("--skip-consolidate", action="store_true",
+                   help="Skip the final consolidate stage.")
     p.add_argument("--dry-run", action="store_true")
     return p
 
@@ -330,7 +332,8 @@ def main() -> int:
         all_workspaces += cb.workspaces
         emit(f"contract block: {cb.status} ({cb.detail})")
         if cb.status != "Success":
-            _consolidate(scope, all_workspaces, pipeline_logs, rc)
+            if not args.skip_consolidate:
+                _consolidate(scope, all_workspaces, pipeline_logs, rc)
             emit("pipeline FAILED at contract block")
             return 1
         input_java = INPUT_ROOT / f"{stem}.java"
@@ -352,11 +355,13 @@ def main() -> int:
         all_workspaces += vb.workspaces
         emit(f"verify block: {vb.status} ({vb.detail})")
         if vb.status != "Success":
-            _consolidate(scope, all_workspaces, pipeline_logs, rc)
+            if not args.skip_consolidate:
+                _consolidate(scope, all_workspaces, pipeline_logs, rc)
             emit("pipeline FAILED at verify block")
             return 1
 
-    _consolidate(scope, all_workspaces, pipeline_logs, rc)
+    if not args.skip_consolidate:
+        _consolidate(scope, all_workspaces, pipeline_logs, rc)
     emit("pipeline SUCCESS")
     return 0
 
