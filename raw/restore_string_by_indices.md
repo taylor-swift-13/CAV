@@ -30,7 +30,7 @@ char *restore_string_by_indices(const char *s, const char *indices) {
     int i = 0;
     while (indices[i] != '\0') {
         int v = 0;
-        while (indices[i] >= '0' && indices[i] <= '9') { v = v * 10 + indices[i] - '0'; i++; }
+        while (indices[i] >= '0' && indices[i] <= '9') { v = v * 10 + (indices[i] - '0'); i++; }
         out[v] = s[pos++];
         if (indices[i] == ',') i++;
     }

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Computes the number of Collatz iterations needed for a positive integer to reach 1 using a single while loop over a scalar state. The function does not modify caller memory and returns the step count defined by a fuel-bounded mathematical model supplied in the companion Coq file.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

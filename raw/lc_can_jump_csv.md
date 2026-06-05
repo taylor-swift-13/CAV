@@ -23,7 +23,7 @@ Return true if the last index is reachable from index `0` in comma-separated jum
 int lc_can_jump_csv(const char *nums) {
     int reach = 0, idx = 0, i = 0;
     if (nums[0] == '\0') return 0;
-    while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } if (idx > reach) return 0; if (idx + v > reach) reach = idx + v; idx++; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } if (idx > reach) return 0; if (idx + v > reach) reach = idx + v; idx++; if (nums[i] == ',') i++; }
     return 1;
 }
 ```

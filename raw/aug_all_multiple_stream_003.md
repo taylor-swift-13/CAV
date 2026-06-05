@@ -33,7 +33,7 @@ int aug_all_multiple_stream_003(const char *nums) {
         int sign = 1;
         if (nums[i] == '-') { sign = -1; i++; }
         int v = 0;
-        while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; }
+        while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; }
         if ((sign * v) % 5 != 0) return 0;
         if (nums[i] == ',') i++;
     }

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Counts how many elements of a read-only integer array are negative. The function scans the array once with a single loop, increments an accumulator when the current element is below zero, leaves the array unchanged, and returns 0 on an empty array.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

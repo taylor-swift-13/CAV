@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Validates an ISBN-10 string by scanning a read-only null-terminated character array once, ignoring hyphens, accepting digits and a final X only at position 10, accumulating the weighted checksum, and returning 1 exactly when the scan ends with 10 positions consumed and checksum divisible by 11; any invalid character or misplaced X returns 0 immediately without modifying memory.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "string",
+    "pattern": "single_loop"
+  }
+}

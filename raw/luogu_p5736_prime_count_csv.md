@@ -23,7 +23,7 @@ Return how many comma-separated integers are prime.
 int luogu_p5736_prime_count_csv(const char *nums) {
     if (nums[0] == '\0') return 0;
     int count = 0, i = 0;
-    while (nums[i] != '\0') { int x = 0; while (nums[i] >= '0' && nums[i] <= '9') { x = x * 10 + nums[i] - '0'; i++; } int prime = x >= 2; for (int d = 2; d * d <= x; d++) if (x % d == 0) prime = 0; if (prime) count++; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int x = 0; while (nums[i] >= '0' && nums[i] <= '9') { x = x * 10 + (nums[i] - '0'); i++; } int prime = x >= 2; for (int d = 2; d * d <= x; d++) if (x % d == 0) prime = 0; if (prime) count++; if (nums[i] == ',') i++; }
     return count;
 }
 ```

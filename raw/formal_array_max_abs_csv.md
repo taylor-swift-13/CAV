@@ -24,7 +24,7 @@ Return the largest absolute value in nonempty comma-separated integer array `num
 ```c
 int formal_array_max_abs_csv(const char *nums) {
     int best = 0, i = 0;
-    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } v *= sign; if (v < 0) v = -v; if (v > best) best = v; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } v *= sign; if (v < 0) v = -v; if (v > best) best = v; if (nums[i] == ',') i++; }
     return best;
 }
 ```

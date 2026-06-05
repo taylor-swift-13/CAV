@@ -15,6 +15,9 @@
 - `goal_check` 之前不要算完成：看 9
 - 重新确认轮次跳过完整 recompile 的条件：看 10
 - 编译后必须清理：看 11
+- 短名 strategy import 命中多个物理文件时，用 `original/` wrapper 消歧：看 12
+- runner 用 bare `coqc` 直编 generated 文件时，短名 strategy import 需要 generated 同目录 wrapper：看 13
+- generated 文件短名导入共享 helper 时，helper 要在同一逻辑前缀下预编译：看 14
 
 ## 1. 编译前先确认目录
 
@@ -156,7 +159,7 @@ coqc "${BASE[@]}" "${EXTRA[@]}" "$GEN/${NAME}_goal_check.v"
 
 1. `coq/generated/` 只含 `.v` 文件，无 `.vo/.glob/.vok/.vos/.aux` 中间产物
 2. `proof_manual.v` 中 `Admitted.` 个数为 0（`grep -c "Admitted"` 退出码为 1）
-3. `workspace_fingerprint.json` 中 `verification_status` 为 `goal_check_passed`
+3. `workspace_fingerprint.json` 已通过极简 fingerprint gate
 4. `metrics.md` 的 Final Result 为 Success
 
 此时**不必再跑完整 5 步 coqc**。直接核对上述四项，记录为"No new blockers found"后退出即可。
@@ -170,3 +173,130 @@ coqc "${BASE[@]}" "${EXTRA[@]}" "$GEN/${NAME}_goal_check.v"
 - `coq/` 下删除非 `.v` 的编译中间产物
 - `input/` 下删除非 `.v`、非 `.c` 的编译中间产物
 - 如果环境限制导致删不掉，要写进 `logs/issues.md`
+
+## 12. 短名 strategy import 命中多个物理文件时，用 `original/` wrapper 消歧（2026-06-04）
+
+如果 replay 编译在 `goal.v` 的这类头部 import 处立即失败：
+
+- `Require Import int_array_strategy_goal.`
+- `Require Import int_array_strategy_proof.`
+- `Require Import char_array_strategy_goal.`
+- `Require Import char_array_strategy_proof.`
+
+并报同类错误：
+
+- `Required library int_array_strategy_goal matches several files in path`
+- `Required library char_array_strategy_goal matches several files in path`
+
+同时冲突出在 `SeparationLogic/examples/` 下多个子目录都提供同名 `.vo`（例如 `QCP_demos_LLM/` 和 `QCP_demos_human/`），不要去改生成出来的 `goal.v` / `proof_auto.v` / `goal_check.v`，也不要改共享 examples 树。
+
+更稳的做法是在当前 workspace 的 `original/` 下放短名 wrapper，让 `-Q "$ORIG" ""` 优先为这些短名提供唯一解析：
+
+例如，`*_goal` wrapper 用：
+
+```coq
+From SimpleC.EE.QCP_demos_LLM Require Export <strategy_goal_module>.
+```
+
+`*_proof` wrapper 用：
+
+```coq
+From SimpleC.EE.QCP_demos_LLM Require Import <strategy_proof_module>.
+Include SimpleC.EE.QCP_demos_LLM.<strategy_proof_module>.
+```
+
+例如 `char_array` 题可写成：
+
+```coq
+From SimpleC.EE.QCP_demos_LLM Require Export char_array_strategy_goal.
+From SimpleC.EE.QCP_demos_LLM Require Import char_array_strategy_proof.
+Include SimpleC.EE.QCP_demos_LLM.char_array_strategy_proof.
+```
+
+使用规则：
+
+- 对所有冲突的 strategy 模块成对补齐 wrapper；不要只补第一个报错文件
+- 这类“重名 strategy 消歧”不要放到 workspace-local `coq/deps/` 里做；`coq/deps/` 只用于“公共 strategy 产物缺失”的 fallback，不用于解决 duplicate-path。否则很容易继续踩到逻辑前缀不一致，报 `contains library char_array_strategy_goal and not library SimpleC.EE.char_array_strategy_goal`
+- 先编这些 `original/*.v` wrapper，再按常规顺序编 `goal.v -> proof_auto.v -> proof_manual.v -> goal_check.v`
+- `goal` 侧优先 `Require Export`，因为后续 generated 文件会继续依赖这些短名
+- `proof` 侧需要 `Include ...`，否则 `goal_check.v` 里的 `Include <module>.` 可能找不到期望字段
+- 这些 wrapper 的 `.vo` 是 replay 解析路径的一部分；如果清理掉了，后续 retry 会重新退化成 duplicate-path 失败
+
+适用范围：
+
+- 当前 `symexec` 生成了无法控制的短名 strategy import
+- 共享 `examples/` 树中确实有重名策略库
+- 你又需要保持 generated 文件和共享库原样不动
+
+## 13. runner 用 bare `coqc` 直编 generated 文件时，短名 strategy import 需要 generated 同目录 wrapper（2026-06-05）
+
+如果 verify 自己的 replay 命令能靠：
+
+- `-Q "$ORIG" ""`
+
+让 `original/` 里的短名 wrapper 通过，但 runner / audit log 里实际重放的是：
+
+- `coqc /abs/path/to/original/<name>.v`
+- `coqc /abs/path/to/coq/generated/<name>_goal.v`
+
+这种 **bare `coqc` 直编单个 generated 文件** 的模式，那么只在 `original/` 放 wrapper 还不够。`goal.v` 头部的：
+
+- `Require Import char_array_strategy_goal.`
+- `Require Import int_array_strategy_goal.`
+
+仍然可能直接落到共享 `examples/` 树里的多个重名 `.vo`，报：
+
+- `Required library char_array_strategy_goal matches several files in path`
+
+更稳的处理方式是：
+
+1. 保留 `original/` wrapper，供标准 `-Q "$ORIG" ""` replay 使用；
+2. 再在当前 workspace 的 `coq/generated/` 下放**同名 sibling wrapper**：
+   - `*_goal.v`: `From SimpleC.EE.QCP_demos_LLM Require Export <strategy_goal_module>.`
+   - `*_proof.v`: `From SimpleC.EE.QCP_demos_LLM Require Import <strategy_proof_module>.` 然后 `Include ...`
+3. 先把这些 generated wrapper 编成当前目录下的唯一短名 `.vo`，再跑 bare replay。
+
+判断规则：
+
+- 如果 `audit_check_coqc.log` 显示的是带 `-Q "$ORIG" ""` 的标准 replay，优先用 §12 的 `original/` wrapper；
+- 如果 `audit_check_coqc.log` 显示的是 bare `coqc /abs/.../generated/<file>.v`，就把 wrapper 补到 `coq/generated/` 同目录，不要只补 `original/`；
+- 不要改 generated 的 `Require Import <short_name>.` 文本本身；消歧应通过 workspace-local wrapper 完成；
+- 这种 generated 同目录 wrapper 只用于 **runner replay 解析路径**，不是 `coq/deps/` fallback，也不是新的语义 helper。
+
+## 14. generated 文件短名导入共享 helper 时，helper 要在同一逻辑前缀下预编译（2026-06-05）
+
+如果 generated 文件头部出现这类短名导入：
+
+- `Require Import power_nonnegative.`
+- 或其它不是 strategy、而是题目复用的共享数学 helper
+
+并且标准 replay 用的是：
+
+- `-R "$GEN" "$LP"`
+
+那么只把 helper 源文件放进 `coq/generated/` 还不够。`goal.v` / `proof_auto.v` / `proof_manual.v` 在 `-R "$GEN" "$LP"` 下会把这个短名解析成：
+
+- `$LP.power_nonnegative`
+
+如果你先用 bare `coqc coq/generated/power_nonnegative.v` 编过它，生成的 `.vo` 实际库名只是：
+
+- `power_nonnegative`
+
+随后 replay 就会报：
+
+- `The file .../power_nonnegative.vo contains library power_nonnegative and not library $LP.power_nonnegative`
+
+更稳的处理方式是：
+
+1. 把 helper 源文件放在当前 workspace 的 `coq/generated/` 同目录；
+2. 用**和 replay 完全一致**的 generated 前缀先单独编它一次：
+   - `coqc "${BASE[@]}" -R "$GEN" "$LP" "$GEN/power_nonnegative.v"`
+3. 再按常规顺序编 `goal.v -> proof_auto.v -> proof_manual.v -> goal_check.v`；
+4. 清理其它 generated 中间产物时，保留这个 helper 的最小必要 replay 依赖（至少保留能被后续 replay 命中的那份 prefixed `.vo`）。
+
+判断规则：
+
+- 报 `Cannot find a physical path bound to logical path <helper>` 时，先看缺的是不是 generated 文件里固化的短名 import；
+- 如果 helper 不属于 input/original 的标准 load path，就不要只靠临时 `-Q input ""` 或一次性编译产物；runner replay 看不到这些临时条件；
+- 如果已经补了 `coq/generated/<helper>.v` 但又报 `contains library X and not library Y`，优先怀疑是**编译 helper 时用错了逻辑前缀**，不是 helper 内容错；
+- 这条适用于共享数学 helper、公共定义桥接等“非 strategy 短名模块”；strategy duplicate-path 冲突仍按 §12-§13 处理。

@@ -20,6 +20,6 @@ Return the element that appears once when every other element appears three time
 
 ```c
 int lc_single_number_ii_csv(const char *nums) {
-    int ones = 0, twos = 0, i = 0; while (nums[i] != '\0') { int sign = 1, v = 0; if (nums[i] == '-') { sign = -1; i++; } while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } v *= sign; ones = (ones ^ v) & ~twos; twos = (twos ^ v) & ~ones; if (nums[i] == ',') i++; } return ones;
+    int ones = 0, twos = 0, i = 0; while (nums[i] != '\0') { int sign = 1, v = 0; if (nums[i] == '-') { sign = -1; i++; } while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } v *= sign; ones = (ones ^ v) & ~twos; twos = (twos ^ v) & ~ones; if (nums[i] == ',') i++; } return ones;
 }
 ```

@@ -21,6 +21,6 @@ Return total poisoned duration from attack times and a fixed duration.
 
 ```c
 int lc_teemo_attacking_duration_csv(const char *times, int duration) {
-    int prev = -1000000000, ans = 0, i = 0; while (times[i] != '\0') { int v = 0; while (times[i] >= '0' && times[i] <= '9') { v = v * 10 + times[i] - '0'; i++; } if (prev < 0) ans += duration; else ans += v - prev < duration ? v - prev : duration; prev = v; if (times[i] == ',') i++; } return ans;
+    int prev = -1000000000, ans = 0, i = 0; while (times[i] != '\0') { int v = 0; while (times[i] >= '0' && times[i] <= '9') { v = v * 10 + (times[i] - '0'); i++; } if (prev < 0) ans += duration; else ans += v - prev < duration ? v - prev : duration; prev = v; if (times[i] == ',') i++; } return ans;
 }
 ```

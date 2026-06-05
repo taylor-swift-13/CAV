@@ -28,7 +28,7 @@ char *decode_xored_array_csv(const char *encoded, int first) {
     int pos = sprintf(out, "%d", first);
     int cur = first;
     int i = 0;
-    while (encoded[i] != '\0') { int v = 0; while (encoded[i] >= '0' && encoded[i] <= '9') { v = v * 10 + encoded[i] - '0'; i++; } cur = cur ^ v; pos += sprintf(out + pos, ",%d", cur); if (encoded[i] == ',') i++; }
+    while (encoded[i] != '\0') { int v = 0; while (encoded[i] >= '0' && encoded[i] <= '9') { v = v * 10 + (encoded[i] - '0'); i++; } cur = cur ^ v; pos += sprintf(out + pos, ",%d", cur); if (encoded[i] == ',') i++; }
     return out;
 }
 ```

@@ -27,7 +27,7 @@ int missing_number_csv(int n, const char *nums) {
     int i = 0;
     while (nums[i] != '\0') {
         int v = 0;
-        while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; }
+        while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; }
         sum += v;
         if (nums[i] == ',') i++;
     }

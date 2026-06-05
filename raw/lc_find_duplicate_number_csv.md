@@ -21,6 +21,6 @@ Return the duplicated number in comma-separated `nums`.
 
 ```c
 int lc_find_duplicate_number_csv(const char *nums) {
-    int seen[2048] = {0}, i = 0; while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } if (seen[v]) return v; seen[v] = 1; if (nums[i] == ',') i++; } return -1;
+    int seen[2048] = {0}, i = 0; while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } if (seen[v]) return v; seen[v] = 1; if (nums[i] == ',') i++; } return -1;
 }
 ```

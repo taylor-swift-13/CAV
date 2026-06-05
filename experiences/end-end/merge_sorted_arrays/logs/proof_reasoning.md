@@ -78,3 +78,23 @@ compile_status: 0
 ```
 
 This closes the proof-stage blocker. The remaining required action is cleanup of non-`.v` compilation artifacts and final metrics update.
+
+## 2026-06-03 - Experience replay confirms proof and goal check
+
+The archived experience copy was rechecked because its fingerprint still said `manual_witness_needed` even though the manual file contained completed witness proofs. The current file:
+
+```text
+experiences/end-end/merge_sorted_arrays/coq/generated/merge_sorted_arrays_proof_manual.v
+```
+
+contains all ten witness lemmas ending in `Qed`, and `rg -n 'Admitted\.|^\s*Axiom\b|Abort\b|admit\b'` found no forbidden proof placeholders. I replayed the standard compile sequence from `QualifiedCProgramming/SeparationLogic`, using `-Q experiences/end-end/merge_sorted_arrays/original ""` and `-R experiences/end-end/merge_sorted_arrays/coq/generated SimpleC.EE.CAV.verify_20260422_194235_merge_sorted_arrays`:
+
+```text
+merge_sorted_arrays.v: rc=0
+merge_sorted_arrays_goal.v: rc=0
+merge_sorted_arrays_proof_auto.v: rc=0
+merge_sorted_arrays_proof_manual.v: rc=0
+merge_sorted_arrays_goal_check.v: rc=0
+```
+
+This confirms the end-to-end proof artifacts are complete in the experience workspace. The transient `.vo/.vos/.vok/.glob/.aux` files produced by the replay were removed from `coq/generated`, leaving only the four `.v` generated files.

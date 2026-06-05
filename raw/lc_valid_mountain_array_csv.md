@@ -23,7 +23,7 @@ Return true if comma-separated array `arr` is a valid mountain array.
 int lc_valid_mountain_array_csv(const char *arr) {
     int a[128], n = 0, i = 0;
     if (arr[0] == '\0') return 0;
-    while (arr[i] != '\0') { int sign = 1, v = 0; if (arr[i] == '-') { sign = -1; i++; } while (arr[i] >= '0' && arr[i] <= '9') { v = v * 10 + arr[i] - '0'; i++; } a[n++] = sign * v; if (arr[i] == ',') i++; }
+    while (arr[i] != '\0') { int sign = 1, v = 0; if (arr[i] == '-') { sign = -1; i++; } while (arr[i] >= '0' && arr[i] <= '9') { v = v * 10 + (arr[i] - '0'); i++; } a[n++] = sign * v; if (arr[i] == ',') i++; }
     if (n < 3) return 0;
     int p = 0;
     while (p + 1 < n && a[p] < a[p + 1]) p++;

@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Adds two read-only binary digit strings and writes the canonical binary sum into an output buffer. The implementation scans both inputs from right to left with carry propagation, trims redundant leading zeros from the reversed intermediate result, reverses the written prefix in place, and zero-fills the remaining buffer.",
+  "keywords": {
+    "problem_kind": "transform",
+    "data": "string",
+    "pattern": [
+      "single_loop",
+      "two_pointers"
+    ]
+  }
+}

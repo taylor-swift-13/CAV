@@ -23,7 +23,7 @@ Evaluate a reverse Polish notation expression encoded as comma-separated tokens.
 ```c
 int lc_eval_rpn_csv(const char *tokens) {
     int stack[128], top = 0, i = 0;
-    while (tokens[i] != '\0') { while (tokens[i] == ' ') i++; if ((tokens[i] == '+' || tokens[i] == '*' || tokens[i] == '/') && (tokens[i + 1] == ',' || tokens[i + 1] == '\0' || tokens[i + 1] == ' ')) { int b = stack[--top], a = stack[--top]; char op = tokens[i++]; stack[top++] = op == '+' ? a + b : (op == '*' ? a * b : a / b); } else if (tokens[i] == '-' && (tokens[i + 1] == ',' || tokens[i + 1] == '\0' || tokens[i + 1] == ' ')) { int b = stack[--top], a = stack[--top]; i++; stack[top++] = a - b; } else { int sign = 1, v = 0; if (tokens[i] == '-') { sign = -1; i++; } while (tokens[i] >= '0' && tokens[i] <= '9') { v = v * 10 + tokens[i] - '0'; i++; } stack[top++] = sign * v; } while (tokens[i] == ' ') i++; if (tokens[i] == ',') i++; }
+    while (tokens[i] != '\0') { while (tokens[i] == ' ') i++; if ((tokens[i] == '+' || tokens[i] == '*' || tokens[i] == '/') && (tokens[i + 1] == ',' || tokens[i + 1] == '\0' || tokens[i + 1] == ' ')) { int b = stack[--top], a = stack[--top]; char op = tokens[i++]; stack[top++] = op == '+' ? a + b : (op == '*' ? a * b : a / b); } else if (tokens[i] == '-' && (tokens[i + 1] == ',' || tokens[i + 1] == '\0' || tokens[i + 1] == ' ')) { int b = stack[--top], a = stack[--top]; i++; stack[top++] = a - b; } else { int sign = 1, v = 0; if (tokens[i] == '-') { sign = -1; i++; } while (tokens[i] >= '0' && tokens[i] <= '9') { v = v * 10 + (tokens[i] - '0'); i++; } stack[top++] = sign * v; } while (tokens[i] == ' ') i++; if (tokens[i] == ',') i++; }
     return stack[0];
 }
 ```

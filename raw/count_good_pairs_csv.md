@@ -24,7 +24,7 @@ Return the number of index pairs `(i,j)` with `i < j` and equal values in comma-
 int count_good_pairs_csv(const char *nums) {
     int values[128];
     int n = 0, i = 0;
-    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } values[n++] = sign * v; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } values[n++] = sign * v; if (nums[i] == ',') i++; }
     int count = 0;
     for (int a = 0; a < n; a++) for (int b = a + 1; b < n; b++) if (values[a] == values[b]) count++;
     return count;

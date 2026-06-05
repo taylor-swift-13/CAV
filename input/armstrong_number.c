@@ -14,17 +14,30 @@ int armstrong_number(int n)
 {
     int temp = n;
     int digits = 0;
-    if (temp == 0) digits = 1;
-    while (temp > 0) { digits++; temp /= 10; }
+
+    if (temp == 0) {
+        digits = 1;
+    }
+
+    while (temp > 0) {
+        digits++;
+        temp /= 10;
+    }
+
     temp = n;
     int sum = 0;
-    if (temp == 0) sum = 0;
+
     while (temp > 0) {
         int d = temp % 10;
         int p = 1;
-        for (int i = 0; i < digits; i++) p *= d;
+
+        for (int i = 0; i < digits; i++) {
+            p *= d;
+        }
+
         sum += p;
         temp /= 10;
     }
+
     return sum == n;
 }

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans a read-only integer array with a single loop, tracking the index of the smallest value seen so far. Returns the first index whose element is globally minimal among the n elements and leaves the input array unchanged.",
+  "keywords": {
+    "problem_kind": "min_max",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

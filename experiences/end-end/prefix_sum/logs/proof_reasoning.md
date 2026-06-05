@@ -118,3 +118,24 @@ proof_manual.v contains Admitted.: no
 proof_manual.v contains top-level Axiom: no
 goal_check.v compiled: yes
 ```
+
+## 2026-06-03 - Experience replay confirms proof and goal check
+
+The archived experience copy was rechecked because its fingerprint still said `manual_witness_needed` even though the proof log recorded a successful manual-proof pass. The current manual file:
+
+```text
+experiences/end-end/prefix_sum/coq/generated/prefix_sum_proof_manual.v
+```
+
+contains completed proofs for `prefix_sum_safety_wit_3`, `prefix_sum_entail_wit_1`, `prefix_sum_entail_wit_2`, and `prefix_sum_return_wit_1`, plus the helper lemma `prefix_sum_sum_sublist_snoc`. It contains no `Admitted.`, no `Abort`, no `admit`, and no top-level `Axiom`.
+
+I replayed the standard compile sequence from `QualifiedCProgramming/SeparationLogic`, using `-Q experiences/end-end/prefix_sum/original ""` and `-R experiences/end-end/prefix_sum/coq/generated SimpleC.EE.CAV.verify_20260422_210632_prefix_sum`:
+
+```text
+prefix_sum_goal.v: rc=0
+prefix_sum_proof_auto.v: rc=0
+prefix_sum_proof_manual.v: rc=0
+prefix_sum_goal_check.v: rc=0
+```
+
+This confirms the end-to-end proof artifacts are complete in the experience workspace. The transient `.vo/.vos/.vok/.glob/.aux` files produced by the replay were removed from `coq/generated`, leaving only the four generated `.v` files.

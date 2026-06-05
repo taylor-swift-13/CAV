@@ -23,7 +23,7 @@ Given daily prices encoded as comma-separated integers, return the maximum profi
 ```c
 int best_stock_profit_csv(const char *prices) {
     int minp = 0, best = 0, seen = 0, i = 0;
-    while (prices[i] != '\0') { int v = 0; while (prices[i] >= '0' && prices[i] <= '9') { v = v * 10 + prices[i] - '0'; i++; } if (!seen || v < minp) minp = v; if (v - minp > best) best = v - minp; seen = 1; if (prices[i] == ',') i++; }
+    while (prices[i] != '\0') { int v = 0; while (prices[i] >= '0' && prices[i] <= '9') { v = v * 10 + (prices[i] - '0'); i++; } if (!seen || v < minp) minp = v; if (v - minp > best) best = v - minp; seen = 1; if (prices[i] == ',') i++; }
     return best;
 }
 ```

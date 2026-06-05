@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Copies an integer array into an output region with one forward loop, replacing each odd source element with 0 and preserving each even source element. The function supports disjoint arrays, in-place update, and overlapping source/destination regions described by source and destination offsets; it mutates the destination memory across the full range [0, n).",
+  "keywords": {
+    "problem_kind": "transform",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

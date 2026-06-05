@@ -22,7 +22,7 @@ Compute daily-temperature waiting days and return their sum.
 ```c
 int lc_daily_temperatures_wait_sum_csv(const char *temps) {
     int a[256], n = 0, i = 0;
-    while (temps[i] != '\0') { int v = 0; while (temps[i] >= '0' && temps[i] <= '9') { v = v * 10 + temps[i] - '0'; i++; } a[n++] = v; if (temps[i] == ',') i++; }
+    while (temps[i] != '\0') { int v = 0; while (temps[i] >= '0' && temps[i] <= '9') { v = v * 10 + (temps[i] - '0'); i++; } a[n++] = v; if (temps[i] == ',') i++; }
     int st[256], top = 0, sum = 0;
     for (int d = 0; d < n; d++) { while (top > 0 && a[d] > a[st[top - 1]]) { int prev = st[--top]; sum += d - prev; } st[top++] = d; }
     return sum;

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Counts how many elements of a read-only integer array are odd using a single forward scan with one index and one accumulator. The function does not modify the input array and returns 0 for an empty array.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

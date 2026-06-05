@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Loop-free function `leap_year` returning `1`, `0`, `year % 4 == 0`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "branch"
+  }
+}

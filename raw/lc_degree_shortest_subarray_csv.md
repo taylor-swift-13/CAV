@@ -21,7 +21,7 @@ Return the shortest contiguous subarray length with the same degree as the whole
 ```c
 int lc_degree_shortest_subarray_csv(const char *nums) {
     int first[1000], count[1000] = {0}, best = 1000000, degree = 0, idx = 0, i = 0; for (int k = 0; k < 1000; k++) first[k] = -1;
-    while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } if (first[v] < 0) first[v] = idx; count[v]++; int len = idx - first[v] + 1; if (count[v] > degree) { degree = count[v]; best = len; } else if (count[v] == degree && len < best) best = len; idx++; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } if (first[v] < 0) first[v] = idx; count[v]++; int len = idx - first[v] + 1; if (count[v] > degree) { degree = count[v]; best = len; } else if (count[v] == degree && len < best) best = len; idx++; if (nums[i] == ',') i++; }
     return best;
 }
 ```

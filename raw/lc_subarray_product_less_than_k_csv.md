@@ -23,7 +23,7 @@ Return how many contiguous subarrays have product strictly less than `k`.
 int lc_subarray_product_less_than_k_csv(const char *nums, int k) {
     if (k <= 1) return 0;
     int a[256], n = 0, i = 0;
-    while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } a[n++] = v; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n++] = v; if (nums[i] == ',') i++; }
     int left = 0, prod = 1, ans = 0; for (int right = 0; right < n; right++) { prod *= a[right]; while (prod >= k) prod /= a[left++]; ans += right - left + 1; } return ans;
 }
 ```

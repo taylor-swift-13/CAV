@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Loop-free function `double_nonnegative` returning `n + n`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "straight_line"
+  }
+}

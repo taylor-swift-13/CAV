@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Counts how many semicolon-separated candidate words are anagrams of a read-only subject word while excluding case-insensitive exact matches. The function scans the subject once to build a 26-letter frequency table, then iterates over the candidate stream with nested loops to find each word boundary, compare normalized characters, build the candidate frequency table, and increment the answer when the multiset matches and the word is not identical ignoring case. Both input strings are read-only and remain unchanged; an empty candidate stream returns 0.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "string",
+    "pattern": "nested_loop"
+  }
+}

@@ -1,0 +1,7 @@
+From SimpleC.EE.CAV.verify_20260605_054012v_count_asterisks_between_bars Require Import count_asterisks_between_bars_goal count_asterisks_between_bars_proof_auto count_asterisks_between_bars_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include char_array_strategy_proof.
+  Include count_asterisks_between_bars_proof_auto.
+  Include count_asterisks_between_bars_proof_manual.
+End VC_Correctness.

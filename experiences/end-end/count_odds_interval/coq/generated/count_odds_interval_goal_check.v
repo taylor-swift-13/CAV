@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260605_055555v_count_odds_interval Require Import count_odds_interval_goal count_odds_interval_proof_auto count_odds_interval_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include count_odds_interval_proof_auto.
+  Include count_odds_interval_proof_manual.
+End VC_Correctness.

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans a read-only NUL-terminated CSV string of signed decimal integers, parses each token in order, and returns 1 iff the parsed integer sequence is nondecreasing; empty input returns 1 and the input buffer is not modified.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "string",
+    "pattern": "state_machine"
+  }
+}

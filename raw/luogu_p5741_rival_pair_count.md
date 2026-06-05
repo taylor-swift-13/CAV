@@ -26,7 +26,7 @@ int luogu_p5741_rival_pair_count(const char *students) {
     while (students[i] != '\0') {
         while (students[i] != ':' && students[i] != '\0') i++;
         if (students[i] == ':') i++;
-        for (int k = 0; k < 3; k++) { int v = 0; while (students[i] >= '0' && students[i] <= '9') { v = v * 10 + students[i] - '0'; i++; } s[n][k] = v; if (students[i] == ',') i++; }
+        for (int k = 0; k < 3; k++) { int v = 0; while (students[i] >= '0' && students[i] <= '9') { v = v * 10 + (students[i] - '0'); i++; } s[n][k] = v; if (students[i] == ',') i++; }
         n++; if (students[i] == ';') i++;
     }
     int ans = 0;

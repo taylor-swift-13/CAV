@@ -11,9 +11,10 @@
 void add_binary_strings(char *a, int na, char *b, int nb, char *out)
 /*@ With la lb
     Require
-      1 <= na && na <= 500 &&
-      1 <= nb && nb <= 500 &&
-      na + nb <= 1000 &&
+      a != 0 && b != 0 && out != 0 &&
+      1 <= na &&
+      1 <= nb &&
+      na + nb <= 2147483645 &&
       Zlength(la) == na &&
       Zlength(lb) == nb &&
       is_bin_list(la) &&
@@ -33,15 +34,24 @@ void add_binary_strings(char *a, int na, char *b, int nb, char *out)
         app(r, cons(0, repeat_Z(0, na@pre + nb@pre + 1 - Zlength(r)))))
 */
 {
-    int i = na - 1;
-    int j = nb - 1;
+    int i;
+    int j;
     int carry = 0;
     int pos = 0;
 
+    i = na - 1;
+    j = nb - 1;
+
     while (i >= 0 || j >= 0 || carry) {
         int sum = carry;
-        if (i >= 0) { sum += a[i] - 48; i--; }
-        if (j >= 0) { sum += b[j] - 48; j--; }
+        if (i >= 0) {
+            sum += a[i] - 48;
+            i--;
+        }
+        if (j >= 0) {
+            sum += b[j] - 48;
+            j--;
+        }
         out[pos] = 48 + sum % 2;
         carry = sum / 2;
         pos++;

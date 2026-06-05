@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Computes the product of the base-10 digits of a nonnegative integer using a single loop that repeatedly multiplies an accumulator by n mod 10 and divides n by 10 until n becomes 0. The function reads and updates only local scalar variables, returns 0 on input 0, and otherwise returns the digit product.",
+  "keywords": {
+    "problem_kind": "product",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

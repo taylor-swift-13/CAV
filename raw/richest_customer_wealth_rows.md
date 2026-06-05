@@ -25,7 +25,7 @@ int richest_customer_wealth_rows(const char *accounts) {
     int best = 0, sum = 0, i = 0;
     while (1) {
         int v = 0;
-        while (accounts[i] >= '0' && accounts[i] <= '9') { v = v * 10 + accounts[i] - '0'; i++; }
+        while (accounts[i] >= '0' && accounts[i] <= '9') { v = v * 10 + (accounts[i] - '0'); i++; }
         sum += v;
         if (accounts[i] == ';' || accounts[i] == '\0') { if (sum > best) best = sum; sum = 0; }
         if (accounts[i] == '\0') break;

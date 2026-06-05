@@ -21,7 +21,7 @@ Return the maximum profit from unlimited transactions with a fixed transaction f
 
 ```c
 int lc_max_profit_fee_csv(const char *prices, int fee) {
-    int a[512], n = 0, i = 0; while (prices[i] != '\0') { int v = 0; while (prices[i] >= '0' && prices[i] <= '9') { v = v * 10 + prices[i] - '0'; i++; } a[n++] = v; if (prices[i] == ',') i++; }
+    int a[512], n = 0, i = 0; while (prices[i] != '\0') { int v = 0; while (prices[i] >= '0' && prices[i] <= '9') { v = v * 10 + (prices[i] - '0'); i++; } a[n++] = v; if (prices[i] == ',') i++; }
     int cash = 0, hold = -a[0]; for (int k = 1; k < n; k++) { int old_cash = cash; int sell = hold + a[k] - fee; if (sell > cash) cash = sell; int buy = old_cash - a[k]; if (buy > hold) hold = buy; } return cash;
 }
 ```

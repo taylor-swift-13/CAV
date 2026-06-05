@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Parses a null-terminated CSV string of optional leading-minus decimal integers into a fixed local array, then scans the parsed values and returns 1 iff every parsed integer is divisible by 5; otherwise returns 0. The input character buffer is read-only and unchanged. Control flow uses one outer token loop, one inner digit loop, and a final array scan.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "string",
+    "pattern": "nested_loop"
+  }
+}

@@ -107,3 +107,24 @@ assert (0 <= j /\ j < i) by lia.
 ```
 
 In this proof environment Coq prints the chained range as `0 <= j < i` and names it `H9`. The next edit specializes `H6` with `H9`, avoiding the unrelated loop-bound hypothesis.
+
+## 2026-06-03 - Experience replay confirms proof and goal check
+
+The current manual file:
+
+```text
+experiences/end-end/array_max/coq/generated/array_max_proof_manual.v
+```
+
+contains completed proofs for `array_max_entail_wit_1` and `array_max_entail_wit_2_1`. It contains no `Admitted.`, no `Abort`, no `admit`, and no top-level `Axiom`.
+
+I replayed the standard compile sequence from `QualifiedCProgramming/SeparationLogic`, using `-Q experiences/end-end/array_max/original ""` and `-R experiences/end-end/array_max/coq/generated SimpleC.EE.CAV.verify_20260422_055419_array_max`:
+
+```text
+array_max_goal.v: rc=0
+array_max_proof_auto.v: rc=0
+array_max_proof_manual.v: rc=0
+array_max_goal_check.v: rc=0
+```
+
+This confirms the end-to-end proof artifacts are complete in the experience workspace. The transient `.vo/.vos/.vok/.glob/.aux` files produced by the replay were removed from `coq/generated`.

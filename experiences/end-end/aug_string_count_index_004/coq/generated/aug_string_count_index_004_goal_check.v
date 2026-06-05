@@ -1,0 +1,7 @@
+From SimpleC.EE.CAV.verify_20260605_041101v_aug_string_count_index_004 Require Import aug_string_count_index_004_goal aug_string_count_index_004_proof_auto aug_string_count_index_004_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include char_array_strategy_proof.
+  Include aug_string_count_index_004_proof_auto.
+  Include aug_string_count_index_004_proof_manual.
+End VC_Correctness.

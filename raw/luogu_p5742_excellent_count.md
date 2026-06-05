@@ -22,7 +22,7 @@ Count students satisfying Luogu P5742's excellent condition.
 ```c
 int luogu_p5742_excellent_count(const char *rows) {
     int ans = 0, i = 0;
-    while (rows[i] != '\0') { int id = 0, a = 0, q = 0; while (rows[i] >= '0' && rows[i] <= '9') { id = id * 10 + rows[i] - '0'; i++; } if (rows[i] == ',') i++; while (rows[i] >= '0' && rows[i] <= '9') { a = a * 10 + rows[i] - '0'; i++; } if (rows[i] == ',') i++; while (rows[i] >= '0' && rows[i] <= '9') { q = q * 10 + rows[i] - '0'; i++; } if (a + q > 140 && 7 * a + 3 * q >= 800) ans++; if (rows[i] == ';') i++; }
+    while (rows[i] != '\0') { int id = 0, a = 0, q = 0; while (rows[i] >= '0' && rows[i] <= '9') { id = id * 10 + (rows[i] - '0'); i++; } if (rows[i] == ',') i++; while (rows[i] >= '0' && rows[i] <= '9') { a = a * 10 + (rows[i] - '0'); i++; } if (rows[i] == ',') i++; while (rows[i] >= '0' && rows[i] <= '9') { q = q * 10 + (rows[i] - '0'); i++; } if (a + q > 140 && 7 * a + 3 * q >= 800) ans++; if (rows[i] == ';') i++; }
     return ans;
 }
 ```

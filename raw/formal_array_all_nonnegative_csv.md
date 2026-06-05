@@ -24,7 +24,7 @@ Return true if every value in comma-separated integer array `nums` is nonnegativ
 ```c
 int formal_array_all_nonnegative_csv(const char *nums) {
     int i = 0;
-    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } if (sign * v < 0) return 0; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } if (sign * v < 0) return 0; if (nums[i] == ',') i++; }
     return 1;
 }
 ```

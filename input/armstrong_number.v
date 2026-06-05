@@ -8,30 +8,30 @@ Fixpoint zpow_nat (base : Z) (exp : nat) : Z :=
   | S k => base * zpow_nat base k
   end.
 
-Fixpoint count_digits_aux (n : Z) (fuel : nat) : Z :=
+Fixpoint count_digits_bounded (n : Z) (fuel : nat) : Z :=
   match fuel with
   | O => 0
   | S k =>
-    if Z.eqb n 0 then 0
-    else 1 + count_digits_aux (Z.div n 10) k
+      if Z.ltb n 10 then 1
+      else 1 + count_digits_bounded (Z.div n 10) k
   end.
 
 Definition count_digits_z (n : Z) : Z :=
   if Z.eqb n 0 then 1
-  else count_digits_aux n (S (Z.to_nat n)).
+  else count_digits_bounded n 8.
 
 Fixpoint armstrong_sum_aux (n : Z) (d : Z) (fuel : nat) : Z :=
   match fuel with
   | O => 0
   | S k =>
-    if Z.eqb n 0 then 0
-    else
-      zpow_nat (Z.modulo n 10) (Z.to_nat d) +
-      armstrong_sum_aux (Z.div n 10) d k
+      if Z.eqb n 0 then 0
+      else
+        zpow_nat (Z.modulo n 10) (Z.to_nat d) +
+        armstrong_sum_aux (Z.div n 10) d k
   end.
 
 Definition armstrong_sum_z (n : Z) (d : Z) : Z :=
-  armstrong_sum_aux n d (S (Z.to_nat n)).
+  armstrong_sum_aux n d 8.
 
 Definition is_armstrong_z (n : Z) : Z :=
   let d := count_digits_z n in

@@ -20,6 +20,6 @@ Return how many ordered tuples have equal pair products.
 
 ```c
 int lc_tuple_same_product_count_csv(const char *nums) {
-    int a[256], prod[32768], pn = 0, n = 0, i = 0; while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + nums[i] - '0'; i++; } a[n++] = v; if (nums[i] == ',') i++; } for (int x = 0; x < n; x++) for (int y = x + 1; y < n; y++) prod[pn++] = a[x] * a[y]; int ans = 0; for (int x = 0; x < pn; x++) for (int y = x + 1; y < pn; y++) if (prod[x] == prod[y]) ans += 8; return ans;
+    int a[256], prod[32768], pn = 0, n = 0, i = 0; while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n++] = v; if (nums[i] == ',') i++; } for (int x = 0; x < n; x++) for (int y = x + 1; y < n; y++) prod[pn++] = a[x] * a[y]; int ans = 0; for (int x = 0; x < pn; x++) for (int y = x + 1; y < pn; y++) if (prod[x] == prod[y]) ans += 8; return ans;
 }
 ```

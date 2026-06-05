@@ -18,8 +18,8 @@ Local Open Scope list.
 Import naive_C_Rules.
 Require Import SimpleC.EE.QCP_demos_LLM.sll_lib.
 Local Open Scope sac.
-Require Import sll_strategy_goal.
-Require Import sll_strategy_proof.
+From SimpleC.EE.QCP_demos_LLM Require Import sll_strategy_goal.
+From SimpleC.EE.QCP_demos_LLM Require Import sll_strategy_proof.
 
 (*----- Function sll_head -----*)
 

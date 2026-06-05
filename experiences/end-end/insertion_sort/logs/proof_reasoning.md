@@ -131,3 +131,25 @@ H9 : shifted-hole shape for l_cur
 ```
 
 I updated the final negative-branch helper calls to pass `H9` for the shape, `H4` for the key equality, and `H6` for the permutation. After these fixes, `insertion_sort_proof_manual.v` compiled, contains no `Admitted.`, and the full sequence through `insertion_sort_goal_check.v` compiled successfully.
+
+## 2026-06-03 - Experience replay confirms proof and goal check
+
+The current manual file:
+
+```text
+experiences/end-end/insertion_sort/coq/generated/insertion_sort_proof_manual.v
+```
+
+contains completed proofs for all six generated manual obligations: `insertion_sort_entail_wit_1`, `insertion_sort_entail_wit_2`, `insertion_sort_entail_wit_3`, `insertion_sort_entail_wit_4_1`, `insertion_sort_entail_wit_4_2`, and `insertion_sort_return_wit_1`. It contains no `Admitted.`, no `Abort`, no `admit`, and no top-level `Axiom`.
+
+I replayed the standard compile sequence from `QualifiedCProgramming/SeparationLogic`, using `-Q experiences/end-end/insertion_sort/original ""` and `-R experiences/end-end/insertion_sort/coq/generated SimpleC.EE.CAV.verify_20260422_174132_insertion_sort`:
+
+```text
+insertion_sort.v: rc=0
+insertion_sort_goal.v: rc=0
+insertion_sort_proof_auto.v: rc=0
+insertion_sort_proof_manual.v: rc=0
+insertion_sort_goal_check.v: rc=0
+```
+
+This confirms the end-to-end proof artifacts are complete in the experience workspace. The transient `.vo/.vos/.vok/.glob/.aux` files produced by the replay were removed from `original` and `coq/generated`.

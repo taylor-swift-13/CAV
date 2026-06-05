@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans a null-terminated ASCII string of length n and checks whether bracket characters (), [], and {} are properly matched using a local stack buffer of size 128. The input string is read-only and contains no embedded zero byte before the terminator. The main control structure is one while loop with early returns on unmatched closing brackets or mismatched bracket types; on normal exit it returns 1 exactly when the simulated stack is empty and 0 otherwise. The function mutates only its local stack array and preserves the caller-owned string buffer unchanged.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "string",
+    "pattern": "state_machine"
+  }
+}

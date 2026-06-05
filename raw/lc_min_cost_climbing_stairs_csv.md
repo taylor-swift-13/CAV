@@ -21,7 +21,7 @@ Return the minimum cost to reach the top of the staircase.
 
 ```c
 int lc_min_cost_climbing_stairs_csv(const char *cost) {
-    int a[256], n = 0, i = 0; while (cost[i] != '\0') { int v = 0; while (cost[i] >= '0' && cost[i] <= '9') { v = v * 10 + cost[i] - '0'; i++; } a[n++] = v; if (cost[i] == ',') i++; }
+    int a[256], n = 0, i = 0; while (cost[i] != '\0') { int v = 0; while (cost[i] >= '0' && cost[i] <= '9') { v = v * 10 + (cost[i] - '0'); i++; } a[n++] = v; if (cost[i] == ',') i++; }
     int p2 = 0, p1 = 0; for (int j = 2; j <= n; j++) { int x = p1 + a[j - 1], y = p2 + a[j - 2], cur = x < y ? x : y; p2 = p1; p1 = cur; } return p1;
 }
 ```

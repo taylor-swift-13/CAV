@@ -31,7 +31,7 @@ char *reverse_list_csv(const char *list) {
         int sign = 1;
         if (list[i] == '-') { sign = -1; i++; }
         int v = 0;
-        while (list[i] >= '0' && list[i] <= '9') { v = v * 10 + list[i] - '0'; i++; }
+        while (list[i] >= '0' && list[i] <= '9') { v = v * 10 + (list[i] - '0'); i++; }
         values[n++] = sign * v;
         if (list[i] == ',') i++;
     }
