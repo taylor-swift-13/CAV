@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Loop-free function `sll_head` returning `p->data`.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "linked_list",
-    "pattern": "straight_line"
-  }
-}

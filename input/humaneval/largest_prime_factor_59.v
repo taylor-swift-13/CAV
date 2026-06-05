@@ -1,0 +1,358 @@
+(* defs for largest_prime_factor_59 from: coins_59.v, 59.v *)
+
+Load "../spec/59".
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.ZArith.Znumtheory.
+Require Import Coq.micromega.Lia.
+Local Open Scope Z_scope.
+
+Definition lpf_inv (n_pre n i : Z) : Prop :=
+  n >= 2 /\
+  n_pre mod n = 0 /\
+  (forall p : Z, prime p -> 2 <= p -> p < i -> ~ Z.divide p n \/ n = p) /\
+  (forall p : Z, prime p -> 2 <= p -> p < i -> ~ Z.divide p n -> p <= n) /\
+  (forall q : Z, prime q -> q >= i -> Z.divide q n_pre -> Z.divide q n).
+
+Definition lpf_while_inv (n_pre n i : Z) : Prop :=
+  i + 1 <= 2147483647 /\
+  n >= 2 /\
+  i <= n /\
+  n_pre mod n = 0 /\
+  (forall p : Z, prime p -> 2 <= p -> p < i -> ~ Z.divide p n \/ n = p) /\
+  (forall p : Z, prime p -> 2 <= p -> p < i -> ~ Z.divide p n -> p <= n) /\
+  (forall q : Z, prime q -> q > i -> Z.divide q n_pre -> Z.divide q n).
+
+Lemma lpf_inv_after_not_div :
+  forall n_pre n i : Z,
+  n mod i <> 0 ->
+  i >= 2 ->
+  lpf_while_inv n_pre n i ->
+  lpf_inv n_pre n (i + 1).
+Proof.
+  intros n_pre n i Hmod_ne Hi Hwhile.
+  unfold lpf_while_inv in Hwhile.
+  destruct Hwhile as [Himax [Hn_ge2 [Hi_le_n [Hmod [Hsmall [Hbound Hlarge]]]]]].
+  unfold lpf_inv.
+  split; [exact Hn_ge2|].
+  split; [exact Hmod|].
+  split.
+  - intros p Hp_prime Hp_ge2 Hp_lt.
+    destruct (Z_lt_ge_dec p i) as [Hp_lt_i | Hp_ge_i].
+    + apply Hsmall; auto.
+    + assert (Hp_eq_i : p = i) by lia.
+      subst p.
+      left.
+      intro Hdiv_i_n.
+      apply Hmod_ne.
+      apply (proj2 (Z.mod_divide n i ltac:(lia))).
+      exact Hdiv_i_n.
+  - split.
+    + intros p Hp_prime Hp_ge2 Hp_lt Hnot_div.
+      destruct (Z_lt_ge_dec p i) as [Hp_lt_i | Hp_ge_i].
+      * apply Hbound; auto.
+      * assert (p = i) by lia.
+        subst p.
+        lia.
+    + intros q Hq_prime Hq_ge Hq_div.
+      apply Hlarge; auto; lia.
+Qed.
+
+Lemma lpf_inv_after_le_mod0 :
+  forall n_pre n i : Z,
+  n <= i ->
+  n mod i = 0 ->
+  i >= 2 ->
+  lpf_while_inv n_pre n i ->
+  lpf_inv n_pre n (i + 1).
+Proof.
+  intros n_pre n i Hn_le_i Hmod0 Hi Hwhile.
+  unfold lpf_while_inv in Hwhile.
+  destruct Hwhile as [Himax [Hn_ge2 [Hi_le_n [Hmod [Hsmall [Hbound Hlarge]]]]]].
+  assert (Hn_eq_i : n = i) by lia.
+  subst n.
+  unfold lpf_inv.
+  split; [lia|].
+  split; [exact Hmod|].
+  split.
+  - intros p Hp_prime Hp_ge2 Hp_lt.
+    destruct (Z_lt_ge_dec p i) as [Hp_lt_i | Hp_ge_i].
+    + apply Hsmall; auto.
+    + assert (p = i) by lia.
+      subst p.
+      right; reflexivity.
+  - split.
+    + intros p Hp_prime Hp_ge2 Hp_lt Hnot_div.
+      destruct (Z_lt_ge_dec p i) as [Hp_lt_i | Hp_ge_i].
+      * apply Hbound; auto.
+      * assert (p = i) by lia.
+        subst p.
+        lia.
+    + intros q Hq_prime Hq_ge Hq_div.
+      apply Hlarge; auto; lia.
+Qed.
+
+Lemma composite_has_small_prime_divisor :
+  forall n : Z,
+  2 <= n ->
+  ~ prime n ->
+  exists p : Z, prime p /\ Z.divide p n /\ p * p <= n.
+Proof.
+  refine (well_founded_induction_type (Z.lt_wf 1)
+    (fun n => 2 <= n -> ~ prime n -> exists p, prime p /\ Z.divide p n /\ p * p <= n) _).
+  intros n IH Hn2 Hn_not_prime.
+  assert (Hn_gt1 : 1 < n) by lia.
+  destruct (not_prime_divide n Hn_gt1 Hn_not_prime) as [d [[Hd_gt1 Hd_lt_n] Hd_div_n]].
+  destruct Hd_div_n as [k Hn_eq].
+  assert (Hd_pos : 0 < d) by lia.
+  assert (Hk_pos : 0 < k) by (subst n; nia).
+  assert (Hk_gt1 : 1 < k) by (subst n; nia).
+  set (m := Z.min d k).
+  assert (Hm_lt_n : m < n).
+  {
+    unfold m.
+    destruct (Z_le_gt_dec d k) as [Hdk|Hdk].
+    - rewrite Z.min_l by lia; lia.
+    - rewrite Z.min_r by lia; lia.
+  }
+  assert (Hm_gt1 : 1 < m).
+  {
+    unfold m.
+    destruct (Z_le_gt_dec d k) as [Hdk|Hdk].
+    - rewrite Z.min_l by lia; lia.
+    - rewrite Z.min_r by lia; lia.
+  }
+  assert (Hm_div_n : Z.divide m n).
+  {
+    unfold m.
+    destruct (Z_le_gt_dec d k) as [Hdk|Hdk].
+    - rewrite Z.min_l by lia. exists k. exact Hn_eq.
+    - rewrite Z.min_r by lia. exists d. subst n. ring.
+  }
+  destruct (prime_dec m) as [Hm_prime|Hm_not_prime].
+  - exists m. split; [exact Hm_prime|].
+    split; [exact Hm_div_n|].
+    unfold m.
+    destruct (Z_le_gt_dec d k) as [Hdk|Hdk].
+    + rewrite Z.min_l by lia. subst n. nia.
+    + rewrite Z.min_r by lia. subst n. nia.
+  - specialize (IH m).
+    assert (Hm_range : 1 <= m < n) by lia.
+    specialize (IH Hm_range).
+    assert (Hm_ge2 : 2 <= m) by lia.
+    specialize (IH Hm_ge2 Hm_not_prime).
+    destruct IH as [p [Hp_prime [Hp_div_m Hp_sq_le_m]]].
+    exists p. split; [exact Hp_prime|].
+    split.
+    + eapply Z.divide_trans; eauto.
+    + lia.
+Qed.
+
+Lemma div_factor_ge_candidate :
+  forall n i : Z,
+  2 <= i ->
+  n > i ->
+  n mod i = 0 ->
+  (forall p : Z, prime p -> 2 <= p -> p < i -> ~ Z.divide p n \/ n = p) ->
+  i <= n / i.
+Proof.
+  intros n i Hi Hn_gt_i Hmod Hsmall.
+  assert (Hi_pos : 0 < i) by lia.
+  assert (Hn_eq : n = (n / i) * i).
+  {
+    pose proof (Z.div_mod n i ltac:(lia)) as Hdiv.
+    nia.
+  }
+  assert (Hd_gt1 : 1 < n / i) by nia.
+  destruct (Z_lt_ge_dec (n / i) i) as [Hd_lt_i | Hd_ge_i]; [|lia].
+  assert (Hd_ge2 : 2 <= n / i) by lia.
+  destruct (prime_dec (n / i)) as [Hd_prime | Hd_not_prime].
+  - specialize (Hsmall (n / i) Hd_prime Hd_ge2 Hd_lt_i).
+    destruct Hsmall as [Hnot_div | Hn_eq_d].
+    + exfalso.
+      apply Hnot_div.
+      exists i. nia.
+    + lia.
+  - destruct (composite_has_small_prime_divisor (n / i) Hd_ge2 Hd_not_prime)
+      as [p [Hp_prime [Hp_div_d Hp_sq_le_d]]].
+    assert (Hp_ge2 : 2 <= p) by (apply prime_ge_2; exact Hp_prime).
+    assert (Hp_le_d : p <= n / i) by nia.
+    assert (Hp_lt_i : p < i) by lia.
+    assert (Hp_div_n : Z.divide p n).
+    {
+      destruct Hp_div_d as [k Hk].
+      exists (i * k). nia.
+    }
+    specialize (Hsmall p Hp_prime Hp_ge2 Hp_lt_i).
+    destruct Hsmall as [Hnot_div | Hn_eq_p].
+    + contradiction.
+    + lia.
+Qed.
+
+Lemma lpf_while_inv_div_step :
+  forall n_pre n i : Z,
+  i >= 2 ->
+  n > i ->
+  n mod i = 0 ->
+  lpf_while_inv n_pre n i ->
+  lpf_while_inv n_pre (n / i) i.
+Proof.
+  intros n_pre n i Hi Hn_gt_i Hmod0 Hwhile.
+  unfold lpf_while_inv in Hwhile.
+  destruct Hwhile as [Himax [Hn_ge2 [Hi_le_n [Hmod [Hsmall [Hbound Hlarge]]]]]].
+  assert (Hi_pos : 0 < i) by lia.
+  assert (Hn_eq : n = (n / i) * i).
+  {
+    pose proof (Z.div_mod n i ltac:(lia)) as Hdiv.
+    nia.
+  }
+  assert (Hi_le_div : i <= n / i).
+  {
+    apply (div_factor_ge_candidate n i); auto; lia.
+  }
+  assert (Hdiv_ge2 : 2 <= n / i) by lia.
+  unfold lpf_while_inv.
+  split; [exact Himax|].
+  split; [lia|].
+  split; [lia|].
+  split.
+  - assert (Hn_div_pre : Z.divide n n_pre).
+    {
+      apply Z.mod_divide in Hmod; [exact Hmod|lia].
+    }
+    assert (Hdiv_div_n : Z.divide (n / i) n).
+    {
+      exists i. nia.
+    }
+    assert (Hdiv_div_pre : Z.divide (n / i) n_pre).
+    {
+      eapply Z.divide_trans; eauto.
+    }
+    apply (proj2 (Z.mod_divide n_pre (n / i) ltac:(lia))).
+    exact Hdiv_div_pre.
+  - split.
+    + intros p Hp_prime Hp_ge2 Hp_lt_i.
+      assert (Hnot_div_n : ~ Z.divide p n).
+      {
+        specialize (Hsmall p Hp_prime Hp_ge2 Hp_lt_i).
+        destruct Hsmall as [Hnot_div | Hn_eq_p].
+        - exact Hnot_div.
+        - lia.
+      }
+      left.
+      intro Hp_div_q.
+      apply Hnot_div_n.
+      destruct Hp_div_q as [k Hk].
+      exists (i * k). nia.
+    + split.
+      * intros p Hp_prime Hp_ge2 Hp_lt_i Hnot_div_q.
+        lia.
+      * intros q Hq_prime Hq_gt_i Hq_div_pre.
+        assert (Hq_div_n : Z.divide q n).
+        {
+          apply Hlarge; auto.
+        }
+        rewrite Hn_eq in Hq_div_n.
+        destruct (prime_mult q Hq_prime (n / i) i Hq_div_n) as [Hq_div_q | Hq_div_i].
+        -- exact Hq_div_q.
+        -- assert (q <= i).
+           {
+             apply Z.divide_pos_le; [lia | exact Hq_div_i].
+           }
+           lia.
+Qed.
+
+Lemma div_square_lt_from_exit :
+  forall n i : Z,
+  2 <= i ->
+  i > n / i ->
+  n < i * i.
+Proof.
+  intros n i Hi2 Hexit.
+  assert (Hi_pos : 0 < i) by lia.
+  pose proof (Z.div_mod n i (not_eq_sym (Z.lt_neq _ _ Hi_pos))) as Hmod.
+  assert (Hr_bound : 0 <= n mod i < i) by (apply Z.mod_pos_bound; lia).
+  destruct Hr_bound as [_ Hr_lt].
+  nia.
+Qed.
+
+Lemma lpf_spec_from_exit :
+  forall n_pre n i : Z,
+  problem_59_pre n_pre ->
+  2 <= n_pre ->
+  n_pre <= 2147483647 ->
+  2 <= i ->
+  i > n / i ->
+  lpf_inv n_pre n i ->
+  problem_59_spec n_pre n.
+Proof.
+  intros n_pre n i _ _ _ Hi2 Hexit Hinv.
+  destruct Hinv as [Hn2 [Hmod [Hsmall_div [Hsmall_bound Hlarge_div]]]].
+  assert (Hn_div_npre : Z.divide n n_pre).
+  {
+    apply Z.mod_divide in Hmod; [exact Hmod|lia].
+  }
+  assert (Hprime_n : prime n).
+  {
+    assert (Hn2_le : 2 <= n) by lia.
+    destruct (prime_dec n) as [Hprime|Hnot_prime]; [exact Hprime|].
+    exfalso.
+    destruct (composite_has_small_prime_divisor n Hn2_le Hnot_prime) as [p [Hp_prime [Hp_div_n Hp_sq_le_n]]].
+    assert (Hn_lt_ii : n < i * i) by (apply div_square_lt_from_exit; auto).
+    assert (Hp_ge2 : 2 <= p) by (apply prime_ge_2; exact Hp_prime).
+    assert (Hp_lt_i : p < i).
+    {
+      apply Z.nle_gt; intros Hp_ge_i.
+      assert (Hi_sq_le_p_sq : i * i <= p * p) by nia.
+      lia.
+    }
+    specialize (Hsmall_div p Hp_prime Hp_ge2 Hp_lt_i).
+    destruct Hsmall_div as [Hp_not_div_n | Hn_eq_p].
+    - contradiction.
+    - subst n. contradiction.
+  }
+  split.
+  - exact Hprime_n.
+  - split.
+    + exact Hn_div_npre.
+    + intros q [Hq_prime Hq_div_npre].
+      destruct (Z_lt_ge_dec q i) as [Hq_lt_i | Hq_ge_i].
+      * assert (Hq_ge2 : 2 <= q) by (apply prime_ge_2; exact Hq_prime).
+        specialize (Hsmall_div q Hq_prime Hq_ge2 Hq_lt_i).
+        destruct Hsmall_div as [Hq_not_div_n | Hn_eq_q].
+        -- apply Hsmall_bound; auto.
+        -- subst q. lia.
+      * assert (Hq_div_n : Z.divide q n).
+        {
+          apply Hlarge_div; auto.
+        }
+        apply Z.divide_pos_le.
+        -- lia.
+        -- exact Hq_div_n.
+Qed.
+
+(* def largest_prime_factor(n: int):
+"""Return the largest prime factor of n. Assume n > 1 and is not a prime.
+>>> largest_prime_factor(13195)
+29
+>>> largest_prime_factor(2048)
+2
+""" *)
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.ZArith.Znumtheory. (* 正确的库，其中定义了 prime *)
+
+(*
+ * largest_prime_factor 函数的最终正确程序规约
+ *)
+(* Pre: n must be > 1 and not prime for this spec to be meaningful *)
+Definition problem_59_pre (n : Z) : Prop := (Z.gt n 1 /\ ~ (prime n)).
+
+Definition problem_59_spec (n p: Z) : Prop :=
+  (* 后置条件: p 必须是 n 的最大素数因子 *)
+  (
+    (* 1. p 是 n 的一个素数因子 *)
+    prime p /\ (p | n) /\
+
+    (* 2. p 是最大的那一个 *)
+    (* 对于任何其他的素数因子 q，q 都必须小于或等于 p *)
+    (forall q: Z, (prime q /\ (q | n)) -> Z.le q p)
+  ).

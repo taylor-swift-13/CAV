@@ -8,7 +8,6 @@ One critic-gated contract block plus a deterministic verify audit check:
     the eval findings injected (``--restart-context-file``).
   * Verify block: ``run_verify``. The verify runner's deterministic audit check
     is the post-verify gate.
-  * Consolidate: feed every stage workspace to ``run_consolidate --scope all``.
   * Cost: roll every workspace up with ``agent_metrics.write_pipeline_cost_summary``.
 
 Each block is a hand-rolled budget loop rather than ``agent_loop.run`` because the
@@ -81,22 +80,20 @@ def write_findings(dest: Path, *, title: str, sources: list[Path]) -> Path:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Full contract -> eval -> verify -> consolidate orchestrator.")
+    p = argparse.ArgumentParser(description="Full contract -> eval -> verify orchestrator.")
     p.add_argument("target", help="raw/<name>.md (full flow) or input/<name>.c (skip contract).")
     p.add_argument("--function-name")
+    p.add_argument("--dataset", default=None, help="Dataset label (e.g. algo, humaneval); tags workspaces and input/raw subdirs.")
     p.add_argument("--contract-rounds", type=int, default=2)
     # Timeout defaults are None here so config/agents.json `timeouts` can supply
     # them; an explicit flag still wins. Resolved in main() (CLI > config > builtin).
     p.add_argument("--contract-timeout", type=int, default=None)
     p.add_argument("--eval-timeout", type=int, default=None)
     p.add_argument("--verify-timeout", type=int, default=None)
-    p.add_argument("--consolidate-timeout", type=int, default=None)
     p.add_argument("--skip-eval", action="store_true", help="Skip the eval gate before verify.")
-    p.add_argument("--skip-consolidate", action="store_true", help="Skip the final consolidate stage.")
-    p.add_argument("--no-export", action="store_true", help="Do not export verified workspaces into experiences/end-end/.")
     p.add_argument("--force", action="store_true", help="Continue to verify even if eval never reaches Correct.")
     p.add_argument("--config", default=None)
-    p.add_argument("--agent", choices=["codex", "claude"], default=None)
+    p.add_argument("--agent", choices=["codex", "claude", "kimicode"], default=None)
     p.add_argument("--model", default=None)
     p.add_argument("--reasoning-effort", default=None)
     p.add_argument("--dry-run", action="store_true")
@@ -122,7 +119,7 @@ def main() -> int:
     args = build_parser().parse_args()
     # Resolve per-stage timeouts: explicit CLI flag > config/agents.json > builtin.
     cfg = agent_config.load(args.config)
-    for stage, builtin in (("contract", 300), ("eval", 900), ("verify", 3600), ("consolidate", 600)):
+    for stage, builtin in (("contract", 300), ("eval", 900), ("verify", 3600)):
         attr = f"{stage}_timeout"
         if getattr(args, attr) is None:
             setattr(args, attr, cfg.timeout(stage, builtin))
@@ -133,13 +130,15 @@ def main() -> int:
         print(f"target not found: {target}", file=sys.stderr)
         return 2
     name = args.function_name or target.stem
+    ds = args.dataset
+    label = name  # dataset tag is carried in <name> itself; --dataset only selects raw/input/<ds>/ folders
     is_raw = target.suffix == ".md"
     base_ts = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-    pipeline_dir = OUTPUT_ROOT / f"pipeline_{base_ts}_{name}"
+    pipeline_dir = OUTPUT_ROOT / f"pipeline_{base_ts}_{label}"
     pipeline_dir.mkdir(parents=True, exist_ok=True)
     workspaces: list[Path] = []
     cf = common_flags(args)
-    input_c = INPUT_ROOT / f"{name}.c"
+    input_c = (INPUT_ROOT / ds / f"{name}.c") if ds else (INPUT_ROOT / f"{name}.c")
 
     emit(f"target={target} name={name} raw={is_raw} dir={pipeline_dir}")
 
@@ -151,10 +150,10 @@ def main() -> int:
         restart_file = None
         for rnd in range(1, args.contract_rounds + 1):
             ts = f"{base_ts}c{rnd}"
-            contract_ws = OUTPUT_ROOT / f"contract_{ts}_{name}"
+            contract_ws = OUTPUT_ROOT / f"contract_{ts}_{label}"
             cmd = [sys.executable, str(SCRIPTS / "run_contract.py"), str(target),
-                   "--function-name", name, "--timestamp", ts, "--workspace-name", name,
-                   "--timeout-seconds", str(args.contract_timeout), *cf]
+                   "--function-name", name, "--timestamp", ts, "--workspace-name", label,
+                   "--timeout-seconds", str(args.contract_timeout), *(["--dataset", ds] if ds else []), *cf]
             if restart_file:
                 cmd += ["--restart-context-file", str(restart_file)]
             contract_rc = run_stage(cmd)
@@ -184,9 +183,9 @@ def main() -> int:
                 break
 
             ets = f"{base_ts}e{rnd}"
-            eval_ws = OUTPUT_ROOT / f"eval_{ets}_{name}"
+            eval_ws = OUTPUT_ROOT / f"eval_{ets}_{label}"
             ecmd = [sys.executable, str(SCRIPTS / "run_eval.py"), str(input_c),
-                    "--function-name", name, "--timestamp", ets, "--workspace-name", name,
+                    "--function-name", name, "--timestamp", ets, "--workspace-name", label,
                     "--timeout-seconds", str(args.eval_timeout), *cf]
             eval_rc = run_stage(ecmd)
             workspaces.append(eval_ws)
@@ -223,12 +222,10 @@ def main() -> int:
 
     # ---- Verify block (run_verify owns retry and deterministic audit check) ----
     ts = f"{base_ts}v"
-    verify_ws = OUTPUT_ROOT / f"verify_{ts}_{name}"
+    verify_ws = OUTPUT_ROOT / f"verify_{ts}_{label}"
     cmd = [sys.executable, str(SCRIPTS / "run_verify.py"), str(input_c),
-           "--function-name", name, "--timestamp", ts, "--workspace-name", name,
+           "--function-name", name, "--timestamp", ts, "--workspace-name", label,
            "--timeout-seconds", str(args.verify_timeout), *cf]
-    if not args.no_export and not args.dry_run:
-        cmd += ["--export-examples"]
     verify_rc = run_stage(cmd)
     workspaces.append(verify_ws)
     verify_ok = verify_rc == 0 or args.dry_run
@@ -240,20 +237,6 @@ def main() -> int:
 
 
 def _finish(workspaces, pipeline_dir, args, name, *, status) -> None:
-    # ---- Consolidate ----
-    if not args.skip_consolidate and not args.dry_run:
-        ccmd = [sys.executable, str(SCRIPTS / "run_consolidate.py"), *[str(w) for w in workspaces],
-                "--scope", "all", "--timeout-seconds", str(args.consolidate_timeout)]
-        if args.config:
-            ccmd += ["--config", args.config]
-        if args.agent:
-            ccmd += ["--agent", args.agent]
-        if args.model:
-            ccmd += ["--model", args.model]
-        if args.reasoning_effort:
-            ccmd += ["--reasoning-effort", args.reasoning_effort]
-        run_stage(ccmd)
-
     # ---- Cost summary ----
     cost = pipeline_dir / "cost_summary.md"
     try:

@@ -1,7 +1,0 @@
-From SimpleC.EE.CAV.verify_20260605_043229v_balanced_string_split_count Require Import balanced_string_split_count_goal balanced_string_split_count_proof_auto balanced_string_split_count_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include char_array_strategy_proof.
-  Include balanced_string_split_count_proof_auto.
-  Include balanced_string_split_count_proof_manual.
-End VC_Correctness.

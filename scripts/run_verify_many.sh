@@ -3,26 +3,23 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERIFY_SCRIPT="$ROOT/scripts/run_verify.py"
-EXPORT_EXAMPLES=1
 
 usage() {
   cat <<'EOF'
-usage: run_verify_many.sh [--no-export-examples] <name1> [name2 ...]
+usage: run_verify_many.sh [--dataset NAME] <name1> [name2 ...]
 
 For each <name>, run:
-  python3 scripts/run_verify.py input/<name>.c --function-name <name> [--export-examples]
-
-Options:
-  --no-export-examples   Do not pass --export-examples to verify.
+  python3 scripts/run_verify.py input/<dataset>/<name>.c --function-name <name> --workspace-name <dataset>_<name>
 EOF
 }
 
+DATASET="algo"
 NAMES=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --no-export-examples)
-      EXPORT_EXAMPLES=0
-      shift
+    --dataset)
+      DATASET="$2"
+      shift 2
       ;;
     -h|--help)
       usage
@@ -58,7 +55,7 @@ FAILURES=()
 SUCCESSES=()
 
 for name in "${NAMES[@]}"; do
-  INPUT_PATH="input/${name}.c"
+  INPUT_PATH="input/${DATASET}/${name}.c"
 
   if [[ ! -f "$INPUT_PATH" ]]; then
     echo "[verify-many] missing input file name=$name path=$INPUT_PATH" >&2
@@ -67,10 +64,7 @@ for name in "${NAMES[@]}"; do
   fi
 
   echo "[verify-many] start name=$name"
-  VERIFY_CMD=(python3 "$VERIFY_SCRIPT" "$INPUT_PATH" --function-name "$name")
-  if [[ $EXPORT_EXAMPLES -eq 1 ]]; then
-    VERIFY_CMD+=(--export-examples)
-  fi
+  VERIFY_CMD=(python3 "$VERIFY_SCRIPT" "$INPUT_PATH" --function-name "$name" --workspace-name "$name")
 
   if ! "${VERIFY_CMD[@]}"; then
     echo "[verify-many] failed name=$name" >&2

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Verifies an iterative Euclidean algorithm over scalar integers. The function receives nonnegative a and b with a + b strictly positive, repeatedly replaces (a, b) by (b, a mod b) while b is nonzero, and returns the final a. The expected relation is that the return value equals Z.gcd of the original inputs. The loop is a while loop, the empty-loop case is possible when the original b is zero, and the function does not read or modify heap memory.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "scalar",
-    "pattern": "single_loop"
-  }
-}

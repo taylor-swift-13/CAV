@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Computes the digital root of a nonnegative integer by repeatedly applying a nested loop: the inner loop sums decimal digits of the current number until it becomes 0, and the outer loop repeats until the number is a single digit. The function is pure, uses only scalar locals, does not modify memory, and returns the final single-digit value; input 0 returns 0 immediately.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "scalar",
-    "pattern": "nested_loop"
-  }
-}

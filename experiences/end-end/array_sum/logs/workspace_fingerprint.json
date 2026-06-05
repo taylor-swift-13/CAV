@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_sum scans an integer array a of length n with a single for loop, accumulates ret from 0 by adding a[i] for each index 0 <= i < n, does not modify the input array, allows the empty-loop case n == 0, and returns sum(l) while preserving IntArray::full(a, n, l). The contract also assumes every element is in a bounded integer range and the mathematical sum fits in signed 32-bit int.",
-  "keywords": {
-    "problem_kind": "sum",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_contains scans the input integer array a[0..n) with a for loop, does not modify memory, returns 1 immediately when some element equals k, and returns 0 only after the loop has established that every index in the range is not equal to k. The empty-loop case n == 0 is allowed and returns 0 while preserving IntArray::full(a, n, l).",
-  "keywords": {
-    "problem_kind": "search",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

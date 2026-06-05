@@ -27,8 +27,7 @@ usage() {
   cat <<'EOF'
 usage: run_fast_verify_regression.sh [--label NAME] [--only TASK] [--jobs N] [--contract-timeout N] [--eval-timeout N] [--verify-timeout N] [--compare SUMMARY.tsv] [--dry-run]
 
-Runs the fixed FAST regression set without exporting examples or consolidating
-experience. After metrics are summarized, deletes the eight tasks' generated
+Runs the fixed FAST regression set without exporting examples. After metrics are summarized, deletes the eight tasks' generated
 input/annotated/output artifacts so future runs cannot copy prior answers.
 Default --jobs is 1. Regression runs must stay serial when comparing Accuracy/Time;
 passing any other --jobs value is rejected.
@@ -110,10 +109,6 @@ if [[ -n "$ONLY_NAME" ]]; then
 fi
 
 for name in "${NAMES[@]}"; do
-  if [[ -d "experiences/end-end/$name" ]]; then
-    echo "regression task already exists in experiences/end-end, refusing to run: $name" >&2
-    exit 3
-  fi
   if [[ ! -f "raw/$name.md" ]]; then
     echo "missing raw file: raw/$name.md" >&2
     exit 4
@@ -201,7 +196,7 @@ write_summary() {
       cached_tokens="$(rg -o '^- Agent CLI cached_input_tokens: `[^`]+`' "$metrics" | tail -n1 | sed 's/^- Agent CLI cached_input_tokens: `//; s/`$//' || true)"
       output_tokens="$(rg -o '^- Agent CLI output_tokens: `[^`]+`' "$metrics" | tail -n1 | sed 's/^- Agent CLI output_tokens: `//; s/`$//' || true)"
       reasoning_tokens="$(rg -o '^- Agent CLI reasoning_output_tokens: `[^`]+`' "$metrics" | tail -n1 | sed 's/^- Agent CLI reasoning_output_tokens: `//; s/`$//' || true)"
-      retrieval_mentions="$(rg -o 'search_fingerprint|Retrieval|检索|doc/retrieval|experiences/end-end|QCP_examples' "$ws/logs" 2>/dev/null | wc -l | tr -d ' ')"
+      retrieval_mentions="$(rg -o 'Retrieval|检索|QualifiedCProgramming/SeparationLogic/examples' "$ws/logs" 2>/dev/null | wc -l | tr -d ' ')"
       printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
         "$name" "${status:-$final}" "$attempts" "$wall" "$input_tokens" "$cached_tokens" "$output_tokens" "$reasoning_tokens" "$retrieval_mentions" "$ws"
     done
@@ -295,8 +290,6 @@ cmd=(
   --contract-timeout "$CONTRACT_TIMEOUT"
   --eval-timeout "$EVAL_TIMEOUT"
   --verify-timeout "$VERIFY_TIMEOUT"
-  --skip-consolidate
-  --no-export-examples
   "${NAMES[@]}"
 )
 

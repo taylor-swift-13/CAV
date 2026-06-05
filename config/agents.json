@@ -2,15 +2,20 @@
   "_comment": "Agent/model config for the C verification pipeline. CLI flags override these; these override built-in defaults. Edit model names here instead of passing --model/--agent every run. Frequently-changed things (target, --only, budgets, --dry-run) stay as CLI flags.",
   "agent": "codex",
   "reasoning_effort": "medium",
+  "kimicode_thinking": true,
   "bins": {
     "codex": "codex",
-    "claude": "claude"
+    "claude": "claude",
+    "kimicode": "kimi"
   },
   "models": {
-    "_comment": "codex/claude = model per backend for ALL agent stages (contract, verify, eval, audit). consolidate = model for the end-of-flow experience unit.",
+    "_comment": "codex/claude/kimicode = default model per backend. kimicode uses kimi --model and kimi --thinking/--no-thinking.",
     "codex": "gpt-5.4",
     "claude": "sonnet",
-    "consolidate": "gpt-5.4"
+    "kimicode": "kimi-code/kimi-for-coding"
+  },
+  "model_display": {
+    "kimicode": "Kimi-k2.6"
   },
   "eval": {
     "num_positive": 4,
@@ -20,7 +25,6 @@
     "_comment": "Per-stage wall-clock budgets in seconds, used by run_pipeline.py when the matching --*-timeout flag is not passed. CLI flag > this > built-in default.",
     "contract": 1800,
     "eval": 1800,
-    "verify": 7200,
-    "consolidate": 600
+    "verify": 7200
   }
 }

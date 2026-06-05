@@ -12,7 +12,8 @@ copies. It provides:
 
   * ``parse_usage(agent, path)`` — agent-aware usage extraction. ``codex`` keeps
     the last ``turn.completed.usage`` in the JSONL stream; ``claude`` reads the
-    top-level ``usage`` of the single JSON object. (The old per-runner
+    top-level ``usage`` of the single JSON object. ``kimicode`` currently has no
+    stable token parser here, so stages fall back to approximate counts. (The old per-runner
     ``parse_usage`` was codex-only, so claude solver runs silently fell back to
     word-count approximation.)
   * ``add_usage(acc, new)`` — sum usage across rounds. Solver stages
@@ -148,6 +149,8 @@ def parse_usage(agent: str, stdout_path: Path | None) -> dict[str, int] | None:
     """Dispatch usage parsing by agent backend."""
     if agent == "claude":
         return parse_claude_usage(stdout_path)
+    if agent == "kimicode":
+        return None
     return parse_codex_usage(stdout_path)
 
 
@@ -186,7 +189,9 @@ def usage_lines(
 
 _STAGE_RE = re.compile(r"^- Stage:\s*`([^`]*)`")
 _STATUS_RE = re.compile(r"^- Status:\s*`([^`]*)`")
+_AGENT_RE = re.compile(r"^- Agent:\s*`([^`]*)`")
 _MODEL_RE = re.compile(r"^- Model:\s*`([^`]*)`")
+_REASONING_RE = re.compile(r"^- Reasoning effort:\s*`([^`]*)`")
 _WALL_RE = re.compile(r"^- Wall-clock time \(seconds\):\s*`([0-9.]+)`")
 # matches "- Agent CLI input_tokens: `123`" and the legacy "- Codex CLI ..." form
 _USAGE_RE = re.compile(r"^- (?:Agent|Codex) CLI (\w+):\s*`(\d+)`")
@@ -198,7 +203,9 @@ class StageMetrics:
     workspace: Path
     stage: str = "?"
     status: str | None = None
+    agent: str | None = None
     model: str | None = None
+    reasoning_effort: str | None = None
     wall_seconds: float = 0.0
     usage: dict[str, int] = field(default_factory=dict)
     usage_is_approx: bool = False
@@ -215,8 +222,12 @@ def read_metrics_file(workspace: Path) -> StageMetrics | None:
             sm.stage = m.group(1)
         elif m := _STATUS_RE.match(line):
             sm.status = m.group(1)
+        elif m := _AGENT_RE.match(line):
+            sm.agent = m.group(1)
         elif m := _MODEL_RE.match(line):
             sm.model = m.group(1)
+        elif m := _REASONING_RE.match(line):
+            sm.reasoning_effort = m.group(1)
         elif m := _WALL_RE.match(line):
             sm.wall_seconds = float(m.group(1))
         elif m := _USAGE_RE.match(line):
@@ -230,7 +241,7 @@ def write_pipeline_cost_summary(workspaces: list[Path], out_path: Path) -> Path:
     """Sum wall-clock + tokens across stage workspaces into one cost_summary.md.
 
     Stages run serially in the pipeline, so the wall-clock total is the sum of
-    per-stage wall-clock (orchestrator overhead and consolidation excluded).
+    per-stage wall-clock (orchestrator overhead excluded).
     Token totals cover only stages that reported real CLI usage; stages that
     only had word-count approximations are flagged, not summed into the total.
     """
@@ -255,14 +266,20 @@ def write_pipeline_cost_summary(workspaces: list[Path], out_path: Path) -> Path:
     if total_usage:
         key_order += sorted(k for k in total_usage if k not in UNIFIED_USAGE_KEYS)
 
-    header = ["Stage", "Model", "Status", "Wall (s)", *key_order]
+    header = ["Stage", "Agent", "Model", "Reasoning effort", "Status", "Wall (s)", *key_order]
     body_rows = [
-        [s.stage, s.model or "?", s.status or "?", f"{s.wall_seconds:.2f}",
+        [
+            s.stage,
+            s.agent or "?",
+            s.model if s.model is not None else "?",
+            s.reasoning_effort or "?",
+            s.status or "?",
+            f"{s.wall_seconds:.2f}",
          *[str(s.usage.get(k, "—")) for k in key_order]]
         for s in stages
     ]
     body_rows.append([
-        "**total**", "", "", f"**{total_wall:.2f}**",
+        "**total**", "", "", "", "", f"**{total_wall:.2f}**",
         *[f"**{(total_usage or {}).get(k, 0)}**" for k in key_order],
     ])
 

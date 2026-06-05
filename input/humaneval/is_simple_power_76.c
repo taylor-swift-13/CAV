@@ -1,0 +1,35 @@
+/*
+Your task is to write a function that returns true if a number x is a simple
+power of n && false in other cases.
+x is a simple power of n if n**int=x
+For example:
+is_simple_power_76(1, 4) => true
+is_simple_power_76(2, 2) => true
+is_simple_power_76(8, 2) => true
+is_simple_power_76(3, 2) => false
+is_simple_power_76(3, 1) => false
+is_simple_power_76(5, 3) => false
+*/
+#include "verification_stdlib.h"
+/*@ Extern Coq (problem_76_pre: Z -> Z -> Prop) */
+/*@ Extern Coq (is_simple_power_spec: Z -> Z -> Z -> Prop) */
+/*@ Extern Coq (sp_inv: Z -> Z -> Z -> Z -> Prop) */
+/*@ Import Coq Require Import coins_76 */
+int is_simple_power_76(int x, int n)
+/*@ Require
+        1 <= x && x <= INT_MAX &&
+        1 <= n && n <= INT_MAX &&
+        x * n <= INT_MAX && emp
+    Ensure
+        is_simple_power_spec(x@pre, n@pre, __return) && emp
+*/
+{
+    int p=1,count=0;
+    
+    while (p<=x && count<100)
+    {
+        if (p==x) return 1;
+        p=p*n;count+=1;
+    }
+    return 0;
+}

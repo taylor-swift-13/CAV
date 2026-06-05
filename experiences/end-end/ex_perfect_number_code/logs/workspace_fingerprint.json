@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Classifies a positive integer by comparing the sum of its proper divisors against the input. The function initializes sum to 0, runs one scalar for loop over candidate divisors d from 1 up to n - 1, adds d exactly when n % d == 0, and then returns 1 when the final divisor sum equals n, 2 when it is greater than n, and 3 otherwise. The function uses only local integer variables, does not access heap memory, and the contract supplies an upper bound on the mathematical aliquot sum for C int safety.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "scalar",
-    "pattern": "single_loop"
-  }
-}

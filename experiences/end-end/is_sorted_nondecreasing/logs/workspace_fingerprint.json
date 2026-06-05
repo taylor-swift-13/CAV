@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Read-only array scan that checks whether every adjacent pair is nondecreasing. The loop inspects a[i] and a[i + 1] from left to right and returns 0 immediately when it finds a descending adjacent pair; otherwise it exits the loop and returns 1. For n equal to 0 or 1 the loop body is skipped and the universal sortedness condition is vacuous. The function preserves the input array memory unchanged.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

@@ -4,9 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PIPELINE_SCRIPT="$ROOT/scripts/run_pipeline.py"
 
-EXPORT_EXAMPLES=1
 SKIP_EVAL=0
-SKIP_CONSOLIDATE=0
 FORCE=0
 DRY_RUN=0
 JOBS=1
@@ -16,7 +14,6 @@ CONTRACT_ROUNDS=2
 CONTRACT_TIMEOUT=""
 EVAL_TIMEOUT=""
 VERIFY_TIMEOUT=""
-CONSOLIDATE_TIMEOUT=""
 CONFIG=""
 AGENT=""
 MODEL=""
@@ -30,41 +27,36 @@ Multi-process wrapper for scripts/run_pipeline.py. For each <name>, run:
   python3 scripts/run_pipeline.py raw/<name>.md --function-name <name>
 
 By default each item uses the full run_pipeline flow:
-  contract -> eval -> verify -> consolidate
+  contract -> eval -> verify
 
 Options:
+  --dataset NAME         raw/<dataset>/<name>.md + tags workspaces. Default: algo.
   --jobs N, -j N         Run up to N names concurrently. Default: 1.
   --contract-rounds N    Passed to run_pipeline.py. Default: 2.
   --contract-timeout N   Passed to run_pipeline.py. Default: 300.
   --eval-timeout N       Passed to run_pipeline.py. Default: 900.
   --verify-timeout N     Passed to run_pipeline.py. Default: 3600.
-  --consolidate-timeout N
-                         Passed to run_pipeline.py. Default: 600.
   --skip-eval            Passed to run_pipeline.py.
-  --skip-consolidate     Passed to run_pipeline.py.
-  --no-export-examples   Passed to run_pipeline.py as --no-export.
   --force                Passed to run_pipeline.py.
   --config PATH          Passed to run_pipeline.py.
-  --agent codex|claude   Passed to run_pipeline.py.
+  --agent codex|claude|kimicode
+                         Passed to run_pipeline.py.
   --model MODEL          Passed to run_pipeline.py.
   --reasoning-effort E   Passed to run_pipeline.py.
   --dry-run              Passed to run_pipeline.py.
 EOF
 }
 
+DATASET="algo"
 NAMES=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --no-export-examples)
-      EXPORT_EXAMPLES=0
-      shift
+    --dataset)
+      DATASET="$2"
+      shift 2
       ;;
     --skip-eval)
       SKIP_EVAL=1
-      shift
-      ;;
-    --skip-consolidate)
-      SKIP_CONSOLIDATE=1
       shift
       ;;
     --force)
@@ -118,15 +110,6 @@ while [[ $# -gt 0 ]]; do
         exit 2
       fi
       VERIFY_TIMEOUT="$2"
-      shift 2
-      ;;
-    --consolidate-timeout)
-      if [[ $# -lt 2 ]]; then
-        echo "missing value for $1" >&2
-        usage >&2
-        exit 2
-      fi
-      CONSOLIDATE_TIMEOUT="$2"
       shift 2
       ;;
     --config)
@@ -219,13 +202,8 @@ if [[ -n "$VERIFY_TIMEOUT" ]] && { ! [[ "$VERIFY_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "
   exit 2
 fi
 
-if [[ -n "$CONSOLIDATE_TIMEOUT" ]] && { ! [[ "$CONSOLIDATE_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONSOLIDATE_TIMEOUT" -lt 1 ]]; }; then
-  echo "--consolidate-timeout must be a positive integer: $CONSOLIDATE_TIMEOUT" >&2
-  exit 2
-fi
-
-if [[ -n "$AGENT" && "$AGENT" != "codex" && "$AGENT" != "claude" ]]; then
-  echo "--agent must be codex or claude: $AGENT" >&2
+if [[ -n "$AGENT" && "$AGENT" != "codex" && "$AGENT" != "claude" && "$AGENT" != "kimicode" ]]; then
+  echo "--agent must be codex, claude, or kimicode: $AGENT" >&2
   exit 2
 fi
 
@@ -237,23 +215,20 @@ mkdir -p "$RUN_DIR"
 
 run_one() {
   local name="$1"
-  RAW_PATH="raw/${name}.md"
+  RAW_PATH="raw/${DATASET}/${name}.md"
 
   if [[ ! -f "$RAW_PATH" ]]; then
     echo "[pipeline-many] missing raw file: $RAW_PATH" >&2
     return 10
   fi
 
-  local cmd=(python3 "$PIPELINE_SCRIPT" "$RAW_PATH" --function-name "$name")
+  local cmd=(python3 "$PIPELINE_SCRIPT" "$RAW_PATH" --function-name "$name" --dataset "$DATASET")
   cmd+=(--contract-rounds "$CONTRACT_ROUNDS")
   # Only pass a timeout flag when set; otherwise run_pipeline.py uses config/agents.json.
   [[ -n "$CONTRACT_TIMEOUT" ]] && cmd+=(--contract-timeout "$CONTRACT_TIMEOUT")
   [[ -n "$EVAL_TIMEOUT" ]] && cmd+=(--eval-timeout "$EVAL_TIMEOUT")
   [[ -n "$VERIFY_TIMEOUT" ]] && cmd+=(--verify-timeout "$VERIFY_TIMEOUT")
-  [[ -n "$CONSOLIDATE_TIMEOUT" ]] && cmd+=(--consolidate-timeout "$CONSOLIDATE_TIMEOUT")
   [[ $SKIP_EVAL -eq 1 ]] && cmd+=(--skip-eval)
-  [[ $SKIP_CONSOLIDATE -eq 1 ]] && cmd+=(--skip-consolidate)
-  [[ $EXPORT_EXAMPLES -eq 0 ]] && cmd+=(--no-export)
   [[ $FORCE -eq 1 ]] && cmd+=(--force)
   [[ $DRY_RUN -eq 1 ]] && cmd+=(--dry-run)
   [[ -n "$CONFIG" ]] && cmd+=(--config "$CONFIG")

@@ -1,4 +1,4 @@
-# Sort Array
+# Sort Array 88
 
 ## Problem (HumanEval 88)
 
@@ -29,7 +29,7 @@ static int cmp_int(const void* a, const void* b) {
     return (x > y) - (x < y);
 }
 
-IntArray sort_array(const int* array, int array_size){
+IntArray sort_array_88(const int* array, int array_size){
     IntArray out;
     out.size = array_size;
     if (array_size==0) {

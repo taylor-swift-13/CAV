@@ -26,9 +26,8 @@
 
 - 只针对定位到的 blocker；
 - **保留**已通过的工作（symexec 不重跑、proof 不整段重写）；
-- 不动 fingerprint 已填好的字段（除非真的需要修正）。
 - 不要把“定位到新的 blocker”当作本轮完成。定位后必须立刻修它并重新跑对应 gate，直到主 SKILL §0 允许退出。
-- 如果上一轮 blocker 是 `proof_manual_has_obligations`、`audit_check_coqc_failed`、`Cannot find witness`、rewrite/unification、`entailer!` / `lia` 失败，本轮改 proof 前必须按主 SKILL §0.1 先检索并记录候选。
+- 如果上一轮 blocker 是 `proof_manual_has_obligations`、`audit_check_coqc_failed`、`Cannot find witness`、rewrite/unification、`entailer!` / `lia` 失败，本轮改 proof 前必须按主 SKILL §0.1 先到 `QualifiedCProgramming/SeparationLogic/examples/` 检索并记录候选。
 
 ## 完成判据
 

@@ -1,0 +1,109 @@
+/*
+Given a positive integer n, return a sorted vector that has the odd numbers in collatz sequence.
+
+The Collatz conjecture is a conjecture in mathematics that concerns a sequence defined
+as follows: start with any positive integer n. Then each term is obtained from the
+previous term as follows: if the previous term is even, the next term is one half of
+the previous term. If the previous term is odd, the next term is 3 times the previous
+term plus 1. The conjecture is that no matter what value of n, the sequence will always reach 1.
+
+Note:
+    1. Collatz(1) is {1}.
+    2. returned vector sorted in increasing order.
+
+For example:
+get_odd_collatz_123(5) returns {1, 5} // The collatz sequence for 5 is {5, 16, 8, 4, 2, 1}, so the odd numbers are only 1, && 5.
+*/
+#include "verification_stdlib.h"
+#include "verification_list.h"
+#include "int_array_def.h"
+
+/*@ Extern Coq (problem_123_pre_z: Z -> Prop)
+               (problem_123_spec_z: Z -> list Z -> Prop)
+               (odd_collatz_prefix: Z -> Z -> list Z -> Prop)
+               (sorted_int_list_by: Z -> list Z -> Prop)
+               (Permutation: list Z -> list Z -> Prop) */
+/*@ Import Coq Require Import coins_123 */
+
+typedef struct {
+    int* data;
+    int size;
+} IntArray;
+
+IntArray *malloc_int_array_struct()
+/*@ Require emp
+    Ensure __return != 0 &&
+           undef_data_at(&(__return -> data)) *
+           undef_data_at(&(__return -> size))
+*/;
+
+int *malloc_int_array(int size)
+/*@ Require size >= 0 && size < INT_MAX
+    Ensure __return != 0 && IntArray::undef_full(__return, size)
+*/;
+
+void sort_int_array(int *array, int init_size, int size, int ascending)
+/*@ With l
+    Require
+        array != 0 &&
+        init_size == Zlength(l) &&
+        0 <= init_size && init_size <= size &&
+        0 <= size && size < INT_MAX &&
+        IntArray::seg(array, 0, init_size, l) *
+        IntArray::undef_seg(array, init_size, size)
+    Ensure
+        exists sorted_l sorted_full_l,
+        init_size == Zlength(sorted_l) &&
+        size == Zlength(sorted_full_l) &&
+        0 <= init_size && init_size <= size &&
+        0 <= size && size < INT_MAX &&
+        sublist(0, init_size, sorted_full_l) == sorted_l &&
+        sorted_int_list_by(ascending, sorted_l) &&
+        Permutation(l, sorted_l) &&
+        IntArray::full(array, size, sorted_full_l)
+*/;
+
+IntArray *get_odd_collatz_123(int n)
+/*@ Require
+        problem_123_pre_z(n)
+    Ensure
+        exists data output_l output_size data_l,
+        __return != 0 &&
+        data != 0 &&
+        0 < output_size && output_size <= 1024 &&
+        output_size == Zlength(output_l) &&
+        1024 == Zlength(data_l) &&
+        sublist(0, output_size, data_l) == output_l &&
+        problem_123_spec_z(n, output_l) &&
+        data_at(&(__return -> data), data) *
+        data_at(&(__return -> size), output_size) *
+        IntArray::full(data, 1024, data_l)
+*/
+{
+    IntArray *out = malloc_int_array_struct();
+    out->size = 0;
+    out->data = malloc_int_array(1024);
+    int *data = out->data;
+    int output_size = 0;
+
+    data[output_size] = 1;
+    output_size = output_size + 1;
+
+    while (n != 1) {
+        
+        if (n % 2 == 1) {
+            
+            data[output_size] = n;
+            output_size++;
+            
+            n = n * 3 + 1;
+        } else {
+            n = n / 2;
+        }
+    }
+
+    sort_int_array(data, output_size, 1024, 1);
+
+    out->size = output_size;
+    return out;
+}

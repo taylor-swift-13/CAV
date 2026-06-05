@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Re-run end-to-end (contract -> eval -> verify -> consolidate) for the tasks whose
-# decimal-parse signed-overflow bug was fixed (see doc/SOURCE_DEFECTS.md 模式 1).
+# Re-run end-to-end (contract -> eval -> verify) for the tasks whose
+# decimal-parse signed-overflow bug was fixed.
 #
 # Inputs were corrected at all three layers (generator / raw / input), so this full
 # flow from raw/<name>.md regenerates a correct, RTE-free input C.

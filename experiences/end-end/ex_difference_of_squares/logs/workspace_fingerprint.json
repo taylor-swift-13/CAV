@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Loop-free function `ex_difference_of_squares` returning `sum * sum - square_sum`.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "scalar",
-    "pattern": "straight_line"
-  }
-}

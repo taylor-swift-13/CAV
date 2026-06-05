@@ -1,4 +1,4 @@
-# Sum Squares
+# Sum Squares 142
 
 ## Problem (HumanEval 142)
 
@@ -15,7 +15,7 @@ For lst = {-1,-5,2,-1,-5}  the output should be -126
 ## Reference Implementation
 
 ```c
-int sum_squares(int* lst, int lst_size){
+int sum_squares_142(int* lst, int lst_size){
     int sum=0;
     for (int i=0;i<lst_size;i++)
         if (i%3==0) sum+=lst[i]*lst[i];

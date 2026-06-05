@@ -1,4 +1,4 @@
-# Solve
+# Solve 84
 
 ## Problem (HumanEval 84)
 
@@ -47,7 +47,7 @@ static char* to_binary_string(int num) {
     return out;
 }
 
-char* solve(int N){
+char* solve_84(int N){
     int sum=0;
     if (N == 0) {
         return to_binary_string(0);

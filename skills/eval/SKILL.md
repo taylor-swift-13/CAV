@@ -3,9 +3,9 @@ name: c-qcp-eval
 description: Evaluate an existing C/QCP implementation against concrete positive/negative cases，把 contract 当语义目标。
 ---
 
-跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 eval-specific 内容。
+跨阶段共用规则（读写边界、效率、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 eval-specific 内容。
 
-按需读：`experiences/general/EVAL/README.md`、`experiences/general/AUDIT/README.md`、`experiences/general/CONTRACT/README.md`。实现、contract 和 `.v` 文件作为只读语义目标。
+按需读：`QualifiedCProgramming/README.md`、`QualifiedCProgramming/tutorial/`、`QualifiedCProgramming/SeparationLogic/examples/`。实现、contract 和 `.v` 文件作为只读语义目标。
 
 阶段职责：eval 负责 spec-test 和整体语义 judge，判断 spec 是否 sound / complete。contract runner 负责 QCP wellformed、companion `.v` 编译、verify 阶段注释检查和 `.v` 假设检查。eval 的 Coq 使用场景是本文件 §4.1 的 `compute_queries`，用于对具体闭式项做 `vm_compute`。
 
@@ -111,7 +111,6 @@ Judge verdict: Pass|Fail|Inconclusive
 - eval 产物只写入当前 eval workspace 的 `cases/`、`evaluation/` 和 `logs/`。
 - negative case 表示具体被拒绝的输入或错误声称的输出/后状态。
 - `Correct` verdict 需要 spec-test 和 LLM judge 都给出决定性通过依据。
-- 经验沉淀属于末尾 consolidate 阶段。
 
 ## 8. 完成判据
 

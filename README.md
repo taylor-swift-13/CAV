@@ -59,13 +59,8 @@
 
 - `skills/contract/SKILL.md`：contract 主流程
 - `skills/verify/SKILL.md`：verify 主流程
-- `experiences/general/README/README.md`：经验文档总入口与职责边界
-- `experiences/general/CONTRACT/README.md`：contract 经验
-- `experiences/general/SYMEXEC/README.md`：symbolic 执行与 witness 对齐经验
-- `experiences/general/ASSERTION/README.md`：`Assert` / `which implies` / bridge assertion 经验
-- `experiences/general/INV/README.md`：循环 invariant 经验
-- `experiences/general/PROOF/README.md`：`proof_manual.v` 手工证明经验
-- `experiences/general/COMPILE/README.md`：Coq 编译与 `goal_check` 校验经验
+- `QualifiedCProgramming/README.md` / `QualifiedCProgramming/tutorial/`：QCP 自带文档
+- `QualifiedCProgramming/SeparationLogic/examples/`：QCP 参考例子
 - `scripts/run_contract.py`：contract 自动执行器
 - `scripts/run_verify.py`：verify 自动执行器
 - `scripts/run_pipeline_many.sh`：批量执行 `contract -> verify`

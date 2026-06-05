@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_negate iterates i from 0 to n-1 over an input IntArray a and an output IntArray out. It preserves the input array contents la, writes each output element to the pointwise integer negation -la[i], allows the loop to execute zero times when n == 0, and relies on the contract overflow guard that every negated input element is within signed 32-bit int range.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

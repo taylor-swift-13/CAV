@@ -1,8 +1,0 @@
-{
-  "semantic_description": "In-place left rotation of an integer array by one position. The function requires n >= 1 and full ownership of an array a containing logical list l of length n. It saves l[0], shifts each element l[i+1] into position i using a for loop over 0 <= i < n - 1, then writes the saved first value into a[n-1]. The output array has the same length n and contains lr where lr[i] = l[i+1] for i < n-1 and lr[n-1] = l[0]. The function mutates the input array and does not allocate memory.",
-  "keywords": {
-    "problem_kind": "search",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Checks whether a nonnegative integer up to eight decimal digits is an Armstrong number. The function first counts decimal digits with one loop, then scans the digits again and uses an inner loop to compute each digit raised to the digit-count power, accumulating the sum without modifying external memory. The result is 1 exactly when the accumulated sum equals the original input; for input 0 the digit count is treated as 1 and the sum loop is skipped.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "scalar",
-    "pattern": "nested_loop"
-  }
-}

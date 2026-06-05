@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Straight-line scalar function with two conditional updates. It initializes m to a, replaces m with b when b is smaller, then replaces m with c when c is smaller, and returns a value equal to one of the three original inputs that is less than or equal to all three original inputs. The function has no loops and does not read or modify heap memory.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "scalar",
-    "pattern": "branch"
-  }
-}

@@ -195,11 +195,9 @@ def run_claude_round(
         return 124, True
 
 
-def run_agent_round(
+def run_kimicode_round(
     *,
-    agent: str,
-    codex_bin: str,
-    claude_bin: str,
+    kimicode_bin: str,
     model: str,
     reasoning_effort: str,
     prompt: str,
@@ -209,10 +207,73 @@ def run_agent_round(
     env: dict[str, str],
     timeout_seconds: int,
 ) -> tuple[int, bool]:
-    """Dispatch one agentic round to codex or claude. Return (exit_code, timed_out)."""
+    """Run one Kimi Code (--print) session. Return (exit_code, timed_out)."""
+    cmd = [
+        kimicode_bin,
+        "--print",
+        "--yolo",
+        "--afk",
+        "--work-dir",
+        str(REPO_ROOT),
+        "--add-dir",
+        str(REPO_ROOT),
+        "--input-format",
+        "text",
+        "--output-format",
+        "stream-json",
+    ]
+    if model:
+        cmd.extend(["--model", model])
+    cmd.append("--no-thinking" if reasoning_effort == "no-thinking" else "--thinking")
+    try:
+        with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
+            proc = subprocess.run(
+                cmd,
+                input=prompt,
+                text=True,
+                stdout=out_f,
+                stderr=err_f,
+                cwd=REPO_ROOT,
+                env=env,
+                timeout=timeout_seconds,
+            )
+        filter_stderr(stderr_log)
+        # Kimi has no -o; mirror stdout into last_message for parity with codex.
+        try:
+            last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
+        except OSError:
+            pass
+        return proc.returncode, False
+    except subprocess.TimeoutExpired:
+        stderr_log.write_text("Kimi Code execution timed out.\n", encoding="utf-8")
+        return 124, True
+
+
+def run_agent_round(
+    *,
+    agent: str,
+    codex_bin: str,
+    claude_bin: str,
+    kimicode_bin: str,
+    model: str,
+    reasoning_effort: str,
+    prompt: str,
+    stdout_jsonl: Path,
+    stderr_log: Path,
+    last_message_path: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> tuple[int, bool]:
+    """Dispatch one agentic round to codex, claude, or kimicode. Return (exit_code, timed_out)."""
     if agent == "claude":
         return run_claude_round(
             claude_bin=claude_bin, model=model, reasoning_effort=reasoning_effort,
+            prompt=prompt, stdout_jsonl=stdout_jsonl, stderr_log=stderr_log,
+            last_message_path=last_message_path, env=env, timeout_seconds=timeout_seconds,
+        )
+    if agent == "kimicode":
+        return run_kimicode_round(
+            kimicode_bin=kimicode_bin, model=model, reasoning_effort=reasoning_effort,
             prompt=prompt, stdout_jsonl=stdout_jsonl, stderr_log=stderr_log,
             last_message_path=last_message_path, env=env, timeout_seconds=timeout_seconds,
         )

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Scalar max-of-two function. It takes two integer parameters, performs a single order-based if branch, and returns either the first input or the second input. The postcondition states that the return value is one of the pre-state inputs and is greater than or equal to both inputs. The function has no loops and does not read or modify heap memory.",
-  "keywords": {
-    "problem_kind": "min_max",
-    "data": "scalar",
-    "pattern": "branch"
-  }
-}

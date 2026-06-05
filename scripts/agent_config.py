@@ -49,6 +49,21 @@ def claude_supports_flag(claude_bin: str, cwd: Path, env: dict[str, str], flag: 
     return flag in proc.stdout
 
 
+def kimicode_reasoning_effort(cli_value: str | None, config_thinking: bool) -> str:
+    """Normalize Kimi's boolean thinking switch into the metrics field.
+
+    Kimi Code exposes ``--thinking`` / ``--no-thinking`` rather than
+    low/medium/high effort. For CLI compatibility, any explicit false-like
+    value disables thinking; other explicit values enable it.
+    """
+    if cli_value is None:
+        return "thinking" if config_thinking else "no-thinking"
+    value = cli_value.strip().lower()
+    if value in {"0", "false", "off", "no", "none", "no-thinking", "disabled"}:
+        return "no-thinking"
+    return "thinking"
+
+
 class Config:
     def __init__(self, data: dict | None):
         self.data = data or {}
@@ -63,12 +78,17 @@ class Config:
     def reasoning_effort(self, builtin: str) -> str:
         return self.data.get("reasoning_effort") or builtin
 
+    def kimicode_thinking(self, builtin: bool) -> bool:
+        v = self.data.get("kimicode_thinking")
+        return v if isinstance(v, bool) else builtin
+
     def solver_model(self, agent: str, builtin: str) -> str:
         """Model for the contract/verify solver, per agent backend."""
         return self._section("models").get(agent) or builtin
 
-    def consolidate_model(self, builtin: str) -> str:
-        return self._section("models").get("consolidate") or builtin
+    def model_display(self, agent: str, model: str) -> str:
+        """Human-readable model label for metrics; falls back to the CLI model id."""
+        return self._section("model_display").get(agent) or model
 
     def bin(self, agent: str, builtin: str) -> str:
         return self._section("bins").get(agent) or builtin
@@ -82,7 +102,7 @@ class Config:
         return self._section("models").get(agent) or builtin
 
     def timeout(self, stage: str, builtin: int) -> int:
-        """Per-stage wall-clock budget (seconds): contract/eval/verify/consolidate."""
+        """Per-stage wall-clock budget (seconds): contract/eval/verify."""
         v = self._section("timeouts").get(stage)
         return v if isinstance(v, int) else builtin
 

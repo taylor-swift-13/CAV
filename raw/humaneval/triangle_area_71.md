@@ -1,4 +1,4 @@
-# Triangle Area
+# Triangle Area 71
 
 ## Problem (HumanEval 71)
 
@@ -8,13 +8,13 @@ Otherwise return -1
 Three sides make a valid triangle when the sum of any two sides is greater 
 than the third side.
 Example:
-triangle_area(3, 4, 5) == 6.00
-triangle_area(1, 2, 10) == -1
+triangle_area_71(3, 4, 5) == 6.00
+triangle_area_71(1, 2, 10) == -1
 
 ## Reference Implementation
 
 ```c
-float triangle_area(float a, float b, float c){
+float triangle_area_71(float a, float b, float c){
     if (a+b<=c || a+c<=b || b+c<=a) return -1;
     float h=(a+b+c)/2;
     float area;

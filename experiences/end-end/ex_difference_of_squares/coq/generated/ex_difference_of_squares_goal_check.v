@@ -1,6 +1,0 @@
-From SimpleC.EE.CAV.verify_20260605_080354v_ex_difference_of_squares Require Import ex_difference_of_squares_goal ex_difference_of_squares_proof_auto ex_difference_of_squares_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include ex_difference_of_squares_proof_auto.
-  Include ex_difference_of_squares_proof_manual.
-End VC_Correctness.

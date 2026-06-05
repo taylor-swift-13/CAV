@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_sign scans an integer array a of length n with a single for loop. For each index i, it writes out[i] to 1 when a[i] is positive, -1 when a[i] is negative, and 0 when a[i] is zero. The input array a is preserved, the output array out is fully overwritten with the sign-coded result, and the loop may execute zero iterations when n is 0.",
-  "keywords": {
-    "problem_kind": "search",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

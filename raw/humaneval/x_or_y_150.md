@@ -1,0 +1,23 @@
+# X Or Y 150
+
+## Problem (HumanEval 150)
+
+A simple program which should return the value of x if n is 
+a prime number && should return the value of y otherwise.
+
+Examples:
+for x_or_y_150(7, 34, 12) == 34
+for x_or_y_150(15, 8, 5) == 5
+
+## Reference Implementation
+
+```c
+int x_or_y_150(int n, int x, int y){
+    bool isp=true;
+    if (n<2) isp=false;
+    for (int i=2;i*i<=n;i++)
+    if (n%i==0) isp=false;
+    if (isp) return x;
+    return y;
+}
+```

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Read-only array scan over indices 0 <= i < n. The function returns 1 from inside the loop if it finds an element l[i] < 0; if the loop completes, it returns 0 and must establish that every element in the whole array segment is nonnegative. The loop may execute zero iterations when n == 0 and the function does not modify memory.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

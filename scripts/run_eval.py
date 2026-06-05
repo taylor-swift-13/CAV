@@ -148,7 +148,7 @@ def build_prompt(
 
 
 def run_agent_once(
-    *, agent: str, codex_bin: str, claude_bin: str, model: str,
+    *, agent: str, codex_bin: str, claude_bin: str, kimicode_bin: str, model: str,
     reasoning_effort: str, prompt: str, logs_dir: Path, run_label: str,
     env: dict[str, str], timeout_seconds: int,
     reasoning_effort_supported: bool,
@@ -168,6 +168,24 @@ def run_agent_once(
             cmd.extend(["--model", model])
         if reasoning_effort and claude_effort_supported:
             cmd.extend(["--effort", reasoning_effort])
+    elif agent == "kimicode":
+        cmd = [
+            kimicode_bin,
+            "--print",
+            "--yolo",
+            "--afk",
+            "--work-dir",
+            str(REPO_ROOT),
+            "--add-dir",
+            str(REPO_ROOT),
+            "--input-format",
+            "text",
+            "--output-format",
+            "stream-json",
+        ]
+        if model:
+            cmd.extend(["--model", model])
+        cmd.append("--no-thinking" if reasoning_effort == "no-thinking" else "--thinking")
     else:
         cmd = [codex_bin, "--dangerously-bypass-approvals-and-sandbox", "exec",
                "--json", "--skip-git-repo-check", "-C", str(REPO_ROOT),
@@ -192,6 +210,8 @@ def run_agent_once(
             last_message_path.write_text(last_message, encoding="utf-8")
         elif stdout_jsonl.exists():
             last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
+    elif agent == "kimicode" and stdout_jsonl.exists():
+        last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
     usage = agent_metrics.parse_usage(agent, stdout_jsonl)
     return rc, usage, stdout_jsonl
 
@@ -348,7 +368,7 @@ def gate_success(workspace_path: Path, num_positive: int, num_negative: int) -> 
 
 
 def write_metrics(path: Path, *, status: str, exit_code: int, start_iso: str,
-                  end_iso: str, wall_seconds: float, model: str, reasoning_effort: str,
+                  end_iso: str, wall_seconds: float, agent: str, model: str, reasoning_effort: str,
                   agent_rounds: int, compute_evaluated: int, verdict: str | None,
                   judge_verdict: str | None,
                   usage: dict[str, int] | None) -> None:
@@ -360,8 +380,9 @@ def write_metrics(path: Path, *, status: str, exit_code: int, start_iso: str,
         f"- Start time: `{start_iso}`",
         f"- End time: `{end_iso}`",
         f"- Wall-clock time (seconds): `{wall_seconds:.2f}`",
-        f"- Model: `{model}`",
-        f"- Reasoning effort: `{reasoning_effort}`",
+        f"- Agent: `{agent}`",
+        f"- Model: `{model or 'n/a'}`",
+        f"- Reasoning effort: `{reasoning_effort or 'n/a'}`",
         f"- Agent rounds: `{agent_rounds}`",
         f"- Compute queries evaluated: `{compute_evaluated}`",
         f"- Spec verdict: `{verdict}`",
@@ -382,7 +403,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--workspace-name")
     p.add_argument("--timestamp")
     p.add_argument("--config", default=None)
-    p.add_argument("--agent", choices=["codex", "claude"], default=None)
+    p.add_argument("--agent", choices=["codex", "claude", "kimicode"], default=None)
     p.add_argument("--model", default=None)
     p.add_argument("--reasoning-effort", default=None)
     p.add_argument("--max-agent-rounds", type=int, default=2,
@@ -406,10 +427,17 @@ def main() -> int:
 
     cfg = agent_config.load(args.config)
     agent = args.agent or cfg.agent("codex")
-    model = args.model or cfg.default_model(agent, DEFAULT_CLAUDE_MODEL if agent == "claude" else DEFAULT_MODEL)
-    reasoning_effort = args.reasoning_effort or cfg.reasoning_effort(DEFAULT_REASONING_EFFORT)
+    builtin_model = DEFAULT_CLAUDE_MODEL if agent == "claude" else ("kimi-code/kimi-for-coding" if agent == "kimicode" else DEFAULT_MODEL)
+    model = args.model or cfg.default_model(agent, builtin_model)
+    metrics_model = cfg.model_display(agent, model)
+    reasoning_effort = (
+        agent_config.kimicode_reasoning_effort(args.reasoning_effort, cfg.kimicode_thinking(True))
+        if agent == "kimicode"
+        else (args.reasoning_effort or cfg.reasoning_effort(DEFAULT_REASONING_EFFORT))
+    )
     codex_bin = cfg.bin("codex", "codex")
     claude_bin = cfg.bin("claude", "claude")
+    kimicode_bin = cfg.bin("kimicode", "kimi")
     num_positive = args.num_positive if args.num_positive is not None else cfg.eval_num("num_positive", 4)
     num_negative = args.num_negative if args.num_negative is not None else cfg.eval_num("num_negative", 4)
 
@@ -440,8 +468,8 @@ def main() -> int:
 
     if args.dry_run:
         write_metrics(metrics_path(workspace_path), status="Success", exit_code=0,
-                      start_iso=iso_now(), end_iso=iso_now(), wall_seconds=0.0, model=model,
-                      reasoning_effort=reasoning_effort, agent_rounds=0, compute_evaluated=0,
+                      start_iso=iso_now(), end_iso=iso_now(), wall_seconds=0.0, model=metrics_model,
+                      agent=agent, reasoning_effort=reasoning_effort, agent_rounds=0, compute_evaluated=0,
                       verdict=None, judge_verdict=None, usage=None)
         emit_log("dry_run=true")
         print(str(workspace_path))
@@ -468,7 +496,7 @@ def main() -> int:
         run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S") + f"_r{rounds}"
         emit_log(f"agent_round={rounds} remaining={remaining}")
         last_rc, usage, _ = run_agent_once(
-            agent=agent, codex_bin=codex_bin, claude_bin=claude_bin, model=model,
+            agent=agent, codex_bin=codex_bin, claude_bin=claude_bin, kimicode_bin=kimicode_bin, model=model,
             reasoning_effort=reasoning_effort, prompt=prompt, logs_dir=logs_dir,
             run_label=run_label, env=env, timeout_seconds=remaining,
             reasoning_effort_supported=reasoning_effort_supported,
@@ -496,7 +524,7 @@ def main() -> int:
     judge_verdict = read_judge_verdict(workspace_path)
     write_metrics(metrics_path(workspace_path), status=status, exit_code=last_rc,
                   start_iso=start_iso, end_iso=iso_now(), wall_seconds=time.time() - start_wall,
-                  model=model, reasoning_effort=reasoning_effort, agent_rounds=rounds,
+                  agent=agent, model=metrics_model, reasoning_effort=reasoning_effort, agent_rounds=rounds,
                   compute_evaluated=compute_evaluated, verdict=verdict,
                   judge_verdict=judge_verdict, usage=usage_total)
     emit_log(

@@ -173,6 +173,7 @@ def write_metrics(
     start_iso: str,
     end_iso: str,
     wall_seconds: float,
+    agent: str,
     model: str,
     reasoning_effort: str,
     prompt_path: Path,
@@ -196,8 +197,9 @@ def write_metrics(
         f"- Start time: `{start_iso}`",
         f"- End time: `{end_iso}`",
         f"- Wall-clock time (seconds): `{wall_seconds:.2f}`",
-        f"- Model: `{model}`",
-        f"- Reasoning effort: `{reasoning_effort}`",
+        f"- Agent: `{agent}`",
+        f"- Model: `{model or 'n/a'}`",
+        f"- Reasoning effort: `{reasoning_effort or 'n/a'}`",
         f"- Output C: `{target_c}`",
         f"- Output V: `{target_v if target_v.exists() else '<not created>'}`",
         f"- Contract syntax check wellformed gate: `{wellformed}` (symexec exit `{wellformed_exit if wellformed_exit is not None else 'n/a'}`)",
@@ -319,7 +321,7 @@ def check_root_header_includes(input_c: Path, workspace_path: Path) -> tuple[boo
         header = Path(include_path).name
         if header not in ROOT_HEADER_INCLUDES:
             continue
-        expected = f"../{header}"
+        expected = header  # headers are co-located in the dataset folder; use bare include
         if include_path != expected:
             line_no = text[:match.start()].count("\n") + 1
             line = lines[line_no - 1].strip() if line_no <= len(lines) else match.group(0)
@@ -329,8 +331,8 @@ def check_root_header_includes(input_c: Path, workspace_path: Path) -> tuple[boo
             )
     if findings:
         log_path.write_text(
-            "Contract include gate failed: root headers must be referenced from the repo root.\n"
-            "Files under input/ and annotated/ are both one directory below the repo root, so use ../<header>.\n"
+            "Contract include gate failed: root headers must be included by bare name.\n"
+            "The verification headers are copied into each dataset folder, so use `#include \"<header>\"` with no path.\n"
             + "\n".join(f"- {item}" for item in findings)
             + "\n",
             encoding="utf-8",
@@ -463,20 +465,22 @@ def snapshot_generated_inputs(workspace_path: Path, input_c: Path, input_v: Path
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run Codex externally to produce contract-stage inputs from raw markdown.")
+    parser = argparse.ArgumentParser(description="Run an agent to produce contract-stage inputs from raw markdown.")
     parser.add_argument("input_md", help="Path to raw markdown input, relative to repo root or absolute.")
     parser.add_argument("function_name_positional", nargs="?", help="Optional target function name. Kept for CLI compatibility.")
     parser.add_argument("--function-name", help="Explicit target function name. Defaults to markdown stem.")
     parser.add_argument("--skill", default=str(DEFAULT_SKILL), help="Path to contract skill markdown.")
     parser.add_argument("--workspace-name", help="Explicit workspace stem; defaults to markdown stem.")
+    parser.add_argument("--dataset", default=None, help="Dataset label; writes input under input/<dataset>/.")
     parser.add_argument("--timestamp", help="Explicit contract timestamp; defaults to current local time.")
     parser.add_argument("--config", default=None, help="Path to agents.json config.")
-    parser.add_argument("--agent", choices=["codex", "claude"], default=None)
+    parser.add_argument("--agent", choices=["codex", "claude", "kimicode"], default=None)
     parser.add_argument("--model", default=None, help="Agent model.")
     parser.add_argument("--reasoning-effort", default=None, help="Agent reasoning effort.")
-    parser.add_argument("--dry-run", action="store_true", help="Prepare workspace and prompt, but do not invoke Codex.")
+    parser.add_argument("--dry-run", action="store_true", help="Prepare workspace and prompt, but do not invoke the agent.")
     parser.add_argument("--codex-bin", default=None, help="Codex CLI binary.")
     parser.add_argument("--claude-bin", default=None, help="Claude CLI binary.")
+    parser.add_argument("--kimicode-bin", default=None, help="Kimi Code CLI binary.")
     parser.add_argument("--timeout-seconds", type=int, default=300, help="Kill the external agent run if it exceeds this wall-clock timeout.")
     parser.add_argument("--restart-context-file", default=None, help="File whose content (e.g. eval critic findings) is injected into the prompt on a re-run.")
     return parser
@@ -505,10 +509,17 @@ def main() -> int:
 
     cfg = agent_config.load(args.config)
     agent = args.agent or cfg.agent("codex")
-    model = args.model or cfg.default_model(agent, DEFAULT_CLAUDE_MODEL if agent == "claude" else DEFAULT_MODEL)
-    reasoning_effort = args.reasoning_effort or cfg.reasoning_effort(DEFAULT_REASONING_EFFORT)
+    builtin_model = DEFAULT_CLAUDE_MODEL if agent == "claude" else ("kimi-code/kimi-for-coding" if agent == "kimicode" else DEFAULT_MODEL)
+    model = args.model or cfg.default_model(agent, builtin_model)
+    metrics_model = cfg.model_display(agent, model)
+    reasoning_effort = (
+        agent_config.kimicode_reasoning_effort(args.reasoning_effort, cfg.kimicode_thinking(True))
+        if agent == "kimicode"
+        else (args.reasoning_effort or cfg.reasoning_effort(DEFAULT_REASONING_EFFORT))
+    )
     codex_bin = args.codex_bin or cfg.bin("codex", "codex")
     claude_bin = args.claude_bin or cfg.bin("claude", "claude")
+    kimicode_bin = args.kimicode_bin or cfg.bin("kimicode", "kimi")
 
     workspace_stem = args.workspace_name or raw_path.stem
     workspace_timestamp = args.timestamp or timestamp_now()
@@ -517,8 +528,15 @@ def main() -> int:
     emit_log(f"workspace={workspace_path}")
 
     function_name = args.function_name or args.function_name_positional or raw_path.stem
-    target_c_path = INPUT_ROOT / f"{raw_path.stem}.c"
-    target_v_path = INPUT_ROOT / f"{raw_path.stem}.v"
+    _input_dir = (INPUT_ROOT / args.dataset) if getattr(args, "dataset", None) else INPUT_ROOT
+    _input_dir.mkdir(parents=True, exist_ok=True)
+    # Co-locate verification headers so generated C can include them by bare name.
+    for _h in ROOT_HEADER_INCLUDES:
+        _src = REPO_ROOT / _h
+        if _src.exists() and not (_input_dir / _h).exists():
+            shutil.copy2(_src, _input_dir / _h)
+    target_c_path = _input_dir / f"{raw_path.stem}.c"
+    target_v_path = _input_dir / f"{raw_path.stem}.v"
     emit_log(f"input_md={raw_path}")
     emit_log(f"function_name={function_name}")
     emit_log(f"target_c={target_c_path}")
@@ -572,7 +590,8 @@ def main() -> int:
             start_iso=iso_now(),
             end_iso=iso_now(),
             wall_seconds=0.0,
-            model=model,
+            agent=agent,
+            model=metrics_model,
             reasoning_effort=reasoning_effort,
             prompt_path=prompt_path,
             stdout_jsonl=stdout_jsonl,
@@ -668,6 +687,38 @@ def main() -> int:
                 if last_message is not None:
                     last_message_path.write_text(last_message, encoding="utf-8")
                 elif stdout_jsonl.exists():
+                    last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
+            elif agent == "kimicode":
+                cmd = [
+                    kimicode_bin,
+                    "--print",
+                    "--yolo",
+                    "--afk",
+                    "--work-dir",
+                    str(REPO_ROOT),
+                    "--add-dir",
+                    str(REPO_ROOT),
+                    "--input-format",
+                    "text",
+                    "--output-format",
+                    "stream-json",
+                ]
+                if model:
+                    cmd.extend(["--model", model])
+                cmd.append("--no-thinking" if reasoning_effort == "no-thinking" else "--thinking")
+                with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
+                    proc = subprocess.run(
+                        cmd,
+                        input=prompt,
+                        text=True,
+                        stdout=out_f,
+                        stderr=err_f,
+                        cwd=REPO_ROOT,
+                        timeout=round_timeout,
+                        env=agent_env,
+                    )
+                proc_returncode = proc.returncode
+                if stdout_jsonl.exists():
                     last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
             else:
                 cmd = [
@@ -776,7 +827,8 @@ def main() -> int:
         start_iso=overall_start_iso,
         end_iso=end_iso,
         wall_seconds=time.time() - overall_start_wall,
-        model=model,
+        agent=agent,
+        model=metrics_model,
         reasoning_effort=reasoning_effort,
         prompt_path=prompt_path,
         stdout_jsonl=stdout_jsonl,

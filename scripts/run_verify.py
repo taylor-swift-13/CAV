@@ -22,7 +22,6 @@ import coq_runner
 
 DEFAULT_SKILL = REPO_ROOT / "skills" / "verify" / "SKILL.md"
 OUTPUT_ROOT = REPO_ROOT / "output"
-EXAMPLES_ROOT = REPO_ROOT / "experiences" / "end-end"
 DEFAULT_MODEL = "gpt-5.4"
 DEFAULT_CLAUDE_MODEL = "sonnet"
 DEFAULT_REASONING_EFFORT = "medium"
@@ -115,6 +114,17 @@ def paired_input_v(input_path: Path) -> Path | None:
     return None
 
 
+def imported_coq_dependency_paths(input_path: Path) -> list[Path]:
+    text = input_path.read_text(encoding="utf-8", errors="replace")
+    modules = sorted(set(re.findall(r"Import\s+Coq\s+Require\s+Import\s+([A-Za-z0-9_]+)", text)))
+    deps: list[Path] = []
+    for module in modules:
+        candidate = input_path.parent / f"{module}.v"
+        if candidate.exists():
+            deps.append(candidate)
+    return deps
+
+
 def _input_lines(input_path: Path, input_v_path: Path | None, function_name: str, workspace_path: Path, annotated_c_path: Path) -> str:
     input_v = f"`{input_v_path}`" if input_v_path else "`<not provided>`"
     return (
@@ -123,17 +133,6 @@ def _input_lines(input_path: Path, input_v_path: Path | None, function_name: str
         f"- Target function: `{function_name}`\n"
         f"- Workspace: `{workspace_path}`\n"
         f"- Active annotated C: `{annotated_c_path}`\n"
-    )
-
-
-def retrieval_lines(workspace_path: Path) -> str:
-    fingerprint = workspace_path / "logs" / "workspace_fingerprint.json"
-    return (
-        "Retrieval requirement:\n"
-        f"- Before manual proof edits, run: `python3 scripts/search_fingerprint.py --fingerprint {fingerprint} --scope all --min-keyword-matches 1 --prefer-stage PROOF --top 5 --format markdown`.\n"
-        "- Append the query, top 1-3 candidate paths, expanded files, and adopted/rejected proof patterns to `logs/proof_reasoning.md`.\n"
-        "- If the same theorem or same class of `coqc` error fails twice, run retrieval again before more tactic changes.\n"
-        "- Do not write `Final Result: Fail` for `proof_manual_has_obligations`, `Cannot find witness`, rewrite/unification, `entailer!`, or `lia` failures unless this retrieval record exists and the blocker is genuinely unrepairable in the current workspace."
     )
 
 
@@ -152,9 +151,7 @@ def build_prompt(
         "",
         "Persistence requirement: do not finish this agent run merely because a repairable gate failed. If symexec/coqc/proof/manual-obligation feedback points to a concrete annotation or proof edit inside this workspace, keep editing and rerunning the relevant gate until success, a genuinely unrepairable contract/input blocker is found, or the external timeout stops you. A single new blocker is work to continue, not a reason to write Final Result: Fail.",
         "",
-        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit experiences/, doc/, skills/, scripts/, historical fingerprints, or unrelated inputs.",
-        "",
-        retrieval_lines(workspace_path),
+        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit skills/, scripts/, QualifiedCProgramming/, or unrelated inputs.",
         "",
         "Inputs:",
         _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
@@ -181,9 +178,7 @@ def build_proof_only_prompt(
         "",
         "Persistence requirement: proof-only mode must keep proving while proof_manual.v can still be edited. Do not exit just because proof_manual_has_obligations remains, one theorem fails under coqc, or a tactic needs adjustment; continue the edit/compile loop until proof_manual.v has no placeholders and goal_check.v compiles, or until you identify a genuinely unprovable VC under the current contract.",
         "",
-        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit experiences/, doc/, skills/, scripts/, historical fingerprints, or unrelated inputs.",
-        "",
-        retrieval_lines(workspace_path),
+        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit skills/, scripts/, QualifiedCProgramming/, or unrelated inputs.",
         "",
         "Mode: proof-only (also follow MODE_PROOF_ONLY.md per SKILL.md §4.5c).",
         "",
@@ -206,6 +201,7 @@ def write_metrics(
     start_iso: str,
     end_iso: str,
     wall_clock_seconds: float,
+    agent: str,
     model: str,
     reasoning_effort: str,
     usage: dict[str, int] | None,
@@ -215,7 +211,6 @@ def write_metrics(
     last_message_path: Path,
     input_c: Path,
     input_v: Path | None,
-    export_examples: bool,
 ) -> None:
     lines = [
         "# Verify Metrics",
@@ -227,11 +222,11 @@ def write_metrics(
         f"- Start time: `{start_iso}`",
         f"- End time: `{end_iso}`",
         f"- Wall-clock time (seconds): `{wall_clock_seconds:.2f}`",
-        f"- Model: `{model}`",
-        f"- Reasoning effort: `{reasoning_effort}`",
+        f"- Agent: `{agent}`",
+        f"- Model: `{model or 'n/a'}`",
+        f"- Reasoning effort: `{reasoning_effort or 'n/a'}`",
         f"- Input C: `{input_c}`",
         f"- Input V: `{input_v if input_v else '<not provided>'}`",
-        f"- Export examples: `{str(export_examples).lower()}`",
         f"- Prompt file: `{prompt_path}`",
         f"- Agent stdout: `{stdout_jsonl}`",
         f"- Agent stderr: `{stderr_log}`",
@@ -281,7 +276,7 @@ def verify_retry_feedback(attempt: int, detail: str, workspace_path: Path, funct
         f"- Proof manual: `{generated_dir / f'{function_name}_proof_manual.v'}`",
         f"- Goal check: `{generated_dir / f'{function_name}_goal_check.v'}`",
         "",
-        "Required next action: continue inside this same workspace until the concrete blocker is fixed. If this is a proof/manual-obligation or coqc blocker, first run `python3 scripts/search_fingerprint.py --fingerprint " + str(workspace_path / "logs" / "workspace_fingerprint.json") + " --scope all --min-keyword-matches 1 --prefer-stage PROOF --top 5 --format markdown` and record the candidates in `logs/proof_reasoning.md`. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
+        "Required next action: continue inside this same workspace until the concrete blocker is fixed. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
     ])
 
 
@@ -386,70 +381,6 @@ def source_integrity_gate(
     return True, f"source_integrity_success:{log_path}"
 
 
-FINGERPRINT_KEYS = ("problem_kind", "data", "pattern")
-FINGERPRINT_VOCAB = {
-    "problem_kind": {
-        "identity", "min_max", "count", "sum", "product", "search", "compare",
-        "transform", "partition", "sort", "prefix", "dp", "math",
-    },
-    "data": {"scalar", "array", "string", "matrix", "linked_list", "tree", "graph"},
-    "pattern": {
-        "straight_line", "branch", "single_loop", "nested_loop", "two_pointers",
-        "sliding_window", "prefix_scan", "binary_search", "recursion", "state_machine",
-    },
-}
-
-
-def _fingerprint_values(value: object) -> list[str]:
-    if isinstance(value, str):
-        return [value]
-    if isinstance(value, list):
-        return [x for x in value if isinstance(x, str)]
-    return []
-
-
-def fingerprint_gate(workspace_path: Path, function_name: str) -> tuple[bool, str]:
-    log_path = workspace_path / "logs" / "fingerprint_gate.log"
-    path = workspace_path / "logs" / "workspace_fingerprint.json"
-    details: list[str] = []
-    if not path.exists():
-        details.append(f"missing fingerprint: {path}")
-    else:
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            details.append(f"fingerprint is not valid JSON: {exc}")
-        else:
-            allowed_top = {"semantic_description", "keywords"}
-            extra_top = sorted(set(data) - allowed_top)
-            if extra_top:
-                details.append(f"fingerprint has unsupported top-level fields: {', '.join(extra_top)}")
-            value = data.get("semantic_description")
-            if not isinstance(value, str) or not value.strip():
-                details.append("fingerprint field `semantic_description` must be a non-empty string")
-            keywords = data.get("keywords")
-            if not isinstance(keywords, dict) or not keywords:
-                details.append("fingerprint field `keywords` must be a non-empty object")
-            else:
-                extra_keys = sorted(set(keywords) - set(FINGERPRINT_KEYS))
-                if extra_keys:
-                    details.append(f"fingerprint keywords has unsupported keys: {', '.join(extra_keys)}")
-                for key in FINGERPRINT_KEYS:
-                    values = _fingerprint_values(keywords.get(key))
-                    if not values:
-                        details.append(f"fingerprint keywords `{key}` must be a non-empty string or string list")
-                        continue
-                    invalid = sorted(v for v in values if v not in FINGERPRINT_VOCAB[key])
-                    if invalid:
-                        details.append(f"fingerprint keywords `{key}` has unsupported values: {', '.join(invalid)}")
-
-    if details:
-        log_path.write_text("Fingerprint gate failed:\n- " + "\n- ".join(details) + "\n", encoding="utf-8")
-        return False, f"fingerprint_failed:{log_path}"
-    log_path.write_text("Fingerprint gate passed.\n", encoding="utf-8")
-    return True, f"fingerprint_success:{log_path}"
-
-
 def symexec_freshness_gate(
     *,
     workspace_path: Path,
@@ -552,7 +483,6 @@ def verify_audit_check(
             input_v_path=input_v_path,
             annotated_c_path=annotated_c_path,
         ),
-        fingerprint_gate(workspace_path, function_name),
         symexec_freshness_gate(
             workspace_path=workspace_path,
             annotated_c_path=annotated_c_path,
@@ -563,50 +493,6 @@ def verify_audit_check(
     if failures:
         return False, ";".join(failures)
     return True, ";".join(detail for _, detail in checks)
-
-
-def copy_if_exists(src: Path, dst: Path) -> None:
-    if not src.exists():
-        return
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, dst)
-
-
-def export_example_if_needed(workspace_path: Path, function_name: str) -> tuple[bool, str]:
-    """On verify success, copy the workspace into experiences/end-end/<name>/.
-
-    Keeps only the .v / .c / reasoning artifacts, never the compile
-    intermediates.
-    """
-    target_dir = EXAMPLES_ROOT / function_name
-    if target_dir.exists():
-        return False, f"skip_existing:{target_dir}"
-    completed, detail = verify_workspace_completed(workspace_path)
-    if not completed:
-        return False, f"skip_incomplete_verify:{detail}"
-    generated_dir = workspace_path / "coq" / "generated"
-    if not (generated_dir / f"{function_name}_proof_manual.v").exists():
-        return False, f"missing_proof_manual:{generated_dir}/{function_name}_proof_manual.v"
-
-    target_dir.mkdir(parents=True, exist_ok=True)
-    original_dir = workspace_path / "original"
-    logs_dir = workspace_path / "logs"
-    annotated_c = REPO_ROOT / "annotated" / f"{workspace_path.name}.c"
-
-    copy_if_exists(original_dir / f"{function_name}.c", target_dir / "original" / f"{function_name}.c")
-    copy_if_exists(original_dir / f"{function_name}.v", target_dir / "original" / f"{function_name}.v")
-    copy_if_exists(annotated_c, target_dir / "annotated" / f"{function_name}.c")
-    for src in sorted(generated_dir.glob("*.v")):
-        copy_if_exists(src, target_dir / "coq" / "generated" / src.name)
-    for fname in ("workspace_fingerprint.json", "annotation_reasoning.md", "proof_reasoning.md", "issues.md"):
-        copy_if_exists(logs_dir / fname, target_dir / "logs" / fname)
-
-    # Keep only sources: drop any copied compile intermediates and the metrics file.
-    coq_runner.clean_compile_artifacts(target_dir)
-    metrics = target_dir / "logs" / "metrics.md"
-    if metrics.exists():
-        metrics.unlink()
-    return True, target_dir.as_posix()
 
 
 def strip_c_comments(text: str) -> str:
@@ -624,24 +510,6 @@ def is_loop_free_candidate(input_path: Path) -> tuple[bool, str]:
     if not re.search(r"\b\w+(?:\s*\*)?\s+\w+\s*\([^)]*\)\s*\{", text):
         return False, "not_simple_function"
     return True, "loop_free"
-
-
-def update_trivial_fingerprint(workspace_path: Path, function_name: str, input_path: Path) -> None:
-    fingerprint_path = workspace_path / "logs" / "workspace_fingerprint.json"
-    text = strip_c_comments(input_path.read_text(encoding="utf-8", errors="replace"))
-    returns = [x.strip() for x in re.findall(r"\breturn\s+([^;]+);", text)]
-    returned = ", ".join(f"`{x}`" for x in returns) if returns else "scalar expression(s)"
-    pattern = "branch" if re.search(r"\bif\b", text) else "straight_line"
-    data_kind = "linked_list" if "sll" in input_path.read_text(encoding="utf-8", errors="replace") else ("array" if "[" in text else "scalar")
-    data = {
-        "semantic_description": f"Loop-free function `{function_name}` returning {returned}.",
-    }
-    data["keywords"] = {
-        "problem_kind": "math",
-        "data": data_kind,
-        "pattern": pattern,
-    }
-    fingerprint_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def run_symexec(workspace_path: Path, annotated_c_path: Path, function_name: str, timeout_seconds: int = 120) -> tuple[int, str, str]:
@@ -792,8 +660,7 @@ def compile_generated(workspace_path: Path, function_name: str, input_v_path: Pa
             if not ok:
                 return False, logs
 
-        if input_v_path is not None:
-            original_v = original_dir / input_v_path.name
+        for original_v in sorted(original_dir.glob("*.v")):
             rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
             logs.append(f"$ coqc {original_v}\nrc={rc}\n{out}{err}")
             if rc != 0:
@@ -820,7 +687,6 @@ def try_trivial_fast_path(
     function_name: str,
     model: str,
     reasoning_effort: str,
-    export_examples: bool,
     start_iso: str,
     start_wall: float,
 ) -> tuple[bool, int]:
@@ -838,7 +704,6 @@ def try_trivial_fast_path(
     last_message = logs_dir / "deterministic_fast_path_last_message.txt"
     prompt_log.write_text("deterministic loop-free fast path; no external agent invoked\n", encoding="utf-8")
     emit_log(f"trivial_fast_path_start detail={detail}")
-    update_trivial_fingerprint(workspace_path, function_name, input_path)
 
     rc, symout, symerr = run_symexec(workspace_path, annotated_c_path, function_name)
     stdout_parts = ["# symexec\n", symout]
@@ -896,6 +761,7 @@ def try_trivial_fast_path(
         start_iso=start_iso,
         end_iso=iso_now(),
         wall_clock_seconds=time.time() - start_wall,
+        agent="deterministic-fast-path",
         model=model,
         reasoning_effort=reasoning_effort,
         usage=None,
@@ -905,11 +771,7 @@ def try_trivial_fast_path(
         last_message_path=last_message,
         input_c=input_path,
         input_v=input_v_path,
-        export_examples=export_examples,
     )
-    if export_examples:
-        exported, export_detail = export_example_if_needed(workspace_path, function_name)
-        emit_log(("examples_exported=" if exported else "examples_export_skipped=") + export_detail)
     emit_log("trivial_fast_path_success")
     return True, 0
 
@@ -928,18 +790,17 @@ def bootstrap_workspace(workspace_path: Path, input_path: Path, input_v_path: Pa
     if input_v_path is not None:
         dst_v = workspace_path / "original" / input_v_path.name
         shutil.copy2(input_v_path, dst_v)
+    for dep_v in imported_coq_dependency_paths(input_path):
+        dst_v = workspace_path / "original" / dep_v.name
+        if input_v_path is not None and dep_v.resolve() == input_v_path.resolve():
+            continue
+        shutil.copy2(dep_v, dst_v)
 
-    fingerprint_path = workspace_path / "logs" / "workspace_fingerprint.json"
-    fingerprint = {
-        "semantic_description": "",
-        "keywords": {},
-    }
-    fingerprint_path.write_text(json.dumps(fingerprint, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return annotated_c
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run Codex externally to execute the full verify workflow.")
+    parser = argparse.ArgumentParser(description="Run an agent to execute the full verify workflow.")
     parser.add_argument("input_c", help="Path to input C file, relative to repo root or absolute.")
     parser.add_argument("function_name_positional", nargs="?", help="Optional function name to verify. Kept for CLI compatibility.")
     parser.add_argument("--function-name", help="Function name to verify. Preferred form.")
@@ -952,16 +813,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Agent reasoning effort. Defaults to config, else medium.",
     )
-    parser.add_argument("--dry-run", action="store_true", help="Prepare workspace and prompt, but do not invoke Codex.")
-    parser.add_argument(
-        "--export-examples",
-        action="store_true",
-        help="If verify succeeds, export the workspace into experiences/end-end/<function_name>/ unless that example already exists.",
-    )
+    parser.add_argument("--dry-run", action="store_true", help="Prepare workspace and prompt, but do not invoke the agent.")
     parser.add_argument("--config", default=None, help="Path to agents.json config.")
-    parser.add_argument("--agent", choices=["codex", "claude"], default=None)
+    parser.add_argument("--agent", choices=["codex", "claude", "kimicode"], default=None)
     parser.add_argument("--codex-bin", default=None, help="Codex CLI binary.")
     parser.add_argument("--claude-bin", default=None, help="Claude CLI binary.")
+    parser.add_argument("--kimicode-bin", default=None, help="Kimi Code CLI binary.")
     parser.add_argument("--timeout-seconds", type=int, default=3600, help="Kill the external agent run if it exceeds this wall-clock timeout.")
     parser.add_argument("--restart-context-file", default=None, help="File whose content (e.g. audit check feedback) is injected into the round-1 prompt on a re-run.")
     return parser
@@ -973,10 +830,17 @@ def main() -> int:
 
     cfg = agent_config.load(args.config)
     agent = args.agent or cfg.agent("codex")
-    model = args.model or cfg.default_model(agent, DEFAULT_CLAUDE_MODEL if agent == "claude" else DEFAULT_MODEL)
-    reasoning_effort = args.reasoning_effort or cfg.reasoning_effort(DEFAULT_REASONING_EFFORT)
+    builtin_model = DEFAULT_CLAUDE_MODEL if agent == "claude" else ("kimi-code/kimi-for-coding" if agent == "kimicode" else DEFAULT_MODEL)
+    model = args.model or cfg.default_model(agent, builtin_model)
+    metrics_model = cfg.model_display(agent, model)
+    reasoning_effort = (
+        agent_config.kimicode_reasoning_effort(args.reasoning_effort, cfg.kimicode_thinking(True))
+        if agent == "kimicode"
+        else (args.reasoning_effort or cfg.reasoning_effort(DEFAULT_REASONING_EFFORT))
+    )
     codex_bin = args.codex_bin or cfg.bin("codex", "codex")
     claude_bin = args.claude_bin or cfg.bin("claude", "claude")
+    kimicode_bin = args.kimicode_bin or cfg.bin("kimicode", "kimi")
 
     input_path = Path(args.input_c)
     if not input_path.is_absolute():
@@ -1046,7 +910,8 @@ def main() -> int:
             start_iso=iso_now(),
             end_iso=iso_now(),
             wall_clock_seconds=0.0,
-            model=model,
+            agent=agent,
+            model=metrics_model,
             reasoning_effort=reasoning_effort,
             usage=None,
             prompt_path=prompt_path,
@@ -1055,7 +920,6 @@ def main() -> int:
             last_message_path=last_message_path,
             input_c=input_path,
             input_v=input_v_path,
-            export_examples=args.export_examples,
         )
         emit_log("dry_run=true")
         print(str(workspace_path))
@@ -1069,9 +933,8 @@ def main() -> int:
         input_path=input_path,
         input_v_path=input_v_path,
         function_name=function_name,
-        model=model,
+        model=metrics_model,
         reasoning_effort=reasoning_effort,
-        export_examples=args.export_examples,
         start_iso=overall_start_iso,
         start_wall=overall_start_wall,
     )
@@ -1195,6 +1058,38 @@ def main() -> int:
                     last_message_path.write_text(last_message, encoding="utf-8")
                 elif stdout_jsonl.exists():
                     last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
+            elif agent == "kimicode":
+                cmd = [
+                    kimicode_bin,
+                    "--print",
+                    "--yolo",
+                    "--afk",
+                    "--work-dir",
+                    str(REPO_ROOT),
+                    "--add-dir",
+                    str(REPO_ROOT),
+                    "--input-format",
+                    "text",
+                    "--output-format",
+                    "stream-json",
+                ]
+                if model:
+                    cmd.extend(["--model", model])
+                cmd.append("--no-thinking" if reasoning_effort == "no-thinking" else "--thinking")
+                with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
+                    proc = subprocess.run(
+                        cmd,
+                        input=prompt,
+                        text=True,
+                        stdout=out_f,
+                        stderr=err_f,
+                        cwd=REPO_ROOT,
+                        timeout=round_timeout,
+                        env=agent_env,
+                    )
+                proc_returncode = proc.returncode
+                if stdout_jsonl.exists():
+                    last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
             else:
                 cmd = [
                     codex_bin,
@@ -1257,12 +1152,6 @@ def main() -> int:
         )
         if completed:
             emit_log(f"verify_completed={detail}")
-            if args.export_examples:
-                exported, export_detail = export_example_if_needed(workspace_path, function_name)
-                if exported:
-                    emit_log(f"examples_exported={export_detail}")
-                else:
-                    emit_log(f"examples_export_skipped={export_detail}")
             proc_returncode = 0
             break
 
@@ -1282,7 +1171,7 @@ def main() -> int:
             verify_retry_feedback(attempt, detail, workspace_path, function_name),
         )
 
-    # experiences/general/COMPILE/README.md §10: drop coqc intermediates (.vo/.glob/.aux)
+    # Drop coqc intermediates (.vo/.glob/.aux).
     # from workspace dirs, keeping .v/.c sources. Never touches the shared QCP tree.
     removed = coq_runner.clean_compile_artifacts(workspace_path / "coq")
     removed += coq_runner.clean_compile_artifacts(workspace_path / "original", recursive=False)
@@ -1297,6 +1186,7 @@ def main() -> int:
         start_iso=overall_start_iso,
         end_iso=overall_end_iso,
         wall_clock_seconds=time.time() - overall_start_wall,
+        agent=agent,
         model=model,
         reasoning_effort=reasoning_effort,
         usage=usage_total,
@@ -1306,7 +1196,6 @@ def main() -> int:
         last_message_path=last_message_path,
         input_c=input_path,
         input_v=input_v_path,
-        export_examples=args.export_examples,
     )
 
     emit_log(f"stdout_jsonl={stdout_jsonl}")

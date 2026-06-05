@@ -1,0 +1,29 @@
+# Specialfilter 146
+
+## Problem (HumanEval 146)
+
+Write a function that takes a vector of numbers as input && returns 
+the number of elements in the vector that are greater than 10 && both 
+first && last digits of a number are odd (1, 3, 5, 7, 9).
+For example:
+specialFilter_146({15, -73, 14, -15}) => 1 
+specialFilter_146({33, -2, -3, 45, 21, 109}) => 2
+
+## Reference Implementation
+
+```c
+int specialFilter_146(int* nums, int nums_size){
+    int num=0;
+    for (int i=0;i<nums_size;i++)
+    if (nums[i]>10)
+    {
+        int first = nums[i];
+        int last = nums[i] % 10;
+        while (first >= 10) {
+            first /= 10;
+        }
+        if (first % 2 == 1 && last % 2 == 1) num+=1;
+    }
+    return num;
+}
+```
