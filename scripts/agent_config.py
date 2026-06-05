@@ -93,10 +93,6 @@ class Config:
     def bin(self, agent: str, builtin: str) -> str:
         return self._section("bins").get(agent) or builtin
 
-    def eval_num(self, key: str, builtin: int) -> int:
-        v = self._section("eval").get(key)
-        return v if isinstance(v, int) else builtin
-
     def default_model(self, agent: str, builtin: str) -> str:
         """Default model for non-solver single-stage runs, per agent backend."""
         return self._section("models").get(agent) or builtin

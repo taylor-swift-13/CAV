@@ -8,7 +8,6 @@ SKIP_EVAL=0
 FORCE=0
 DRY_RUN=0
 JOBS=1
-CONTRACT_ROUNDS=2
 # Empty = defer to config/agents.json `timeouts` (run_pipeline.py resolves them).
 # Set via the matching flag to override for this run.
 CONTRACT_TIMEOUT=""
@@ -30,9 +29,8 @@ By default each item uses the full run_pipeline flow:
   contract -> eval -> verify
 
 Options:
-  --dataset NAME         raw/<dataset>/<name>.md + tags workspaces. Default: algo.
+  --dataset NAME         Read raw/<dataset>/<name>.md; generated input goes under input/<dataset>_<timestamp>/. Default: algo.
   --jobs N, -j N         Run up to N names concurrently. Default: 1.
-  --contract-rounds N    Passed to run_pipeline.py. Default: 2.
   --contract-timeout N   Passed to run_pipeline.py. Default: 300.
   --eval-timeout N       Passed to run_pipeline.py. Default: 900.
   --verify-timeout N     Passed to run_pipeline.py. Default: 3600.
@@ -74,15 +72,6 @@ while [[ $# -gt 0 ]]; do
         exit 2
       fi
       JOBS="$2"
-      shift 2
-      ;;
-    --contract-rounds)
-      if [[ $# -lt 2 ]]; then
-        echo "missing value for $1" >&2
-        usage >&2
-        exit 2
-      fi
-      CONTRACT_ROUNDS="$2"
       shift 2
       ;;
     --contract-timeout)
@@ -181,11 +170,6 @@ if ! [[ "$JOBS" =~ ^[0-9]+$ ]] || [[ "$JOBS" -lt 1 ]]; then
   exit 2
 fi
 
-if ! [[ "$CONTRACT_ROUNDS" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_ROUNDS" -lt 1 ]]; then
-  echo "--contract-rounds must be a positive integer: $CONTRACT_ROUNDS" >&2
-  exit 2
-fi
-
 # Timeouts default to empty (defer to config). Validate only when explicitly set.
 if [[ -n "$CONTRACT_TIMEOUT" ]] && { ! [[ "$CONTRACT_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_TIMEOUT" -lt 1 ]]; }; then
   echo "--contract-timeout must be a positive integer: $CONTRACT_TIMEOUT" >&2
@@ -223,7 +207,6 @@ run_one() {
   fi
 
   local cmd=(python3 "$PIPELINE_SCRIPT" "$RAW_PATH" --function-name "$name" --dataset "$DATASET")
-  cmd+=(--contract-rounds "$CONTRACT_ROUNDS")
   # Only pass a timeout flag when set; otherwise run_pipeline.py uses config/agents.json.
   [[ -n "$CONTRACT_TIMEOUT" ]] && cmd+=(--contract-timeout "$CONTRACT_TIMEOUT")
   [[ -n "$EVAL_TIMEOUT" ]] && cmd+=(--eval-timeout "$EVAL_TIMEOUT")

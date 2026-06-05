@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Eval-stage runner: the critic that checks whether a contract correctly
-characterizes an implementation, using concrete positive/negative cases.
+characterizes an implementation.
 
 Mirrors ``run_contract.py``: bootstrap a workspace, build a prompt around
 ``skills/eval/SKILL.md``, run the agent (codex/claude), and gate on
@@ -105,7 +105,7 @@ def final_result_path(workspace_path: Path) -> Path:
 
 
 def bootstrap_workspace(workspace_path: Path, input_c: Path, input_v: Path | None) -> None:
-    for sub in ("logs", "original", "cases", "evaluation"):
+    for sub in ("logs", "original", "evaluation"):
         (workspace_path / sub).mkdir(parents=True, exist_ok=True)
     shutil.copy2(input_c, workspace_path / "original" / input_c.name)
     if input_v is not None and input_v.exists():
@@ -114,8 +114,7 @@ def bootstrap_workspace(workspace_path: Path, input_c: Path, input_v: Path | Non
 
 def build_prompt(
     *, skill_path: Path, input_c: Path, input_v: Path | None, function_name: str,
-    workspace_path: Path, num_positive: int, num_negative: int,
-    compute_results: Path | None,
+    workspace_path: Path, compute_results: Path | None,
 ) -> str:
     v_line = f"- Companion V: `{input_v}`\n" if input_v and input_v.exists() else ""
     lines = [
@@ -129,15 +128,12 @@ def build_prompt(
     lines += [
         f"- Target function: `{function_name}`",
         f"- Workspace: `{workspace_path}`",
-        f"- Cases directory: `{workspace_path / 'cases'}`",
         f"- Evaluation directory: `{workspace_path / 'evaluation'}`",
-        f"- Required positive cases: `{num_positive}`",
-        f"- Required negative cases: `{num_negative}`",
         "",
         "Stage boundary:",
-        "- Eval only judges semantic adequacy by spec-test and the final LLM judge.",
+        "- Eval only judges semantic adequacy by final LLM judge and optional compute_queries/vm_compute.",
         "- Contract runner owns check_spec_wellformed, coqc parse/compile gate for input/<name>.v, verify-annotation scan, and forbidden-assumption scan.",
-        "- Eval owns spec-test, final semantic judge, and compute_queries/vm_compute for concrete closed terms.",
+        "- Eval no longer generates or gates on positive/negative test cases.",
     ]
     if compute_results is not None:
         lines += [
@@ -289,40 +285,15 @@ def read_judge_verdict(workspace_path: Path) -> str | None:
     return read_final_result_value(workspace_path, "Judge verdict:")
 
 
-def artifact_gate(workspace_path: Path, num_positive: int, num_negative: int) -> tuple[bool, str]:
-    cases_path = workspace_path / "cases" / "cases.json"
+def artifact_gate(workspace_path: Path) -> tuple[bool, str]:
     eval_path = workspace_path / "evaluation" / "evaluation.json"
-    if not cases_path.exists():
-        return False, f"missing_cases:{cases_path}"
     if not eval_path.exists():
-        return False, f"missing_evaluation:{eval_path}"
+        return True, "evaluation_json_not_required"
 
-    try:
-        cases_doc = json.loads(cases_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        return False, f"invalid_cases_json:{exc}"
     try:
         eval_doc = json.loads(eval_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         return False, f"invalid_evaluation_json:{exc}"
-
-    positives = cases_doc.get("positive") if isinstance(cases_doc, dict) else None
-    negatives = cases_doc.get("negative") if isinstance(cases_doc, dict) else None
-    if not isinstance(positives, list) or len(positives) < num_positive:
-        return False, f"insufficient_positive_cases:{len(positives) if isinstance(positives, list) else 'missing'}<{num_positive}"
-    if not isinstance(negatives, list) or len(negatives) < num_negative:
-        return False, f"insufficient_negative_cases:{len(negatives) if isinstance(negatives, list) else 'missing'}<{num_negative}"
-
-    positive_ids = {str(c.get("id")) for c in positives if isinstance(c, dict) and c.get("id") is not None}
-    negative_ids = {str(c.get("id")) for c in negatives if isinstance(c, dict) and c.get("id") is not None}
-    expected_ids = positive_ids | negative_ids
-    eval_cases = eval_doc.get("cases") if isinstance(eval_doc, dict) else None
-    if not isinstance(eval_cases, list):
-        return False, "evaluation_cases_missing"
-    evaluated_ids = {str(c.get("id")) for c in eval_cases if isinstance(c, dict) and c.get("id") is not None}
-    missing = sorted(expected_ids - evaluated_ids)
-    if missing:
-        return False, "evaluation_missing_cases:" + ",".join(missing)
 
     def has_unresolved_needs_judge(value) -> bool:
         if isinstance(value, dict):
@@ -335,35 +306,17 @@ def artifact_gate(workspace_path: Path, num_positive: int, num_negative: int) ->
 
     if has_unresolved_needs_judge(eval_doc):
         return False, "evaluation_has_unresolved_needs_judge"
-
-    verdict_by_id = {
-        str(c.get("id")): c.get("verdict")
-        for c in eval_cases
-        if isinstance(c, dict) and c.get("id") is not None
-    }
-    positive_failures = sorted(cid for cid in positive_ids if verdict_by_id.get(cid) != "pass")
-    negative_failures = sorted(cid for cid in negative_ids if verdict_by_id.get(cid) != "fail")
-    if positive_failures:
-        return False, "positive_cases_not_pass:" + ",".join(positive_failures)
-    if negative_failures:
-        return False, "negative_cases_not_rejected:" + ",".join(negative_failures)
     return True, "artifacts_ok"
 
 
-def gate_success(workspace_path: Path, num_positive: int, num_negative: int) -> tuple[bool, str]:
-    mp = metrics_path(workspace_path)
-    if not mp.exists():
-        return False, "missing_metrics"
-    saw_success = any(ln.strip() == "Final Result: Success"
-                      for ln in mp.read_text(encoding="utf-8", errors="replace").splitlines())
+def gate_success(workspace_path: Path) -> tuple[bool, str]:
     verdict = read_spec_verdict(workspace_path)
     judge = read_judge_verdict(workspace_path)
-    artifacts_ok, artifacts_detail = artifact_gate(workspace_path, num_positive, num_negative)
-    if saw_success and verdict == "Correct" and judge == "Pass" and artifacts_ok:
+    artifacts_ok, artifacts_detail = artifact_gate(workspace_path)
+    if verdict == "Correct" and judge == "Pass" and artifacts_ok:
         return True, f"spec:{verdict}|judge:{judge}|{artifacts_detail}"
     return False, (
-        f"spec:{verdict}|judge:{judge}|agent_final_result_success:{saw_success}|"
-        f"artifacts:{artifacts_detail}"
+        f"spec:{verdict}|judge:{judge}|artifacts:{artifacts_detail}"
     )
 
 
@@ -397,8 +350,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Run the eval critic over a C/QCP contract.")
     p.add_argument("input_c", help="Path to the contract C file (default input/<name>.c).")
     p.add_argument("--function-name", help="Target function; defaults to file stem.")
-    p.add_argument("--num-positive", type=int, default=None)
-    p.add_argument("--num-negative", type=int, default=None)
+    p.add_argument("--num-positive", type=int, default=None, help=argparse.SUPPRESS)
+    p.add_argument("--num-negative", type=int, default=None, help=argparse.SUPPRESS)
     p.add_argument("--skill", default=str(DEFAULT_SKILL))
     p.add_argument("--workspace-name")
     p.add_argument("--timestamp")
@@ -438,8 +391,6 @@ def main() -> int:
     codex_bin = cfg.bin("codex", "codex")
     claude_bin = cfg.bin("claude", "claude")
     kimicode_bin = cfg.bin("kimicode", "kimi")
-    num_positive = args.num_positive if args.num_positive is not None else cfg.eval_num("num_positive", 4)
-    num_negative = args.num_negative if args.num_negative is not None else cfg.eval_num("num_negative", 4)
 
     function_name = args.function_name or input_c.stem
     input_v = input_c.with_suffix(".v")
@@ -462,7 +413,7 @@ def main() -> int:
         else False
     )
     emit_log(f"workspace={workspace_path}")
-    emit_log(f"function_name={function_name} agent={agent} model={model} cases={num_positive}+{num_negative}")
+    emit_log(f"function_name={function_name} agent={agent} model={model}")
     emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
     emit_log(f"claude_effort_supported={claude_effort_supported}")
 
@@ -490,7 +441,6 @@ def main() -> int:
         prompt = build_prompt(
             skill_path=skill_path, input_c=input_c, input_v=input_v,
             function_name=function_name, workspace_path=workspace_path,
-            num_positive=num_positive, num_negative=num_negative,
             compute_results=compute_results if (compute_results and compute_results.exists()) else None,
         )
         run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S") + f"_r{rounds}"
@@ -508,7 +458,7 @@ def main() -> int:
         if n:
             compute_evaluated += n
             emit_log(f"compute_queries_evaluated={n}")
-        ok, detail = gate_success(workspace_path, num_positive, num_negative)
+        ok, detail = gate_success(workspace_path)
         if ok:
             emit_log(f"gate_pass {detail}")
             break
@@ -518,7 +468,7 @@ def main() -> int:
         if time.time() >= deadline:
             break
 
-    ok, _ = gate_success(workspace_path, num_positive, num_negative)
+    ok, _ = gate_success(workspace_path)
     status = "Success" if ok else "Fail"
     verdict = read_spec_verdict(workspace_path)
     judge_verdict = read_judge_verdict(workspace_path)

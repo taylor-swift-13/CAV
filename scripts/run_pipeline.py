@@ -83,8 +83,12 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Full contract -> eval -> verify orchestrator.")
     p.add_argument("target", help="raw/<name>.md (full flow) or input/<name>.c (skip contract).")
     p.add_argument("--function-name")
-    p.add_argument("--dataset", default=None, help="Dataset label (e.g. algo, humaneval); tags workspaces and input/raw subdirs.")
-    p.add_argument("--contract-rounds", type=int, default=2)
+    p.add_argument(
+        "--dataset",
+        default=None,
+        help="Dataset label for raw/<dataset>/ input. Full raw runs write generated C/V under input/<dataset>_<timestamp>/ to avoid conflicts.",
+    )
+    p.add_argument("--contract-rounds", type=int, default=None, help=argparse.SUPPRESS)
     # Timeout defaults are None here so config/agents.json `timeouts` can supply
     # them; an explicit flag still wins. Resolved in main() (CLI > config > builtin).
     p.add_argument("--contract-timeout", type=int, default=None)
@@ -134,13 +138,16 @@ def main() -> int:
     label = name  # dataset tag is carried in <name> itself; --dataset only selects raw/input/<ds>/ folders
     is_raw = target.suffix == ".md"
     base_ts = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+    input_dataset = f"{ds}_{base_ts}" if is_raw and ds else (base_ts if is_raw else ds)
     pipeline_dir = OUTPUT_ROOT / f"pipeline_{base_ts}_{label}"
     pipeline_dir.mkdir(parents=True, exist_ok=True)
     workspaces: list[Path] = []
     cf = common_flags(args)
-    input_c = (INPUT_ROOT / ds / f"{name}.c") if ds else (INPUT_ROOT / f"{name}.c")
+    input_c = (INPUT_ROOT / input_dataset / f"{name}.c") if input_dataset else (INPUT_ROOT / f"{name}.c")
 
     emit(f"target={target} name={name} raw={is_raw} dir={pipeline_dir}")
+    if is_raw:
+        emit(f"generated_input_dataset={input_dataset} input_c={input_c}")
 
     # ---- Contract block (contract -> eval) ----
     eval_verdict = None
@@ -148,21 +155,23 @@ def main() -> int:
     eval_runner_success = False
     if is_raw:
         restart_file = None
-        for rnd in range(1, args.contract_rounds + 1):
+        rnd = 0
+        while True:
+            rnd += 1
             ts = f"{base_ts}c{rnd}"
             contract_ws = OUTPUT_ROOT / f"contract_{ts}_{label}"
             cmd = [sys.executable, str(SCRIPTS / "run_contract.py"), str(target),
                    "--function-name", name, "--timestamp", ts, "--workspace-name", label,
-                   "--timeout-seconds", str(args.contract_timeout), *(["--dataset", ds] if ds else []), *cf]
+                   "--timeout-seconds", str(args.contract_timeout), "--dataset", input_dataset, *cf]
             if restart_file:
                 cmd += ["--restart-context-file", str(restart_file)]
             contract_rc = run_stage(cmd)
             workspaces.append(contract_ws)
             if contract_rc != 0:
-                emit(f"contract round {rnd} returned nonzero; skipping eval/verify for this round")
+                emit(f"contract round {rnd} returned nonzero; retrying contract with syntax feedback")
                 if args.dry_run:
                     break
-                if rnd < args.contract_rounds:
+                if args.contract_rounds is None or rnd < args.contract_rounds:
                     restart_file = write_findings(
                         pipeline_dir / f"contract_findings_r{rnd}.md",
                         title=f"Contract syntax check findings (round {rnd})",
@@ -175,7 +184,7 @@ def main() -> int:
                         ],
                     )
                     continue
-                _finish(workspaces, pipeline_dir, args, name, status="contract_syntax_check_failed")
+                _finish(workspaces, pipeline_dir, args, name, status="contract_syntax_check_failed", generated_input=input_c if is_raw else None)
                 return 1
 
             if args.skip_eval:
@@ -198,7 +207,7 @@ def main() -> int:
                 break  # wiring exercised; no real verdict to gate on
             if eval_rc == 0 and eval_verdict == "Correct" and judge_verdict == "Pass" and eval_runner_success:
                 break
-            if rnd < args.contract_rounds:
+            if args.contract_rounds is None or rnd < args.contract_rounds:
                 restart_file = write_findings(
                     pipeline_dir / f"eval_findings_r{rnd}.md", title=f"Eval findings (round {rnd})",
                     sources=[
@@ -206,6 +215,8 @@ def main() -> int:
                         eval_ws / "logs" / "metrics.md",
                         eval_ws / "evaluation" / "evaluation.json",
                     ])
+                continue
+            break
 
         if not args.skip_eval and not args.dry_run and (
             eval_verdict != "Correct" or judge_verdict != "Pass" or not eval_runner_success
@@ -215,7 +226,7 @@ def main() -> int:
                 f"(spec={eval_verdict}, judge={judge_verdict}, runner_success={eval_runner_success}); "
                 "stopping before verify (use --force to continue)"
             )
-            _finish(workspaces, pipeline_dir, args, name, status="eval_gate_not_met")
+            _finish(workspaces, pipeline_dir, args, name, status="eval_gate_not_met", generated_input=input_c if is_raw else None)
             return 1
     else:
         input_c = target
@@ -232,11 +243,11 @@ def main() -> int:
     emit(f"verify audit_check={'passed' if verify_ok else f'failed exit={verify_rc}'}")
 
     status = "success" if verify_ok else "audit_check_failed"
-    _finish(workspaces, pipeline_dir, args, name, status=status)
+    _finish(workspaces, pipeline_dir, args, name, status=status, generated_input=input_c if is_raw else None)
     return 0 if status == "success" else 1
 
 
-def _finish(workspaces, pipeline_dir, args, name, *, status) -> None:
+def _finish(workspaces, pipeline_dir, args, name, *, status, generated_input: Path | None = None) -> None:
     # ---- Cost summary ----
     cost = pipeline_dir / "cost_summary.md"
     try:
@@ -247,6 +258,9 @@ def _finish(workspaces, pipeline_dir, args, name, *, status) -> None:
 
     summary = {"status": status, "name": name,
                "workspaces": [str(w) for w in workspaces]}
+    if generated_input is not None:
+        summary["generated_input"] = str(generated_input)
+        summary["generated_input_dir"] = str(generated_input.parent)
     (pipeline_dir / "pipeline_summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     emit(f"status={status} workspaces={len(workspaces)} summary={pipeline_dir / 'pipeline_summary.json'}")

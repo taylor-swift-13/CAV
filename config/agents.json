@@ -17,10 +17,6 @@
   "model_display": {
     "kimicode": "Kimi-k2.6"
   },
-  "eval": {
-    "num_positive": 4,
-    "num_negative": 4
-  },
   "timeouts": {
     "_comment": "Per-stage wall-clock budgets in seconds, used by run_pipeline.py when the matching --*-timeout flag is not passed. CLI flag > this > built-in default.",
     "contract": 1800,
