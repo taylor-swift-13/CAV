@@ -1,24 +1,8 @@
 {
-  "workspace": "max_of_two",
-  "stage": "verify",
-  "input_c": "original/max_of_two.c",
-  "input_v": "",
-  "original_c": "original/max_of_two.c",
-  "original_v": "",
-  "annotated_c": "annotated/max_of_two.c",
-  "function_name": "max_of_two",
   "semantic_description": "Scalar max-of-two function. It takes two integer parameters, performs a single order-based if branch, and returns either the first input or the second input. The postcondition states that the return value is one of the pre-state inputs and is greater than or equal to both inputs. The function has no loops and does not read or modify heap memory.",
   "keywords": {
-    "algorithm_family": "selection",
-    "control_flow": "if",
-    "data_shape": "scalar_only",
-    "semantic_intent": "return_max",
-    "proof_pattern": [
-      "pure_arithmetic",
-      "case_split"
-    ],
-    "edge_case_behavior": "branch_on_order"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "min_max",
+    "data": "scalar",
+    "pattern": "branch"
+  }
 }

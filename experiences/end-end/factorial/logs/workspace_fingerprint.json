@@ -1,31 +1,8 @@
 {
-  "workspace": "factorial",
-  "stage": "verify",
-  "input_c": "original/factorial.c",
-  "input_v": "",
-  "original_c": "original/factorial.c",
-  "original_v": "",
-  "annotated_c": "annotated/factorial.c",
-  "function_name": "factorial",
   "semantic_description": "Computes the factorial of an integer n with precondition 0 <= n <= 10. The function uses scalar local variables only: res starts at 1 and a for loop multiplies res by each i from 1 through n, so the loop may be skipped when n is 0. It returns the mathematical factorial(n@pre) and does not read or modify heap memory.",
   "keywords": {
-    "algorithm_family": "factorial",
-    "control_flow": "for_loop",
-    "data_shape": "scalar_only",
-    "semantic_intent": "compute_factorial",
-    "proof_pattern": [
-      "loop_invariant",
-      "pure_arithmetic",
-      "range_bound"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "overflow_guard",
-      "monotone_accumulator",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "product",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
 }

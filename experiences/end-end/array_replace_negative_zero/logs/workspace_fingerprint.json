@@ -1,37 +1,8 @@
 {
-  "workspace": "array_replace_negative_zero",
-  "stage": "verify",
-  "input_c": "original/array_replace_negative_zero.c",
-  "input_v": "",
-  "original_c": "original/array_replace_negative_zero.c",
-  "original_v": "",
-  "annotated_c": "annotated/array_replace_negative_zero.c",
-  "function_name": "array_replace_negative_zero",
   "semantic_description": "The function scans an integer array in place with a single for loop over indices 0 <= i < n. For each element, negative input values are replaced by 0 and nonnegative input values are preserved. The empty array case is possible when n = 0, and the function modifies the caller-provided array memory but returns no scalar value.",
   "keywords": {
-    "algorithm_family": "selection",
-    "control_flow": [
-      "for_loop",
-      "if"
-    ],
-    "data_shape": [
-      "array",
-      "pointer"
-    ],
-    "semantic_intent": "in_place_update",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "heap_reasoning",
-      "range_bound"
-    ],
-    "numeric_properties": "int_range",
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
-    ]
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "compare",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

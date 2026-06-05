@@ -1,35 +1,11 @@
 {
-  "workspace": "lower_bound",
-  "stage": "verify",
-  "input_c": "original/lower_bound.c",
-  "input_v": "",
-  "original_c": "original/lower_bound.c",
-  "original_v": "",
-  "annotated_c": "annotated/lower_bound.c",
-  "function_name": "lower_bound",
   "semantic_description": "Binary search lower_bound over a sorted integer array. The function preserves the input array and returns an index in [0,n] such that all elements before the index are strictly below target and every element from the index to n-1 is at least target. The loop maintains a shrinking [left,right] search interval with possible empty-loop behavior when n is 0 or left is already not below right; it does not modify memory.",
   "keywords": {
-    "algorithm_family": "search",
-    "control_flow": "while_loop",
-    "data_shape": "array",
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "termination_by_bound",
-      "range_bound",
-      "monotonicity"
-    ],
-    "numeric_properties": "int_range",
-    "edge_case_behavior": [
-      "empty_loop_possible",
-      "branch_on_order"
-    ],
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
+    "problem_kind": "sort",
+    "data": "array",
+    "pattern": [
+      "binary_search",
+      "single_loop"
     ]
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+  }
 }

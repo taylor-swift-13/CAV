@@ -1,37 +1,11 @@
 {
-  "workspace": "string_collapse_spaces",
-  "stage": "verify",
-  "input_c": "original/string_collapse_spaces.c",
-  "input_v": "original/string_collapse_spaces.v",
-  "original_c": "original/string_collapse_spaces.c",
-  "original_v": "original/string_collapse_spaces.v",
-  "annotated_c": "annotated/string_collapse_spaces.c",
-  "function_name": "string_collapse_spaces",
   "semantic_description": "Verifies string_collapse_spaces, which scans a null-terminated input character array s of logical length n and writes to caller-provided output buffer out while collapsing each maximal run of ASCII space characters 32 into a single 32. The loop is a while(1) scan with index i over the input and index j over the output, maintains an in_space flag for whether the previous emitted/seen class is a space run, preserves the input buffer, writes a null terminator at out[j], and leaves the remaining output buffer suffix unconstrained by the postcondition witness.",
   "keywords": {
-    "algorithm_family": "two_pointers",
-    "control_flow": [
-      "while_loop",
-      "if"
-    ],
-    "data_shape": [
+    "problem_kind": "search",
+    "data": [
       "string",
-      "array",
-      "pointer"
+      "array"
     ],
-    "semantic_intent": [
-      "in_place_update",
-      "preserve_input"
-    ],
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "range_bound",
-      "heap_reasoning"
-    ],
-    "numeric_properties": "int_range",
-    "edge_case_behavior": "empty_loop_possible"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "pattern": "single_loop"
+  }
 }

@@ -1,42 +1,8 @@
 {
-  "workspace": "array_count_greater_than_k",
-  "stage": "verify",
-  "input_c": "original/array_count_greater_than_k.c",
-  "input_v": "original/array_count_greater_than_k.v",
-  "original_c": "original/array_count_greater_than_k.c",
-  "original_v": "original/array_count_greater_than_k.v",
-  "annotated_c": "annotated/array_count_greater_than_k.c",
-  "function_name": "array_count_greater_than_k",
   "semantic_description": "The function scans the input integer array from index 0 to n - 1, keeps a running counter of elements whose value is greater than the unchanged threshold k, returns that count, and preserves the full input array. If n is 0 the for loop body is skipped and the returned count is 0. The function only reads array elements and does not modify memory.",
   "keywords": {
-    "algorithm_family": "counting",
-    "control_flow": [
-      "for_loop",
-      "if"
-    ],
-    "data_shape": "array",
-    "semantic_intent": [
-      "count_iterations",
-      "preserve_input"
-    ],
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "range_bound",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "int_range",
-      "monotone_accumulator"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed",
-      "auto_proof_contains_admitted",
-      "generated_goal_contains_axioms"
-    ]
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "prefix",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

@@ -1,33 +1,11 @@
 {
-  "workspace": "string_contains_char",
-  "stage": "verify",
-  "input_c": "original/string_contains_char.c",
-  "input_v": "original/string_contains_char.v",
-  "original_c": "original/string_contains_char.c",
-  "original_v": "original/string_contains_char.v",
-  "annotated_c": "annotated/string_contains_char.c",
-  "function_name": "string_contains_char",
   "semantic_description": "Scans a null-terminated character array represented by a logical list l and returns 1 if any character in l equals c, otherwise returns 0 after reaching the terminating 0. The loop is an unbounded while loop with explicit break on s[i] == 0 and an early return on match. The function preserves the input character array and does not modify memory.",
   "keywords": {
-    "algorithm_family": "search",
-    "control_flow": [
-      "while_loop",
-      "if"
-    ],
-    "data_shape": [
+    "problem_kind": "math",
+    "data": [
       "string",
-      "array",
-      "pointer"
+      "array"
     ],
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "heap_reasoning"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": "goal_check_passed"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "pattern": "single_loop"
+  }
 }

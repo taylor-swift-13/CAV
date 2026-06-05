@@ -1,36 +1,11 @@
 {
-  "workspace": "string_copy",
-  "stage": "verify",
-  "input_c": "original/string_copy.c",
-  "input_v": "",
-  "original_c": "original/string_copy.c",
-  "original_v": "",
-  "annotated_c": "annotated/string_copy.c",
-  "function_name": "string_copy",
   "semantic_description": "Copies a null-terminated character sequence from src to dst using an unbounded while loop with an explicit break on src[i] == 0. The contract owns both CharArray buffers of length n + 1, requires the first n source characters to be nonzero and the last source character to be 0, preserves src, and updates dst so it contains the same prefix l followed by the terminating 0. The loop writes dst one character at a time and must handle the n == 0 case by immediately writing only the terminator.",
   "keywords": {
-    "algorithm_family": "simulation",
-    "control_flow": "while_loop",
-    "data_shape": [
+    "problem_kind": "prefix",
+    "data": [
       "string",
-      "array",
-      "pointer"
+      "array"
     ],
-    "semantic_intent": [
-      "preserve_input",
-      "in_place_update"
-    ],
-    "proof_pattern": [
-      "loop_invariant",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": "goal_check_passed"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "pattern": "single_loop"
+  }
 }

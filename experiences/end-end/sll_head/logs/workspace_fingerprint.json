@@ -1,18 +1,8 @@
 {
-  "workspace": "sll_head",
-  "stage": "verify",
-  "input_c": "original/sll_head.c",
-  "input_v": "",
-  "original_c": "original/sll_head.c",
-  "original_v": "",
-  "annotated_c": "annotated/sll_head.c",
-  "function_name": "sll_head",
   "semantic_description": "Loop-free function `sll_head` returning `p->data`.",
   "keywords": {
     "problem_kind": "math",
     "data": "linked_list",
     "pattern": "straight_line"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+  }
 }

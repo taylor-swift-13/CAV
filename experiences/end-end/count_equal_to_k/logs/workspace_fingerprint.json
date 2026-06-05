@@ -1,32 +1,8 @@
 {
-  "workspace": "count_equal_to_k",
-  "stage": "verify",
-  "input_c": "original/count_equal_to_k.c",
-  "input_v": "original/count_equal_to_k.v",
-  "original_c": "original/count_equal_to_k.c",
-  "original_v": "original/count_equal_to_k.v",
-  "annotated_c": "annotated/count_equal_to_k.c",
-  "function_name": "count_equal_to_k",
   "semantic_description": "The function count_equal_to_k scans a read-only integer array a of length n and returns the number of elements equal to scalar k. The loop is a single for-loop from i = 0 to i < n with an accumulator ret that starts at 0 and is incremented exactly when a[i] == k. The function preserves the full input array memory and supports the empty-loop case n == 0, where the result is 0.",
   "keywords": {
-    "algorithm_family": "counting",
-    "control_flow": "for_loop",
-    "data_shape": "array",
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "range_bound",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range",
-      "monotone_accumulator"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": "goal_check_passed"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "count",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

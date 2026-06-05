@@ -1,36 +1,8 @@
 {
-  "workspace": "remove_duplicates_sorted",
-  "stage": "verify",
-  "input_c": "original/remove_duplicates_sorted.c",
-  "input_v": "original/remove_duplicates_sorted.v",
-  "original_c": "original/remove_duplicates_sorted.c",
-  "original_v": "original/remove_duplicates_sorted.v",
-  "annotated_c": "annotated/remove_duplicates_sorted.c",
-  "function_name": "remove_duplicates_sorted",
   "semantic_description": "The function removes duplicate values from an already sorted integer array in place. For n = 0 it returns 0 without changing memory. Otherwise it scans the array once with index i and maintains write index j for the length of the deduplicated prefix; when a[i] differs from the last retained value a[j - 1], it writes a[i] to a[j] and increments j. The returned value is the length of remove_duplicates_sorted_spec(l), and the first returned elements of the final array must equal that specification while the full array resource remains owned.",
   "keywords": {
-    "algorithm_family": "two_pointers",
-    "control_flow": [
-      "if",
-      "for_loop"
-    ],
-    "data_shape": [
-      "array",
-      "pointer"
-    ],
-    "semantic_intent": "in_place_update",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "range_bound",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "sort",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

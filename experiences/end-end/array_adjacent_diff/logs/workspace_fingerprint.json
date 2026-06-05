@@ -1,32 +1,8 @@
 {
-  "workspace": "array_adjacent_diff",
-  "stage": "verify",
-  "input_c": "original/array_adjacent_diff.c",
-  "input_v": "",
-  "original_c": "original/array_adjacent_diff.c",
-  "original_v": "",
-  "annotated_c": "annotated/array_adjacent_diff.c",
-  "function_name": "array_adjacent_diff",
   "semantic_description": "Computes an output integer array of length n - 1 where each element out[i] is the adjacent difference a[i + 1] - a[i]. The function preserves the input array a, writes every element of the caller-provided output array out, uses one for loop with guard i + 1 < n, and allows the loop body to be skipped when n == 1 so the output length is zero.",
   "keywords": {
-    "algorithm_family": "accumulation",
-    "control_flow": "for_loop",
-    "data_shape": [
-      "array",
-      "pointer"
-    ],
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "loop_invariant",
-      "range_bound",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "overflow_guard",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "sum",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

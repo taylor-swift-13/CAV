@@ -1,38 +1,8 @@
 {
-  "workspace": "count_multiples",
-  "stage": "verify",
-  "input_c": "original/count_multiples.c",
-  "input_v": "original/count_multiples.v",
-  "original_c": "original/count_multiples.c",
-  "original_v": "original/count_multiples.v",
-  "annotated_c": "annotated/count_multiples.c",
-  "function_name": "count_multiples",
   "semantic_description": "The target function count_multiples is a scalar-only counting loop. Under preconditions 1 <= n < INT_MAX and 1 <= k, it initializes cnt to 0, iterates i from 1 through n inclusive, increments cnt exactly when i % k == 0, and returns the Coq specification count_multiples_spec n k. The loop may execute at least once because n is positive; it does not read or modify heap memory.",
   "keywords": {
-    "algorithm_family": "counting",
-    "control_flow": [
-      "for_loop",
-      "if"
-    ],
-    "data_shape": "scalar_only",
-    "semantic_intent": "count_iterations",
-    "proof_pattern": [
-      "loop_invariant",
-      "pure_arithmetic",
-      "case_split",
-      "termination_by_bound"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range",
-      "monotone_accumulator"
-    ],
-    "edge_case_behavior": "defined_for_nonnegative_only",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
-    ]
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
 }

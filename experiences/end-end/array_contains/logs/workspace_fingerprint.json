@@ -1,40 +1,8 @@
 {
-  "workspace": "array_contains",
-  "stage": "verify",
-  "input_c": "original/array_contains.c",
-  "input_v": "",
-  "original_c": "original/array_contains.c",
-  "original_v": "",
-  "annotated_c": "annotated/array_contains.c",
-  "function_name": "array_contains",
   "semantic_description": "array_contains scans the input integer array a[0..n) with a for loop, does not modify memory, returns 1 immediately when some element equals k, and returns 0 only after the loop has established that every index in the range is not equal to k. The empty-loop case n == 0 is allowed and returns 0 while preserving IntArray::full(a, n, l).",
   "keywords": {
-    "algorithm_family": "search",
-    "control_flow": [
-      "for_loop",
-      "if"
-    ],
-    "data_shape": [
-      "array",
-      "pointer"
-    ],
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "termination_by_bound",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
-    ]
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

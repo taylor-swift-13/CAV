@@ -1,27 +1,8 @@
 {
-  "workspace": "min_of_three",
-  "stage": "verify",
-  "input_c": "original/min_of_three.c",
-  "input_v": "",
-  "original_c": "original/min_of_three.c",
-  "original_v": "",
-  "annotated_c": "annotated/min_of_three.c",
-  "function_name": "min_of_three",
   "semantic_description": "Straight-line scalar function with two conditional updates. It initializes m to a, replaces m with b when b is smaller, then replaces m with c when c is smaller, and returns a value equal to one of the three original inputs that is less than or equal to all three original inputs. The function has no loops and does not read or modify heap memory.",
   "keywords": {
-    "algorithm_family": "selection",
-    "control_flow": "if",
-    "data_shape": "scalar_only",
-    "proof_pattern": [
-      "pure_arithmetic",
-      "case_split"
-    ],
-    "edge_case_behavior": "branch_on_order",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
-    ]
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "compare",
+    "data": "scalar",
+    "pattern": "branch"
+  }
 }

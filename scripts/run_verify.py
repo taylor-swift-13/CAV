@@ -367,6 +367,28 @@ def source_integrity_gate(
     return True, f"source_integrity_success:{log_path}"
 
 
+FINGERPRINT_KEYS = ("problem_kind", "data", "pattern")
+FINGERPRINT_VOCAB = {
+    "problem_kind": {
+        "identity", "min_max", "count", "sum", "product", "search", "compare",
+        "transform", "partition", "sort", "prefix", "dp", "math",
+    },
+    "data": {"scalar", "array", "string", "matrix", "linked_list", "tree", "graph"},
+    "pattern": {
+        "straight_line", "branch", "single_loop", "nested_loop", "two_pointers",
+        "sliding_window", "prefix_scan", "binary_search", "recursion", "state_machine",
+    },
+}
+
+
+def _fingerprint_values(value: object) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [x for x in value if isinstance(x, str)]
+    return []
+
+
 def fingerprint_gate(workspace_path: Path, function_name: str) -> tuple[bool, str]:
     log_path = workspace_path / "logs" / "fingerprint_gate.log"
     path = workspace_path / "logs" / "workspace_fingerprint.json"
@@ -379,23 +401,28 @@ def fingerprint_gate(workspace_path: Path, function_name: str) -> tuple[bool, st
         except json.JSONDecodeError as exc:
             details.append(f"fingerprint is not valid JSON: {exc}")
         else:
-            required_strings = ("workspace", "stage", "input_c", "original_c", "annotated_c", "function_name", "semantic_description")
-            for key in required_strings:
-                value = data.get(key)
-                if not isinstance(value, str) or not value.strip():
-                    details.append(f"fingerprint field `{key}` must be a non-empty string")
-            if data.get("stage") != "verify":
-                details.append("fingerprint field `stage` must be `verify`")
-            if data.get("function_name") != function_name:
-                details.append(f"fingerprint function_name mismatch: {data.get('function_name')!r} != {function_name!r}")
+            allowed_top = {"semantic_description", "keywords"}
+            extra_top = sorted(set(data) - allowed_top)
+            if extra_top:
+                details.append(f"fingerprint has unsupported top-level fields: {', '.join(extra_top)}")
+            value = data.get("semantic_description")
+            if not isinstance(value, str) or not value.strip():
+                details.append("fingerprint field `semantic_description` must be a non-empty string")
             keywords = data.get("keywords")
             if not isinstance(keywords, dict) or not keywords:
                 details.append("fingerprint field `keywords` must be a non-empty object")
-            contract_source = data.get("contract_source")
-            if contract_source != "contract_input_c":
-                details.append("fingerprint field `contract_source` must be `contract_input_c`")
-            if data.get("assume_contract_is_correct") is not True:
-                details.append("fingerprint field `assume_contract_is_correct` must be true")
+            else:
+                extra_keys = sorted(set(keywords) - set(FINGERPRINT_KEYS))
+                if extra_keys:
+                    details.append(f"fingerprint keywords has unsupported keys: {', '.join(extra_keys)}")
+                for key in FINGERPRINT_KEYS:
+                    values = _fingerprint_values(keywords.get(key))
+                    if not values:
+                        details.append(f"fingerprint keywords `{key}` must be a non-empty string or string list")
+                        continue
+                    invalid = sorted(v for v in values if v not in FINGERPRINT_VOCAB[key])
+                    if invalid:
+                        details.append(f"fingerprint keywords `{key}` has unsupported values: {', '.join(invalid)}")
 
     if details:
         log_path.write_text("Fingerprint gate failed:\n- " + "\n- ".join(details) + "\n", encoding="utf-8")
@@ -582,17 +609,18 @@ def is_loop_free_candidate(input_path: Path) -> tuple[bool, str]:
 
 def update_trivial_fingerprint(workspace_path: Path, function_name: str, input_path: Path) -> None:
     fingerprint_path = workspace_path / "logs" / "workspace_fingerprint.json"
-    data = json.loads(fingerprint_path.read_text(encoding="utf-8"))
     text = strip_c_comments(input_path.read_text(encoding="utf-8", errors="replace"))
     returns = [x.strip() for x in re.findall(r"\breturn\s+([^;]+);", text)]
     returned = ", ".join(f"`{x}`" for x in returns) if returns else "scalar expression(s)"
     pattern = "branch" if re.search(r"\bif\b", text) else "straight_line"
     has_pointer_or_array = "*" in text or "[" in text or "]" in text or "->" in text
-    data_shape = "linked_list" if "sll" in input_path.read_text(encoding="utf-8", errors="replace") else ("array" if "[" in text else ("scalar" if not has_pointer_or_array else "pointer"))
-    data["semantic_description"] = f"Loop-free function `{function_name}` returning {returned}."
+    data_kind = "linked_list" if "sll" in input_path.read_text(encoding="utf-8", errors="replace") else ("array" if "[" in text else "scalar")
+    data = {
+        "semantic_description": f"Loop-free function `{function_name}` returning {returned}.",
+    }
     data["keywords"] = {
         "problem_kind": "math",
-        "data": data_shape,
+        "data": data_kind,
         "pattern": pattern,
     }
     fingerprint_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -790,26 +818,14 @@ def bootstrap_workspace(workspace_path: Path, input_path: Path, input_v_path: Pa
     shutil.copy2(input_path, original_c)
     shutil.copy2(input_path, annotated_c)
 
-    original_v = ""
     if input_v_path is not None:
         dst_v = workspace_path / "original" / input_v_path.name
         shutil.copy2(input_v_path, dst_v)
-        original_v = str(dst_v)
 
     fingerprint_path = workspace_path / "logs" / "workspace_fingerprint.json"
     fingerprint = {
-        "workspace": workspace_path.name,
-        "stage": "verify",
-        "input_c": str(input_path),
-        "input_v": str(input_v_path) if input_v_path else "",
-        "original_c": str(original_c),
-        "original_v": original_v,
-        "annotated_c": str(annotated_c),
-        "function_name": function_name,
         "semantic_description": "",
         "keywords": {},
-        "assume_contract_is_correct": True,
-        "contract_source": "contract_input_c",
     }
     fingerprint_path.write_text(json.dumps(fingerprint, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return annotated_c

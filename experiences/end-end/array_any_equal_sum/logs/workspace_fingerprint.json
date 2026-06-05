@@ -1,36 +1,8 @@
 {
-  "workspace": "array_any_equal_sum",
-  "stage": "verify",
-  "input_c": "original/array_any_equal_sum.c",
-  "input_v": "",
-  "original_c": "original/array_any_equal_sum.c",
-  "original_v": "",
-  "annotated_c": "annotated/array_any_equal_sum.c",
-  "function_name": "array_any_equal_sum",
   "semantic_description": "Read-only array scan. The function computes target = x + y, then uses a for loop over indices 0 <= i < n. It returns 1 immediately if some array element equals target, and returns 0 after the loop only when every element in the array is unequal to target. The input array memory is preserved; n may be zero, in which case the loop is skipped and the function returns 0.",
   "keywords": {
-    "algorithm_family": "search",
-    "control_flow": [
-      "for_loop",
-      "if"
-    ],
-    "data_shape": [
-      "array",
-      "scalar_only"
-    ],
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "overflow_guard",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": "goal_check_passed"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "math",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

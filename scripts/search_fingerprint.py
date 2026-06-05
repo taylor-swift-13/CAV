@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Search experience fingerprints by the four-field algorithm fingerprint.
+"""Search experience fingerprints by the shared minimal algorithm fingerprint.
 
-Two layouts are supported, sharing the same JSON schema for the fields used in
-ranking (``semantic_description`` + controlled-vocab ``keywords``):
+Two layouts are supported, both using exactly the same JSON schema:
+``semantic_description`` plus controlled-vocab ``keywords``.
 
 - **end-end** (``experiences/end-end/<case>/logs/workspace_fingerprint.json``):
-  per-workspace fingerprint, with paths to the C/Coq/log artifacts.
+  per-workspace retrieval fingerprint; related artifacts are inferred from the
+  case directory.
 - **general** (``experiences/general/<NAME>/<N>/<slug>.fingerprint``):
-  per-experience fingerprint, sibling to ``<slug>.md`` describing one topical
-  experience write-up.
+  per-experience retrieval fingerprint, sibling to ``<slug>.md``.
 
 Scope ``all`` (default) merges hits from both. Use ``--scope end-end`` or
 ``--scope general`` to restrict. ``--root`` overrides scope by pointing at a

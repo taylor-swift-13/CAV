@@ -1,37 +1,8 @@
 {
-  "workspace": "array_longest_nonnegative_run",
-  "stage": "verify",
-  "input_c": "original/array_longest_nonnegative_run.c",
-  "input_v": "original/array_longest_nonnegative_run.v",
-  "original_c": "original/array_longest_nonnegative_run.c",
-  "original_v": "original/array_longest_nonnegative_run.v",
-  "annotated_c": "annotated/array_longest_nonnegative_run.c",
-  "function_name": "array_longest_nonnegative_run",
   "semantic_description": "Computes the length of the longest contiguous run of nonnegative elements in a read-only integer array. The function scans the array once with a while loop, preserving the input array predicate, maintaining current run length and best run length, returns zero for the empty array, and does not modify memory.",
   "keywords": {
-    "algorithm_family": [
-      "accumulation",
-      "greedy"
-    ],
-    "control_flow": "while_loop",
-    "data_shape": "array",
-    "semantic_intent": [
-      "return_max",
-      "preserve_input"
-    ],
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "range_bound",
-      "heap_reasoning"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range",
-      "monotone_accumulator"
-    ],
-    "edge_case_behavior": "empty_loop_possible"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "compare",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

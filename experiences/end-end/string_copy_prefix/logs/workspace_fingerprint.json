@@ -1,34 +1,14 @@
 {
-  "workspace": "string_copy_prefix",
-  "stage": "verify",
-  "input_c": "original/string_copy_prefix.c",
-  "input_v": "",
-  "original_c": "original/string_copy_prefix.c",
-  "original_v": "",
-  "annotated_c": "annotated/string_copy_prefix.c",
-  "function_name": "string_copy_prefix",
   "semantic_description": "Copies the first k nonzero characters from src into dst and then writes a terminating zero at dst[k]. The contract requires 0 <= k <= n, src owns a length n+1 character array containing l followed by 0, dst owns k+1 characters, and every character in l is nonzero. The only control structure is a for loop from i = 0 to i < k. The function preserves the full src array and updates dst in place so that dst becomes sublist(0,k,l) followed by 0. The empty prefix case k = 0 skips the loop and writes only the terminator.",
   "keywords": {
-    "algorithm_family": "prefix_sum",
-    "control_flow": "for_loop",
-    "data_shape": [
+    "problem_kind": "prefix",
+    "data": [
       "string",
-      "array",
-      "pointer"
+      "array"
     ],
-    "semantic_intent": "in_place_update",
-    "proof_pattern": [
-      "loop_invariant",
-      "heap_reasoning",
-      "range_bound"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": "goal_check_passed"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "pattern": [
+      "prefix_scan",
+      "single_loop"
+    ]
+  }
 }

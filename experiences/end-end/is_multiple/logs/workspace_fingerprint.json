@@ -1,28 +1,8 @@
 {
-  "workspace": "is_multiple",
-  "stage": "verify",
-  "input_c": "original/is_multiple.c",
-  "input_v": "",
-  "original_c": "original/is_multiple.c",
-  "original_v": "",
-  "annotated_c": "annotated/is_multiple.c",
-  "function_name": "is_multiple",
   "semantic_description": "Pure scalar arithmetic predicate over two integer inputs. Under the precondition 0 < b, the function tests whether a is divisible by b using the C remainder operator, returns 1 on the divisible branch, and returns 0 otherwise. It has straight-line control with one if branch, performs no memory mutation, and the postcondition relates the return value to an existential or universal integer multiple relation over the pre-state inputs.",
   "keywords": {
-    "algorithm_family": "selection",
-    "control_flow": "if",
-    "data_shape": "scalar_only",
-    "semantic_intent": "preserve_input",
-    "proof_pattern": [
-      "pure_arithmetic",
-      "case_split"
-    ],
-    "numeric_properties": [
-      "nonnegative_input",
-      "int_range"
-    ],
-    "verification_status": "goal_check_passed"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "compare",
+    "data": "scalar",
+    "pattern": "branch"
+  }
 }

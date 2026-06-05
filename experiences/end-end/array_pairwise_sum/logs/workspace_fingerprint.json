@@ -1,39 +1,8 @@
 {
-  "workspace": "array_pairwise_sum",
-  "stage": "verify",
-  "input_c": "original/array_pairwise_sum.c",
-  "input_v": "",
-  "original_c": "original/array_pairwise_sum.c",
-  "original_v": "",
-  "annotated_c": "annotated/array_pairwise_sum.c",
-  "function_name": "array_pairwise_sum",
   "semantic_description": "array_pairwise_sum iterates from i = 0 to n - 1 over three integer arrays. It reads a[i] and b[i], writes out[i] = a[i] + b[i], preserves the full contents of input arrays a and b, and leaves out containing a pointwise sum list of length n. The loop may execute zero times when n = 0. Memory is modified only through the caller-provided output array out; the contract includes a per-element signed-int overflow guard for every computed sum.",
   "keywords": {
-    "algorithm_family": "prefix_sum",
-    "control_flow": "for_loop",
-    "data_shape": [
-      "array",
-      "pointer"
-    ],
-    "semantic_intent": [
-      "preserve_input",
-      "in_place_update"
-    ],
-    "proof_pattern": [
-      "loop_invariant",
-      "heap_reasoning",
-      "range_bound"
-    ],
-    "numeric_properties": [
-      "overflow_guard",
-      "int_range"
-    ],
-    "edge_case_behavior": "empty_loop_possible",
-    "verification_status": [
-      "goal_check_passed",
-      "proof_check_passed"
-    ]
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "problem_kind": "sum",
+    "data": "array",
+    "pattern": "single_loop"
+  }
 }

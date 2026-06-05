@@ -1,37 +1,11 @@
 {
-  "workspace": "string_to_lower_ascii",
-  "stage": "verify",
-  "input_c": "original/string_to_lower_ascii.c",
-  "input_v": "",
-  "original_c": "original/string_to_lower_ascii.c",
-  "original_v": "",
-  "annotated_c": "annotated/string_to_lower_ascii.c",
-  "function_name": "string_to_lower_ascii",
   "semantic_description": "In-place ASCII string lowercase conversion over a caller-owned char buffer. The input list l has length n, contains no zero bytes before the terminator, and the heap resource is CharArray::full(s, n + 1, app(l, cons(0, nil))). The function uses an unbounded while (1) scan with an explicit break when s[i] == 0; for each nonzero byte before the terminator, uppercase ASCII codes 65..90 are rewritten to code + 32 and other bytes are preserved. The postcondition requires an output list lr of the same length, per-index lowercase/preserve relation, nonzero prefix, and the same buffer ending in a zero terminator.",
   "keywords": {
-    "algorithm_family": "simulation",
-    "control_flow": [
-      "while_loop",
-      "if"
-    ],
-    "data_shape": [
+    "problem_kind": "prefix",
+    "data": [
       "string",
-      "array",
-      "pointer"
+      "array"
     ],
-    "semantic_intent": "in_place_update",
-    "proof_pattern": [
-      "loop_invariant",
-      "case_split",
-      "heap_reasoning",
-      "range_bound"
-    ],
-    "numeric_properties": [
-      "int_range",
-      "overflow_guard"
-    ],
-    "edge_case_behavior": "empty_loop_possible"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+    "pattern": "single_loop"
+  }
 }
