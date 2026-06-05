@@ -1,0 +1,46 @@
+{
+  "workspace": "string_count_digits",
+  "stage": "verify",
+  "input_c": "original/string_count_digits.c",
+  "input_v": "original/string_count_digits.v",
+  "original_c": "original/string_count_digits.c",
+  "original_v": "original/string_count_digits.v",
+  "annotated_c": "annotated/string_count_digits.c",
+  "function_name": "string_count_digits",
+  "semantic_description": "Counts how many nonzero characters in a null-terminated char array are ASCII digits 48 through 57. The loop scans from index 0 until the sentinel 0, maintains an integer count of digit characters seen in the processed prefix, returns that count, and preserves the input string memory unchanged. Empty logical input is possible because n may be 0, in which case the first array element is the sentinel and the function returns 0.",
+  "keywords": {
+    "algorithm_family": "counting",
+    "control_flow": [
+      "while_loop",
+      "if"
+    ],
+    "data_shape": [
+      "string",
+      "pointer"
+    ],
+    "semantic_intent": [
+      "count_iterations",
+      "preserve_input"
+    ],
+    "proof_pattern": [
+      "loop_invariant",
+      "case_split",
+      "range_bound"
+    ],
+    "numeric_properties": [
+      "nonnegative_input",
+      "int_range",
+      "monotone_accumulator"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": [
+      "goal_check_passed",
+      "proof_check_passed",
+      "manual_witness_needed",
+      "auto_proof_contains_admitted",
+      "generated_goal_contains_axioms"
+    ]
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

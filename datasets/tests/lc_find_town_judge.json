@@ -1,0 +1,47 @@
+{
+  "name": "lc_find_town_judge",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "trust",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 2,
+        "trust": "1,2"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "trust": "1,3;2,3"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "trust": "1,3;2,3;3,1"
+      },
+      "expected": -1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "find-the-town-judge",
+    "url": "https://leetcode.com/problems/find-the-town-judge/",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

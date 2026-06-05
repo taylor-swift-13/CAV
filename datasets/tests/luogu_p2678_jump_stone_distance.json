@@ -1,0 +1,54 @@
+{
+  "name": "luogu_p2678_jump_stone_distance",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "length",
+      "type": "int"
+    },
+    {
+      "name": "stones",
+      "type": "string"
+    },
+    {
+      "name": "remove",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "length": 25,
+        "stones": "2,11,14,17,21",
+        "remove": 2
+      },
+      "expected": 4
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "length": 10,
+        "stones": "2,4,7",
+        "remove": 1
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "length": 9,
+        "stones": "3,6",
+        "remove": 0
+      },
+      "expected": 3
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P2678",
+    "url": "https://www.luogu.com.cn/problem/P2678",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

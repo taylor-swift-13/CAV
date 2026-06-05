@@ -1,6 +1,6 @@
 {
   "name": "factorial",
-  "function": "fac",
+  "function": "factorial",
   "return_type": "int",
   "params": [
     {

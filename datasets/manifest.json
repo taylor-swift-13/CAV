@@ -2173,7 +2173,7 @@
         }
       ],
       "difficulty": "medium",
-      "function": "climbStairs",
+      "function": "climb_stairs",
       "source": {
         "name": "CAV-JAVA local dataset",
         "slug": "datasets/local",
@@ -3202,7 +3202,7 @@
         }
       ],
       "difficulty": "easy",
-      "function": "fac",
+      "function": "factorial",
       "source": {
         "name": "CAV-JAVA local dataset",
         "slug": "datasets/local",
@@ -5741,6 +5741,23 @@
       }
     },
     {
+      "name": "lc_all_paths_source_target_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "graph",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "all-paths-from-source-to-target",
+        "url": "https://leetcode.com/problems/all-paths-from-source-to-target/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_arithmetic_slices_count_csv",
       "return_type": "int",
       "params": [
@@ -5754,6 +5771,23 @@
         "name": "LeetCode",
         "slug": "arithmetic-slices",
         "url": "https://leetcode.com/problems/arithmetic-slices/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_arrows_burst_balloons_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "points",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-number-of-arrows-to-burst-balloons",
+        "url": "https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/",
         "license": "local rewrite"
       }
     },
@@ -5775,6 +5809,116 @@
       }
     },
     {
+      "name": "lc_atoi_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "string-to-integer-atoi",
+        "url": "https://leetcode.com/problems/string-to-integer-atoi/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_basic_calculator2_eval",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "basic-calculator-ii",
+        "url": "https://leetcode.com/problems/basic-calculator-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_basic_calculator_eval",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "basic-calculator",
+        "url": "https://leetcode.com/problems/basic-calculator/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_best_sightseeing_pair_score_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "values",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "best-sightseeing-pair",
+        "url": "https://leetcode.com/problems/best-sightseeing-pair/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_binary_subarrays_sum_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "goal",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "binary-subarrays-with-sum",
+        "url": "https://leetcode.com/problems/binary-subarrays-with-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_boats_rescue_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "people",
+          "type": "string"
+        },
+        {
+          "name": "limit",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "boats-to-save-people",
+        "url": "https://leetcode.com/problems/boats-to-save-people/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_buddy_strings_bool",
       "return_type": "bool",
       "params": [
@@ -5792,6 +5936,44 @@
         "name": "LeetCode",
         "slug": "buddy-strings",
         "url": "https://leetcode.com/problems/buddy-strings/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_burst_balloons_max_coins_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "burst-balloons",
+        "url": "https://leetcode.com/problems/burst-balloons/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_can_i_win_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "max_choosable_integer",
+          "type": "int"
+        },
+        {
+          "name": "desired_total",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "can-i-win",
+        "url": "https://leetcode.com/problems/can-i-win/",
         "license": "local rewrite"
       }
     },
@@ -5830,6 +6012,127 @@
         "name": "LeetCode",
         "slug": "can-place-flowers",
         "url": "https://leetcode.com/problems/can-place-flowers/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_car_fleet_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "target",
+          "type": "int"
+        },
+        {
+          "name": "position",
+          "type": "string"
+        },
+        {
+          "name": "speed",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "car-fleet",
+        "url": "https://leetcode.com/problems/car-fleet/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_car_pooling_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "trips",
+          "type": "string"
+        },
+        {
+          "name": "capacity",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "car-pooling",
+        "url": "https://leetcode.com/problems/car-pooling/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_character_replacement_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-repeating-character-replacement",
+        "url": "https://leetcode.com/problems/longest-repeating-character-replacement/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_cheapest_flights_k_stops",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "flights",
+          "type": "string"
+        },
+        {
+          "name": "src",
+          "type": "int"
+        },
+        {
+          "name": "dst",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "cheapest-flights-within-k-stops",
+        "url": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_coin_change2_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "amount",
+          "type": "int"
+        },
+        {
+          "name": "coins",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "coin-change-ii",
+        "url": "https://leetcode.com/problems/coin-change-ii/",
         "license": "local rewrite"
       }
     },
@@ -5876,6 +6179,27 @@
       }
     },
     {
+      "name": "lc_compare_version_result",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "version1",
+          "type": "string"
+        },
+        {
+          "name": "version2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "compare-version-numbers",
+        "url": "https://leetcode.com/problems/compare-version-numbers/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_container_max_water",
       "return_type": "int",
       "params": [
@@ -5897,6 +6221,78 @@
       }
     },
     {
+      "name": "lc_contiguous_array_max_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "contiguous-array",
+        "url": "https://leetcode.com/problems/contiguous-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_continuous_subarray_sum_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "continuous-subarray-sum",
+        "url": "https://leetcode.com/problems/continuous-subarray-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_good_meals_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "deliciousness",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-good-meals",
+        "url": "https://leetcode.com/problems/count-good-meals/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_nice_pairs_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-nice-pairs-in-an-array",
+        "url": "https://leetcode.com/problems/count-nice-pairs-in-an-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_count_primes_below",
       "return_type": "int",
       "params": [
@@ -5910,6 +6306,40 @@
         "name": "LeetCode",
         "slug": "count-primes",
         "url": "https://leetcode.com/problems/count-primes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_servers_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-servers-that-communicate",
+        "url": "https://leetcode.com/problems/count-servers-that-communicate/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_count_squares_all_ones_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-square-submatrices-with-all-ones",
+        "url": "https://leetcode.com/problems/count-square-submatrices-with-all-ones/",
         "license": "local rewrite"
       }
     },
@@ -6003,6 +6433,27 @@
       }
     },
     {
+      "name": "lc_distinct_subsequences_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "t",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "distinct-subsequences",
+        "url": "https://leetcode.com/problems/distinct-subsequences/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_distribute_candies_kinds_csv",
       "return_type": "int",
       "params": [
@@ -6016,6 +6467,44 @@
         "name": "LeetCode",
         "slug": "distribute-candies",
         "url": "https://leetcode.com/problems/distribute-candies/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_divide_two_integers_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "dividend",
+          "type": "int"
+        },
+        {
+          "name": "divisor",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "divide-two-integers",
+        "url": "https://leetcode.com/problems/divide-two-integers/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_dungeon_min_hp_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "dungeon-game",
+        "url": "https://leetcode.com/problems/dungeon-game/",
         "license": "local rewrite"
       }
     },
@@ -6041,6 +6530,23 @@
       }
     },
     {
+      "name": "lc_equations_possible_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "equations",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "satisfiability-of-equality-equations",
+        "url": "https://leetcode.com/problems/satisfiability-of-equality-equations/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_eval_rpn_csv",
       "return_type": "int",
       "params": [
@@ -6054,6 +6560,65 @@
         "name": "LeetCode",
         "slug": "evaluate-reverse-polish-notation",
         "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_eventual_safe_nodes_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-eventual-safe-states",
+        "url": "https://leetcode.com/problems/find-eventual-safe-states/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_excel_column_number",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "title",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "excel-sheet-column-number",
+        "url": "https://leetcode.com/problems/excel-sheet-column-number/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_find_anagrams_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "p",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-all-anagrams-in-a-string",
+        "url": "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
         "license": "local rewrite"
       }
     },
@@ -6075,6 +6640,23 @@
         "name": "LeetCode",
         "slug": "find-the-difference",
         "url": "https://leetcode.com/problems/find-the-difference/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_find_duplicate_number_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-the-duplicate-number",
+        "url": "https://leetcode.com/problems/find-the-duplicate-number/",
         "license": "local rewrite"
       }
     },
@@ -6113,6 +6695,73 @@
       }
     },
     {
+      "name": "lc_find_town_judge",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "trust",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-the-town-judge",
+        "url": "https://leetcode.com/problems/find-the-town-judge/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_four_sum_ii_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "name": "b",
+          "type": "string"
+        },
+        {
+          "name": "c",
+          "type": "string"
+        },
+        {
+          "name": "d",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "4sum-ii",
+        "url": "https://leetcode.com/problems/4sum-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_fruit_into_baskets_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "fruits",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "fruit-into-baskets",
+        "url": "https://leetcode.com/problems/fruit-into-baskets/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_gas_station_start_csv",
       "return_type": "int",
       "params": [
@@ -6130,6 +6779,61 @@
         "name": "LeetCode",
         "slug": "gas-station",
         "url": "https://leetcode.com/problems/gas-station/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_graph_bipartite_bool_matrix",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "is-graph-bipartite",
+        "url": "https://leetcode.com/problems/is-graph-bipartite/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_h_index_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "citations",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "h-index",
+        "url": "https://leetcode.com/problems/h-index/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_hand_of_straights_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "hand",
+          "type": "string"
+        },
+        {
+          "name": "group_size",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "hand-of-straights",
+        "url": "https://leetcode.com/problems/hand-of-straights/",
         "license": "local rewrite"
       }
     },
@@ -6168,6 +6872,48 @@
       }
     },
     {
+      "name": "lc_increasing_triplet_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "increasing-triplet-subsequence",
+        "url": "https://leetcode.com/problems/increasing-triplet-subsequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_insert_interval_total_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "intervals",
+          "type": "string"
+        },
+        {
+          "name": "new_start",
+          "type": "int"
+        },
+        {
+          "name": "new_end",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "insert-interval",
+        "url": "https://leetcode.com/problems/insert-interval/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_integer_break_max_product",
       "return_type": "int",
       "params": [
@@ -6181,6 +6927,77 @@
         "name": "LeetCode",
         "slug": "integer-break",
         "url": "https://leetcode.com/problems/integer-break/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_integer_replacement_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "integer-replacement",
+        "url": "https://leetcode.com/problems/integer-replacement/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_interleaving_string_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s1",
+          "type": "string"
+        },
+        {
+          "name": "s2",
+          "type": "string"
+        },
+        {
+          "name": "s3",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "interleaving-string",
+        "url": "https://leetcode.com/problems/interleaving-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_ipo_max_capital_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "w",
+          "type": "int"
+        },
+        {
+          "name": "profits",
+          "type": "string"
+        },
+        {
+          "name": "capital",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "ipo",
+        "url": "https://leetcode.com/problems/ipo/",
         "license": "local rewrite"
       }
     },
@@ -6223,6 +7040,57 @@
       }
     },
     {
+      "name": "lc_jump_game_ii_min_jumps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "jump-game-ii",
+        "url": "https://leetcode.com/problems/jump-game-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_keys_and_rooms_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rooms",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "keys-and-rooms",
+        "url": "https://leetcode.com/problems/keys-and-rooms/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_knight_dialer_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "knight-dialer",
+        "url": "https://leetcode.com/problems/knight-dialer/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_koko_min_speed_csv",
       "return_type": "int",
       "params": [
@@ -6244,6 +7112,120 @@
       }
     },
     {
+      "name": "lc_kth_largest_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "kth-largest-element-in-an-array",
+        "url": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_kth_smallest_matrix_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "kth-smallest-element-in-a-sorted-matrix",
+        "url": "https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_largest_component_common_factor_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "largest-component-size-by-common-factor",
+        "url": "https://leetcode.com/problems/largest-component-size-by-common-factor/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_largest_plus_sign_order",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "mines",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "order-of-largest-plus-sign",
+        "url": "https://leetcode.com/problems/order-of-largest-plus-sign/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_largest_rectangle_area_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "heights",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "largest-rectangle-in-histogram",
+        "url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_last_stone_weight_ii_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "stones",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "last-stone-weight-ii",
+        "url": "https://leetcode.com/problems/last-stone-weight-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_lcs_length",
       "return_type": "int",
       "params": [
@@ -6261,6 +7243,27 @@
         "name": "LeetCode",
         "slug": "longest-common-subsequence",
         "url": "https://leetcode.com/problems/longest-common-subsequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_least_unique_after_k_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "least-number-of-unique-integers-after-k-removals",
+        "url": "https://leetcode.com/problems/least-number-of-unique-integers-after-k-removals/",
         "license": "local rewrite"
       }
     },
@@ -6316,6 +7319,61 @@
       }
     },
     {
+      "name": "lc_longest_increasing_path_matrix",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-increasing-path-in-a-matrix",
+        "url": "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_mountain_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-mountain-in-array",
+        "url": "https://leetcode.com/problems/longest-mountain-in-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_longest_ones_k_flips_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "max-consecutive-ones-iii",
+        "url": "https://leetcode.com/problems/max-consecutive-ones-iii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_longest_palindrome_len",
       "return_type": "int",
       "params": [
@@ -6367,6 +7425,99 @@
       }
     },
     {
+      "name": "lc_longest_valid_parentheses_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-valid-parentheses",
+        "url": "https://leetcode.com/problems/longest-valid-parentheses/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_magnetic_force_balls_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "position",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "magnetic-force-between-two-balls",
+        "url": "https://leetcode.com/problems/magnetic-force-between-two-balls/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_majority_element_ii_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "majority-element-ii",
+        "url": "https://leetcode.com/problems/majority-element-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_make_connected_ops",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "connections",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-operations-to-make-network-connected",
+        "url": "https://leetcode.com/problems/number-of-operations-to-make-network-connected/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_matrix_diagonal_sum_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "matrix-diagonal-sum",
+        "url": "https://leetcode.com/problems/matrix-diagonal-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_max_area_island_rows",
       "return_type": "int",
       "params": [
@@ -6384,6 +7535,40 @@
       }
     },
     {
+      "name": "lc_max_distance_from_land_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "as-far-from-land-as-possible",
+        "url": "https://leetcode.com/problems/as-far-from-land-as-possible/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_product_subarray_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-product-subarray",
+        "url": "https://leetcode.com/problems/maximum-product-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_max_product_three_csv",
       "return_type": "int",
       "params": [
@@ -6397,6 +7582,61 @@
         "name": "LeetCode",
         "slug": "maximum-product-of-three-numbers",
         "url": "https://leetcode.com/problems/maximum-product-of-three-numbers/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_profit_fee_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "prices",
+          "type": "string"
+        },
+        {
+          "name": "fee",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "best-time-to-buy-and-sell-stock-with-transaction-fee",
+        "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_subarray_circular_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-sum-circular-subarray",
+        "url": "https://leetcode.com/problems/maximum-sum-circular-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_max_subarray_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-subarray",
+        "url": "https://leetcode.com/problems/maximum-subarray/",
         "license": "local rewrite"
       }
     },
@@ -6435,6 +7675,57 @@
       }
     },
     {
+      "name": "lc_maximum_erasure_value_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-erasure-value",
+        "url": "https://leetcode.com/problems/maximum-erasure-value/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_merge_intervals_total_length",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "intervals",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "merge-intervals",
+        "url": "https://leetcode.com/problems/merge-intervals/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_add_parentheses_valid",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-add-to-make-parentheses-valid",
+        "url": "https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_min_cost_climbing_stairs_csv",
       "return_type": "int",
       "params": [
@@ -6448,6 +7739,128 @@
         "name": "LeetCode",
         "slug": "min-cost-climbing-stairs",
         "url": "https://leetcode.com/problems/min-cost-climbing-stairs/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_cost_connect_points",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "points",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "min-cost-to-connect-all-points",
+        "url": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_days_bouquets_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "bloom_day",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-number-of-days-to-make-m-bouquets",
+        "url": "https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_deletions_unique_freq",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-deletions-to-make-character-frequencies-unique",
+        "url": "https://leetcode.com/problems/minimum-deletions-to-make-character-frequencies-unique/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_falling_path_sum_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-falling-path-sum",
+        "url": "https://leetcode.com/problems/minimum-falling-path-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_genetic_mutation_steps",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "start",
+          "type": "string"
+        },
+        {
+          "name": "end",
+          "type": "string"
+        },
+        {
+          "name": "bank",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-genetic-mutation",
+        "url": "https://leetcode.com/problems/minimum-genetic-mutation/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_height_trees_root_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-height-trees",
+        "url": "https://leetcode.com/problems/minimum-height-trees/",
         "license": "local rewrite"
       }
     },
@@ -6485,6 +7898,23 @@
         "name": "LeetCode",
         "slug": "minimum-path-sum",
         "url": "https://leetcode.com/problems/minimum-path-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_score_triangulation_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "values",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-score-triangulation-of-polygon",
+        "url": "https://leetcode.com/problems/minimum-score-triangulation-of-polygon/",
         "license": "local rewrite"
       }
     },
@@ -6527,6 +7957,61 @@
       }
     },
     {
+      "name": "lc_min_swaps_couples_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "row",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "couples-holding-hands",
+        "url": "https://leetcode.com/problems/couples-holding-hands/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_min_window_substring_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "t",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "minimum-window-substring",
+        "url": "https://leetcode.com/problems/minimum-window-substring/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_minimum_effort_path_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "path-with-minimum-effort",
+        "url": "https://leetcode.com/problems/path-with-minimum-effort/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_monotonic_array_bool_csv",
       "return_type": "bool",
       "params": [
@@ -6544,6 +8029,115 @@
       }
     },
     {
+      "name": "lc_network_delay_time",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "times",
+          "type": "string"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "network-delay-time",
+        "url": "https://leetcode.com/problems/network-delay-time/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_nice_subarrays_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "count-number-of-nice-subarrays",
+        "url": "https://leetcode.com/problems/count-number-of-nice-subarrays/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_non_overlapping_intervals_remove_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "intervals",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "non-overlapping-intervals",
+        "url": "https://leetcode.com/problems/non-overlapping-intervals/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_num_dice_rolls_target",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-dice-rolls-with-target-sum",
+        "url": "https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_num_ways_stay_same_place",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "steps",
+          "type": "int"
+        },
+        {
+          "name": "arr_len",
+          "type": "int"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-ways-to-stay-in-the-same-place-after-some-steps",
+        "url": "https://leetcode.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_number_of_islands_rows",
       "return_type": "int",
       "params": [
@@ -6557,6 +8151,132 @@
         "name": "LeetCode",
         "slug": "number-of-islands",
         "url": "https://leetcode.com/problems/number-of-islands/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_number_of_lis_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-longest-increasing-subsequence",
+        "url": "https://leetcode.com/problems/number-of-longest-increasing-subsequence/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_number_of_provinces_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "number-of-provinces",
+        "url": "https://leetcode.com/problems/number-of-provinces/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_ones_zeroes_max_form",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "strs",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "ones-and-zeroes",
+        "url": "https://leetcode.com/problems/ones-and-zeroes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_out_boundary_paths_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "m",
+          "type": "int"
+        },
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "max_move",
+          "type": "int"
+        },
+        {
+          "name": "start_row",
+          "type": "int"
+        },
+        {
+          "name": "start_column",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "out-of-boundary-paths",
+        "url": "https://leetcode.com/problems/out-of-boundary-paths/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_pal_partition_min_cut",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "palindrome-partitioning-ii",
+        "url": "https://leetcode.com/problems/palindrome-partitioning-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_palindromic_substrings_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "palindromic-substrings",
+        "url": "https://leetcode.com/problems/palindromic-substrings/",
         "license": "local rewrite"
       }
     },
@@ -6612,6 +8332,48 @@
       }
     },
     {
+      "name": "lc_permutation_in_string_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "s1",
+          "type": "string"
+        },
+        {
+          "name": "s2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "permutation-in-string",
+        "url": "https://leetcode.com/problems/permutation-in-string/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_possible_bipartition_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "dislikes",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "possible-bipartition",
+        "url": "https://leetcode.com/problems/possible-bipartition/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_power_of_three_bool",
       "return_type": "bool",
       "params": [
@@ -6629,6 +8391,23 @@
       }
     },
     {
+      "name": "lc_predict_winner_bool_csv",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "predict-the-winner",
+        "url": "https://leetcode.com/problems/predict-the-winner/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_product_except_self_sum_csv",
       "return_type": "int",
       "params": [
@@ -6642,6 +8421,90 @@
         "name": "LeetCode",
         "slug": "product-of-array-except-self",
         "url": "https://leetcode.com/problems/product-of-array-except-self/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_profitable_schemes_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "min_profit",
+          "type": "int"
+        },
+        {
+          "name": "group",
+          "type": "string"
+        },
+        {
+          "name": "profit",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "profitable-schemes",
+        "url": "https://leetcode.com/problems/profitable-schemes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_projection_area_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "projection-area-of-3d-shapes",
+        "url": "https://leetcode.com/problems/projection-area-of-3d-shapes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_rabbits_forest_min_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "answers",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "rabbits-in-forest",
+        "url": "https://leetcode.com/problems/rabbits-in-forest/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_range_bitwise_and_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "left",
+          "type": "int"
+        },
+        {
+          "name": "right",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "bitwise-and-of-numbers-range",
+        "url": "https://leetcode.com/problems/bitwise-and-of-numbers-range/",
         "license": "local rewrite"
       }
     },
@@ -6692,6 +8555,44 @@
       }
     },
     {
+      "name": "lc_redundant_connection_edge_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "redundant-connection",
+        "url": "https://leetcode.com/problems/redundant-connection/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_repeated_subarray_max_len",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums1",
+          "type": "string"
+        },
+        {
+          "name": "nums2",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "maximum-length-of-repeated-subarray",
+        "url": "https://leetcode.com/problems/maximum-length-of-repeated-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_robot_return_origin_bool",
       "return_type": "bool",
       "params": [
@@ -6705,6 +8606,82 @@
         "name": "LeetCode",
         "slug": "robot-return-to-origin",
         "url": "https://leetcode.com/problems/robot-return-to-origin/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_rotate_array_first_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "k",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "rotate-array",
+        "url": "https://leetcode.com/problems/rotate-array/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_rotting_oranges_minutes_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "rotting-oranges",
+        "url": "https://leetcode.com/problems/rotting-oranges/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_score_parentheses_value",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "score-of-parentheses",
+        "url": "https://leetcode.com/problems/score-of-parentheses/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_search_matrix_bool_rows",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "search-a-2d-matrix",
+        "url": "https://leetcode.com/problems/search-a-2d-matrix/",
         "license": "local rewrite"
       }
     },
@@ -6747,6 +8724,61 @@
       }
     },
     {
+      "name": "lc_ship_capacity_days_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "weights",
+          "type": "string"
+        },
+        {
+          "name": "days",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "capacity-to-ship-packages-within-d-days",
+        "url": "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_shortest_path_binary_matrix_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "shortest-path-in-binary-matrix",
+        "url": "https://leetcode.com/problems/shortest-path-in-binary-matrix/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_shortest_unsorted_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "shortest-unsorted-continuous-subarray",
+        "url": "https://leetcode.com/problems/shortest-unsorted-continuous-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_single_number_ii_csv",
       "return_type": "int",
       "params": [
@@ -6760,6 +8792,44 @@
         "name": "LeetCode",
         "slug": "single-number-ii",
         "url": "https://leetcode.com/problems/single-number-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_sort_colors_code_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "colors",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "sort-colors",
+        "url": "https://leetcode.com/problems/sort-colors/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_split_array_largest_sum_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        },
+        {
+          "name": "m",
+          "type": "int"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "split-array-largest-sum",
+        "url": "https://leetcode.com/problems/split-array-largest-sum/",
         "license": "local rewrite"
       }
     },
@@ -6819,6 +8889,57 @@
         "name": "LeetCode",
         "slug": "subarray-sum-equals-k",
         "url": "https://leetcode.com/problems/subarray-sum-equals-k/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_sum_subarray_mins_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "sum-of-subarray-minimums",
+        "url": "https://leetcode.com/problems/sum-of-subarray-minimums/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_surface_area_grid_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "surface-area-of-3d-shapes",
+        "url": "https://leetcode.com/problems/surface-area-of-3d-shapes/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_swim_rising_water_time_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "hard",
+      "source": {
+        "name": "LeetCode",
+        "slug": "swim-in-rising-water",
+        "url": "https://leetcode.com/problems/swim-in-rising-water/",
         "license": "local rewrite"
       }
     },
@@ -6945,6 +9066,57 @@
       }
     },
     {
+      "name": "lc_triangle_min_path_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "triangle",
+        "url": "https://leetcode.com/problems/triangle/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_tuple_same_product_count_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "tuple-with-same-product",
+        "url": "https://leetcode.com/problems/tuple-with-same-product/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_turbulent_subarray_len_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "arr",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "longest-turbulent-subarray",
+        "url": "https://leetcode.com/problems/longest-turbulent-subarray/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_unique_bst_count",
       "return_type": "int",
       "params": [
@@ -6983,6 +9155,23 @@
       }
     },
     {
+      "name": "lc_unique_paths_obstacles_rows",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "rows",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "unique-paths-ii",
+        "url": "https://leetcode.com/problems/unique-paths-ii/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_valid_mountain_array_csv",
       "return_type": "bool",
       "params": [
@@ -7017,6 +9206,35 @@
       }
     },
     {
+      "name": "lc_valid_path_graph_bool",
+      "return_type": "bool",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        },
+        {
+          "name": "source",
+          "type": "int"
+        },
+        {
+          "name": "destination",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "LeetCode",
+        "slug": "find-if-path-exists-in-graph",
+        "url": "https://leetcode.com/problems/find-if-path-exists-in-graph/",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "lc_valid_perfect_square_bool",
       "return_type": "bool",
       "params": [
@@ -7047,6 +9265,23 @@
         "name": "LeetCode",
         "slug": "valid-sudoku",
         "url": "https://leetcode.com/problems/valid-sudoku/",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "lc_wiggle_max_length_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "nums",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "LeetCode",
+        "slug": "wiggle-subsequence",
+        "url": "https://leetcode.com/problems/wiggle-subsequence/",
         "license": "local rewrite"
       }
     },
@@ -7218,6 +9453,107 @@
       }
     },
     {
+      "name": "luogu_p1003_carpet_top_index",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "carpets",
+          "type": "string"
+        },
+        {
+          "name": "x",
+          "type": "int"
+        },
+        {
+          "name": "y",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1003",
+        "url": "https://www.luogu.com.cn/problem/P1003",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1014_cantor_code",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1014",
+        "url": "https://www.luogu.com.cn/problem/P1014",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1047_remaining_trees",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "length",
+          "type": "int"
+        },
+        {
+          "name": "intervals",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1047",
+        "url": "https://www.luogu.com.cn/problem/P1047",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1090_merge_fruit_cost_csv",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "piles",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1090",
+        "url": "https://www.luogu.com.cn/problem/P1090",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1217_prime_pal_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "a",
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1217",
+        "url": "https://www.luogu.com.cn/problem/P1217",
+        "license": "local rewrite"
+      }
+    },
+    {
       "name": "luogu_p1421_pencil_count",
       "return_type": "int",
       "params": [
@@ -7235,6 +9571,23 @@
         "name": "Luogu",
         "slug": "P1421",
         "url": "https://www.luogu.com.cn/problem/P1421",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1423_swim_days",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "x_times_100",
+          "type": "int"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1423",
+        "url": "https://www.luogu.com.cn/problem/P1423",
         "license": "local rewrite"
       }
     },
@@ -7264,6 +9617,119 @@
         "name": "Luogu",
         "slug": "P1425",
         "url": "https://www.luogu.com.cn/problem/P1425",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1803_interval_schedule_count",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "intervals",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1803",
+        "url": "https://www.luogu.com.cn/problem/P1803",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p1909_pencil_min_cost",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "options",
+          "type": "string"
+        }
+      ],
+      "difficulty": "easy",
+      "source": {
+        "name": "Luogu",
+        "slug": "P1909",
+        "url": "https://www.luogu.com.cn/problem/P1909",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p2678_jump_stone_distance",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "length",
+          "type": "int"
+        },
+        {
+          "name": "stones",
+          "type": "string"
+        },
+        {
+          "name": "remove",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P2678",
+        "url": "https://www.luogu.com.cn/problem/P2678",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p3366_mst_weight",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P3366",
+        "url": "https://www.luogu.com.cn/problem/P3366",
+        "license": "local rewrite"
+      }
+    },
+    {
+      "name": "luogu_p3371_shortest_path",
+      "return_type": "int",
+      "params": [
+        {
+          "name": "n",
+          "type": "int"
+        },
+        {
+          "name": "edges",
+          "type": "string"
+        },
+        {
+          "name": "s",
+          "type": "int"
+        },
+        {
+          "name": "target",
+          "type": "int"
+        }
+      ],
+      "difficulty": "medium",
+      "source": {
+        "name": "Luogu",
+        "slug": "P3371",
+        "url": "https://www.luogu.com.cn/problem/P3371",
         "license": "local rewrite"
       }
     },

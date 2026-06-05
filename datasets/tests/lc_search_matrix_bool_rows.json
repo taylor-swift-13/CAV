@@ -1,0 +1,47 @@
+{
+  "name": "lc_search_matrix_bool_rows",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    },
+    {
+      "name": "target",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1,3,5,7;10,11,16,20;23,30,34,60",
+        "target": 3
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1,3,5,7;10,11,16,20;23,30,34,60",
+        "target": 13
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "1",
+        "target": 1
+      },
+      "expected": true
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "search-a-2d-matrix",
+    "url": "https://leetcode.com/problems/search-a-2d-matrix/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

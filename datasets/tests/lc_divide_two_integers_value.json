@@ -1,0 +1,47 @@
+{
+  "name": "lc_divide_two_integers_value",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "dividend",
+      "type": "int"
+    },
+    {
+      "name": "divisor",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "dividend": 10,
+        "divisor": 3
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "dividend": 7,
+        "divisor": -3
+      },
+      "expected": -2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "dividend": -2147483648,
+        "divisor": -1
+      },
+      "expected": 2147483647
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "divide-two-integers",
+    "url": "https://leetcode.com/problems/divide-two-integers/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

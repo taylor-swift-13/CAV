@@ -1,0 +1,40 @@
+{
+  "name": "lc_number_of_provinces_rows",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "rows",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "110;110;001"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "100;010;001"
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "rows": "111;111;111"
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "number-of-provinces",
+    "url": "https://leetcode.com/problems/number-of-provinces/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

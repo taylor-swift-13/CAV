@@ -1,0 +1,36 @@
+{
+  "workspace": "fibonacci",
+  "stage": "verify",
+  "input_c": "original/fibonacci.c",
+  "input_v": "original/fibonacci.v",
+  "original_c": "original/fibonacci.c",
+  "original_v": "original/fibonacci.v",
+  "annotated_c": "annotated/fibonacci.c",
+  "function_name": "fibonacci",
+  "semantic_description": "Verifies an iterative scalar Fibonacci implementation. The function accepts an integer n constrained to 0 <= n <= 46, returns fib_z(n), returns 0 immediately for n == 0, and otherwise uses a for loop from i = 2 through n while maintaining scalar variables a and b as consecutive Fibonacci values. The function does not read or write heap memory and relies on the input bound as an overflow guard for C int arithmetic.",
+  "keywords": {
+    "algorithm_family": "dynamic_programming",
+    "control_flow": [
+      "if",
+      "for_loop"
+    ],
+    "data_shape": "scalar_only",
+    "proof_pattern": [
+      "loop_invariant",
+      "pure_arithmetic",
+      "range_bound"
+    ],
+    "numeric_properties": [
+      "nonnegative_input",
+      "overflow_guard",
+      "int_range"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": [
+      "goal_check_passed",
+      "proof_check_passed"
+    ]
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

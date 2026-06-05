@@ -1,0 +1,54 @@
+{
+  "name": "lc_network_delay_time",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "times",
+      "type": "string"
+    },
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "k",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "times": "2,1,1;2,3,1;3,4,1",
+        "n": 4,
+        "k": 2
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "times": "1,2,1",
+        "n": 2,
+        "k": 1
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "times": "1,2,1",
+        "n": 2,
+        "k": 2
+      },
+      "expected": -1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "network-delay-time",
+    "url": "https://leetcode.com/problems/network-delay-time/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

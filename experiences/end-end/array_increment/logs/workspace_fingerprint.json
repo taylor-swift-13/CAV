@@ -1,0 +1,37 @@
+{
+  "workspace": "array_increment",
+  "stage": "verify",
+  "input_c": "original/array_increment.c",
+  "input_v": "",
+  "original_c": "original/array_increment.c",
+  "original_v": "",
+  "annotated_c": "annotated/array_increment.c",
+  "function_name": "array_increment",
+  "semantic_description": "array_increment takes a nonnegative length n and an owned IntArray::full(a, n, l), then iterates once from i = 0 to i < n and updates the array in place so every element becomes the corresponding original value plus 1. The contract requires each l[i] + 1 to be within the signed 32-bit integer range, the loop may be empty when n is 0, and the function does not return a value or allocate memory.",
+  "keywords": {
+    "algorithm_family": "accumulation",
+    "control_flow": "for_loop",
+    "data_shape": [
+      "array",
+      "pointer"
+    ],
+    "semantic_intent": "in_place_update",
+    "proof_pattern": [
+      "loop_invariant",
+      "heap_reasoning",
+      "range_bound"
+    ],
+    "numeric_properties": [
+      "nonnegative_input",
+      "overflow_guard",
+      "int_range"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": [
+      "goal_check_passed",
+      "proof_check_passed"
+    ]
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

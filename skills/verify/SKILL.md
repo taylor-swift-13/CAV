@@ -1,285 +1,115 @@
 ---
-name: java-openjml-verify
-description: Verify Java/JML source with Codex-assisted OpenJML iteration.
+name: verify
+description: Verify skill，消费 Contract 输出完成注解、证明和编译检查。
 ---
 
-Use this workflow for the Java/OpenJML verify stage. This skill consumes an
-existing Java implementation/spec and repairs only the verified working copy
-until OpenJML ESC passes without cheating.
+Verify 消费 Contract 已经准备好的输入做 annotation + proof + compile，**不重写 contract**。所有 reasoning / issues 日志必须独立可读：现象 + 定位（文件/theorem/witness） + 修复动作 + 关键 C/Coq/报错片段 + 为什么这样改。
 
+## 0. 退出纪律
 
-跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
+Verify 是长迭代任务。**不要**因为遇到一个可继续推进的 `symexec` / `coqc` / proof blocker 就结束当前 agent run。只要还在当前外层超时预算内，并且 blocker 可以通过本 workspace 的 annotation / proof edit 继续尝试，就必须继续执行“改一处 -> 跑对应 gate -> 读第一个失败点 -> 再改”的循环。
 
-## Pipeline Position
+只有以下情况才能写 `Final Result: Fail` 并退出：
 
-This is the final proof stage of the Java/OpenJML workflow.
+- contract 或原始 C/V 规格缺失、矛盾，必须回到 Contract 阶段或用户决策；
+- 当前 generated VC 在现有 contract/annotation 下确实不可证，且已经定位到缺失的前提或语义矛盾；
+- 需要修改写边界外的文件才能继续；
+- 外部命令或 agent run 已经接近/触达 runner 超时，无法再完成一次有意义的编辑和 gate；
+- 已经完成全部可行修复但确定性 runner gate 仍失败，且失败原因不再能在当前 workspace 内推进。
 
-Input:
+普通的 `proof_manual_has_obligations`、单个 theorem 的 `coqc` 报错、`symexec` 的具体 annotation 报错、tactic 失败、load-path 可修复错误，都不是退出理由；这些是本轮继续工作的输入。
 
-- `input/<name>.java`
+## 1. 路径约定
 
-Output:
+- 输入：`input/<name>.c`、可选 `input/<name>.v`
+- 工作副本：`annotated/verify_<timestamp>_<name>.c`
+- workspace：`output/verify_<timestamp>_<name>/`（含 `coq/generated/`、`logs/`、`original/`）
 
-- `output/verify_<timestamp>_<name>/original/<name>.java`
-- `output/verify_<timestamp>_<name>/verified/<name>.java`
-- `output/verify_<timestamp>_<name>/logs/workspace_fingerprint.json`
-- `output/verify_<timestamp>_<name>/logs/annotation_reasoning.md`
-- `output/verify_<timestamp>_<name>/logs/issues.md`
-- `output/verify_<timestamp>_<name>/logs/metrics.md`
-- runtime OpenJML and scanner logs under the same workspace logs directory.
+脚本调用和手动执行必须用这同一组路径，不可发明新位置。
 
-Command shape:
+## 2. 读写边界
 
-```bash
-python3 scripts/run_verify.py input/<name>.java --class-name <ClassName>
+**读**（除自身 I/O 外，参考只能在白名单内）：`doc/`、`experiences/`、`QualifiedCProgramming/QCP_examples/`。权威细节见 `doc/PERMISSIONS.md §3 / §3.1`。
+
+**不要**：`symexec --help` 之类的命令反推、读 `scripts/` 编排脚本、读 `QualifiedCProgramming/` 下除 `QCP_examples/` 外的库源码、读自己的 `logs/agent_stdout_*.jsonl`、`git log` / `git show` 考古。
+
+**写**：当前 `annotated/...c`、当前 workspace 的 `coq/generated/<name>_proof_manual.v` + 必要本地 helper、当前 workspace 的 `logs/*`。其余一律不写——包括 `input/`、`scripts/`、其它 workspace、QCP 源码、`experiences/`（只读，沉淀由末尾 consolidate 负责）。
+
+**不手改** `*_goal.v` / `*_proof_auto.v` / `*_goal_check.v`。
+
+**annotated 头文件硬规则**：`/home/yangfp/CAV/C/CAV/annotated/` 下的 C 文件引用公共验证头时，必须使用 repo-root 相对的单层 `../` 格式：
+
+```c
+#include "../verification_stdlib.h"
+#include "../verification_list.h"
+#include "../int_array_def.h"
 ```
 
-On success, the runner exports a CAV-style compact example snapshot under
-`experiences/end-end/<name>/` with only:
+需要字符数组时同理使用 `#include "../char_array_def.h"`。禁止写 `../../...`、bare header（如 `#include "verification_stdlib.h"`）或其它层级；发现后必须先改回上述格式再跑 symexec/compile，避免 include 路径导致 infra 误判。
 
-- `original/<name>.java`
-- `verified/<name>.java`
-- `logs/workspace_fingerprint.json`
-- `logs/annotation_reasoning.md`
-- `logs/issues.md`
+## 3. 分步读经验（按需读，不要一次读完）
 
-Do not export runtime-only logs such as Codex stdout/stderr, OpenJML stdout,
-OpenJML stderr, scanner stdout/stderr, or metrics into `experiences/end-end`.
+- 任务开始：`doc/SCOPE.md`、`doc/PERMISSIONS.md`、`experiences/general/README/README.md`
+- 改 annotation 前：`experiences/general/INV/README.md`、`experiences/general/ASSERTION/README.md`
+- 跑 symexec 前：`experiences/general/SYMEXEC/README.md`（命令在 §0；cwd = `QualifiedCProgramming/`）
+- 写 `proof_manual.v` 前：`experiences/general/PROOF/README.md`（tactic 起手式在 §3）
+- 编译前：`experiences/general/COMPILE/README.md` §5（cwd = `QualifiedCProgramming/SeparationLogic`；默认复用 `examples/*.vo`，缺失才回 `coq/deps/`）
+- 卡住才查 `doc/retrieval/INDEX.md`、`doc/predict/`、`experiences/end-end/`、`QCP_examples/`
 
-## Inputs
+## 4. 主流程
 
-- Original input Java file.
-- Verified working Java file.
-- Workspace path.
-- Class name.
+1. 读 `input/<name>.{c,v}`，确认有基本规格。规格缺失或必须改 contract / 原始 C 时，**停止 verify**，记 `logs/issues.md`，找用户。
+2. 读 `doc/retrieval/INDEX.md`，按受控词表回填 `logs/workspace_fingerprint.json` 的 `semantic_description` 和 `keywords`（不能留空）。
+3. 需要补 `Inv` / `Assert` 时：读 INV/ASSERTION，先 append `logs/annotation_reasoning.md`，再改 annotated 工作副本。loop invariant 写完整 `Inv Assert`；中间断言优先写完整 `Assert`，`which implies` 只做局部 bridge。生成的 manual VC 语义不可证时**回 annotation**，不要硬写 proof。无需注释就跳过这一步。
+4. 跑 `symexec`（每改 annotation 必须重跑）。以最新 witness 编号为准，不要盲用旧 proof。
+5. 看 `proof_manual.v`：
+   - 若**没有需要手工证明的 theorem**（所有 witness 都在 `proof_auto.v` 的 `Admitted` 占位里）= trivial case，**直接跳 6**，不读 `experiences/general/PROOF/README.md`、不检索 retrieval/end-end/QCP_examples。
+   - 否则读 `experiences/general/PROOF/README.md`，按 §3 tactic 起手式套，编译失败迭代；每轮先 append `logs/proof_reasoning.md` 再改 proof。手工 witness 逐个证、当前没证完不跳下一个。可补 helper lemma；**不准** `Admitted` / `admit` / `Abort` / 新增 `Axiom` / 改 VC 目标 / 导入 `derivable1` 绕过。
+6. 按 `experiences/general/COMPILE/README.md` §5 编译 `goal` / `proof_auto` / `proof_manual` / `goal_check`。
+7. 自检 source integrity / freshness：确认 `input/<name>.c` / 可选 `input/<name>.v` 没被改；确认 `annotated/verify_<timestamp>_<name>.c` 里的函数 contract 和 executable C implementation 与原始 input 一致，只新增验证注解；确认当前 Coq 产物来自最新 annotated C。
+8. 清理 `coq/` 下非 `.v` 中间产物和 `input/` 下非 `.v`/`.c` 产物。
+9. 只有满足 §0 的退出条件后，才写完 `logs/issues.md`（追加，详细记录所有踩坑）、`logs/metrics.md`（自判摘要即可），最后一行写裸的 `Final Result: Success` 或 `Final Result: Fail`——**整行就是这十几个字符**，禁止 markdown 加粗、反引号、后缀（如 `(round N)`），否则外部判据会误判未完成。若当前失败点仍可通过继续改 annotation/proof 推进，不要写最终结果，继续迭代。
 
-## Required References
+## 5. 完成条件
 
-Read these local references before making verification edits:
+`logs/metrics.md` 写自判摘要即可；runner 会复核并覆盖最终 metrics。
 
-- `/home/yangfp/CAV-JAVA/experiences/general/README/README.md` (experience entry; jump by symptom)
-- `/home/yangfp/CAV-JAVA/experiences/general/INV/README.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/ASSERTION/README.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/LEMMA/README.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/AUDIT/README.md`
-- `/home/yangfp/CAV-JAVA/experiences/general/OPENJML/README.md`
-- `/home/yangfp/CAV-JAVA/experiences/INDEX.md`
+全部满足才能写 `Final Result: Success`：
 
-Search completed end-to-end examples before making verification edits:
+- symexec 基于最新 annotated 文件成功，生成最新 `goal/proof_auto/proof_manual/goal_check`
+- `proof_manual.v` 无 `Admitted` / `admit` / `Abort` / 新增 `Axiom`
+- 四个 `.v` 文件全编译通过
+- 没有修改原始 contract 或函数实现；annotated C 只新增验证注解
+- `annotated/...c` 中公共验证头 include 必须是 `#include "../verification_stdlib.h"`、`#include "../verification_list.h"`、`#include "../int_array_def.h"` / 必要时 `../char_array_def.h`，不得出现 `../../...` 或 bare header
+- `logs/workspace_fingerprint.json` 非空且字段合法
+- runner 能用当前 annotated C 重新 symexec，并确认 `goal/proof_auto/goal_check` 与当前产物一致
+- `coq/` 与 `input/` 中间产物已清理
+- `logs/issues.md` 和 `logs/metrics.md` 已完整更新
 
-- `/home/yangfp/CAV-JAVA/experiences/end-end`
+如果任一机器 gate 失败，先按 §0 判断能否继续推进。能继续推进时，记录到对应 reasoning 日志并继续迭代，**不要**写 `Final Result: Fail`。只有满足 §0 的退出条件时，才写 `Final Result: Fail`，并在 `logs/issues.md` 中记录：
 
-Use prior examples as concrete evidence for successful Java/JML patterns,
-workspace layout, fingerprint format, and issue-log style. Prefer examples with
-similar control flow, data type, or OpenJML diagnostic. Record the selected
-example path in `logs/annotation_reasoning.md` when it informs a change.
+- 失败的 gate 名称（如 symexec、manual proof obligation、`coqc goal_check.v`）
+- 退出码或 theorem/witness 名称
+- 关键报错
+- 当前 `annotated/...c` 和相关 `coq/generated/*.v` 路径
+- 下一轮 verify 需要修正的具体点
 
-Useful commands:
+Agent 自判成功后，runner 还会复核：检查生成文件存在、`proof_manual.v` 无未解占位、重新编译 `goal/proof_auto/proof_manual/goal_check`，确定性检查 input C/V 未被修改、annotated C 的 contract 和 executable implementation 未偏离原始 input，检查 fingerprint 非空合法，并记录当前 annotated C hash 后重新 symexec 对比 `goal/proof_auto/goal_check`。只有 runner 复核通过，verify 阶段才算成功。
 
-```bash
-find /home/yangfp/CAV-JAVA/experiences/end-end -maxdepth 4 -type f | sort
-rg -n "requires|ensures|assignable|loop_invariant|assert|pure|Final Result|workspace_fingerprint" /home/yangfp/CAV-JAVA/experiences/end-end
-```
+## 6. Reasoning 日志规范（共用）
 
-Before OpenJML success can be reported, update
-`logs/workspace_fingerprint.json` so:
+`annotation_reasoning.md` / `proof_reasoning.md` / `issues.md` / `continue.md` 共同遵守：
 
-- `semantic_description` is non-empty;
-- `keywords` is non-empty;
-- every `keywords` key and value comes from
-  `/home/yangfp/CAV-JAVA/experiences/INDEX.md`;
-- no free-form synonym is invented.
+- **只追加，不覆盖**
+- 每段独立可读：现象、定位（文件路径 + theorem / witness / 行号）、修复动作、关键代码或日志片段（C annotation / Coq theorem-subgoal-tactic / `coqc`-`symexec` 报错）、**为什么这样改**。不准只写「尝试证明失败」「修改了 invariant」这类笼统话。
+- 每轮迭代前贴出新一轮的片段，不只贴最后一版
 
-Use these official OpenJML resources as the local reference corpus:
-
-- `/home/yangfp/CAV-JAVA/doc`
-- `/home/yangfp/CAV-JAVA/doc/openjml-tutorial`
-- `/home/yangfp/CAV-JAVA/doc/openjml-documentation`
-- `/home/yangfp/CAV-JAVA/doc/openjml-specs`
-- `/home/yangfp/CAV-JAVA/examples`
-- `/home/yangfp/CAV-JAVA/examples/openjml-tutorial`
-- `/home/yangfp/CAV-JAVA/examples/openjml-demos`
-- `/home/yangfp/CAV-JAVA/examples/openjml-userguide`
-
-Do not bulk-read all of `doc` or `examples`. Search them selectively. Useful
-queries include:
-
-```bash
-rg -n "loop_invariant|decreases|assignable|assert|pure|model|ghost|spec_public" /home/yangfp/CAV-JAVA/doc /home/yangfp/CAV-JAVA/examples
-rg -n "ArithmeticOperationRange|InvariantExit|Precondition|PossiblyNull|LoopInvariant" /home/yangfp/CAV-JAVA/doc /home/yangfp/CAV-JAVA/examples
-```
-
-## Boundaries
-
-- Modify only the verified working Java file and files under the current
-  workspace logs.
-- Never modify the original input Java file.
-- Preserve baseline `requires`, `ensures`, and `assignable` clauses. Do not
-  weaken, delete, or make them vacuous.
-- Keep the implementation semantically aligned with the input. If the input
-  implementation/spec is fundamentally wrong, record the issue and fail the
-  verify stage instead of silently changing the problem.
-
-## Verification Aids
-
-Allowed aids:
-
-- `loop_invariant` clauses.
-- `decreases` clauses.
-- JML `assert` statements used as local bridge facts.
-- Verified `pure` helper methods with executable bodies.
-- `spec_public`, model fields, or ghost state only when needed and documented.
-
-Forbidden aids:
-
-- `assume`.
-- `axiom`.
-- `Admitted`.
-- `skipesc`.
-- broad `nowarn`.
-- `native` helpers.
-- reflection.
-- impossible preconditions.
-- unreachable-path tricks.
-
-## Iteration Procedure
-
-1. Read the original Java and the verified working Java.
-2. Run anti-cheating scan before edits:
-
-   ```bash
-   scripts/check_jml_cheating.py --baseline <original> <verified>
-   ```
-
-3. Run OpenJML:
-
-   ```bash
-   scripts/run_openjml_verify.sh <verified>
-   ```
-
-4. Classify the first concrete OpenJML failure:
-   - arithmetic overflow or range proof;
-   - nullness or array bounds;
-   - missing `assignable`;
-   - loop invariant initialization;
-   - loop invariant preservation;
-   - loop exit not strong enough;
-   - visibility/spec-public issue;
-   - helper lemma/pure method issue;
-   - anti-cheating violation.
-5. Search `/home/yangfp/CAV-JAVA/experiences/end-end` first for a similar
-   completed task, then search `/home/yangfp/CAV-JAVA/doc` and
-   `/home/yangfp/CAV-JAVA/examples`
-   for the closest OpenJML pattern before editing.
-6. Append to `logs/annotation_reasoning.md` before changing annotations. Include:
-   - command that failed;
-   - exact OpenJML message;
-   - file and line;
-   - local code/spec snippet;
-   - selected reference path from `doc` or `examples`, when used;
-   - planned invariant/assertion/lemma change;
-   - why the change follows from the program state.
-7. Edit only the verified Java file.
-8. Rerun anti-cheating scan and OpenJML.
-9. Repeat until both pass or the blocker is determined to require contract or
-   implementation changes outside verify scope.
-
-## Invariant Rules
-
-- Every loop needs enough facts for initialization, preservation, and exit.
-- Track loop bounds explicitly.
-- Track modified and unmodified array regions separately.
-- Track accumulators as prefix or segment facts.
-- Add `decreases` when OpenJML cannot prove termination.
-- Do not use an assertion to compensate for a missing loop invariant if the
-  fact must hold across iterations.
-
-## Assertion Rules
-
-- Use JML `assert` only for facts derivable at that program point.
-- Prefer assertions for branch facts, arithmetic bounds, and loop-exit bridges.
-- Do not assert the postcondition directly unless the current invariants and
-  branch facts already imply it.
-- Do not introduce `assume`; assertions must be checked by OpenJML.
-
-## Lemma Rules
-
-- Helper lemmas must be Java/JML artifacts OpenJML can check.
-- Prefer small `pure` methods with executable bodies and contracts.
-- Do not use `native`, empty bodies, impossible preconditions, or unchecked
-  model methods.
-- If a helper lemma is added, OpenJML must verify it in the same run as the
-  target class.
-
-## Logs
-
-Maintain these logs in the workspace:
-
-- `logs/annotation_reasoning.md`
-- `logs/issues.md`
-- `logs/metrics.md`
-
-`logs/issues.md` must record every representative blocker with:
-
-- stage;
-- command;
-- failing file and line;
-- OpenJML message;
-- diagnosis;
-- edit made;
-- result after rerun.
-
-`logs/metrics.md` must end with one of:
-
-```text
-Final Result: Success
-Final Result: Fail
-```
-
-## Completion
-
-Success requires all of the following:
-
-- `scripts/check_jml_cheating.py --baseline <original> <verified>` exits 0.
-- `scripts/run_openjml_verify.sh <verified>` exits 0.
-- No forbidden proof aid remains in the verified Java file.
-- Baseline contract clauses are preserved.
-- Logs are complete.
-- `logs/workspace_fingerprint.json` has a non-empty `semantic_description` and
-  controlled `keywords` from `/home/yangfp/CAV-JAVA/experiences/INDEX.md`.
-
-Do **not** record experience yourself. Experience is consolidated once at the
-very end of the flow by a dedicated unit (`scripts/experience_consolidate.py`).
-Write clear `logs/issues.md`, `logs/annotation_reasoning.md`,
-`logs/continue.md`, and `logs/summary.md` — the consolidation unit reads them.
-
-If any condition is missing, write `Final Result: Fail`.
-
-## Iteration / Restart / Resume
-
-The verify runner (`run_verify.py`) drives this stage in a budget-driven
-loop (`scripts/agent_loop.py`):
-
-- Keep iterating in the **same workspace** until OpenJML ESC and the
-  anti-cheating scan both pass, or the time budget is exhausted. A fresh round
-  starts only if you exit early without passing; a round that hits its timeout
-  is a failure and is **not** restarted.
-- On every round before editing, append a fresh section to `logs/continue.md`
-  (never overwrite): why the previous round did not finish, the current blocker,
-  next step and plan, citing concrete evidence (file:line, the exact OpenJML
-  message, the JML/Java snippet).
-- At the end of each round write `logs/summary.md`: what you did, current proof
-  state, and where you are stuck — the next round resumes from it.
-- When re-entered after the audit critic overturned the proof, the findings are
-  in the `## overturn` section of `logs/continue.md`; read it and fix exactly
-  that anti-cheating problem without weakening the spec.
-
-
-## 条件性 mode addendum
+## 7. 条件性 mode addendum
 
 runner 在 prompt 加标记触发以下附录，**没标记就不读**。多个标记可叠加。
 
 | Prompt 标记 | 附录文件 | 含义 |
 |------------|---------|------|
 | `Attempt: N (retry — ...)` 且 N > 1 | `MODE_RETRY.md` | 接力上一轮工作，必须追加 `logs/continue.md` 新 section |
-| `Audit findings:` 块 | `MODE_RERUN_AUDIT.md` | audit critic 标记不可信后的重跑，逐条修复 finding |
+| `Restart feedback` 块 | `MODE_RETRY.md` | runner audit check 反馈后的内部重试，逐条修复 feedback |
+| `Mode: proof-only` | `MODE_PROOF_ONLY.md` | loop-free + symexec 已跑过、仅补 `proof_manual.v` 的子场景 |

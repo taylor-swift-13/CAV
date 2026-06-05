@@ -1,193 +1,131 @@
 ---
-name: java-openjml-eval
-description: Evaluate an existing Java/JML implementation against concrete positive and negative cases by treating the JML spec as an executable predicate (spec-test).
+name: c-qcp-eval
+description: Evaluate an existing C/QCP implementation against concrete positive/negative cases，把 contract 当语义目标。
 ---
 
-Use this workflow independently from contract, verify, and audit. The goal is
-to decide whether the JML spec attached to an implementation correctly
-characterizes that implementation's behavior on representative inputs. The
-spec and the implementation are not modified.
+跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 eval-specific 内容。
 
-Eval treats the JML spec as an **executable predicate** and looks for cases
-where mechanical evaluation disagrees with the implementation. It does **not**
-invoke `openjml -esc`, and it does **not** check well-formedness: the contract
-stage's success gate already guarantees the spec parses, type-checks, is free
-of `NOT IMPLEMENTED` and the unsupported aggregate quantifiers
-(`\num_of` / `\sum` / `\product`), and passes the anti-cheating scan. Deductive
-proof is the verify/audit stage's job. By the time eval runs, the spec is
-already well-formed, so eval only has to test its semantics.
+按需读：`experiences/general/EVAL/README.md`、`experiences/general/AUDIT/README.md`、`experiences/general/CONTRACT/README.md`。实现、contract 和 `.v` 文件作为只读语义目标。
 
+阶段职责：eval 负责 spec-test 和整体语义 judge，判断 spec 是否 sound / complete。contract runner 负责 QCP wellformed、companion `.v` 编译、verify 阶段注释检查和 `.v` 假设检查。eval 的 Coq 使用场景是本文件 §4.1 的 `compute_queries`，用于对具体闭式项做 `vm_compute`。
 
-跨阶段共用规则（读写边界、效率、experiences 只读、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述本阶段特有内容。
+## 1. 输入
 
-## Required References
+- 实现/规格 C 文件、可选 companion `.v`
+- target function、workspace path、cases 数、evaluation 目录
 
-- `experiences/general/EVAL/README.md`
-- `experiences/general/AUDIT/README.md`
-- `experiences/general/OPENJML/README.md`
+## 2. 输出
 
-## Inputs
+`output/eval_<timestamp>_<name>/` 下：
 
-- Implementation/spec Java file.
-- Target class and method.
-- Workspace path.
-- Cases directory and evaluation directory.
+- `original/<name>.c`（+ `.v` 如有）
+- `cases/cases.json`、`evaluation/evaluation.json`
+- `logs/test_reasoning.md`、`logs/issues.md`、`logs/metrics.md`、`logs/final_result.md`
+- agent 输出文件由 runner 自动放在 `logs/`
 
-## Output Layout
+## 3. Cases（写入 `cases/cases.json`）
 
-```
-output/eval_<timestamp>_<name>/
-  original/<name>.java
-  cases/cases.json
-  evaluation/evaluation.json
-  logs/test_reasoning.md
-  logs/issues.md
-  logs/metrics.md
-  logs/final_result.md
-  logs/<agent>_prompt_<run>.txt
-  logs/<agent>_stdout_<run>.{jsonl,log}
-  logs/<agent>_stderr_<run>.log
-  logs/<agent>_last_message_<run>.txt
-```
+按 prompt 要求的数量生成 positive + negative case。positive 满足每条 `Require`；negative 要么违反某条前条件、要么声称一个被 `Ensure` 拒绝的返回值 / 后状态。**偏向 adversarial 覆盖**：覆盖每个分支和每个后条件形状。
 
-## Cases
-
-Generate **exactly the requested number of positive** and **exactly the requested number of negative** cases in
-`cases/cases.json`. Positive cases must satisfy every `requires` clause;
-their `result` and `post_state` come from running the implementation. Negative
-cases either violate one `requires` clause (precondition negative) or claim a
-`result` that contradicts the spec (postcondition negative).
-
-Choose cases adversarially: positives must cover EVERY branch / input partition
-(e.g. both `a >= b` and `a < b`) and stress each `ensures` clause, so a
-one-branch spec bug is not missed because no case hit that branch.
-
-`cases/cases.json` schema:
+Schema：
 
 ```json
 {
-  "class_name": "MaxOfTwo",
-  "method_name": "max_of_two",
+  "function_name": "abs_value",
   "positive": [
-    {
-      "id": "pos01",
-      "description": "a > b on small positives",
-      "inputs": {"a": 5, "b": 3},
-      "old": {},
-      "result": 5,
-      "post_state": {}
-    }
+    {"id": "pos01", "description": "negative branch",
+     "inputs": {"x": -3}, "result": 3, "post_state": {}}
   ],
   "negative": [
-    {
-      "id": "neg01_precondition",
-      "kind": "precondition",
-      "description": "violates requires a >= 0",
-      "inputs": {"a": -1, "b": 3},
-      "old": {},
-      "result": null,
-      "post_state": {},
-      "violated_clause": "requires a >= 0"
-    },
-    {
-      "id": "neg02_wrong_output",
-      "kind": "postcondition",
-      "description": "claims wrong result; spec should reject",
-      "inputs": {"a": 5, "b": 3},
-      "old": {},
-      "result": 3,
-      "post_state": {},
-      "violated_clause": "ensures \\result == a || \\result == b"
-    }
+    {"id": "neg01_wrong_output", "kind": "postcondition",
+     "description": "claims a wrong return value",
+     "inputs": {"x": -3}, "result": -3, "post_state": {},
+     "violated_clause": "__return >= 0"}
   ]
 }
 ```
 
-## Test, then judge only the leftovers
+## 4. Spec-test（写入 `evaluation/evaluation.json`）
 
-Simple flow: **test each case mechanically; if it cannot be tested
-mechanically, judge it.** No separate per-tier files.
-
-1. **Test (mechanical).** For each case, substitute its inputs / `\result` /
-   `\old(...)` into every spec clause and compute the boolean by ordinary
-   Java arithmetic/logic (`&&`, `||`, `==>`, `<==>`, `!`, constant indexing).
-   Enumerate bounded quantifiers over the case's concrete range
-   (`\forall` passes iff every witness is true; `\exists` iff some witness is;
-   `\sum`/`\num_of`/`\product` by running the implied loop). This is mechanical
-   substitution, not judgment — record the `substituted` string and the
-   `evaluated` boolean for each clause.
-2. **Judge (only leftovers).** A clause that cannot be decided mechanically
-   (unbounded quantifier, model function, etc.) is `needs_judge`. Judge only
-   those, citing the clause and reason. Do not judge what was decided
-   mechanically.
-
-Write ONE results file `evaluation/evaluation.json`:
+对每个 case 逐条 contract 子句机械代入；不能机械决定的，显式 reason 并记录原因。允许 verdict：`pass` / `fail` / `needs_judge`。`needs_judge` 必须附 `judge: {verdict, reason}`。
 
 ```json
-{
-  "cases": [
-    {
-      "id": "pos01",
-      "verdict": "pass",
-      "clauses": [
-        {"clause": "ensures \\result == a || \\result == b",
-         "substituted": "5 == 5 || 5 == 3", "evaluated": true}
-      ]
-    },
-    {
-      "id": "pos07",
-      "verdict": "needs_judge",
-      "clauses": [{"clause": "ensures someModelExpr(\\result)", "substituted": null, "evaluated": null}],
-      "judge": {"verdict": "pass", "reason": "..."}
-    }
-  ]
-}
+{"cases": [{"id":"pos01","verdict":"pass","clauses":[{"clause":"__return >= 0","substituted":"3 >= 0","evaluated":true}]}]}
 ```
 
-`judge` is present only on `needs_judge` cases.
+### 4.1 `needs_judge` 是可计算 Coq 项时，转 compute_queries
 
-## Aggregate spec verdict
+如果 `needs_judge` 子句的真伪可以归约到「对当前 case 的具体闭式 Coq term `vm_compute` 求值」（典型：递归函数应用到字面量、复杂 list 操作的归一形式），把该计算任务 append 到 `evaluation/compute_queries.json`，由 runner 用 `vm_compute` 给出归一结果：
 
-Write `logs/final_result.md` with one of:
-
-- **Spec verdict: Correct** — every positive case passes, every negative case
-  fails (as it should), and nothing stayed inconclusive after judging.
-- **Spec verdict: Buggy** — at least one positive case failed, or a negative
-  case passed. Record the offending cases and clauses.
-- **Spec verdict: Inconclusive** — a judged clause stayed undecided. Record
-  which clauses prevented a decisive verdict.
-
-## Anti-Cheating Rules
-
-- No `assume`, `axiom`, `Admitted`, `skipesc`, broad `nowarn`, `native`,
-  reflection, or impossible-path tricks.
-- Do not weaken or delete target specs.
-- Do not encode negative tests by making methods unreachable.
-- Do not invoke `openjml -esc` to decide the verdict.
-
-## Experience
-
-Do not record experience here. Eval is a critic stage; experience is
-consolidated once at the very end of the flow by a dedicated unit
-(`scripts/experience_consolidate.py`), scoped to whatever flow ran. Just write a
-clear `logs/final_result.md` (the spec verdict) and `logs/issues.md` — the
-consolidation unit reads them.
-
-## Final Result
-
-`logs/metrics.md` must end with one of:
-
-```
-Final Result: Success
-Final Result: Fail
+```json
+{"queries": [
+  {"id": "pos03.c1", "clause": "<clause text>",
+   "coq_expr": "<closed Coq term, all case values substituted, of bool/Z/list/...>",
+   "requires": ["Require Import ZArith.", "From SimpleC.EE Require Import ..."]}
+]}
 ```
 
-`Final Result: Success` is allowed only when:
+runner 会对每条 query 跑 `vm_compute` 并触发 finalize pass。这一轮先把这些子句留作 `needs_judge`；`Correct` verdict 需要所有 computable 子句都有决定性结果。
 
-- exactly the requested number of positive and negative cases are present in
-  `cases/cases.json`;
-- `evaluation/evaluation.json` exists and covers every case;
-- the aggregated spec verdict is `Correct` or `Buggy` (either is decisive);
-- `Spec verdict: Inconclusive` is treated as `Final Result: Fail`.
+## 5. LLM Judge（写入 `logs/final_result.md`）
 
-If any condition is missing, write `Final Result: Fail`.
+spec-test 通过还不够。必须再做整体 judge，判断 contract 是否真正刻画 raw 题目对应程序的完整输入输出关系。
+
+逐项判断并在 `logs/final_result.md` 写出 `Pass` / `Fail` / `Inconclusive` 和一句依据：
+
+- `Precondition strength`: 前条件是否过强，导致合法输入情况不能被刻画；最强错误形态是 `requires false`。
+- `Precondition safety`: 前条件是否足以排除实现的运行时错误/未定义行为风险，例如除零、空指针解引用、数组越界、无效内存访问、会触发 C UB 的溢出或非法移位。
+- `Postcondition strength`: 后条件是否过弱或 trivial，导致不能刻画程序行为；最弱错误形态是 `ensures true`。
+- `Soundness`: 正确程序的所有输入输出是否都满足 spec。
+- `Positive coverage`: 所有正例是否都满足 spec。
+- `Parameter coverage`: spec 是否约束了所有输入、输出和必要后状态参数。
+- `Path coverage`: spec 是否覆盖程序所有路径/分支。
+- `Negative rejection`: 负例是否都被 spec 拒绝。
+- `Completeness`: spec 是否完整刻画输入输出关系；任意满足 spec 的程序都应是这个问题的正确程序。
+
+只有上面全部为 `Pass`，才能写：
+
+```text
+Judge verdict: Pass
+```
+
+任一项失败写 `Judge verdict: Fail`。无法判断写 `Judge verdict: Inconclusive`。
+
+## 6. Aggregate verdict（写入 `logs/final_result.md`）
+
+`Spec verdict:` 之一：
+
+- `Correct` — 每个 positive 都 pass、每个 negative 都 fail、没有 undecided
+- `Buggy` — 至少一个 positive fail，或至少一个 negative pass
+- `Inconclusive` — 任何子句/case 没有 decisive 结果（含未消化的 `needs_judge`）
+
+`logs/final_result.md` 必须同时包含：
+
+```text
+Spec verdict: Correct|Buggy|Inconclusive
+Judge verdict: Pass|Fail|Inconclusive
+```
+
+## 7. Eval Integrity
+
+- eval 产物只写入当前 eval workspace 的 `cases/`、`evaluation/` 和 `logs/`。
+- negative case 表示具体被拒绝的输入或错误声称的输出/后状态。
+- `Correct` verdict 需要 spec-test 和 LLM judge 都给出决定性通过依据。
+- 经验沉淀属于末尾 consolidate 阶段。
+
+## 8. 完成判据
+
+`Final Result: Success` 只在以下条件全部满足时写：
+
+- 生成了请求数量的 positive + negative case
+- `evaluation/evaluation.json` 存在且覆盖每个 case（含每个 case 的所有 clause）
+- `logs/final_result.md` 是 `Spec verdict: Correct`
+- `logs/final_result.md` 是 `Judge verdict: Pass`
+
+`Spec verdict: Buggy`、`Spec verdict: Inconclusive`、`Judge verdict: Fail`、`Judge verdict: Inconclusive` 都对应 `Final Result: Fail`。
+
+## 9. 条件性 mode addendum
+
+| Prompt 标记 | 附录文件 | 含义 |
+|------------|---------|------|
+| `Compute results:` 路径出现 | `MODE_FINALIZE.md` | runner 跑完 compute_queries 后的 finalize pass，需把 vm_compute 的归一形折回 evaluation |

@@ -18,11 +18,35 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 from pathlib import Path
 
 
+# This module lives at <repo>/scripts/, so the repo root is one level up.
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = REPO_ROOT / "config" / "agents.json"
+
+
+# Cross-stage agent-facing rules now live in skills/COMMON.md (referenced by
+# each stage's SKILL.md). Stage prompts pass paths + triggers and follow the
+# skill; they no longer inline efficiency rules here.
+
+
+def claude_supports_flag(claude_bin: str, cwd: Path, env: dict[str, str], flag: str) -> bool:
+    """Whether `claude --help` advertises ``flag`` (e.g. ``--effort``)."""
+    try:
+        proc = subprocess.run(
+            [claude_bin, "--help"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            cwd=cwd,
+            env=env,
+            timeout=10,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return False
+    return flag in proc.stdout
 
 
 class Config:

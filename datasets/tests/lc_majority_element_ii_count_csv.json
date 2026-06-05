@@ -1,0 +1,47 @@
+{
+  "name": "lc_majority_element_ii_count_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "3,2,3"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1"
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3,4"
+      },
+      "expected": 0
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "majority-element-ii",
+    "url": "https://leetcode.com/problems/majority-element-ii/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

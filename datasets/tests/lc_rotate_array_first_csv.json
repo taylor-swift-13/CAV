@@ -1,0 +1,47 @@
+{
+  "name": "lc_rotate_array_first_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "nums",
+      "type": "string"
+    },
+    {
+      "name": "k",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1,2,3,4,5,6,7",
+        "k": 3
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "-1,-100,3,99",
+        "k": 2
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "nums": "1",
+        "k": 10
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "rotate-array",
+    "url": "https://leetcode.com/problems/rotate-array/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

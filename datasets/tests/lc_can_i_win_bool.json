@@ -1,0 +1,47 @@
+{
+  "name": "lc_can_i_win_bool",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "max_choosable_integer",
+      "type": "int"
+    },
+    {
+      "name": "desired_total",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "max_choosable_integer": 10,
+        "desired_total": 11
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "max_choosable_integer": 10,
+        "desired_total": 0
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "max_choosable_integer": 10,
+        "desired_total": 1
+      },
+      "expected": true
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "can-i-win",
+    "url": "https://leetcode.com/problems/can-i-win/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

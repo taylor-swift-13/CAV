@@ -1,0 +1,47 @@
+{
+  "name": "lc_possible_bipartition_bool",
+  "return_type": "bool",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "dislikes",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 4,
+        "dislikes": "1,2;1,3;2,4"
+      },
+      "expected": true
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 3,
+        "dislikes": "1,2;1,3;2,3"
+      },
+      "expected": false
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "dislikes": "1,2;2,3;3,4;4,5;1,5"
+      },
+      "expected": false
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "possible-bipartition",
+    "url": "https://leetcode.com/problems/possible-bipartition/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

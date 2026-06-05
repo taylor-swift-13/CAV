@@ -1,0 +1,47 @@
+{
+  "name": "lc_boats_rescue_count_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "people",
+      "type": "string"
+    },
+    {
+      "name": "limit",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "people": "1,2",
+        "limit": 3
+      },
+      "expected": 1
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "people": "3,2,2,1",
+        "limit": 3
+      },
+      "expected": 3
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "people": "3,5,3,4",
+        "limit": 5
+      },
+      "expected": 4
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "boats-to-save-people",
+    "url": "https://leetcode.com/problems/boats-to-save-people/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}

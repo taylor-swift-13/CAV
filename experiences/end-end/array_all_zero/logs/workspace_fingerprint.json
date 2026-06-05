@@ -1,0 +1,36 @@
+{
+  "workspace": "array_all_zero",
+  "stage": "verify",
+  "input_c": "original/array_all_zero.c",
+  "input_v": "",
+  "original_c": "original/array_all_zero.c",
+  "original_v": "",
+  "annotated_c": "annotated/array_all_zero.c",
+  "function_name": "array_all_zero",
+  "semantic_description": "The function scans an integer array from index 0 to n - 1 without modifying memory. It returns 0 immediately when it finds an element whose value is not zero; if the loop finishes, it returns 1 and the postcondition requires every valid array element to be zero. The main control structure is a for loop with an early return branch. For n = 0 the loop body is skipped and the function returns 1, with the universal all-zero property holding vacuously.",
+  "keywords": {
+    "algorithm_family": "search",
+    "control_flow": [
+      "for_loop",
+      "if"
+    ],
+    "data_shape": [
+      "array",
+      "pointer"
+    ],
+    "semantic_intent": "preserve_input",
+    "proof_pattern": [
+      "loop_invariant",
+      "case_split",
+      "heap_reasoning"
+    ],
+    "numeric_properties": [
+      "nonnegative_input",
+      "int_range"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": "goal_check_passed"
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

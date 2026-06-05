@@ -15,7 +15,7 @@
 
 ```java
 class ClimbStairs {
-    public static int climbStairs(int n) {
+    public static int climb_stairs(int n) {
         if (n <= 1) return 1;
         int prev2 = 1; // 代表 dp[i-2]
         int prev1 = 1; // 代表 dp[i-1]

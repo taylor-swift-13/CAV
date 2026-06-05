@@ -1,0 +1,34 @@
+{
+  "workspace": "array_swap_ends",
+  "stage": "verify",
+  "input_c": "original/array_swap_ends.c",
+  "input_v": "",
+  "original_c": "original/array_swap_ends.c",
+  "original_v": "",
+  "annotated_c": "annotated/array_swap_ends.c",
+  "function_name": "array_swap_ends",
+  "semantic_description": "The function array_swap_ends performs an in-place update on an integer array. It requires n to be nonnegative, l to have length n, and a to own the full IntArray contents l. If n < 2 the function returns without changing memory. If n >= 2 it stores a[0] in a temporary, writes the original last element a[n - 1] into a[0], then writes the temporary original first element into a[n - 1], preserving every interior element.",
+  "keywords": {
+    "algorithm_family": "two_pointers",
+    "control_flow": [
+      "straight_line",
+      "if"
+    ],
+    "data_shape": [
+      "array",
+      "pointer"
+    ],
+    "semantic_intent": "in_place_update",
+    "proof_pattern": [
+      "case_split",
+      "heap_reasoning"
+    ],
+    "edge_case_behavior": "empty_loop_possible",
+    "verification_status": [
+      "proof_check_passed",
+      "goal_check_passed"
+    ]
+  },
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

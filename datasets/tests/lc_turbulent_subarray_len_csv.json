@@ -1,0 +1,40 @@
+{
+  "name": "lc_turbulent_subarray_len_csv",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "arr",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "arr": "9,4,2,10,7,8,8,1,9"
+      },
+      "expected": 5
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": "4,8,12,16"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "arr": "100"
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "longest-turbulent-subarray",
+    "url": "https://leetcode.com/problems/longest-turbulent-subarray/",
+    "license": "local rewrite"
+  },
+  "difficulty": "medium"
+}
