@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260602_194026v_xizi_circular_area_read_advance Require Import xizi_circular_area_read_advance_goal xizi_circular_area_read_advance_proof_auto xizi_circular_area_read_advance_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_circular_area_read_advance_proof_auto.
+  Include xizi_circular_area_read_advance_proof_manual.
+End VC_Correctness.

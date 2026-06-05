@@ -1,18 +1,8 @@
 {
-  "workspace": "verify_20260601_170937v1_xizi_ready_bitmap_empty",
-  "stage": "verify",
-  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_ready_bitmap_empty.c",
-  "input_v": "",
-  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260601_170937v1_xizi_ready_bitmap_empty/original/xizi_ready_bitmap_empty.c",
-  "original_v": "",
-  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260601_170937v1_xizi_ready_bitmap_empty.c",
-  "function_name": "xizi_ready_bitmap_empty",
   "semantic_description": "Loop-free function `xizi_ready_bitmap_empty` returning `1`, `0`.",
   "keywords": {
     "problem_kind": "math",
     "data": "scalar",
     "pattern": "branch"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+  }
 }

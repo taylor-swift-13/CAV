@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260603_204428v_xizi_bitmap_highest_prio Require Import xizi_bitmap_highest_prio_goal xizi_bitmap_highest_prio_proof_auto xizi_bitmap_highest_prio_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_bitmap_highest_prio_proof_auto.
+  Include xizi_bitmap_highest_prio_proof_manual.
+End VC_Correctness.

@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260602_171749v_xizi_circular_area_data_length Require Import xizi_circular_area_data_length_goal xizi_circular_area_data_length_proof_auto xizi_circular_area_data_length_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_circular_area_data_length_proof_auto.
+  Include xizi_circular_area_data_length_proof_manual.
+End VC_Correctness.

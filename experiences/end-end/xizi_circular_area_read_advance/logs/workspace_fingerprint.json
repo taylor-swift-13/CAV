@@ -1,0 +1,19 @@
+{
+  "workspace": "verify_20260602_194026v_xizi_circular_area_read_advance",
+  "stage": "verify",
+  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_circular_area_read_advance.c",
+  "input_v": "",
+  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260602_194026v_xizi_circular_area_read_advance/original/xizi_circular_area_read_advance.c",
+  "original_v": "",
+  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260602_194026v_xizi_circular_area_read_advance.c",
+  "function_name": "xizi_circular_area_read_advance",
+  "semantic_description": "Loop-free function `xizi_circular_area_read_advance` returning `(readidx + data_length) % area_length`, `data_length - (area_length - readidx)`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "branch"
+  },
+  "verification_status": "goal_check_passed",
+  "assume_contract_is_correct": true,
+  "contract_source": "contract_input_c"
+}

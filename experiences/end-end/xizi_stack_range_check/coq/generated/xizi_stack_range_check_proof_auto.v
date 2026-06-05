@@ -10,7 +10,7 @@ Require Import Coq.Sorting.Permutation.
 From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
 Require Import SetsClass.SetsClass. Import SetsNotation.
 From SimpleC.SL Require Import Mem SeparationLogic.
-From SimpleC.EE.CAV.verify_20260601_175257v1_xizi_stack_range_check Require Import xizi_stack_range_check_goal.
+From SimpleC.EE.CAV.verify_20260603_172203v_xizi_stack_range_check Require Import xizi_stack_range_check_goal.
 Require Import Logic.LogicGenerator.demo932.Interface.
 Local Open Scope Z_scope.
 Local Open Scope sets.
@@ -20,22 +20,23 @@ Import naive_C_Rules.
 Local Open Scope sac.
 
 Lemma proof_of_xizi_stack_range_check_safety_wit_1 : xizi_stack_range_check_safety_wit_1.
-Proof. Admitted.
+Proof. Admitted. 
 
 Lemma proof_of_xizi_stack_range_check_safety_wit_2 : xizi_stack_range_check_safety_wit_2.
-Proof. Admitted.
+Proof. Admitted. 
 
 Lemma proof_of_xizi_stack_range_check_safety_wit_3 : xizi_stack_range_check_safety_wit_3.
-Proof. Admitted.
+Proof. Admitted. 
 
 Lemma proof_of_xizi_stack_range_check_safety_wit_4 : xizi_stack_range_check_safety_wit_4.
-Proof. Admitted.
+Proof. Admitted. 
 
 Lemma proof_of_xizi_stack_range_check_return_wit_1 : xizi_stack_range_check_return_wit_1.
-Proof. Admitted.
+Proof. Admitted. 
 
 Lemma proof_of_xizi_stack_range_check_return_wit_2 : xizi_stack_range_check_return_wit_2.
-Proof. Admitted.
+Proof. Admitted. 
 
 Lemma proof_of_xizi_stack_range_check_return_wit_3 : xizi_stack_range_check_return_wit_3.
-Proof. Admitted.
+Proof. Admitted. 
+

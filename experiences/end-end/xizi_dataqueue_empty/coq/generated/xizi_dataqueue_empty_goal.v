@@ -20,52 +20,44 @@ Local Open Scope sac.
 
 (*----- Function xizi_dataqueue_empty -----*)
 
-Definition xizi_dataqueue_empty_safety_wit_1 :=
+Definition xizi_dataqueue_empty_safety_wit_1 := 
 forall (rear_pre: Z) (front_pre: Z) ,
   “ (front_pre = rear_pre) ”
   &&  ((( &( "rear" ) )) # Int  |-> rear_pre)
   **  ((( &( "front" ) )) # Int  |-> front_pre)
 |--
-  “ (1 <= INT_MAX) ”
+  “ (1 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 1) ”
 .
 
-Definition xizi_dataqueue_empty_safety_wit_2 :=
+Definition xizi_dataqueue_empty_safety_wit_2 := 
 forall (rear_pre: Z) (front_pre: Z) ,
   “ (front_pre <> rear_pre) ”
   &&  ((( &( "rear" ) )) # Int  |-> rear_pre)
   **  ((( &( "front" ) )) # Int  |-> front_pre)
 |--
-  “ (0 <= INT_MAX) ”
+  “ (0 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 0) ”
 .
 
-Definition xizi_dataqueue_empty_return_wit_1 :=
+Definition xizi_dataqueue_empty_return_wit_1 := 
 forall (rear_pre: Z) (front_pre: Z) ,
   “ (front_pre <> rear_pre) ”
   &&  emp
 |--
-  (“ (0 = 0) ”
-  &&  “ (front_pre <> rear_pre) ”
-  &&  emp)
-  ||
-  (“ (0 = 1) ”
-  &&  “ (front_pre = rear_pre) ”
-  &&  emp)
+  “ ((front_pre = rear_pre) -> (0 = 1)) ” 
+  &&  “ ((front_pre <> rear_pre) -> (0 = 0)) ”
+  &&  emp
 .
 
-Definition xizi_dataqueue_empty_return_wit_2 :=
+Definition xizi_dataqueue_empty_return_wit_2 := 
 forall (rear_pre: Z) (front_pre: Z) ,
   “ (front_pre = rear_pre) ”
   &&  emp
 |--
-  (“ (1 = 0) ”
-  &&  “ (front_pre <> rear_pre) ”
-  &&  emp)
-  ||
-  (“ (1 = 1) ”
-  &&  “ (front_pre = rear_pre) ”
-  &&  emp)
+  “ ((front_pre = rear_pre) -> (1 = 1)) ” 
+  &&  “ ((front_pre <> rear_pre) -> (1 = 0)) ”
+  &&  emp
 .
 
 Module Type VC_Correct.

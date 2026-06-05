@@ -1,5 +1,3 @@
-#include "../../verification_stdlib.h"
-
 int xizi_dataqueue_full(int front, int rear, int max_len)
 /*@ Require
       1 < max_len &&
@@ -9,10 +7,8 @@ int xizi_dataqueue_full(int front, int rear, int max_len)
       rear < max_len &&
       emp
     Ensure
-      ((__return == 1 &&
-        (rear@pre + 1) % max_len@pre == front@pre) ||
-       (__return == 0 &&
-        (rear@pre + 1) % max_len@pre != front@pre)) &&
+      ((rear@pre + 1) % max_len@pre == front@pre => __return == 1) &&
+      ((rear@pre + 1) % max_len@pre != front@pre => __return == 0) &&
       emp
 */
 {

@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260602_185301v_xizi_circular_area_write_advance Require Import xizi_circular_area_write_advance_goal xizi_circular_area_write_advance_proof_auto xizi_circular_area_write_advance_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_circular_area_write_advance_proof_auto.
+  Include xizi_circular_area_write_advance_proof_manual.
+End VC_Correctness.

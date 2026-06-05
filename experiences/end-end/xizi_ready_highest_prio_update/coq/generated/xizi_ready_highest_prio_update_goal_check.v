@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260603_180338v_xizi_ready_highest_prio_update Require Import xizi_ready_highest_prio_update_goal xizi_ready_highest_prio_update_proof_auto xizi_ready_highest_prio_update_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include xizi_ready_highest_prio_update_proof_auto.
+  Include xizi_ready_highest_prio_update_proof_manual.
+End VC_Correctness.

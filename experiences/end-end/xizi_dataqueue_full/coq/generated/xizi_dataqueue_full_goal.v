@@ -20,119 +20,111 @@ Local Open Scope sac.
 
 (*----- Function xizi_dataqueue_full -----*)
 
-Definition xizi_dataqueue_full_safety_wit_1 :=
+Definition xizi_dataqueue_full_safety_wit_1 := 
 forall (max_len_pre: Z) (rear_pre: Z) (front_pre: Z) ,
-  “ (1 < max_len_pre) ”
-  &&  “ (0 <= front_pre) ”
-  &&  “ (front_pre < max_len_pre) ”
-  &&  “ (0 <= rear_pre) ”
+  “ (1 < max_len_pre) ” 
+  &&  “ (0 <= front_pre) ” 
+  &&  “ (front_pre < max_len_pre) ” 
+  &&  “ (0 <= rear_pre) ” 
   &&  “ (rear_pre < max_len_pre) ”
   &&  ((( &( "max_len" ) )) # Int  |-> max_len_pre)
   **  ((( &( "rear" ) )) # Int  |-> rear_pre)
   **  ((( &( "front" ) )) # Int  |-> front_pre)
 |--
-  “ (((rear_pre + 1 ) <> (INT_MIN)) \/ (max_len_pre <> (-1))) ”
+  “ (((rear_pre + 1 ) <> (INT_MIN)) \/ (max_len_pre <> (-1))) ” 
   &&  “ (max_len_pre <> 0) ”
 .
 
-Definition xizi_dataqueue_full_safety_wit_2 :=
+Definition xizi_dataqueue_full_safety_wit_2 := 
 forall (max_len_pre: Z) (rear_pre: Z) (front_pre: Z) ,
-  “ (1 < max_len_pre) ”
-  &&  “ (0 <= front_pre) ”
-  &&  “ (front_pre < max_len_pre) ”
-  &&  “ (0 <= rear_pre) ”
+  “ (1 < max_len_pre) ” 
+  &&  “ (0 <= front_pre) ” 
+  &&  “ (front_pre < max_len_pre) ” 
+  &&  “ (0 <= rear_pre) ” 
   &&  “ (rear_pre < max_len_pre) ”
   &&  ((( &( "max_len" ) )) # Int  |-> max_len_pre)
   **  ((( &( "rear" ) )) # Int  |-> rear_pre)
   **  ((( &( "front" ) )) # Int  |-> front_pre)
 |--
-  “ ((rear_pre + 1 ) <= INT_MAX) ”
+  “ ((rear_pre + 1 ) <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= (rear_pre + 1 )) ”
 .
 
-Definition xizi_dataqueue_full_safety_wit_3 :=
+Definition xizi_dataqueue_full_safety_wit_3 := 
 forall (max_len_pre: Z) (rear_pre: Z) (front_pre: Z) ,
-  “ (1 < max_len_pre) ”
-  &&  “ (0 <= front_pre) ”
-  &&  “ (front_pre < max_len_pre) ”
-  &&  “ (0 <= rear_pre) ”
+  “ (1 < max_len_pre) ” 
+  &&  “ (0 <= front_pre) ” 
+  &&  “ (front_pre < max_len_pre) ” 
+  &&  “ (0 <= rear_pre) ” 
   &&  “ (rear_pre < max_len_pre) ”
   &&  ((( &( "max_len" ) )) # Int  |-> max_len_pre)
   **  ((( &( "rear" ) )) # Int  |-> rear_pre)
   **  ((( &( "front" ) )) # Int  |-> front_pre)
 |--
-  “ (1 <= INT_MAX) ”
+  “ (1 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 1) ”
 .
 
-Definition xizi_dataqueue_full_safety_wit_4 :=
+Definition xizi_dataqueue_full_safety_wit_4 := 
 forall (max_len_pre: Z) (rear_pre: Z) (front_pre: Z) ,
-  “ (((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) ”
-  &&  “ (1 < max_len_pre) ”
-  &&  “ (0 <= front_pre) ”
-  &&  “ (front_pre < max_len_pre) ”
-  &&  “ (0 <= rear_pre) ”
+  “ (((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) ” 
+  &&  “ (1 < max_len_pre) ” 
+  &&  “ (0 <= front_pre) ” 
+  &&  “ (front_pre < max_len_pre) ” 
+  &&  “ (0 <= rear_pre) ” 
   &&  “ (rear_pre < max_len_pre) ”
   &&  ((( &( "max_len" ) )) # Int  |-> max_len_pre)
   **  ((( &( "rear" ) )) # Int  |-> rear_pre)
   **  ((( &( "front" ) )) # Int  |-> front_pre)
 |--
-  “ (1 <= INT_MAX) ”
+  “ (1 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 1) ”
 .
 
-Definition xizi_dataqueue_full_safety_wit_5 :=
+Definition xizi_dataqueue_full_safety_wit_5 := 
 forall (max_len_pre: Z) (rear_pre: Z) (front_pre: Z) ,
-  “ (((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) ”
-  &&  “ (1 < max_len_pre) ”
-  &&  “ (0 <= front_pre) ”
-  &&  “ (front_pre < max_len_pre) ”
-  &&  “ (0 <= rear_pre) ”
+  “ (((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) ” 
+  &&  “ (1 < max_len_pre) ” 
+  &&  “ (0 <= front_pre) ” 
+  &&  “ (front_pre < max_len_pre) ” 
+  &&  “ (0 <= rear_pre) ” 
   &&  “ (rear_pre < max_len_pre) ”
   &&  ((( &( "max_len" ) )) # Int  |-> max_len_pre)
   **  ((( &( "rear" ) )) # Int  |-> rear_pre)
   **  ((( &( "front" ) )) # Int  |-> front_pre)
 |--
-  “ (0 <= INT_MAX) ”
+  “ (0 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 0) ”
 .
 
-Definition xizi_dataqueue_full_return_wit_1 :=
+Definition xizi_dataqueue_full_return_wit_1 := 
 forall (max_len_pre: Z) (rear_pre: Z) (front_pre: Z) ,
-  “ (((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) ”
-  &&  “ (1 < max_len_pre) ”
-  &&  “ (0 <= front_pre) ”
-  &&  “ (front_pre < max_len_pre) ”
-  &&  “ (0 <= rear_pre) ”
+  “ (((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) ” 
+  &&  “ (1 < max_len_pre) ” 
+  &&  “ (0 <= front_pre) ” 
+  &&  “ (front_pre < max_len_pre) ” 
+  &&  “ (0 <= rear_pre) ” 
   &&  “ (rear_pre < max_len_pre) ”
   &&  emp
 |--
-  (“ (0 = 0) ”
-  &&  “ (((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) ”
-  &&  emp)
-  ||
-  (“ (0 = 1) ”
-  &&  “ (((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) ”
-  &&  emp)
+  “ ((((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) -> (0 = 1)) ” 
+  &&  “ ((((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) -> (0 = 0)) ”
+  &&  emp
 .
 
-Definition xizi_dataqueue_full_return_wit_2 :=
+Definition xizi_dataqueue_full_return_wit_2 := 
 forall (max_len_pre: Z) (rear_pre: Z) (front_pre: Z) ,
-  “ (((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) ”
-  &&  “ (1 < max_len_pre) ”
-  &&  “ (0 <= front_pre) ”
-  &&  “ (front_pre < max_len_pre) ”
-  &&  “ (0 <= rear_pre) ”
+  “ (((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) ” 
+  &&  “ (1 < max_len_pre) ” 
+  &&  “ (0 <= front_pre) ” 
+  &&  “ (front_pre < max_len_pre) ” 
+  &&  “ (0 <= rear_pre) ” 
   &&  “ (rear_pre < max_len_pre) ”
   &&  emp
 |--
-  (“ (1 = 0) ”
-  &&  “ (((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) ”
-  &&  emp)
-  ||
-  (“ (1 = 1) ”
-  &&  “ (((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) ”
-  &&  emp)
+  “ ((((rear_pre + 1 ) % ( max_len_pre ) ) = front_pre) -> (1 = 1)) ” 
+  &&  “ ((((rear_pre + 1 ) % ( max_len_pre ) ) <> front_pre) -> (1 = 0)) ”
+  &&  emp
 .
 
 Module Type VC_Correct.

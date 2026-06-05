@@ -5,12 +5,10 @@ int xizi_stack_range_check(int sp, int stack_start, int stack_depth)
       stack_start + stack_depth <= 2147483647 &&
       emp
     Ensure
-      ((__return == 1 &&
-        (sp@pre <= stack_start@pre ||
-         sp@pre > stack_start@pre + stack_depth@pre)) ||
-       (__return == 0 &&
-        stack_start@pre < sp@pre &&
-        sp@pre <= stack_start@pre + stack_depth@pre)) &&
+      ((sp@pre <= stack_start@pre ||
+        sp@pre > stack_start@pre + stack_depth@pre) => __return == 1) &&
+      (stack_start@pre < sp@pre &&
+       sp@pre <= stack_start@pre + stack_depth@pre => __return == 0) &&
       emp
 */
 {

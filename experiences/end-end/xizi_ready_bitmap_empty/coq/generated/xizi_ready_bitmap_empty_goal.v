@@ -20,50 +20,42 @@ Local Open Scope sac.
 
 (*----- Function xizi_ready_bitmap_empty -----*)
 
-Definition xizi_ready_bitmap_empty_safety_wit_1 :=
+Definition xizi_ready_bitmap_empty_safety_wit_1 := 
 forall (ready_group_pre: Z) ,
   “ (ready_group_pre = 0) ”
   &&  ((( &( "ready_group" ) )) # UInt  |-> ready_group_pre)
 |--
-  “ (1 <= INT_MAX) ”
+  “ (1 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 1) ”
 .
 
-Definition xizi_ready_bitmap_empty_safety_wit_2 :=
+Definition xizi_ready_bitmap_empty_safety_wit_2 := 
 forall (ready_group_pre: Z) ,
   “ (ready_group_pre <> 0) ”
   &&  ((( &( "ready_group" ) )) # UInt  |-> ready_group_pre)
 |--
-  “ (0 <= INT_MAX) ”
+  “ (0 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 0) ”
 .
 
-Definition xizi_ready_bitmap_empty_return_wit_1 :=
+Definition xizi_ready_bitmap_empty_return_wit_1 := 
 forall (ready_group_pre: Z) ,
   “ (ready_group_pre <> 0) ”
   &&  emp
 |--
-  (“ (0 = 0) ”
-  &&  “ (ready_group_pre <> 0) ”
-  &&  emp)
-  ||
-  (“ (0 = 1) ”
-  &&  “ (ready_group_pre = 0) ”
-  &&  emp)
+  “ ((ready_group_pre = 0) -> (0 = 1)) ” 
+  &&  “ ((ready_group_pre <> 0) -> (0 = 0)) ”
+  &&  emp
 .
 
-Definition xizi_ready_bitmap_empty_return_wit_2 :=
+Definition xizi_ready_bitmap_empty_return_wit_2 := 
 forall (ready_group_pre: Z) ,
   “ (ready_group_pre = 0) ”
   &&  emp
 |--
-  (“ (1 = 0) ”
-  &&  “ (ready_group_pre <> 0) ”
-  &&  emp)
-  ||
-  (“ (1 = 1) ”
-  &&  “ (ready_group_pre = 0) ”
-  &&  emp)
+  “ ((ready_group_pre = 0) -> (1 = 1)) ” 
+  &&  “ ((ready_group_pre <> 0) -> (1 = 0)) ”
+  &&  emp
 .
 
 Module Type VC_Correct.

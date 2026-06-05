@@ -20,130 +20,103 @@ Local Open Scope sac.
 
 (*----- Function xizi_stack_range_check -----*)
 
-Definition xizi_stack_range_check_safety_wit_1 :=
+Definition xizi_stack_range_check_safety_wit_1 := 
 forall (stack_depth_pre: Z) (stack_start_pre: Z) (sp_pre: Z) ,
-  “ (sp_pre > stack_start_pre) ”
-  &&  “ (0 <= stack_depth_pre) ”
-  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
+  “ (sp_pre > stack_start_pre) ” 
+  &&  “ (0 <= stack_depth_pre) ” 
+  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ” 
   &&  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
   &&  ((( &( "stack_depth" ) )) # Int  |-> stack_depth_pre)
   **  ((( &( "stack_start" ) )) # Int  |-> stack_start_pre)
   **  ((( &( "sp" ) )) # Int  |-> sp_pre)
 |--
-  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
+  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
 .
 
-Definition xizi_stack_range_check_safety_wit_2 :=
+Definition xizi_stack_range_check_safety_wit_2 := 
 forall (stack_depth_pre: Z) (stack_start_pre: Z) (sp_pre: Z) ,
-  “ (sp_pre > (stack_start_pre + stack_depth_pre )) ”
-  &&  “ (sp_pre > stack_start_pre) ”
-  &&  “ (0 <= stack_depth_pre) ”
-  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
+  “ (sp_pre > (stack_start_pre + stack_depth_pre )) ” 
+  &&  “ (sp_pre > stack_start_pre) ” 
+  &&  “ (0 <= stack_depth_pre) ” 
+  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ” 
   &&  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
   &&  ((( &( "stack_depth" ) )) # Int  |-> stack_depth_pre)
   **  ((( &( "stack_start" ) )) # Int  |-> stack_start_pre)
   **  ((( &( "sp" ) )) # Int  |-> sp_pre)
 |--
-  “ (1 <= INT_MAX) ”
+  “ (1 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 1) ”
 .
 
-Definition xizi_stack_range_check_safety_wit_3 :=
+Definition xizi_stack_range_check_safety_wit_3 := 
 forall (stack_depth_pre: Z) (stack_start_pre: Z) (sp_pre: Z) ,
-  “ (sp_pre <= stack_start_pre) ”
-  &&  “ (0 <= stack_depth_pre) ”
-  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
+  “ (sp_pre <= stack_start_pre) ” 
+  &&  “ (0 <= stack_depth_pre) ” 
+  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ” 
   &&  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
   &&  ((( &( "stack_depth" ) )) # Int  |-> stack_depth_pre)
   **  ((( &( "stack_start" ) )) # Int  |-> stack_start_pre)
   **  ((( &( "sp" ) )) # Int  |-> sp_pre)
 |--
-  “ (1 <= INT_MAX) ”
+  “ (1 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 1) ”
 .
 
-Definition xizi_stack_range_check_safety_wit_4 :=
+Definition xizi_stack_range_check_safety_wit_4 := 
 forall (stack_depth_pre: Z) (stack_start_pre: Z) (sp_pre: Z) ,
-  “ (sp_pre <= (stack_start_pre + stack_depth_pre )) ”
-  &&  “ (sp_pre > stack_start_pre) ”
-  &&  “ (0 <= stack_depth_pre) ”
-  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
+  “ (sp_pre <= (stack_start_pre + stack_depth_pre )) ” 
+  &&  “ (sp_pre > stack_start_pre) ” 
+  &&  “ (0 <= stack_depth_pre) ” 
+  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ” 
   &&  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
   &&  ((( &( "stack_depth" ) )) # Int  |-> stack_depth_pre)
   **  ((( &( "stack_start" ) )) # Int  |-> stack_start_pre)
   **  ((( &( "sp" ) )) # Int  |-> sp_pre)
 |--
-  “ (0 <= INT_MAX) ”
+  “ (0 <= INT_MAX) ” 
   &&  “ ((INT_MIN) <= 0) ”
 .
 
-Definition xizi_stack_range_check_return_wit_1 :=
+Definition xizi_stack_range_check_return_wit_1 := 
 forall (stack_depth_pre: Z) (stack_start_pre: Z) (sp_pre: Z) ,
-  “ (sp_pre <= (stack_start_pre + stack_depth_pre )) ”
-  &&  “ (sp_pre > stack_start_pre) ”
-  &&  “ (0 <= stack_depth_pre) ”
-  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
+  “ (sp_pre <= (stack_start_pre + stack_depth_pre )) ” 
+  &&  “ (sp_pre > stack_start_pre) ” 
+  &&  “ (0 <= stack_depth_pre) ” 
+  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ” 
   &&  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
   &&  emp
 |--
-  (“ (0 = 0) ”
-  &&  “ (stack_start_pre < sp_pre) ”
-  &&  “ (sp_pre <= (stack_start_pre + stack_depth_pre )) ”
-  &&  emp)
-  ||
-  (“ (0 = 1) ”
-  &&  “ (sp_pre <= stack_start_pre) ”
-  &&  emp)
-  ||
-  (“ (0 = 1) ”
-  &&  “ (sp_pre > (stack_start_pre + stack_depth_pre )) ”
-  &&  emp)
+  “ (((sp_pre <= stack_start_pre) \/ (sp_pre > (stack_start_pre + stack_depth_pre ))) -> (0 = 1)) ” 
+  &&  “ (((stack_start_pre < sp_pre) /\ (sp_pre <= (stack_start_pre + stack_depth_pre ))) -> (0 = 0)) ”
+  &&  emp
 .
 
-Definition xizi_stack_range_check_return_wit_2 :=
+Definition xizi_stack_range_check_return_wit_2 := 
 forall (stack_depth_pre: Z) (stack_start_pre: Z) (sp_pre: Z) ,
-  “ (sp_pre <= stack_start_pre) ”
-  &&  “ (0 <= stack_depth_pre) ”
-  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
+  “ (sp_pre <= stack_start_pre) ” 
+  &&  “ (0 <= stack_depth_pre) ” 
+  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ” 
   &&  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
   &&  emp
 |--
-  (“ (1 = 0) ”
-  &&  “ (stack_start_pre < sp_pre) ”
-  &&  “ (sp_pre <= (stack_start_pre + stack_depth_pre )) ”
-  &&  emp)
-  ||
-  (“ (1 = 1) ”
-  &&  “ (sp_pre <= stack_start_pre) ”
-  &&  emp)
-  ||
-  (“ (1 = 1) ”
-  &&  “ (sp_pre > (stack_start_pre + stack_depth_pre )) ”
-  &&  emp)
+  “ (((sp_pre <= stack_start_pre) \/ (sp_pre > (stack_start_pre + stack_depth_pre ))) -> (1 = 1)) ” 
+  &&  “ (((stack_start_pre < sp_pre) /\ (sp_pre <= (stack_start_pre + stack_depth_pre ))) -> (1 = 0)) ”
+  &&  emp
 .
 
-Definition xizi_stack_range_check_return_wit_3 :=
+Definition xizi_stack_range_check_return_wit_3 := 
 forall (stack_depth_pre: Z) (stack_start_pre: Z) (sp_pre: Z) ,
-  “ (sp_pre > (stack_start_pre + stack_depth_pre )) ”
-  &&  “ (sp_pre > stack_start_pre) ”
-  &&  “ (0 <= stack_depth_pre) ”
-  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ”
+  “ (sp_pre > (stack_start_pre + stack_depth_pre )) ” 
+  &&  “ (sp_pre > stack_start_pre) ” 
+  &&  “ (0 <= stack_depth_pre) ” 
+  &&  “ ((INT_MIN) <= (stack_start_pre + stack_depth_pre )) ” 
   &&  “ ((stack_start_pre + stack_depth_pre ) <= INT_MAX) ”
   &&  emp
 |--
-  (“ (1 = 0) ”
-  &&  “ (stack_start_pre < sp_pre) ”
-  &&  “ (sp_pre <= (stack_start_pre + stack_depth_pre )) ”
-  &&  emp)
-  ||
-  (“ (1 = 1) ”
-  &&  “ (sp_pre <= stack_start_pre) ”
-  &&  emp)
-  ||
-  (“ (1 = 1) ”
-  &&  “ (sp_pre > (stack_start_pre + stack_depth_pre )) ”
-  &&  emp)
+  “ (((sp_pre <= stack_start_pre) \/ (sp_pre > (stack_start_pre + stack_depth_pre ))) -> (1 = 1)) ” 
+  &&  “ (((stack_start_pre < sp_pre) /\ (sp_pre <= (stack_start_pre + stack_depth_pre ))) -> (1 = 0)) ”
+  &&  emp
 .
 
 Module Type VC_Correct.
