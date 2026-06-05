@@ -707,3 +707,58 @@ int d = x * x + y * y;
 - `x * x + y * y`、`a * b + c * d`、`u + v + w` 这类多项 signed `int` 表达式；
 - 按阈值分段返回的纯标量 classifier；
 - 其它“无循环，但一条初始化表达式就包含多个算术 UB 点”的 contract。
+## 23. 规格优先用「量词 + 已定义函数」写输入输出关系,而非重写实现(2026-06-05)
+
+写后条件时,**首选用已有部件刻画"输出和输入满足什么关系",而不是把函数实现再写一遍**。优先级:
+
+1. **已定义函数 / 谓词 + 量词**(`Permutation`、`Znth`、`app`、`Zlength`、`sublist`、连接/`join`、`sorted`、`In` 等)+ `exists` / `forall` —— 首选。
+2. 现有部件 + 一点算术。
+3. **题目专用 `Fixpoint` / `Inductive` —— 仅当关系实在无法用上面两层表达时的最后手段。** 新写的递归既要自己证性质,又是 §30/PROOF 里那些"递归 helper 归纳"痛点的来源,能不写就不写。
+
+### 关键技巧:写逆关系 / 特征性质,而不是正向实现
+
+很多"难以正向定义"的函数,其**逆运算很简单且常已存在**。用"存在输出,使得 `逆(输出) = 输入` ∧ 附加约束"来唯一刻画,比正向递归实现简单得多,也更好证。
+
+### 例 1:按空格拆分字符串 → 字符串数组(用 `join` 的逆,不写 `split`)
+
+不要定义 `Fixpoint split_spaces (s : list Z) : list (list Z) := ...`。改用已定义的连接函数 `join_sep`(用分隔符把字符串数组连回一个大串)反向刻画:
+
+```c
+/*@ Extern Coq (join_sep : list (list Z) -> Z -> list Z) */   /* 已有:用分隔符连接,递归简单 */
+/*@ Extern Coq (no_sep   : list (list Z) -> Z -> Prop) */     /* 每段都不含该分隔符 */
+int split_by_space(char *s, int n, char **parts)
+/*@ With (l : list Z)
+    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Ensure exists (ps : list (list Z)),
+             join_sep(ps, 32) == l &&        /* 关系:拆出来的段用空格连回去 == 原串 */
+             no_sep(ps, 32) &&               /* 约束:每段不含空格 32 */
+             __return == Zlength ps          /* + parts 数组表示 ps 的空间断言 */
+*/
+```
+
+要点:`∃ ps, join_sep(ps,空格)=输入 ∧ 每段无空格` **唯一刻画**了正确的拆分,而 `join_sep` 比 `split` 简单/常已定义。这就是"输入输出关系"而非"实现形式"。
+
+### 例 2:数组排序(用 `Permutation` + 量词,不写 `sort`)
+
+不要定义排序算法。用已有的 `Permutation`(重排关系)+ `forall`(有序性)刻画:
+
+```c
+int sort(int *a, int n)
+/*@ With (l : list Z)
+    Require IntArray::full(a, n, l)
+    Ensure exists (l' : list Z),
+             Permutation(l, l') &&                                          /* 已定义:是原数组的重排 */
+             (forall i j, 0 <= i -> i <= j -> j < n -> Znth i l' 0 <= Znth j l' 0) &&  /* 量词:升序 */
+             IntArray::full(a, n, l')
+*/
+```
+
+要点:`Permutation(l, l') ∧ (∀ i≤j, l'[i] ≤ l'[j])` 完整刻画"排序后的数组",全程用已定义谓词 + 量词,**没有任何 `Fixpoint`**。
+
+### 反面(尽量避免)
+
+```coq
+(* 把实现照抄成递归——除非真没别的写法,否则不要 *)
+Fixpoint my_split (s : list Z) (acc : list Z) : list (list Z) := match s with ... end.
+```
+正向递归实现 = 既要在 contract 引入新定义,又要在 verify 阶段为它的每条性质做归纳证明(见 PROOF §30),成本远高于"量词 + 已有逆函数"。

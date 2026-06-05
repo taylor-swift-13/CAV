@@ -639,3 +639,33 @@ agent 实测 `entailer!` 与 `pre_process` 在该目标上**都超时**，自述
 
 - RHS 是 `" 算术 "`（纯 coq_prop）→ 纯路径 + `entailer_pure`；
 - RHS 带 `*` / shape predicate / `EX` 空间结构 → 才用 `entailer!` / `cancel`。
+## 36. witness 证不动且缺的是"状态事实" → 回去增强 invariant，别在原 VC 上磨 tactic（2026-06-05）
+
+最常见的 accuracy 损失:`entail_wit` / `return_wit`（有时 `safety_wit`）反复证不出,根因是**循环 invariant 太弱**——目标里需要的某个状态事实,invariant 根本没导出,于是 VC 在当前注解下**不可证**。这时继续换 tactic、找引理、补 `which implies` 都没用,方向错了。
+
+### 先分清两种"证不出"
+
+| 现象 | 性质 | 正确动作 |
+|---|---|---|
+| `entailer!` 后残留的纯条件 / 等式,是某个**程序状态在循环中应满足的事实**(下标界、累加器界、`v = spec(sublist 0 i l)` 桥接、`x == x@pre`、元素域、分支关系),而 invariant 里没有 | invariant 太弱 | **回 annotation 增强 invariant + 重跑 symexec**,见 `INV/README.md §1.1` |
+| 缺的只是库引理 / 改写 / 展开,事实本身在上下文里 | proof 工程 | §7 抽 helper、§8 补显式 side condition、§6 查例子库 |
+| 合法输入把 VC 算成 `false` | 输入/契约缺陷 | 停手回 Contract / source,见 §32 |
+
+### 判定"缺的是状态事实"的信号
+
+- 目标要的是 `0 <= Znth k ds 0 <= 9` / `v <= INT_MAX` / `i <= n` / `digits_only(sublist 0 i l) = Some ds` 这类**关于循环已处理前缀的性质**,而 `pre_process` 后的上下文里找不到对应假设;
+- 这些事实**逻辑上成立**(程序确实维持了它),只是 invariant 没把它写出来 / 没跨过这一轮带过来;
+- 典型:多阶段循环里前一阶段的事实没带进后一阶段(`INV §10`);内层循环 invariant 丢了外层保证的界。
+
+**机械判据(最直接的 tell)**:当你发现自己想写 `assert (<某个关于循环变量的界/关系>) by lia` 但 `lia` 报 `Cannot find witness`,而这个界**逻辑上确实成立**(循环维持了它)——**这就是 invariant 太弱的铁证。立刻停手,别 `admit`、别硬凑、别换 tactic;回 annotation 把这条加进对应循环不变式,重跑 symexec。**
+
+> 实证案例:`armstrong_number` 的 `entail_wit_2` 整段可证,唯一卡点就是 `assert (temp <= 99999999) by lia` 失败(数字计数循环的 `temp` 喂给 `count_digits_z`,但不变式漏了它的上界,见 `INV §1.1` 实证案例)。补 `temp <= n_pre` 到不变式后即通。**当时 agent 既没诊断出这一点、也没回去加,而是耗在脚手架上——这正是本条要避免的。**
+
+### 动作
+
+1. 不要在当前 VC 上继续磨 tactic。
+2. 回 `annotated/...c`,按 `INV/README.md §1.1` 充分性预检反推:这条目标需要哪个事实 → 把它加进**对应循环的 invariant**(和所有相关阶段/桥接 assertion)。
+3. 改了注解必须**重跑 symexec**(见 §13),以最新 witness 编号重证。
+4. 在 `proof_reasoning.md` 写清:缺的是哪个状态事实、加到哪个 invariant、为什么之前的 invariant 不够。
+
+代价提示:回去强化要重跑 symexec + 重证,代价不小——所以**第一次就按 §1.1 把 invariant 写够**,比证到一半才发现回头重来省得多。
