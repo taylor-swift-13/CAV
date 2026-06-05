@@ -1,0 +1,61 @@
+{
+  "name": "lc_profitable_schemes_count",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    },
+    {
+      "name": "min_profit",
+      "type": "int"
+    },
+    {
+      "name": "group",
+      "type": "string"
+    },
+    {
+      "name": "profit",
+      "type": "string"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 5,
+        "min_profit": 3,
+        "group": "2,2",
+        "profit": "2,3"
+      },
+      "expected": 2
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 10,
+        "min_profit": 5,
+        "group": "2,3,5",
+        "profit": "6,7,8"
+      },
+      "expected": 7
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1,
+        "min_profit": 1,
+        "group": "1,1,1",
+        "profit": "0,0,1"
+      },
+      "expected": 1
+    }
+  ],
+  "source": {
+    "name": "LeetCode",
+    "slug": "profitable-schemes",
+    "url": "https://leetcode.com/problems/profitable-schemes/",
+    "license": "local rewrite"
+  },
+  "difficulty": "hard"
+}

@@ -11,6 +11,7 @@
 - verify 超时（exit 124）不等于证明错误：看 4
 - 只含 header 的 proof_manual.v 对直线函数是正确结果，不是 stub 发现：看 5
 - contract 变弱要按语义审查：看 6
+- source-integrity gate 按去注释后的可执行文本比对，不接受“仅语义等价”的改写：看 7
 
 ## 1. 只有 `proof_manual.v` 里的 stub 才算作弊
 
@@ -74,3 +75,31 @@ audit 阶段的编译 replay 是独立的权威检查：
 
 只要 verified 版本删掉、改弱或绕开了 original contract 的关键约束，就应该进入
 审计发现。格式不同不一定是问题，但语义变弱必须被当成 error 处理。
+
+## 7. source-integrity gate 按去注释后的可执行文本比对，不接受“仅语义等价”的改写（2026-06-04）
+
+如果 verify retry / audit check 报：
+
+- `annotated C changes executable implementation after removing comments/QCP annotations`
+
+先不要假设是 contract、proof 或 `symexec` 问题。这个 gate 检查的是：
+
+- 去掉 QCP 注释后的 `annotated/verify_<timestamp>_<name>.c`
+- 是否与 `input/<name>.c` 的可执行 C 文本保持一致
+
+因此**仅语义等价但文本不同**的改写也会失败，例如：
+
+- 把 `for (...; ...; i++)` 改成 `for (...; ...; ++i)`
+- 改写条件顺序、增量写法、局部表达式形状
+
+稳定处理方式：
+
+1. 用去注释后的 diff 先定位 executable drift，而不是盲目重跑 proof：
+   `diff -u <(sed '/\/\*@/,/\*\//d' input/<name>.c) <(sed '/\/\*@/,/\*\//d' annotated/verify_<timestamp>_<name>.c)`
+2. 只把 annotated C 的可执行部分改回与 input 完全一致；验证注释可以保留。
+3. 如果 annotated C 被改过，重新跑 `symexec`，再恢复并重编 `proof_manual.v` 中被 regenerated 的手工证明。
+
+判断规则：
+
+- source-integrity gate 关注的是“annotated 文件是否只新增验证注释”，不是“两个程序是否语义等价”
+- 因此凡是会改变去注释后 token / 文本形状的执行代码改写，都应视为 audit blocker

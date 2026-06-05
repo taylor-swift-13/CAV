@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Pure scalar integer computation that returns the decimal digit reversal of nonnegative input n as specified by reverse_digits_z. The implementation initializes ans to 0, then uses a while loop while n > 0, updating ans to ans * 10 + n % 10 and shrinking n by n / 10. For n <= 0 the loop is skipped and the result is 0; the contract constrains n >= 0 and the mathematical result to fit INT_MAX. The function does not read or modify heap memory.",
+  "keywords": {
+    "problem_kind": "sum",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

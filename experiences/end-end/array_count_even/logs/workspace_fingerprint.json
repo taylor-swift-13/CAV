@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Function array_count_even scans an input integer array a[0..n) with a for loop, increments a scalar counter for each element whose remainder modulo 2 is zero, returns the count for the whole list, and preserves the input array memory unchanged. The loop may execute zero times when n is 0, in which case the returned count is 0.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

@@ -11,7 +11,7 @@
 - 函数不返回值
 - 对每个下标 `i`，执行后都有 `out[i] == a[i] * k`
 
-## 正确代码
+## 参考实现
 
 ```c
 void array_scale(int n, int *a, int k, int *out) {

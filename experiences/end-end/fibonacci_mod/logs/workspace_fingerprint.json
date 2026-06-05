@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The target function computes the nth Fibonacci value modulo a positive modulus using scalar variables only. It initializes a = 0 and b = 1 mod mod, returns 0 immediately for n = 0, and otherwise iterates a for loop from i = 2 through n updating the adjacent Fibonacci residues with c = (a + b) % mod, a = b, b = c. The result is required to equal the Coq specification fib_mod_z on the pre-state inputs. The function does not read or modify heap memory.",
+  "keywords": {
+    "problem_kind": "dp",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

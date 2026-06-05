@@ -151,6 +151,8 @@ def run_agent_once(
     *, agent: str, codex_bin: str, claude_bin: str, model: str,
     reasoning_effort: str, prompt: str, logs_dir: Path, run_label: str,
     env: dict[str, str], timeout_seconds: int,
+    reasoning_effort_supported: bool,
+    claude_effort_supported: bool,
 ) -> tuple[int, dict[str, int] | None, Path]:
     """One agent session. Returns (returncode, usage, stdout_path)."""
     prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
@@ -164,7 +166,7 @@ def run_agent_once(
                str(REPO_ROOT), "--output-format", "stream-json", "--verbose"]
         if model:
             cmd.extend(["--model", model])
-        if reasoning_effort and agent_config.claude_supports_flag(claude_bin, REPO_ROOT, env, "--effort"):
+        if reasoning_effort and claude_effort_supported:
             cmd.extend(["--effort", reasoning_effort])
     else:
         cmd = [codex_bin, "--dangerously-bypass-approvals-and-sandbox", "exec",
@@ -172,7 +174,7 @@ def run_agent_once(
                "-o", str(last_message_path)]
         if model:
             cmd.extend(["--model", model])
-        if reasoning_effort and codex_supports_reasoning_effort(codex_bin, env):
+        if reasoning_effort and reasoning_effort_supported:
             cmd.extend(["--reasoning-effort", reasoning_effort])
         cmd.append("-")
 
@@ -421,8 +423,20 @@ def main() -> int:
     bootstrap_workspace(workspace_path, input_c, input_v)
     logs_dir = workspace_path / "logs"
     env = build_agent_env(logs_dir)
+    reasoning_effort_supported = (
+        codex_supports_reasoning_effort(codex_bin, env)
+        if agent == "codex" and reasoning_effort
+        else False
+    )
+    claude_effort_supported = (
+        agent_config.claude_supports_flag(claude_bin, REPO_ROOT, env, "--effort")
+        if agent == "claude" and reasoning_effort
+        else False
+    )
     emit_log(f"workspace={workspace_path}")
     emit_log(f"function_name={function_name} agent={agent} model={model} cases={num_positive}+{num_negative}")
+    emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
+    emit_log(f"claude_effort_supported={claude_effort_supported}")
 
     if args.dry_run:
         write_metrics(metrics_path(workspace_path), status="Success", exit_code=0,
@@ -456,7 +470,9 @@ def main() -> int:
         last_rc, usage, _ = run_agent_once(
             agent=agent, codex_bin=codex_bin, claude_bin=claude_bin, model=model,
             reasoning_effort=reasoning_effort, prompt=prompt, logs_dir=logs_dir,
-            run_label=run_label, env=env, timeout_seconds=remaining)
+            run_label=run_label, env=env, timeout_seconds=remaining,
+            reasoning_effort_supported=reasoning_effort_supported,
+            claude_effort_supported=claude_effort_supported)
         usage_total = agent_metrics.add_usage(usage_total, usage)
 
         # Discharge any computable needs_judge clauses, then loop to finalize.

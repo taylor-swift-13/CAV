@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans an integer array from left to right, preserving the input memory, and returns the last index whose element is positive. If the array is empty or every element is nonpositive, it returns -1. The implementation uses a single for loop with an if branch that updates ans to the current index when a[i] > 0.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

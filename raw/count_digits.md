@@ -10,7 +10,7 @@
 - `count_digits(0) = 1`
 - 对正数使用 `/ 10` 循环计数
 
-## 正确代码
+## 参考实现
 
 ```c
 int count_digits(int n) {

@@ -11,7 +11,7 @@
 - 如果 `s[0] == c`，返回 `1`
 - 否则返回 `0`
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_starts_with(char *s, char c) {

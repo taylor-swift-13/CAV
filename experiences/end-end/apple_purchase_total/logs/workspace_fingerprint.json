@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Loop-free function `apple_purchase_total` returning `count * price`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "straight_line"
+  }
+}

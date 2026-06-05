@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scalar primality decision for nonnegative n. The function returns 0 immediately when n < 2, otherwise scans divisors d from 2 up to n - 1 in a for loop. If any divisor has n % d == 0 it returns 0; if the loop finishes without finding a divisor it returns 1. The function uses only scalar locals and does not modify memory.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

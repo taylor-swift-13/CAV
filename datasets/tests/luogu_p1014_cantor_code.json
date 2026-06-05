@@ -1,0 +1,40 @@
+{
+  "name": "luogu_p1014_cantor_code",
+  "return_type": "int",
+  "params": [
+    {
+      "name": "n",
+      "type": "int"
+    }
+  ],
+  "tests": [
+    {
+      "kind": "positive",
+      "input": {
+        "n": 1
+      },
+      "expected": 1001
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 7
+      },
+      "expected": 1004
+    },
+    {
+      "kind": "positive",
+      "input": {
+        "n": 14
+      },
+      "expected": 2004
+    }
+  ],
+  "source": {
+    "name": "Luogu",
+    "slug": "P1014",
+    "url": "https://www.luogu.com.cn/problem/P1014",
+    "license": "local rewrite"
+  },
+  "difficulty": "easy"
+}

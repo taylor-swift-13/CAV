@@ -1,0 +1,11 @@
+{
+  "semantic_description": "The function scans a null-terminated character array from index 0 with an unbounded while loop, stopping when it reads the first 0 byte. The contract states that the logical list l has length n, all positions 0 <= k < n are nonzero, and the array content is app(l, cons(0, nil)); therefore the return value must be exactly n. The function only reads from the buffer and returns the scan index, preserving the full CharArray resource unchanged. The empty string case is allowed when n = 0, so the first read sees the terminator and the loop exits immediately.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

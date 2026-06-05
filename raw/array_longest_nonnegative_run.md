@@ -10,7 +10,7 @@
 - 非负元素指 `a[i] >= 0`。
 - 如果数组中没有非负元素，返回 `0`。
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_longest_nonnegative_run(int n, int *a) {

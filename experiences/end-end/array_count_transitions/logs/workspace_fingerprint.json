@@ -1,0 +1,11 @@
+{
+  "semantic_description": "The function scans an integer array without modifying it and counts adjacent transitions, i.e. positions i from 1 to n-1 where a[i] differs from a[i-1]. The loop initializes cnt to 0 and i to 1, so arrays of length 0 or 1 skip the loop and return 0. The input list length equals n, the array memory is preserved, and the return value must equal the Coq recursive specification over the original list.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "array",
+    "pattern": [
+      "recursion",
+      "single_loop"
+    ]
+  }
+}

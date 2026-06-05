@@ -1,0 +1,14 @@
+{
+  "semantic_description": "Copies the first k nonzero characters from src into dst and then writes a terminating zero at dst[k]. The contract requires 0 <= k <= n, src owns a length n+1 character array containing l followed by 0, dst owns k+1 characters, and every character in l is nonzero. The only control structure is a for loop from i = 0 to i < k. The function preserves the full src array and updates dst in place so that dst becomes sublist(0,k,l) followed by 0. The empty prefix case k = 0 skips the loop and writes only the terminator.",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": [
+      "prefix_scan",
+      "single_loop"
+    ]
+  }
+}

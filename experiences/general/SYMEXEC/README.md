@@ -16,7 +16,7 @@
 - 每次注释改动后都必须重新 `symexec`：看 3
 - `symexec` 失败时，先检查注释与控制点是否对齐：看 4
 - `symexec` 成功后先分流，不要机械回注释层：看 5
-- 顶层 `annotated/` 目录就是为避免头文件路径报错：看 6
+- `input/` 和 `annotated/` 都从 repo root 引用公共头文件：看 6
 - 公共 strategy 预编译后，不要再为每题重复 staging `coq/deps/`：看 7
 - witness 形状脏，通常是注释层信息组织不对：看 8
 - 当前 `goal_check` 没过时，不能把任务算完成：看 9
@@ -29,6 +29,8 @@
 - auto-solved VC 不进入 manual proof：看 16
 - `With` ghost 变量不要写成 `@pre`：看 17
 - loop invariant 中直接使用的 Coq 类型必须显式 `Extern Coq` 声明：看 18
+- verify 注释里临时引入的 helper import 可能通过 `symexec` 但卡死 audit replay：看 19
+- `With` ghost 名和活跃局部变量重名时，注释里优先改写成稳定表达：看 20
 
 题型/数据结构特定的 symexec 经验在 `<N>/<slug>.md` 累积。**不要手工浏览编号目录**，按 fingerprint 检索：
 
@@ -148,15 +150,29 @@ linux-binary/symexec \
 - 缺程序语义，回注释层
 - 缺纯命题桥接，不回注释层
 
-## 6. 顶层 `annotated/` 目录就是为避免头文件路径报错
+## 6. `input/` 和 `annotated/` 都从 repo root 引用公共头文件
 
 verify 的实际工作副本固定放在：
 
 - `annotated/verify_<timestamp>_<name>.c`
 
-它和 `input/` 是同层目录，所以像 `../../verification_stdlib.h` 这类相对头文件路径通常可以直接沿用，不需要再在每个 workspace 里手改 include。
+它和 `input/` 是同层目录，二者都只比 repo root 深一层。因此 root 下公共头文件必须统一写成：
 
-如果还报头文件找不到，优先检查：
+```c
+#include "../verification_stdlib.h"
+#include "../verification_list.h"
+```
+
+数组 / 字符串题确实需要 root 下定义文件时同理写：
+
+```c
+#include "../int_array_def.h"
+#include "../char_array_def.h"
+```
+
+不要写 `../../verification_stdlib.h`、`../../verification_list.h`、`../../int_array_def.h` 这类路径；从 `input/` 或 `annotated/` 出发它们会越过 repo root，进入 verify 后会报 `No such file`。这类错误应回 contract/source setup 修 include，不要在 verify 阶段改 annotated C，否则 source integrity gate 会拒绝。
+
+如果修正 include 后仍报头文件找不到，优先检查：
 
 - 当前 `qcp` / `symexec` 跑的是不是这个顶层 `annotated/*.c`
 - 是否误用了旧 workspace 里的历史 `annotated` 副本
@@ -352,3 +368,54 @@ QCP 前端在解析 invariant 时需要独立的符号表入口；仅有 `Import
 2. 如果一个 Coq 名字出现在 `Inv`、`Assert` 或 `which implies` 中——无论是否已经 `Import Coq`，都必须有 `Extern Coq` 声明
 3. 两者都写是安全的，不要依赖"Import 一定够"
 
+## 19. verify 注释里临时引入的 helper import 可能通过 `symexec` 但卡死 audit replay（2026-06-04）
+
+如果 verify 阶段为了写 invariant / assert，临时在 annotated C 顶部新增：
+
+- `/*@ Extern Coq (...) */`
+- `/*@ Import Coq Require Import <helper> */`
+
+并把 `<helper>.v` 放在 workspace-local 的 `coq/deps/` 或其他 generated 目录之外，要警惕一种特有失败：`symexec` 本身可能成功生成 `goal.v` / `proof_auto.v` / `proof_manual.v`，但 runner 的 compile replay / audit replay 直接编译 generated 文件时，会在 `goal.v` 上报：
+
+```text
+Cannot find a physical path bound to logical path <helper>
+```
+
+原因不是 VC 语义错，而是 generated Coq 文件把 `Require Import <helper>.` 固化进去了；而 replay 只按标准 generated/original load path 重放，不会自动解析你临时放在别处的 helper 模块。
+
+处理顺序：
+
+1. 优先把 annotation 改写成已有 input-stage `.v` 或标准库符号能表达的形状，不要先加 workspace-local helper import。
+2. 如果 helper 只是为了包装 `Z.to_nat`、fuel、剩余段摘要之类的前端不便表达项，优先改写成 generated 文件可直接解析的现有符号，例如原题 `.v` 中已有定义或标准算术函数。
+3. 只有当 helper 本来就属于输入阶段的一部分，并且 replay load path 会显式包含它时，才保留 `Import Coq Require Import <helper>`.
+4. 一旦发现 `goal.v` 因 helper import 编译失败，应回退到 helper-free annotation，重新 `symexec`，再从新的 VC 继续 proof；不要只复制 helper 文件到别处赌 replay 能过。
+
+## 20. `With` ghost 名和活跃局部变量重名时，注释里优先改写成稳定表达（2026-06-05）
+
+如果 contract 里有：
+
+- `With l n`
+
+而函数体里又存在活跃局部变量：
+
+- `int n = ...;`
+
+那么即使 contract 本身合法，`symexec` 前端也可能在 invariant / `Assert` 里把 ghost `n` 和局部 `n` 混淆，出现这类症状：
+
+- `fatal error: cannot find the program variable n(...) in assertion`
+- 在 return 附近只要桥接还需要这个名字，就触发 `Fail to Remove Memory Permission of n`
+
+这时先按**前端名字冲突**处理，不要先改 proof。
+
+更稳的处理顺序：
+
+1. 保持 input contract 和可执行 C 不变。
+2. 在 verify 注释里避免继续直接引用这个冲突 ghost 名。
+3. 优先改写成 contract 已经蕴含的稳定等价表达，例如把长度 ghost `n` 改写成 `Zlength(l)`。
+4. 重新 `symexec`，确认 blocker 是否回到正常 VC / witness 层。
+
+适用边界：
+
+- 这条经验只针对 verify 注释层的 ghost/local 同名冲突；
+- 不意味着可以随意重命名 input contract 或 executable local；
+- 如果连等价改写后仍然只有保留该局部时才崩，再把它判断成 source/contract 形状问题，而不是普通 annotation 缺事实。

@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260605_063617v_ex_allergies_score_count Require Import ex_allergies_score_count_goal ex_allergies_score_count_proof_auto ex_allergies_score_count_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include ex_allergies_score_count_proof_auto.
+  Include ex_allergies_score_count_proof_manual.
+End VC_Correctness.

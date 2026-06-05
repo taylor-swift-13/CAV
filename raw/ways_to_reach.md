@@ -11,7 +11,7 @@
 - `ways(1) = 1`
 - 对 `n >= 2`，`ways(n) = ways(n - 1) + ways(n - 2)`
 
-## 正确代码
+## 参考实现
 
 ```c
 int ways_to_reach(int n) {

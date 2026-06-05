@@ -11,7 +11,7 @@
 - 可以假设数组中所有元素互不相同
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_second_largest(int n, int *a) {

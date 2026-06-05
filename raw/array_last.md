@@ -10,7 +10,7 @@
 - 数组长度恰好是 `n`
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_last(int n, int *a) {
@@ -24,4 +24,4 @@ int array_last(int n, int *a) {
 
 - 没有循环
 - 没有分支
-- contract 需要保证 `n >= 1`
+- 规格 需要保证 `n >= 1`

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Counts the number of positions where two read-only null-terminated character arrays of equal logical length differ. The function scans the strings with a single loop until the first string reaches the terminator, increments an accumulator on mismatches, returns 0 on the empty-string case, and does not modify memory.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "string",
+    "pattern": "single_loop"
+  }
+}

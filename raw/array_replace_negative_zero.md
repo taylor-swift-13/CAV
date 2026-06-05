@@ -10,7 +10,7 @@
 - `a` 的长度恰好是 `n`
 - 函数会修改数组 `a`
 
-## 正确代码
+## 参考实现
 
 ```c
 void array_replace_negative_zero(int n, int *a) {

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The function scans an input integer array a of logical length n and returns the number of elements in the list l that are strictly positive. The loop is a single for-loop from i = 0 to i < n, maintaining a counter cnt for the processed prefix. If n is 0 the loop body is skipped and the result is 0. The function reads the array but does not modify memory, and the postcondition preserves IntArray::full(a, n, l).",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

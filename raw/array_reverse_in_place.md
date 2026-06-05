@@ -10,7 +10,7 @@
 - 函数不分配新数组，只通过交换元素修改 `a`。
 - 返回后，`a[i]` 等于原数组中的 `a[n - 1 - i]`。
 
-## 正确代码
+## 参考实现
 
 ```c
 void array_reverse_in_place(int n, int *a) {

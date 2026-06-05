@@ -1,0 +1,11 @@
+{
+  "semantic_description": "The function scans a null-terminated character array represented by logical list l followed by 0. It returns 0 for the empty string, otherwise advances i until s[i + 1] is the terminator, then compares the last nonzero character l[n - 1] with c and returns 1 exactly when they are equal. The loop is an unbounded while(1) scan with an internal break at the terminator; the function only reads the string memory and preserves the CharArray resource.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

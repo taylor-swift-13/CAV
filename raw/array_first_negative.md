@@ -10,7 +10,7 @@
 - `a` 的长度恰好是 `n`
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_first_negative(int n, int *a) {

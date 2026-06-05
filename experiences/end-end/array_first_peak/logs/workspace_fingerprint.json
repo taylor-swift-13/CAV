@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans an integer array from index 1 while i + 1 < n and returns the first interior index whose value is greater than or equal to both immediate neighbors. If no such interior peak exists, returns -1. The function preserves the input array memory and has an empty-loop boundary for n <= 2 because no interior index can satisfy 0 < i and i + 1 < n.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

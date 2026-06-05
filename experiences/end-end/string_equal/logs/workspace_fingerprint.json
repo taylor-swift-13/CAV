@@ -1,0 +1,11 @@
+{
+  "semantic_description": "string_equal scans two null-terminated character arrays from index 0, stops when either string terminator is seen or a mismatching character is found, returns 1 exactly when both strings terminate at the same index after all previous characters matched, and returns 0 when lengths differ or some shared index has different characters. The function only reads the two input buffers and preserves both CharArray resources unchanged. The key control structure is an unbounded while loop with early breaks and an early mismatch return; the empty-string case is handled by entering the loop once and breaking immediately on a[0] == 0.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

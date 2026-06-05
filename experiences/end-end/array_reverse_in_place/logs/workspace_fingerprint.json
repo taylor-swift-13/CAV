@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Verifies an in-place reversal of an integer array segment a[0..n). The function keeps two scalar indices left and right, swaps symmetric elements while left < right, and terminates when the pointers meet or cross. The input/output relation is that the same array memory is preserved as a full IntArray of length n whose final logical contents equal rev(l). Edge cases n = 0 and n = 1 execute no loop body; the function still preserves the array footprint and establishes rev(l).",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

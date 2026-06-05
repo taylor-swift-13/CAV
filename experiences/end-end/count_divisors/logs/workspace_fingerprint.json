@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The function count_divisors takes a positive scalar integer n, initializes cnt to zero, then runs a for loop over d from 1 through n. On each iteration it increments cnt exactly when n % d == 0, and returns the number of divisors of n as defined by count_divisors_spec in the companion Coq file. The function uses only scalar local variables, performs no heap allocation or memory writes, and the loop is skipped only if the positive-input precondition were violated, which the contract excludes.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

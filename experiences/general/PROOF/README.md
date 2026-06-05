@@ -33,8 +33,12 @@
 - 较新 symexec 版本生成的 `proof_manual.v` 格式差异：看 27
 - 直线函数没有 entail_wit 目标，proof_manual.v 始终为空：看 28
 - `entailer!` 后残留 `(p <> NULL)` 这类纯条件 → contract 层缺非空，不要在证明里硬抠：看 29
-- `%` 算术目标先确认生成的是 `Z.rem` 还是 `Z.mod`：看 30
-- 嵌套 `replace_Znth` 的 return witness 要把每一步 rewrite 的具体列表钉死：看 31
+- 有界递归算术 helper 先只展开一层，避免把目标 `cbn` 成大 `match`：看 30
+- `entailer!` 之后先判断目标还在不在 entailment 层，再选 `Exists` 还是 `exists`：看 31
+- 合法输入反例已经把当前 VC 算成 `false` 时，停止 proof 重试并回 Contract / source：看 32
+- `sep_apply store_int_range` 后先 `Intros.`，再让 `lia` 使用范围事实：看 33
+- 标量 `safety_wit` 若报 `No such goal`，先把骨架缩到真正还需要的最短前缀：看 34
+- 直接证明（纯/标量 `safety_wit`）禁止用 `entailer!`，改纯路径 + `entailer_pure`：看 35
 
 ## 1. 证明范围
 
@@ -60,9 +64,11 @@
 
 | VC 形状 | Tactic 模板 |
 |--------|------------|
-| 直线 / 标量 entail | `Proof. pre_process; entailer!; try lia. Qed.` |
+| 直线 / 标量 `safety_wit`（RHS 是纯算术 `" ... "`） | `Proof. pre_process. Qed.`（§34 常已收尾）；不够再 `prop_apply (store_int_range ...); Intros; assert (<bound>) by lia; entailer_pure.`。**直接证明禁止 `entailer!`**，理由与完整阶梯见 §35 |
 | sll cons 展开（`partial_solve_wit`：`sll p (cons x l) \|-- EX y, ...`） | `Proof. pre_process. simpl sll. Intros y. Exists y. cancel. Qed.`（暴露的 `“ x <> NULL ”` 用 `Intros_p _` 丢弃） |
 | sll cons 折回（`return_wit`：`cells ** sll y l \|-- sll p (cons x l)`） | `Proof. pre_process. simpl sll. Exists <y>. split_pure_spatial. - cancel. - entailer!. Qed.` |
+
+**`entailer!` 使用边界（硬规则，见 §35）**：`entailer!` ≡ `entailer_pure; simpl_entail; ...`，其中 `simpl_entail` 会把整个 LHS 空间项做归一化。**只有真正的 entailment / return witness（RHS 带 `*` / shape predicate / `EX` 空间结构，即上面两行 sll/数组场景）才允许 `entailer!`**；结论是纯命题/算术 bound 的"直接证明"`safety_wit` 一律禁用 `entailer!`，改走纯路径 + `entailer_pure`。
 
 **关键约束**：sll cons 折回要求 LHS 已有 `“ p_pre <> 0 ”` 纯条件（contract 写了 `p != 0`）。如果 `entailer!` 留下未解的 `(p <> NULL)`——参见 §42 和 `../CONTRACT/1/pointer-deref-needs-non-null.md`，是 contract 缺非空、verify 不能修。
 
@@ -438,61 +444,198 @@ end
 - **不要**自己改 contract / annotated C 绕过；那是 Contract 阶段的固定义务，verify 阶段越权改 contract 会让审计阶段反告 contract drift；
 - 把 `Final Result: Fail` 写到 `logs/metrics.md`，按 §1「contract gap」边界正常退出。
 
-## 30. `%` 算术目标先确认生成的是 `Z.rem` 还是 `Z.mod`（2026-06-02）
+## 30. 有界递归算术 helper 先只展开一层，避免把目标 `cbn` 成大 `match`（2026-06-05）
 
-QCP 生成的 `%` 目标不要默认按 `Z.mod` 处理。遇到这类直线标量 witness：
+对 `count_digits_bounded`、`armstrong_sum_aux` 这类“fuel 有上界”的纯算术递归函数，证明 helper lemma 时先保留递归调用的抽象形状，只展开**当前这一层**。不要一上来用 `cbn [f]` 把固定 fuel 全部展开，也不要在已经 `destruct (Z.eqb_spec ...)` 之后继续写过时的 `rewrite Z.eqb_neq`。
 
-- 先在当前 goal 里确认 `%` 展开后的**实际目标头**；
-- 如果目标是 `a % b = 0`、`a % b = a` 这类形状，但 `apply Z.mod_same` / `apply Z.mod_small` 报 unification mismatch，就优先怀疑当前 `%` 记号对应的是 `Z.rem`；
-- 这时改用 `Z.rem_same`、`Z.rem_small`，并用当前分支假设补上 `0 < b`、`0 <= a < b` 或 `a = b`。
+典型症状：
+
+- `change (...)` / `rewrite ...` 报 `Not convertible` 或 `Found no subterm matching ...`
+- 原本想交给 `lia` 的目标被展开成多层 `if` / `match`
+- 后续 `destruct (f subarg fuel')` 已经对不上当前 goal 里的子项
+
+更稳的处理顺序：
+
+1. 先用 `destruct (Z.eqb_spec ...)`、`destruct (Z.ltb ... ) eqn:...` 固定当前分支。
+2. 只把 `f x (S fuel)` 改写成“一层递归 + `f sub fuel`”的形状；必要时用 `change` 或一个小的 `replace ... with ... by ...`。
+3. 让 IH / 已证 helper 直接作用在保留下来的 `f sub fuel` 上；只有在确实需要消掉 constructor-level `succ` / `match` 时，才做局部 `destruct`.
+
+这样能把 proof 保持在线性算术层，而不是被 Coq 的完全展开拖进 brittle 的布尔 rewrite 和 constructor-level 归一化。
+
+## 31. `entailer!` 之后先判断目标还在不在 entailment 层，再选 `Exists` 还是 `exists`（2026-06-05）
+
+常见误判：
+
+- 看到目标里还有 existential，就直接写 QCP 的 `Exists x`
+- 但 `pre_process; entailer!` 其实已经把 separation-logic 包装全部消掉了
+- 剩下的真实目标已经是纯 Coq 命题：`exists i, ...`
+
+这时会出现的报错形状通常是：
+
+- `Exists i` 生成了 assertion-level witness
+- Coq 却期望一个普通命题 `exists i : Z, ...`
+- 错误文本里会出现 `has type "?P |-- EX x : _, ?Q x" while it is expected to have type "exists ..."`
+
+处理规则：
+
+1. 先用 `coqtop Show` 或直接看当前 goal，确认目标顶层还是不是 `|--`。
+2. 如果目标仍是 `P |-- EX x, Q x`，用大写 `Exists x`。
+3. 如果目标已经变成普通 Coq 命题 `exists x, ...`，改用小写 `exists x`，并用 `split` / `lia` / 已有分支事实收尾。
+
+判断原则：
+
+- `|--` 还在：这是 assertion-level existential，用 `Exists`
+- `|--` 已消失：这是 pure Coq existential，用 `exists`
+
+不要机械沿用前一个 witness 的 tactic 形状；`entailer!` 之后的目标层级可能已经变了。
+
+## 32. 合法输入反例已经把当前 VC 算成 `false` 时，停止 proof 重试并回 Contract / source（2026-06-05）
+
+如果同一个 witness 反复是首个稳定失败点，不要只因为还能跑 replay / `coqtop` 就继续机械重试。
+
+满足下面三条时，应把它判成真正的 proof 边界：
+
+1. stable replay 一直停在同一个 theorem；
+2. 当前 contract / input theory 能证明某个具体输入满足 precondition；
+3. `vm_compute` / 直接算术已经把该 witness 的关键命题算成 `false`。
+
+这时失败原因不是 tactic 不够强，而是当前 VC 在现有 contract 下就是假的。继续做这些动作通常没有收益：
+
+- 重跑同一条 compile replay；
+- 反复改 `entailer!; try lia` 之类的 proof 骨架；
+- 在 annotation 里补与输入理论无关的 bridge；
+- 继续写“再确认一轮”式 retry。
+
+正确动作是：
+
+- 在 `proof_reasoning.md` 和 `issues.md` 里写清楚：合法输入、precondition 成立证据、把目标算成 `false` 的最小计算；
+- 明确下一步需要回哪一层修：`input/<name>.v` 的前置条件、或 executable C/source 形状；
+- 结束当前 proof 迭代，不要把同一个假 VC 当成 proof 脚本问题继续消耗轮次。
 
 典型信号：
 
-- `rewrite Heq` 后 goal 已经规范成 `m % m = 0`；
-- `Z.mod_same` 仍报 `Unable to unify "? mod ? = 0" with "m % m = 0"`；
-- 换成 `Z.rem_same` / `Z.rem_small` 后立刻匹配。
+- witness 目标要求的中间表达式比 contract 真正约束的语义更强；
+- 例如 contract 只约束“最终解析值在界内”，但 VC 要求“减去 digit offset 之前的原始中间和也在界内”；
+- 这种差距必须回 Contract / source 修，proof 侧不能补。
 
-这条规则适用于：
+这正是 `v = v*10 + nums[i] - 48`（漏括号的十进制解析）的有符号溢出缺陷——是 C 实现 bug 而非 proof 债，完整模式、UBSan 复现、判定三分法与修法见 **`doc/SOURCE_DEFECTS.md` 模式 1**。
 
-- contract 里直接使用 `%` 的纯算术函数；
-- `entailer!` 后只剩 `%` 的等式分支和严格小于分支；
-- proof 已经确认是运算符头不匹配，而不是边界条件缺失。
+## 33. `sep_apply store_int_range` 后先 `Intros.`，再让 `lia` 使用范围事实（2026-06-05）
 
-## 31. 嵌套 `replace_Znth` 的 return witness 要把每一步 rewrite 的具体列表钉死（2026-06-02）
+对标量 `safety_wit`，如果你已经写了：
 
-如果 `return_wit` 的 existential witness 本身就是多层数组更新，例如：
+- `sep_apply store_int_range.`
+- `sep_apply store_int_range.`
 
-- `replace_Znth 0 x (replace_Znth 2 y (replace_Znth 1 x l))`
-- 或类似的“先写一格，再写状态位，再条件性回写另一格”
+但紧接着的纯断言仍然报 `Cannot find witness`，先不要怀疑 contract 缺范围。
 
-那么 `entailer!` 之后不要直接写这种省略参数的脚本：
+常见真实原因是：`store_int_range` 取回的
 
-- `rewrite Znth_replace_Znth_Same by lia`
-- `rewrite Znth_replace_Znth_Diff by lia`
+- `Int.min_signed <= x <= Int.max_signed`
+- `Int.min_signed <= y <= Int.max_signed`
 
-在这类 goal 里，Coq 往往无法从上下文唯一推断当前要穿过的是哪一层 `replace_Znth`，于是报：
+还停留在 separation antecedent 里，没有进 Coq 纯上下文，所以：
 
-- `Tactic failure: Cannot find witness`
+- `assert (... ) by lia`
+- `entailer!`
+- 局部 quotient / 差值上界 helper
 
-更稳的写法是：
+都看不到这些范围事实。
 
-1. 先给重复出现的更新值起局部别名，例如 `set (w := ...)`
-2. 对每一步 rewrite 都显式写出**当前那一层的完整列表参数**
-3. 先穿过最外层 `replace_Znth`，再穿过中间层，最后落到原始 `l`
-4. 每一步 side condition 同时把 `Zlength_replace_Znth` 展开给 `lia`
-
-典型形状：
+稳定写法：
 
 ```coq
-rewrite (Znth_replace_Znth_diff 1 0 w 0
-  (replace_Znth 2 1 (replace_Znth 1 w l))) by ...;
-rewrite (Znth_replace_Znth_diff 1 2 1 0
-  (replace_Znth 1 w l)) by ...;
-rewrite (Znth_replace_Znth_same 1 w 0 l) by lia.
+sep_apply store_int_range.
+sep_apply store_int_range.
+Intros.
+change Int.min_signed with (-2147483648) in *.
+change Int.max_signed with 2147483647 in *.
+assert (Hdiff : 0 <= hi - lo <= 2147483647) by lia.
 ```
+
+处理顺序要固定成：
+
+1. `sep_apply store_int_range` 取回栈槽的 `Int` 范围；
+2. 立刻 `Intros.`，把这些纯事实移进 Coq 假设；
+3. 再做 `change`、`assert ... by lia`、quotient helper、`entailer!`。
+
+如果跳过这一步，现象通常会误导成“`lia` 不会算”或“还缺 arithmetic lemma”；实际上先缺的是 proof-state plumbing。
+
+## 34. 标量 `safety_wit` 若报 `No such goal`，先把骨架缩到真正还需要的最短前缀（2026-06-05）
+
+对 proof-only / fast-path 留下的纯标量 `safety_wit`，不要把
+
+```coq
+Proof. pre_process; entailer!; try lia. Qed.
+```
+
+当成无条件模板。
+
+这次 `ex_darts_score` 的三个手工义务都是纯算术 safety witness。稳定现象是：
+
+- 先写 `pre_process. entailer!. lia.`，`coqc` 报 `No such goal`；
+- 改成 `try lia.` 后，仍然是同一个 `No such goal`；
+- 再把骨架缩成 `pre_process. entailer!.`，错误位置仍落在 `entailer!`；
+- 最终缩成 `pre_process.` 后 replay 全通过。
+
+这类现象说明：**不是 tactic 不够强，而是前一个 tactic 已经把 theorem 关掉了**。后续任何 tactic 都是在“已经没有 goal”的状态下运行，所以会稳定复现同一个报错。
+
+处理规则：
+
+1. 如果 `No such goal` 落在 `lia`，先怀疑 `entailer!` 已经收尾。
+2. 如果删掉 `lia` 后，`No such goal` 又稳定落在 `entailer!`，再怀疑 `pre_process` 已经收尾。
+3. 每次都用 compile replay 验证最短可行骨架；一旦 `pre_process.` 已经通过，就不要再补装饰性 tactic。
+
+判断原则：
+
+- `No such goal` 说明“上一条 tactic 过强或已足够”，不是“下一条 tactic 需要更聪明”；
+- 对 trivial scalar witness，优先寻找**最短稳定脚本**，不要机械保留通用模板；
+- 比起反复试 `lia` / `try lia` / `entailer!` 组合，更有效的是按报错行把骨架逐步左缩。
 
 适用范围：
 
-- 直线数组写入函数的 `return_wit`
-- `IntArray.full` / `CharArray.full` 一类“后态 = 多层 `replace_Znth`”的 witness
-- 首个症状是 `entailer!` 后只剩 `Znth` 等式，但通用 rewrite lemma 仍无法实例化
+- loop-free、纯算术、无 existential / 无空间重排的 `safety_wit`；
+- fast-path 已生成 VC、只剩少量 `Admitted` 需要 proof-only 接管的 workspace；
+- 任何 `coqc` 把 `No such goal` 稳定报在 proof 骨架后半段的 trivial witness。
+
+## 35. 直接证明（纯/标量 `safety_wit`）禁止用 `entailer!`，改纯路径 + `entailer_pure`（2026-06-05）
+
+### 证据
+
+`add_binary_strings` 的 verify 单轮跑满 1 小时被外部 timeout（exit 124）杀掉：当时 `proof_manual.v` 已 32 个 `Qed`、0 个 `admit`，最后死在 `safety_wit_74`——一个语义平凡的纯算术义务
+
+```
+<大量 CharArray.full ... app(... repeat_Z ...) 空间断言> |-- " na_pre + nb_pre <= 2147483647 "
+```
+
+agent 实测 `entailer!` 与 `pre_process` 在该目标上**都超时**，自述还差"只抽纯前提、不触发昂贵空间归一化的更轻路径"，但预算已耗尽。证明本身其实早就接近完成，是被这一类 tactic 的性能拖死的。
+
+### 根因（库级）
+
+`SeparationLogic/CommonAssertion.v` 里：
+
+- `entailer!` ≡ `set_String_name; try poly_store_unfold; Rename entailer_pure; simpl_entail; subst_all_strings`
+- `entailer_pure` ≡ `asrt_simpl_pure; sepcon_assoc_change; andp_cancel`
+
+昂贵的是 `simpl_entail`——它把 LHS 整个空间项做归一化/消解。对 **RHS 是纯算术、LHS 又带大数组 shape predicate（`CharArray.full` / `*_seg` / `app` / `repeat_Z` 等）** 的 `safety_wit`，`simpl_entail` 没有任何证明价值，却会随数组项规模爆炸式变慢甚至超时。`entailer_pure` 就是 `entailer!` 去掉 `simpl_entail` 的纯命题版。
+
+### 硬规则
+
+**结论是纯命题 / 算术 bound 的"直接证明"`safety_wit`，禁止使用 `entailer!`。** 起手只走纯路径：
+
+1. `pre_process.`——按 §34，很多标量 witness 到此即收尾，直接 `Qed`，别再补装饰性 tactic。
+2. 还需要范围 / 边界事实时，**只抽标量、不碰空间**：`prop_apply (store_int_range (&("x")) x).`、`Intros.`、`change Int.min_signed with (-2147483648) in *`、`change Int.max_signed with 2147483647 in *`、`assert (<bound>) by lia`（配合 §33 的取范围顺序）。
+3. 收尾用 `entailer_pure`，**不要** `entailer!`。若 `entailer_pure` 后仍残留未消的空间 LHS，对那个**已经变小的残余**做定向 `cancel` / `sep_apply`，也不要退回整目标 `entailer!`。
+
+### 性能即阻塞
+
+任何单条 tactic（尤其 `entailer!` / `pre_process` / `simpl_entail`）运行超过 ~60s，判定为**配方选错**，立即中断换纯路径或按 §34 左缩骨架，**不要干等它跑完**。一条慢 tactic 重复几轮就能吃光整个 verify 预算（参见 `../COMPILE/README.md §10`：编译—清理循环本身已是大头）。
+
+### 适用边界
+
+本条只约束"直接证明"的纯 / 标量 `safety_wit`。真正的 entailment / return witness（`sll`、数组 cons 展开/折回，RHS 带 `*` / shape predicate / `EX` 空间结构）仍按 §3 其余两行用 `cancel` / `entailer!`——那里的空间消解是必需的，不在禁用范围内。
+
+判断口诀：
+
+- RHS 是 `" 算术 "`（纯 coq_prop）→ 纯路径 + `entailer_pure`；
+- RHS 带 `*` / shape predicate / `EX` 空间结构 → 才用 `entailer!` / `cancel`。

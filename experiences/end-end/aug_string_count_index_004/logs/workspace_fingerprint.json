@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Counts how many non-null characters in a read-only null-terminated string are equal to ASCII 101 by scanning with a single index until the terminating zero. The function does not modify memory and returns 0 on the empty string.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "string",
+    "pattern": "single_loop"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Scans a null-terminated character array in place with a while(1) loop, stopping at the first zero byte. For each index before the terminator, lowercase ASCII letters 97..122 are replaced by value-32 and all other nonzero bytes are preserved. The terminator remains zero, the string length n is preserved, and the heap resource is the same CharArray::full buffer updated in place.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

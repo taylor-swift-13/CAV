@@ -9,9 +9,8 @@
 - 覆盖所有控制分支：看 1
 - 负例要针对具体子句：看 2
 - 不可判定时要诚实给 `Inconclusive`：看 3
-- 生成结果后用 `python3` 校验 JSON，不要先试 `jq` / `python`：看 4
-- 蕴含式 `Ensure` 要专门检查“所有 antecedent 都为假”的残余合法区：看 5
-- 有 `%`、加减乘等 C `int` 中间表达式时，要专门压边界检查 UB：看 6
+- 宽松 parser 要先按 raw 题目域筛选，再用“看似 malformed 但实现会前进”的 case 测 completeness：看 4
+- 数字扫描题要用边界 token 区分“数学结果可表示”和“C 中间表达式已溢出”：看 5
 
 ## 1. 覆盖所有控制分支
 
@@ -29,97 +28,55 @@
 不能硬判 `Correct`。应把该 case 标成 `needs_judge`，仍无法确定时给
 `Spec verdict: Inconclusive`。
 
-## 4. 生成结果后用 `python3` 校验 JSON，不要先试 `jq` / `python`（2026-06-01）
+## 4. 宽松 parser 要先按 raw 题目域筛选，再用“看似 malformed 但实现会前进”的 case 测 completeness（2026-06-05）
 
-eval 阶段的 `cases.json` 和 `evaluation.json` 是 runner 后续消费的正式产物，生成后应立刻做一次**机器可解析**检查，而不是只看文件存在。
+对按字符流扫描的 parser / scanner，不要只用“标准 grammar 内”的正反例测 contract。
 
-这个环境里不能默认有 `jq`，也不能默认 `python` 命令存在；先试这两个只会白白烧掉失败命令。稳定做法是直接用 `python3`：
+如果实现形状是：
 
-```bash
-python3 -m json.tool output/eval_<ts>_<name>/cases/cases.json >/dev/null
-python3 -m json.tool output/eval_<ts>_<name>/evaluation/evaluation.json >/dev/null
-```
+- 外层循环按字节推进；
+- 每轮可选消费符号；
+- digit run 可以为空；
+- 再可选消费分隔符；
 
-如果还要顺手核对 case 数和 verdict 覆盖，也直接用 `python3` 读 JSON：
+那么 eval 应先读 raw markdown 的输入要求。若 raw markdown 没有明确排除某类边界输入，再额外挑一组“看起来 malformed，但实现其实会继续前进并给出确定结果”的 case，例如：
 
-```bash
-python3 - <<'PY'
-import json
-from pathlib import Path
-base = Path("output/eval_<ts>_<name>")
-cases = json.loads((base / "cases/cases.json").read_text())
-evaluation = json.loads((base / "evaluation/evaluation.json").read_text())
-print(len(cases["positive"]), len(cases["negative"]), len(evaluation["cases"]))
-PY
-```
+- leading separator；
+- trailing separator；
+- adjacent separator；
+- sign-only token；
+- 其它 empty-field 变体。
 
-这条经验同时解决两件事：
+这些 case 的作用不是证明实现“合理”，而是检查 contract 有没有把题目域内、且真实可观察的行为错排除在 precondition 外。
 
-- 正确性：尽早发现 JSON 语法损坏、字段漏写、case 数不匹配；
-- 效率：避免先撞 `jq: command not found` / `python: command not found`，把校验一步做完。
+判断规则：
 
-## 5. 蕴含式 `Ensure` 要专门检查“所有 antecedent 都为假”的残余合法区（2026-06-02）
+- 如果 raw markdown 没有排除这类输入，且实现对它们会前进、不会越界、不会触发 C overflow，并且返回值确定，那么它们应该优先作为 **precondition-strength / completeness** 检查样例；
+- 如果 raw markdown 明确排除了这类输入（例如要求每个 token 是非空 base-10 integer），不要把它们作为合法输入 completeness 反例；可以改测 contract 是否正确表达题目域，以及题目域内的 C safety；
+- 不要只把它们当“坏输入”直接丢进 negative rejection；
+- 一旦这些 case 属于 raw 题目域、在实现里有定义行为、但被 contract 拒掉，eval 应明确报 contract 过强，而不是只给 soundness/pass。
 
-如果 contract 把后条件写成多条 implication：
+## 5. 数字扫描题要用边界 token 区分“数学结果可表示”和“C 中间表达式已溢出”（2026-06-05）
 
-- `cond1 => post1`
-- `cond2 => post2`
-- ...
+对按十进制逐位累加的 parser / scanner，eval 不要只测“最终 parse 出来的整数是否在 `int` 范围内”。
 
-eval 不要只按“看起来列出来的分支”生成正负例；还要额外检查 **是否存在满足 `Require`、但让所有 `condi` 都为假的合法输入区**。
+如果实现步进形状是：
 
-这是 implication 规格最容易漏掉的 under-spec 形态：实现在该区域有真实行为，但 spec 因为所有 antecedent 都是假而真值真空成立，导致错误输出也会被接受。
+- `acc = acc * 10 + s[i] - 48`；
+- 或其它先做乘法/加法、最后再减 digit bias 的等价写法；
 
-稳定检查法：
+那么必须专门挑一组边界 token，把下面两类情况拆开测：
 
-1. 先把 valid input domain 按实现控制流或语义分区列全；
-2. 再逐条对照 `Ensure` antecedent，确认每个分区至少命中一条 postcondition；
-3. 如果某个合法分区一条都命不中，必须补一个正例确认真实返回值；
-4. 同时补一个该分区的错误输出负例，检查 spec 会不会真空接受。
+- **定义行为但容易被 contract 错拒**：最终 C 步进值和返回值都在范围内，例如这次的 `"2147483600"`；
+- **数学结果在范围内，但 C 中间子表达式已先溢出**：例如这次的 `"2147483647"`，最终值是 `INT_MAX`，但末位更新先形成 `214748364 * 10 + 55`。
 
-典型信号：
+这些 case 的作用是同时检查两种常见 contract 错误：
 
-- positive case 通过，但对应 path 没有专属 clause；
-- negative case 的错误输出仍被接受；
-- `Path coverage`、`Negative rejection`、`Completeness` 同时失败。
+- precondition **过强**：把真实定义行为错排除在外；
+- precondition **过弱**：只看最终数学值，漏掉 executable C 的中间 overflow UB。
 
-这条规则尤其适合：
+判断规则：
 
-- 多分支纯标量函数；
-- 用 `=>` 编码 case split 的 contract；
-- 某个主分支还要按额外 flag / status 再细分的情况。
-
-## 6. 有 `%`、加减乘等 C `int` 中间表达式时，要专门压边界检查 UB（2026-06-02）
-
-eval 不要只看 contract 的语义分支覆盖；只要实现里真的执行了 C `int` 中间表达式，例如：
-
-- `(a + b) % n`
-- `(x - y + n) % n`
-- `i * stride + base`
-
-就要额外检查 admitted 输入域是否让这些**中间值**越过 `[-2147483648, 2147483647]`。
-
-原因：
-
-- contract 的正负例替换通常只能说明子句语义自洽；
-- 但 eval 的最终 judge 按 C 语义看 soundness；
-- 如果 contract 放进了会触发 signed overflow / UB 的状态，哪怕所有正负例都过，judge 仍会在 `Precondition safety` / `Soundness` / `Completeness` 上打回。
-
-稳定做法：
-
-1. 先从 `Require` 推出每个已执行中间表达式的范围；
-2. 对每个表达式单独问：最大值和最小值是否仍在 32-bit signed `int` 范围内；
-3. 如果边界刚好靠近 `INT_MAX` / `INT_MIN`，至少放一个贴近上界或下界的正例；
-4. 如果当前 contract 还没排除溢出状态，在 reasoning / issues 里直接记成 semantic risk，不要因为现有 case 都过就写成完全正确。
-
-典型信号：
-
-- `evaluation.json` 的正负例全过；
-- 但实现里有 `+ max_len`、`+ delta`、`* stride` 这类会先在 C 里求值的中间项；
-- contract 只约束了抽象输入域，没有给出相应 overflow guard。
-
-这条规则尤其适合：
-
-- 环形缓冲区 / `% n` / 单次 wrap 的标量函数；
-- 先做加减再取模的实现；
-- 所有“数学上没问题，但 C 中间算术可能先炸掉”的 contract。
+- 只要实现是按字符逐位做有符号 `int` 累加，就至少放一个“定义但接近上界”的正向 completeness case；
+- 再至少放一个“最终值看起来合法，但中间子表达式会 overflow”的负向 safety case；
+- 如果这两类 case 给出相反结论，优先按 **executable C 的真实求值链** 判 contract 对错，而不是只看逻辑里的最终整数值。

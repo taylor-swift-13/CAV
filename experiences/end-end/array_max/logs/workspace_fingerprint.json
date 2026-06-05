@@ -1,0 +1,8 @@
+{
+  "semantic_description": "array_max scans a non-empty integer array a[0..n-1] without modifying memory. It initializes ret from a[0], then uses a for loop from i = 1 to n - 1 to keep ret equal to an element of the already-scanned prefix and greater than or equal to every element in that prefix. On return, ret is an element of the whole input list l and every valid array element is less than or equal to ret. The loop may be skipped when n == 1, and the IntArray::full heap predicate must be preserved unchanged.",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

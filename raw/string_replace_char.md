@@ -11,7 +11,7 @@
 - 终止符 `'\0'` 保持在原位置
 - 对每个终止符前的下标 `i`，如果原来 `s[i] == old_c`，执行后 `s[i] == new_c`，否则保持原值
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_replace_char(char *s, char old_c, char new_c) {

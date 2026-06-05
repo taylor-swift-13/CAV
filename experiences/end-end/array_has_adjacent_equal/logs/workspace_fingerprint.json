@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The function scans an integer array from index 1 upward and returns 1 as soon as it finds adjacent equal elements a[i] == a[i - 1]. If the loop finishes, it returns 0 and establishes that every adjacent pair in the valid range 1 <= i < n is unequal. The function only reads the input array and preserves IntArray::full(a, n, l). For n <= 1 the loop body is skipped and the universal no-adjacent-equal postcondition is vacuous.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

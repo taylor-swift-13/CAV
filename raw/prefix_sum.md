@@ -10,7 +10,7 @@
 - `a` 和 `out` 长度都恰好是 `n`
 - `out[i] = a[0] + a[1] + ... + a[i]`
 
-## 正确代码
+## 参考实现
 
 ```c
 void prefix_sum(int n, int *a, int *out) {

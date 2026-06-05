@@ -10,7 +10,7 @@
 - 数组长度恰好是 `n`
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int count_positive(int n, int *a) {

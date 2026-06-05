@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Computes the length of the longest contiguous strictly increasing run in an integer array. For n = 0 it returns 0 without entering the loop; otherwise it scans a[1..n-1] with a for loop, maintaining cur as the length of the current increasing suffix ending at the previous/current element and best as the maximum run length seen so far. The function reads but does not modify the input array, and the postcondition preserves IntArray::full(a, n, l).",
+  "keywords": {
+    "problem_kind": "min_max",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

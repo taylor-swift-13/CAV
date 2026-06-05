@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Binary search lower_bound over a sorted integer array. The function preserves the input array and returns an index in [0,n] such that all elements before the index are strictly below target and every element from the index to n-1 is at least target. The loop maintains a shrinking [left,right] search interval with possible empty-loop behavior when n is 0 or left is already not below right; it does not modify memory.",
+  "keywords": {
+    "problem_kind": "sort",
+    "data": "array",
+    "pattern": [
+      "binary_search",
+      "single_loop"
+    ]
+  }
+}

@@ -10,7 +10,7 @@
 - `base^0 = 1`
 - 使用简单循环乘法，不使用快速幂
 
-## 正确代码
+## 参考实现
 
 ```c
 int power_nonnegative(int base, int exp) {

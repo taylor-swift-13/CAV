@@ -12,7 +12,7 @@
 - 如果存在某个下标 `i` 满足 `a[i] < 0`，返回 `1`
 - 否则返回 `0`
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_any_negative(int n, int *a) {

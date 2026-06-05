@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans a read-only integer array with a single loop and returns 1 as soon as any element is zero; otherwise returns 0 after checking all positions. The array contents and ownership are preserved, and the empty array returns 0.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

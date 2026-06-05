@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Counts the number of bytes equal to 101 in a read-only null-terminated character array. The function initializes a scanning pointer p to s, advances p one byte at a time while *p is nonzero, increments count exactly on matching bytes, and returns the total after reaching the unique terminator at index n. The input CharArray::full buffer is preserved and the function does not modify memory.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "string",
+    "pattern": "single_loop"
+  }
+}

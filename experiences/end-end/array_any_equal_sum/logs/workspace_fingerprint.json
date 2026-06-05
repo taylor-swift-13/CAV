@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Read-only array scan. The function computes target = x + y, then uses a for loop over indices 0 <= i < n. It returns 1 immediately if some array element equals target, and returns 0 after the loop only when every element in the array is unequal to target. The input array memory is preserved; n may be zero, in which case the loop is skipped and the function returns 0.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

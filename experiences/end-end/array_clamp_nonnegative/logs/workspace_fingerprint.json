@@ -1,0 +1,8 @@
+{
+  "semantic_description": "In-place array update over indices 0..n-1. The function scans the input integer array with a single for loop; if an element is negative it writes 0 at the same index, and if an element is nonnegative it leaves that element unchanged. The empty-array case n == 0 skips the loop and preserves the empty full-array predicate. The function mutates the memory owned by IntArray::full(a, n, l) and returns no scalar value.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

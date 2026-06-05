@@ -11,7 +11,7 @@
 - `dst` 缓冲区长度至少是 `k + 1`
 - 函数不修改 `src`
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_copy_prefix(int k, char *src, char *dst) {

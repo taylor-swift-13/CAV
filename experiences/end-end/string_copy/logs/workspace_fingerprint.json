@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Copies a null-terminated character sequence from src to dst using an unbounded while loop with an explicit break on src[i] == 0. The contract owns both CharArray buffers of length n + 1, requires the first n source characters to be nonzero and the last source character to be 0, preserves src, and updates dst so it contains the same prefix l followed by the terminating 0. The loop writes dst one character at a time and must handle the n == 0 case by immediately writing only the terminator.",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

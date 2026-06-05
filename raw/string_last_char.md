@@ -10,7 +10,7 @@
 - `s` 不是空串
 - 函数不修改字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 char string_last_char(char *s) {

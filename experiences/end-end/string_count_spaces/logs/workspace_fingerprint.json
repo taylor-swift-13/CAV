@@ -1,0 +1,14 @@
+{
+  "semantic_description": "Scans a null-terminated character array without modifying memory, counts elements equal to ASCII space (32) before the terminating 0, and returns the Coq recursive count over the logical list prefix. The loop is an unbounded while(1) with an internal break on the null terminator; the empty-string case is possible when n = 0. The contract preserves the full input character array and requires all prefix characters before the terminator to be nonzero.",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": [
+      "recursion",
+      "single_loop"
+    ]
+  }
+}

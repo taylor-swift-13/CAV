@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Scans input array a[0..n) with a while loop, copies each element not equal to k into the caller-provided out buffer at the next write position, preserves the input array, and returns the number of copied elements. For n = 0 the loop is skipped, the returned length is 0, and the output array remains owned with an arbitrary tail of length n. The function writes only to the out array prefix corresponding to array_remove_value_to_output_spec(la, k).",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

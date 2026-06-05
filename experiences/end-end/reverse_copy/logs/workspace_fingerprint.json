@@ -1,0 +1,8 @@
+{
+  "semantic_description": "reverse_copy iterates i from 0 to n - 1 and copies src[n - 1 - i] into dst[i]. The contract requires nonnegative n and full integer arrays src and dst of length n; src must remain unchanged and dst must contain rev(ls) after the loop. The loop may execute zero times when n is 0, and the function mutates only the caller-provided dst array.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

@@ -10,7 +10,7 @@
 - `reverse_digits(0) = 0`
 - 使用 `% 10` 和 `/ 10` 逐位处理
 
-## 正确代码
+## 参考实现
 
 ```c
 int reverse_digits(int n) {

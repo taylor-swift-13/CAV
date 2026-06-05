@@ -11,7 +11,7 @@
 - 元素范围：对所有 `0 <= i < n`，有 `INT_MIN <= a[i] <= INT_MAX`。
 - 不申请额外堆内存，只在原数组上交换元素。
 
-## 正确代码
+## 参考实现
 
 ```c
 void bubble_sort(int *a, int n) {

@@ -15,10 +15,10 @@
 
 ## 3. 检索时先看什么
 
-检索单元有两种，schema 共享（都用 `semantic_description` + `keywords`）：
+检索单元有两种，但 schema 完全相同，且只允许两个顶层字段：`semantic_description` + `keywords`。
 
-- **end-end 样例**：每个 `experiences/end-end/<case>/logs/workspace_fingerprint.json`（完整 workspace + 路径）
-- **专题经验**：每个 `experiences/general/<NAME>/<N>/<slug>.fingerprint`（指向同目录 `<slug>.md`，只放 `semantic_description` 和 `keywords` 两字段）
+- **end-end 样例**：每个 `experiences/end-end/<case>/logs/workspace_fingerprint.json`
+- **专题经验**：每个 `experiences/general/<NAME>/<N>/<slug>.fingerprint`（指向同目录 `<slug>.md`）
 
 建议顺序：
 
@@ -38,11 +38,8 @@
 
 ## 4. fingerprint 要写什么
 
-每个 workspace 的 `logs/workspace_fingerprint.json` 至少应包含：
+每个 fingerprint 文件必须只包含：
 
-- workspace 名称
-- 输入文件
-- 函数名
 - `semantic_description`
 - `keywords`
 
@@ -151,8 +148,8 @@ python3 scripts/search_fingerprint.py --fingerprint output/verify_<timestamp>_<n
 
 `--scope` 可限制范围：
 
-- `--scope all`（默认）：同时检索 end-end 完整样例 + general 专题经验
-- `--scope end-end`：只看完整 workspace 样例
+- `--scope all`（默认）：同时检索 end-end 样例 + general 专题经验
+- `--scope end-end`：只看 end-end 样例
 - `--scope general`：只看 general 专题经验
 
 输出（`--format paths`）：每行一个匹配路径。end-end 给 case dir，general 给 `<slug>.md` 路径。例如：

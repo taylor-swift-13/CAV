@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Scans a read-only ASCII string once to skip spaces, reject nondigit nonspace characters, and collect up to 128 decimal digits into a local array. If fewer than two digits remain it returns 0; otherwise it scans the collected digits right-to-left, applies the Luhn doubling rule on alternating positions, sums the transformed digits, and returns 1 exactly when the sum is divisible by 10. The input string memory is not modified.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "string",
+    "pattern": [
+      "single_loop",
+      "state_machine"
+    ]
+  }
+}

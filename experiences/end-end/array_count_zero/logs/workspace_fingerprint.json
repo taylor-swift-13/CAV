@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Function array_count_zero scans an integer array a of length n with a for-loop, increments a scalar accumulator count for each element equal to zero, returns the recursive Coq count of zero elements in the input list, and preserves the IntArray::full heap contents unchanged. The loop may be empty when n is 0; the contract requires n to be nonnegative and Zlength(l) == n.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "array",
+    "pattern": [
+      "recursion",
+      "single_loop"
+    ]
+  }
+}

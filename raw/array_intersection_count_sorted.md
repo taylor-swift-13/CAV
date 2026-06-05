@@ -10,7 +10,7 @@
 - 两个数组都按非降序排列。
 - 如果一个值在两个数组中都出现多次，则按可以配对的次数计数。
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_intersection_count_sorted(int n, int *a, int m, int *b) {

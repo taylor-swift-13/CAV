@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans a null-terminated CSV string of signed decimal integers, parses each token in place without modifying the buffer, and returns the minimum parsed value. The implementation uses sequential character-scanning loops for optional sign, digit accumulation, comma skipping, and repeated token parsing until the terminating zero byte.",
+  "keywords": {
+    "problem_kind": "min_max",
+    "data": "string",
+    "pattern": "state_machine"
+  }
+}

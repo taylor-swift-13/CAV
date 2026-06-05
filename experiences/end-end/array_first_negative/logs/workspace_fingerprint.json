@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans an integer array from left to right without modifying memory. The function returns the first index i such that a[i] is negative; if no element in the n-length array is negative, it returns -1. The key control structure is a for loop with an early return inside an if branch. Boundary behavior includes n = 0, where the loop body is skipped and -1 is returned. The postcondition preserves the original IntArray contents and characterizes either the no-negative case over the full range or the first-negative witness with all earlier elements nonnegative.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

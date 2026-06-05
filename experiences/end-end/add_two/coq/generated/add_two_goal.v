@@ -1,7 +1,6 @@
 Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
-Require Import Coq.Strings.Ascii.
 Require Import Coq.Lists.List.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
@@ -17,12 +16,14 @@ Local Open Scope string_scope.
 Local Open Scope list.
 Import naive_C_Rules.
 Local Open Scope sac.
+From SimpleC.EE.QCP_demos_LLM Require Import common_strategy_goal.
+From SimpleC.EE.QCP_demos_LLM Require Import common_strategy_proof.
 
 (*----- Function add_two -----*)
 
 Definition add_two_safety_wit_1 := 
 forall (b_pre: Z) (a_pre: Z) ,
-  “ ((INT_MIN) <= (a_pre + b_pre )) ” 
+  “ (INT_MIN <= (a_pre + b_pre )) ” 
   &&  “ ((a_pre + b_pre ) <= INT_MAX) ”
   &&  ((( &( "b" ) )) # Int  |-> b_pre)
   **  ((( &( "a" ) )) # Int  |-> a_pre)
@@ -33,7 +34,7 @@ forall (b_pre: Z) (a_pre: Z) ,
 
 Definition add_two_return_wit_1 := 
 forall (b_pre: Z) (a_pre: Z) ,
-  “ ((INT_MIN) <= (a_pre + b_pre )) ” 
+  “ (INT_MIN <= (a_pre + b_pre )) ” 
   &&  “ ((a_pre + b_pre ) <= INT_MAX) ”
   &&  emp
 |--
@@ -43,6 +44,7 @@ forall (b_pre: Z) (a_pre: Z) ,
 
 Module Type VC_Correct.
 
+Include common_Strategy_Correct.
 
 Axiom proof_of_add_two_safety_wit_1 : add_two_safety_wit_1.
 Axiom proof_of_add_two_return_wit_1 : add_two_return_wit_1.

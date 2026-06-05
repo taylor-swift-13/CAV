@@ -19,6 +19,7 @@ classification is ``not_run`` and the caller should not block on it.
 from __future__ import annotations
 
 import argparse
+import shutil
 from pathlib import Path
 import re
 import subprocess
@@ -35,17 +36,27 @@ _STARTED_RE = re.compile(r"Symbolic Execution into function")
 def prepare_input(src_c: Path, dst_c: Path) -> None:
     """Copy the contract C into a symexec-parseable form (experiences/general/SYMEXEC/1/int-array-def-header.md).
 
-    Drops the ``int_array_def.h`` include (a built-in symexec predicate, not a
-    header) and rewrites ``../../verification_*.h`` to bare names symexec finds
-    on its own search path.
+    Drops the ``int_array_def.h`` include for this temporary parse check and
+    rewrites repo-root ``verification_*.h`` includes (``../`` or legacy
+    ``../../`` forms) to bare names symexec finds on its own search path.
+    Other repo-root spec headers such as ``char_array_def.h`` must also be
+    rewritten the same way when the input is staged into a temp directory.
     """
     lines = []
+    copied_repo_headers: set[str] = set()
     for line in src_c.read_text(encoding="utf-8", errors="replace").splitlines():
         if "int_array_def.h" in line:
             continue
-        line = re.sub(r'\.\./\.\./(verification_[a-z]+\.h)', r'\1', line)
+        line = re.sub(r'(?:\.\./)+(verification_[A-Za-z0-9_]+\.h)', r'\1', line)
+        m = re.search(r'(?:\.\./)+([A-Za-z0-9_]+_array_def\.h)', line)
+        if m is not None:
+            header = m.group(1)
+            copied_repo_headers.add(header)
+            line = re.sub(r'(?:\.\./)+([A-Za-z0-9_]+_array_def\.h)', r'\1', line)
         lines.append(line)
     dst_c.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    for header in copied_repo_headers:
+        shutil.copy2(REPO_ROOT / header, dst_c.parent / header)
 
 
 def check(input_c: Path, timeout_seconds: int = 120) -> tuple[str, int | None, str]:
@@ -82,7 +93,6 @@ def check(input_c: Path, timeout_seconds: int = 120) -> tuple[str, int | None, s
         snippet = " ".join(out.split())[:300]
         return "ill_formed", proc.returncode, f"symexec did not start: {snippet}"
     finally:
-        import shutil
         shutil.rmtree(tmp, ignore_errors=True)
 
 

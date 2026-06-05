@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Loop-free function `clamp_int` returning `lo`, `hi`, `x`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "branch"
+  }
+}

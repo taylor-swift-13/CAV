@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Read-only string scan over a CharArray-backed null-terminated buffer. The function increments i from 0 until it either sees the terminator 0, in which case it returns -1 and must prove no character in the logical prefix l equals c, or sees s[i] == c, in which case it returns the first matching index and must prove all earlier logical characters differ from c. The function preserves the input character array and has an empty-loop/zero-length string edge case.",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

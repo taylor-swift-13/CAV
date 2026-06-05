@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The function scans a read-only integer array and returns 0 as soon as it finds an adjacent non-increasing pair a[i-1] >= a[i]. If no such adjacent pair exists, including the empty and single-element cases where the loop is skipped, it returns 1 and preserves the input array unchanged. The only control structure is a for loop initialized at i = 1, so the loop invariant must describe the already checked adjacent-prefix property while allowing n == 0.",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

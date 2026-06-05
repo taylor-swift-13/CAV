@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans a read-only integer array with one loop and returns 1 iff every element is even; otherwise it returns 0 at the first odd element. The function does not modify memory, and the empty array returns 1.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

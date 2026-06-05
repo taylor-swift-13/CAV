@@ -11,7 +11,7 @@
 - `out` 的长度恰好是 `n - 1`
 - 函数不修改 `a`
 
-## 正确代码
+## 参考实现
 
 ```c
 void array_adjacent_diff(int n, int *a, int *out) {

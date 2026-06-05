@@ -1,0 +1,8 @@
+{
+  "semantic_description": "array_all_positive scans the input integer array a[0..n) from left to right without modifying memory. It returns 0 immediately when it finds an element l[i] <= 0, and returns 1 after the loop only if every element in the full range 0 <= i < n is positive. The loop may be empty when n == 0; in that case the universal postcondition is vacuous and the function returns 1. The IntArray::full heap predicate is preserved throughout because the function only reads a[i].",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

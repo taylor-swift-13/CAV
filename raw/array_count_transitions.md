@@ -11,7 +11,7 @@
 - 函数不修改数组
 - 对每个 `i >= 1`，如果 `a[i] != a[i - 1]`，则计数加一
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_count_transitions(int n, int *a) {

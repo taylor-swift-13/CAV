@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Verifies a scalar-only digit-counting function for nonnegative integers. The function returns 1 when the original input is 0; otherwise it repeatedly divides a positive local copy of the input by 10 in a while loop, increments a counter once per iteration, returns that counter, and does not modify memory.",
+  "keywords": {
+    "problem_kind": "transform",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

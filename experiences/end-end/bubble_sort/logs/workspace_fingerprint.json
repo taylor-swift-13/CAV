@@ -1,0 +1,11 @@
+{
+  "semantic_description": "In-place bubble sort over an integer array a of length n. The function uses nested for loops to repeatedly compare and swap adjacent elements, mutating the array memory while preserving the multiset of the original list. The required output relation is a sorted list l0 with Permutation(l, l0) and IntArray::full(a, n, l0). Edge cases n = 0 and n = 1 execute no inner swaps and should leave the array valid.",
+  "keywords": {
+    "problem_kind": "sort",
+    "data": "array",
+    "pattern": [
+      "nested_loop",
+      "single_loop"
+    ]
+  }
+}

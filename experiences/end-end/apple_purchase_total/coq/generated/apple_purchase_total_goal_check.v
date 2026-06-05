@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260601_235814_apple_purchase_total Require Import apple_purchase_total_goal apple_purchase_total_proof_auto apple_purchase_total_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include apple_purchase_total_proof_auto.
+  Include apple_purchase_total_proof_manual.
+End VC_Correctness.

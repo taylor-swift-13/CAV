@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Computes an output integer array of length n - 1 where each element out[i] is the adjacent difference a[i + 1] - a[i]. The function preserves the input array a, writes every element of the caller-provided output array out, uses one for loop with guard i + 1 < n, and allows the loop body to be skipped when n == 1 so the output length is zero.",
+  "keywords": {
+    "problem_kind": "sum",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

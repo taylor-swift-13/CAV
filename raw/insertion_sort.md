@@ -10,7 +10,7 @@
 - `a` 的长度恰好是 `n`
 - 函数原地修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 void insertion_sort(int n, int *a) {

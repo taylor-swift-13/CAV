@@ -93,9 +93,9 @@ def build_command(
     """
     cmd = [coqc or coqc_bin(), *_base_args()]
     for path, prefix in (extra_q or []):
-        cmd += ["-Q", str(path), prefix]
+        cmd += ["-Q", str(Path(path).resolve()), prefix]
     for path, prefix in (extra_r or []):
-        cmd += ["-R", str(path), prefix]
+        cmd += ["-R", str(Path(path).resolve()), prefix]
     cmd.append(str(Path(v_file).resolve()))
     return cmd
 

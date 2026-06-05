@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans a read-only integer array with a single forward loop and returns the earliest index whose element is the maximum over the whole array. The loop maintains the best index for the processed prefix, does not modify memory, and requires a nonempty array.",
+  "keywords": {
+    "problem_kind": "min_max",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

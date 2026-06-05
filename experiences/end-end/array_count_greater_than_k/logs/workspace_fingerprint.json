@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The function scans the input integer array from index 0 to n - 1, keeps a running counter of elements whose value is greater than the unchanged threshold k, returns that count, and preserves the full input array. If n is 0 the for loop body is skipped and the returned count is 0. The function only reads array elements and does not modify memory.",
+  "keywords": {
+    "problem_kind": "prefix",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

@@ -11,7 +11,7 @@
 - 空数组的结果为 `0`
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int longest_increasing_run(int n, int *a) {

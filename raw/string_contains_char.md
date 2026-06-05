@@ -11,7 +11,7 @@
 - 如果某个位置满足 `s[i] == c`，返回 `1`
 - 否则返回 `0`
 
-## 正确代码
+## 参考实现
 
 ```c
 int string_contains_char(char *s, char c) {

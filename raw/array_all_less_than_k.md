@@ -11,7 +11,7 @@
 - 空数组视为满足条件
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int array_all_less_than_k(int n, int *a, int k) {

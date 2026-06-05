@@ -30,6 +30,8 @@ python3 scripts/search_fingerprint.py --scope general --problem-kind ... --data 
 - 多阶段循环要为每个阶段保留足够的阶段切换事实：看 10
 - `for` 循环 invariant 要按“初始化后、判断前”的状态写边界：看 11
 - `i + 1 < n` 扫描循环不要把 `n <= INT_MAX` 硬塞进 invariant：看 12
+- 单语句 `for` 循环也要把 `Inv` 贴在整个循环语句前：看 13
+- 如果退出证明依赖 contract 语义前提，loop invariant 必须一直带着它们：看 14
 
 ## 1. 写 invariant 前，必须先做充分的自然语言 reasoning，并检查能否证出后条件
 
@@ -237,3 +239,58 @@ C 的 `for (init; cond; step)` invariant 位于执行 `init` 后、检查 `cond`
 - `while` 初始化为 `i = 1` 且允许 `n <= 1` skip-loop 时，可用 `(1 < n => i + 1 <= n)`，同时保留 `i <= n + 1`
 
 保持性通常来自 loop guard：旧的 `i + 1 < n` 在 `i++` 后推出新的 `i + 1 <= n`。退出证明再用 guard false，例如 `i + 1 >= n`，桥接到后条件需要的索引范围。
+
+## 13. 单语句 `for` 循环也要把 `Inv` 贴在整个循环语句前（2026-06-04）
+
+对这种原始代码形状：
+
+- `for (int i = 0; i < n; i++) if (a[i] < 0) count++;`
+
+不要为了挂 invariant 去改成：
+
+- 先把 `int i;` 提到外面
+- 再把 `Inv` 塞进 `for (...)` 和循环体之间
+- 或把单语句循环改成 block body
+
+这个前端要求 `Inv` 直接附着在“接下来那条 loop statement”上；如果把注释放在 `for` header 和 body 之间，常见报错是：
+
+- `Expected loop after loop invariant.`
+
+更稳的写法是：
+
+- 保持原来的单语句 `for (...) stmt;` 可执行 token 不变
+- 把 `/*@ Inv ... */` 直接放在整条 `for` 语句前面
+- 让 invariant 里的循环变量含义仍按“执行完 init、进入 guard 前”的控制点来解释
+
+这样既满足 parser 对 loop-annotation 的附着规则，也避免为了注释去改 executable loop 形状，后续不会额外触发 source-integrity 问题。
+
+## 14. 如果退出证明依赖 contract 语义前提，loop invariant 必须一直带着它们（2026-06-05）
+
+对扫描 / parser / 窗口乘积这类循环，不要只在函数级 `Require` 里写抽象语义前提，然后在 loop invariant 里只保留索引边界和当前状态量。
+
+如果退出证明或后续 bridge assertion 还需要这些事实，例如：
+
+- 元素域约束（如每个字符都是 digit）；
+- “payload 中没有 terminator 字节”这类由元素域推出的性质；
+- `0 <= span <= Zlength l`、`span != 0 -> 0 < span` 这类参数域事实；
+- 其它对整个函数都保持不变的 imported `pre(...)` 语义；
+
+那么这些事实必须在**每个相关循环 invariant** 和跨阶段 bridge assertion 中持续保留，不能只靠“它们在函数 precondition 里出现过”。
+
+典型症状是生成的 VC 明显信息不足，例如：
+
+- 只给出 `Znth n (app l [0]) = 0`、`0 <= n <= Zlength l`，却要求证明 `n = Zlength l`；
+- 只给出 `span != 0`，却要求证明 `0 < span` 或 `span <= n`；
+- 退出 witness 里丢了 digit-domain / shape 前提，导致需要在 Coq 里硬补本该由 annotation 直接保留的语义。
+
+更稳的写法是：
+
+- 如果 contract 已经有题目专用 `pre(l, ...)`，优先把这个 `pre(...)` 原样带进 invariant；
+- 如果 `pre(...)` 太重、确实只需其中几项，也要把退出证明必需的那几项显式复制进去；
+- 每次跨循环、跨 `Assert`、跨 loop-exit bridge 时，检查这些不可变语义有没有被一起带过去。
+
+判断原则：
+
+- 变量值会变，语义前提不一定会变；
+- 但只要后续 VC 还要用它，annotation 就必须继续显式携带它；
+- 这属于 invariant 设计问题，不要拖到 `proof_manual.v` 再硬证一个本来前端没有保留下来的前提。

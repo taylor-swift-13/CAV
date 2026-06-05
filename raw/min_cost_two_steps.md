@@ -12,7 +12,7 @@
 - 起点在下标 `0`
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int min_cost_two_steps(int n, int *cost) {

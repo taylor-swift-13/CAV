@@ -11,7 +11,7 @@
 - 数组 `a` 非递减
 - 函数可以修改数组前缀
 
-## 正确代码
+## 参考实现
 
 ```c
 int remove_duplicates_sorted(int n, int *a) {

@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Merges two sorted integer input arrays a[0..n) and b[0..m) into caller-provided output array out[0..n+m). The function uses a main while loop with two pointers i and j to copy the smaller current element into out[k], then two tail while loops to copy the remaining suffix of either input array. Inputs a and b are read-only and must be preserved; out is overwritten with merge_sorted_arrays_spec(la, lb). Boundary behavior includes empty input arrays and early exhaustion of either side.",
+  "keywords": {
+    "problem_kind": "sort",
+    "data": "array",
+    "pattern": [
+      "two_pointers",
+      "single_loop"
+    ]
+  }
+}

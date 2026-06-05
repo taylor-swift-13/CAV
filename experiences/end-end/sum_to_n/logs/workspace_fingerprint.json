@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Computes the arithmetic series 1 + ... + n for a nonnegative scalar input n using a for loop. The accumulator ret starts at 0, i ranges from 1 through n, and the function returns n * (n + 1) / 2. For n == 0 the loop body is skipped and the return value is 0. The function does not read or modify heap memory.",
+  "keywords": {
+    "problem_kind": "sum",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

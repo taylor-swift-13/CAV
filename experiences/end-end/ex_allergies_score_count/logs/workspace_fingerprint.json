@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Counts how many of the low 8 bit positions in a nonnegative integer score are set to 1. The function scans bit indices 0 through 7 with a single loop, increments an accumulator when the masked bit is nonzero, does not modify memory, and returns a result between 0 and 8.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

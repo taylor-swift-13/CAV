@@ -1,0 +1,11 @@
+{
+  "semantic_description": "In-place string character replacement over a caller-owned char array. The function scans s from index 0 with a while (1) loop until it reaches the terminating 0 byte; for each nonzero character before the terminator, it writes new_c when the original character equals old_c and otherwise preserves the original character. The contract requires a nonzero payload of length n followed by a zero terminator, requires new_c != 0, preserves the zero terminator, and returns ownership of the same buffer containing the transformed payload.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

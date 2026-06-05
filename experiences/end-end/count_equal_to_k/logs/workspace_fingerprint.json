@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The function count_equal_to_k scans a read-only integer array a of length n and returns the number of elements equal to scalar k. The loop is a single for-loop from i = 0 to i < n with an accumulator ret that starts at 0 and is incremented exactly when a[i] == k. The function preserves the full input array memory and supports the empty-loop case n == 0, where the result is 0.",
+  "keywords": {
+    "problem_kind": "count",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

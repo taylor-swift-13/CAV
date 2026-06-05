@@ -11,7 +11,7 @@
 - 函数原地修改数组
 - 不要求保持元素原有相对顺序
 
-## 正确代码
+## 参考实现
 
 ```c
 int partition_nonnegative(int n, int *a) {

@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Verifies binary_search_first, which performs a while-loop lower-bound search on a sorted IntArray of length n. The function preserves the input array and returns the first index whose value equals target, or -1 when every array element differs from target. The loop maintains a half-open search interval [left, right), handles the empty-array and target-not-found cases, and does not modify memory.",
+  "keywords": {
+    "problem_kind": "sort",
+    "data": "array",
+    "pattern": [
+      "binary_search",
+      "single_loop"
+    ]
+  }
+}

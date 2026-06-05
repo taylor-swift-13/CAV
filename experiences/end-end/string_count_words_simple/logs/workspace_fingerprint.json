@@ -1,0 +1,11 @@
+{
+  "semantic_description": "Scans a caller-owned null-terminated character array whose logical content is list l followed by a 0 terminator. The function counts maximal non-space word segments, where character code 32 resets the in_word flag and any other nonzero character starts or continues a word. The loop is an unbounded while(1) with an explicit break at the terminator; n may be 0, so the loop body can exit immediately. The function only reads the string and preserves the CharArray::full resource unchanged.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": [
+      "string",
+      "array"
+    ],
+    "pattern": "single_loop"
+  }
+}

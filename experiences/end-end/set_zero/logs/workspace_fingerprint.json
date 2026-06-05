@@ -1,0 +1,8 @@
+{
+  "semantic_description": "The function set_zero takes a nonnegative length n and an integer array a owning n elements. It runs a for loop from i = 0 up to i < n and writes 0 into each array cell in place. The postcondition states that the resulting array still has length n and every index in [0, n) contains 0. If n is 0, the loop body is skipped and the empty array postcondition is required.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

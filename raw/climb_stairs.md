@@ -11,10 +11,10 @@
 - `n = 1` 时返回 `1`。
 - 输入 `n` 为非负整数。
 
-## 正确代码
+## 参考实现
 
 ```c
-int climbStairs(int n) {
+int climb_stairs(int n) {
     if (n <= 1) return 1;
     int prev2 = 1; // 代表 dp[i-2]
     int prev1 = 1; // 代表 dp[i-1]

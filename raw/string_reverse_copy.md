@@ -11,7 +11,7 @@
 - 函数不修改 `src`
 - 执行后 `dst` 也是合法的 C 风格字符串
 
-## 正确代码
+## 参考实现
 
 ```c
 void string_reverse_copy(int n, char *src, char *dst) {

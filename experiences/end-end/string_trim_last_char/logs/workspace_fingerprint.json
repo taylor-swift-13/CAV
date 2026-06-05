@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Verifies a straight-line in-place update on a caller-owned null-terminated character buffer of logical length n. The function preserves the buffer when n == 0, and when n > 0 it writes 0 to s[n - 1] while leaving earlier characters and the final terminator at s[n] represented in the post-state character list.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "string",
+    "pattern": "branch"
+  }
+}

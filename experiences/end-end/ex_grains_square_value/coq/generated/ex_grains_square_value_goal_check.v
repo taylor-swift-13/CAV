@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260605_080500v_ex_grains_square_value Require Import ex_grains_square_value_goal ex_grains_square_value_proof_auto ex_grains_square_value_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include ex_grains_square_value_proof_auto.
+  Include ex_grains_square_value_proof_manual.
+End VC_Correctness.

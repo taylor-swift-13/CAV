@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scans an integer array of length n with pairwise distinct elements, initializes max1 and max2 from the first two entries, swaps them if needed, then runs a for loop from index 2 to n - 1 maintaining the largest and second largest values seen so far. The function returns the second largest array value, preserves the input IntArray memory unchanged, and requires n >= 2 so the initialization reads are in bounds.",
+  "keywords": {
+    "problem_kind": "min_max",
+    "data": "array",
+    "pattern": "single_loop"
+  }
+}

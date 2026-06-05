@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Scalar-only Fibonacci-style dynamic programming function. For nonnegative n up to 45, it returns ways_to_reach_z(n), where the Coq model iterates a pair (previous,current) from (1,1). The C implementation has an early if branch returning 1 for n == 0, then a for loop from i = 2 through n that updates scalar accumulators a, b, and c without modifying heap memory. The loop may be skipped for n == 1, and all behavior is pure arithmetic over local integers under the input overflow guard.",
+  "keywords": {
+    "problem_kind": "dp",
+    "data": "scalar",
+    "pattern": "single_loop"
+  }
+}

@@ -1,7 +1,6 @@
 Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
-Require Import Coq.Strings.Ascii.
 Require Import Coq.Lists.List.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
@@ -17,12 +16,14 @@ Local Open Scope string_scope.
 Local Open Scope list.
 Import naive_C_Rules.
 Local Open Scope sac.
+From SimpleC.EE.QCP_demos_LLM Require Import common_strategy_goal.
+From SimpleC.EE.QCP_demos_LLM Require Import common_strategy_proof.
 
 (*----- Function abs_value -----*)
 
 Definition abs_value_safety_wit_1 := 
 forall (x_pre: Z) ,
-  “ (x_pre >= (-INT_MAX)) ”
+  “ (x_pre <> INT_MIN) ”
   &&  ((( &( "x" ) )) # Int  |-> x_pre)
 |--
   “ (0 <= INT_MAX) ” 
@@ -32,7 +33,7 @@ forall (x_pre: Z) ,
 Definition abs_value_safety_wit_2 := 
 forall (x_pre: Z) ,
   “ (x_pre < 0) ” 
-  &&  “ (x_pre >= (-INT_MAX)) ”
+  &&  “ (x_pre <> INT_MIN) ”
   &&  ((( &( "x" ) )) # Int  |-> x_pre)
 |--
   “ (x_pre <> (INT_MIN)) ”
@@ -40,36 +41,37 @@ forall (x_pre: Z) ,
 
 Definition abs_value_return_wit_1 := 
 forall (x_pre: Z) ,
-  “ (x_pre < 0) ” 
-  &&  “ (x_pre >= (-INT_MAX)) ”
+  “ (x_pre >= 0) ” 
+  &&  “ (x_pre <> INT_MIN) ”
   &&  emp
 |--
-  (“ (0 <= (-x_pre)) ” 
-  &&  “ ((-x_pre) = x_pre) ”
+  (“ (x_pre >= 0) ” 
+  &&  “ (x_pre = x_pre) ”
   &&  emp)
   ||
-  (“ (0 <= (-x_pre)) ” 
-  &&  “ ((-x_pre) = (-x_pre)) ”
+  (“ (x_pre >= 0) ” 
+  &&  “ (x_pre = (-x_pre)) ”
   &&  emp)
 .
 
 Definition abs_value_return_wit_2 := 
 forall (x_pre: Z) ,
-  “ (x_pre >= 0) ” 
-  &&  “ (x_pre >= (-INT_MAX)) ”
+  “ (x_pre < 0) ” 
+  &&  “ (x_pre <> INT_MIN) ”
   &&  emp
 |--
-  (“ (0 <= x_pre) ” 
-  &&  “ (x_pre = x_pre) ”
+  (“ ((-x_pre) >= 0) ” 
+  &&  “ ((-x_pre) = x_pre) ”
   &&  emp)
   ||
-  (“ (0 <= x_pre) ” 
-  &&  “ (x_pre = (-x_pre)) ”
+  (“ ((-x_pre) >= 0) ” 
+  &&  “ ((-x_pre) = (-x_pre)) ”
   &&  emp)
 .
 
 Module Type VC_Correct.
 
+Include common_Strategy_Correct.
 
 Axiom proof_of_abs_value_safety_wit_1 : abs_value_safety_wit_1.
 Axiom proof_of_abs_value_safety_wit_2 : abs_value_safety_wit_2.

@@ -10,7 +10,7 @@
 - `src` 和 `dst` 长度都恰好是 `n`
 - 函数读取 `src`，写入 `dst`
 
-## 正确代码
+## 参考实现
 
 ```c
 void copy_array(int n, int *src, int *dst) {

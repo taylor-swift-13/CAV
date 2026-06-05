@@ -14,7 +14,7 @@
   - 原来的 `a[n - 1]` 变成新的 `a[n - 2]`
   - 原来的 `a[0]` 变成新的 `a[n - 1]`
 
-## 正确代码
+## 参考实现
 
 ```c
 void rotate_left_by_one(int n, int *a) {

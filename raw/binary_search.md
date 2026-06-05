@@ -11,7 +11,7 @@
 - 数组 `a` 非递减
 - 函数不修改数组
 
-## 正确代码
+## 参考实现
 
 ```c
 int binary_search(int n, int *a, int target) {
