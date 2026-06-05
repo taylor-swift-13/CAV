@@ -28,9 +28,9 @@ char *goal_parser_interpret(const char *command) {
     char *out = (char *)malloc((unsigned long)n + 1);
     int pos = 0;
     for (int i = 0; command[i] != '\0'; ) {
-        if (command[i] == 'G') { out[pos++] = 'G'; i++; }
-        else if (command[i + 1] == ')') { out[pos++] = 'o'; i += 2; }
-        else { out[pos++] = 'a'; out[pos++] = 'l'; i += 4; }
+        if (command[i] == 'G') { out[pos] = 'G'; pos++; i++; }
+        else if (command[i + 1] == ')') { out[pos] = 'o'; pos++; i += 2; }
+        else { out[pos] = 'a'; pos++; out[pos] = 'l'; pos++; i += 4; }
     }
     out[pos] = '\0';
     return out;

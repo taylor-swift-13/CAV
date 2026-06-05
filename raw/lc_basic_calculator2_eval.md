@@ -21,6 +21,6 @@ Evaluate an arithmetic expression with `+`, `-`, `*`, and `/`.
 
 ```c
 int lc_basic_calculator2_eval(const char *s) {
-    int stack[512], top = 0, num = 0; char op = '+'; for (int i = 0;; i++) { char ch = s[i]; if (ch >= '0' && ch <= '9') num = num * 10 + ch - '0'; if ((ch != ' ' && (ch < '0' || ch > '9')) || ch == '\0') { if (op == '+') stack[top++] = num; else if (op == '-') stack[top++] = -num; else if (op == '*') stack[top - 1] *= num; else stack[top - 1] /= num; op = ch; num = 0; } if (ch == '\0') break; } int ans = 0; for (int i = 0; i < top; i++) ans += stack[i]; return ans;
+    int stack[512], top = 0, num = 0; char op = '+'; for (int i = 0;; i++) { char ch = s[i]; if (ch >= '0' && ch <= '9') num = num * 10 + ch - '0'; if ((ch != ' ' && (ch < '0' || ch > '9')) || ch == '\0') { if (op == '+') { stack[top] = num; top++; } else if (op == '-') { stack[top] = -num; top++; } else if (op == '*') stack[top - 1] *= num; else stack[top - 1] /= num; op = ch; num = 0; } if (ch == '\0') break; } int ans = 0; for (int i = 0; i < top; i++) ans += stack[i]; return ans;
 }
 ```

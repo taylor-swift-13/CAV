@@ -27,7 +27,7 @@ char *defang_ip_address(const char *address) {
     while (address[n] != '\0') { if (address[n] == '.') dots++; n++; }
     char *out = (char *)malloc((unsigned long)n + (unsigned long)dots * 2 + 1);
     int pos = 0;
-    for (int i = 0; i < n; i++) { if (address[i] == '.') { out[pos++] = '['; out[pos++] = '.'; out[pos++] = ']'; } else out[pos++] = address[i]; }
+    for (int i = 0; i < n; i++) { if (address[i] == '.') { out[pos] = '['; pos++; out[pos] = '.'; pos++; out[pos] = ']'; pos++; } else { out[pos] = address[i]; pos++; } }
     out[pos] = '\0';
     return out;
 }

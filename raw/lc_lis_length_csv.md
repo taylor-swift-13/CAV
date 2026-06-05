@@ -22,7 +22,7 @@ Return the length of the longest strictly increasing subsequence in comma-separa
 ```c
 int lc_lis_length_csv(const char *nums) {
     int a[256], n = 0, i = 0;
-    while (nums[i] != '\0') { int sign = 1, v = 0; if (nums[i] == '-') { sign = -1; i++; } while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n++] = sign * v; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int sign = 1, v = 0; if (nums[i] == '-') { sign = -1; i++; } while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n] = sign * v; n++; if (nums[i] == ',') i++; }
     int dp[256], best = 1; for (int x = 0; x < n; x++) { dp[x] = 1; for (int y = 0; y < x; y++) if (a[y] < a[x] && dp[y] + 1 > dp[x]) dp[x] = dp[y] + 1; if (dp[x] > best) best = dp[x]; }
     return best;
 }

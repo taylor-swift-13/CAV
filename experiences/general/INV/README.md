@@ -8,17 +8,12 @@
 - symbolic 执行流程（见 `SYMEXEC/README.md`）
 - manual proof（见 `PROOF/README.md`）
 
-题型/数据结构特定的 invariant 模式在 `<N>/<slug>.md` 累积（每个数字一个子文件夹，是 consolidate 阶段累加分配的不可读 ID）。**不要手工浏览编号目录**，按 fingerprint 检索：
-
-```bash
-python3 scripts/search_fingerprint.py --scope general --problem-kind ... --data ... --pattern ...
-```
-
 详见 `doc/retrieval/INDEX.md`。
 
 常见入口：
 
 - 写 invariant 前，必须先做充分的自然语言 reasoning，并检查能否证出后条件：看 1
+- 充分性预检清单（从后条件/safety 义务反推 invariant 必须携带的事实）：看 1.1
 - invariant 要写在真实控制点上：看 2
 - 先找状态量的闭式表达：看 3
 - 扫描类循环优先建模成“状态量 = 已处理前缀摘要”：看 4
@@ -64,6 +59,32 @@ python3 scripts/search_fingerprint.py --scope general --problem-kind ... --data 
 - 退出时只需要很少的算术整理或一个最小的 loop-exit assertion
 
 如果退出时还需要大量重建语义，通常说明 invariant 太弱；如果 invariant 里塞了很多和后条件无关的东西，通常说明 invariant 太脏。
+
+### 1.1 充分性预检清单（跑 `symexec` 前必填，从后条件反推）
+
+"invariant 要够强"不能停在口号。**在改 annotated C、跑 symexec 之前**，按下面四步把不变式写够——绝大多数 `entail_wit` / `return_wit` 证不出，是因为这一步没做、等证到一半才发现缺事实，那时回去强化要重跑 symexec + 重证所有 witness，往往预算已耗尽。
+
+1. **后条件反推**：把后条件需要的每个事实逐条列出；对每条问"循环退出时,(invariant ∧ 退出条件) 能不能直接推出它?"。不能 → 把缺的语义补进 invariant。
+2. **safety 义务反推**：列出循环体里每个内存访问和算术运算的安全义务,每条对应的界**必须**在 invariant 里:
+   - `nums[i]` 读写 → `0 <= i < n`(或 `<= n`)；
+   - `v*10 + d`、`sum + x` 等 → 累加器/中间量的**上下界**(否则 safety_wit 不可证,见 §11 用 `store_int_range` 取范围)。
+3. **扫描类循环固定导出四件套**(只取题目用得到的)：
+   - 索引界 `0 <= i <= n`；
+   - 逐元素域 `0 <= Znth k ds 0 <= 9`(或"每个字符是 digit"等元素约束)；
+   - 状态–spec 桥接 `v == spec(sublist 0 i l)`(状态量 = 已处理前缀的闭式,见 §3/§4)；
+   - 累加器上界 `v <= final <= INT_MAX`。
+4. **多阶段/嵌套循环**：每个阶段、每个内层循环的 invariant 都要带着**下一阶段或后条件**需要的事实,不能只靠它出现在 precondition 里(见 §8/§10,及"跨阶段保留"一节)。
+5. **被 spec 函数吃进去的循环变量,它的值域(尤其上界)必须在 invariant 里**。如果某变量 `x` 会作为参数喂给一个分段/有界定义的 spec 函数(如 `count_digits_z`、`parse_*`),而该函数在 `x` 超界时行为不同(饱和、截断),那么 witness 几乎一定会用到 `x` 的界来对齐 spec 的递推关系——`0 <= x` 不够,**上界(如 `x <= 99999999`)也得带**。这种界通常"显然成立"(循环里 `x` 单调缩小、初值有界),但不写进 invariant,symexec 就不会把它放进 VC 上下文,proof 侧无中生有不出来。
+
+四步过完,再写 `Inv`。任何一条答不上来或补不进去,说明还没准备好写 proof——继续在注解层补,不要进 Coq。
+
+#### 实证案例:armstrong_number 的 `entail_wit_2`(2026-06-05)
+
+数字计数循环 `while (temp > 0) { temp = temp / 10; digits++; }`,不变式带了 `temp > 0`、`0 <= temp`、`digits` 范围、以及 `digits + count_digits_z(temp) = count_digits_z(n_pre)`,但**漏了 `temp <= 99999999`**。
+
+`entail_wit_2`(不变式保持)需要 `count_digits_z(temp) = 1 + count_digits_z(temp/10)`,而该 step 引理要求 `10 <= temp <= 99999999`。整段证明实测可通——**唯一卡点就是 `assert (temp <= 99999999) by lia` 失败**(上下文里没有,且 `count_digits_z(temp) <= 8` 也锁不住 `temp`:9 位数也封顶 8)。`temp <= 99999999` 本为真(初值 = `n_pre <= 99999999`,每轮 `/10` 只减),但没写进 invariant ⇒ 不可证。
+
+**教训**:`temp` 是喂给 `count_digits_z` 的循环变量(本条第 5 点),它的上界必须进不变式。补 `temp <= n_pre`(或 `temp <= 99999999`)后,witness 用现有 helper 即可证通。**不要在这种 witness 上硬磨 tactic——缺的是不变式事实,回去加,别在 proof 层耗。**
 
 ## 2. invariant 要写在真实控制点上
 

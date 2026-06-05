@@ -35,7 +35,7 @@ int aug_all_multiple_array_003(char *nums)
             v = v * 10 + (nums[i] - 48);
             i++;
         }
-        values[n++] = sign * v;
+        values[n] = sign * v; n++;
         if (nums[i] == 44) i++;
     }
     for (int j = 0; j < n; j++) {

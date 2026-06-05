@@ -36,7 +36,7 @@ int aug_all_multiple_array_003(const char *nums) {
         if (nums[i] == '-') { sign = -1; i++; }
         int v = 0;
         while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; }
-        values[n++] = sign * v;
+        values[n] = sign * v; n++;
         if (nums[i] == ',') i++;
     }
     for (int j = 0; j < n; j++) if (values[j] % 5 != 0) return 0;

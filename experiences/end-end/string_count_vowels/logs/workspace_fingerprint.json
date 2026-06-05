@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Counts lowercase vowels in a null-terminated string prefix. The function scans a CharArray-backed string with a while(1) loop, stops when s[i] is 0, increments a scalar accumulator when the current character is one of 97, 101, 105, 111, or 117, returns string_count_vowels_spec(l), and preserves the input memory unchanged. The empty-string case is possible when n is 0, in which case the loop exits immediately and returns 0.",
-  "keywords": {
-    "problem_kind": "prefix",
-    "data": "string",
-    "pattern": "single_loop"
-  }
-}

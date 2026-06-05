@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Counts the number of nonzero elements in a read-only integer array by scanning from left to right with one loop accumulator. The function does not modify the array and returns 0 on the empty-array case.",
-  "keywords": {
-    "problem_kind": "count",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

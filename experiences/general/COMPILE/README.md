@@ -18,6 +18,7 @@
 - 短名 strategy import 命中多个物理文件时，用 `original/` wrapper 消歧：看 12
 - runner 用 bare `coqc` 直编 generated 文件时，短名 strategy import 需要 generated 同目录 wrapper：看 13
 - generated 文件短名导入共享 helper 时，helper 要在同一逻辑前缀下预编译：看 14
+- runner 同时混用 bare replay 和 prefixed replay 时，共享 helper 需要在 `original/` 与 `generated/` 各保留一份：看 15
 
 ## 1. 编译前先确认目录
 
@@ -300,3 +301,37 @@ Include SimpleC.EE.QCP_demos_LLM.char_array_strategy_proof.
 - 如果 helper 不属于 input/original 的标准 load path，就不要只靠临时 `-Q input ""` 或一次性编译产物；runner replay 看不到这些临时条件；
 - 如果已经补了 `coq/generated/<helper>.v` 但又报 `contains library X and not library Y`，优先怀疑是**编译 helper 时用错了逻辑前缀**，不是 helper 内容错；
 - 这条适用于共享数学 helper、公共定义桥接等“非 strategy 短名模块”；strategy duplicate-path 冲突仍按 §12-§13 处理。
+
+## 15. runner 同时混用 bare replay 和 prefixed replay 时，共享 helper 需要在 `original/` 与 `generated/` 各保留一份（2026-06-05）
+
+如果 generated 文件头部固化了这类短名导入：
+
+- `Require Import ex_perfect_number_code_helper.`
+- 或其它题目局部的共享数学 helper
+
+并且 runner 的两类重放同时存在：
+
+- 审计侧直接跑 bare `coqc /abs/.../original/<name>.v`、`coqc /abs/.../coq/generated/<name>_goal.v`
+- 常规 verify replay 仍使用 `-R "$GEN" "$LP"` 编译 generated 文件
+
+那么只在 `coq/generated/` 放 helper 源文件、只保留一份 prefixed `.vo` 仍然不够。bare replay 解析短名时不会自动带上 `$LP` 前缀；反过来，如果你只保留 bare 编出来的 helper `.vo`，标准 replay 又会报：
+
+- `contains library <helper> and not library $LP.<helper>`
+
+更稳的处理方式是：
+
+1. 在 `coq/generated/` 保留 helper 源文件，供 prefixed replay 使用；
+2. 用标准 generated 前缀先编出 prefixed helper：
+   - `coqc "${BASE[@]}" -R "$GEN" "$LP" "$GEN/<helper>.v"`
+3. 在 `original/` 放同内容的 helper 源文件，供 bare short-name replay 使用；
+4. 再单独编出 bare helper：
+   - `coqc "$ORIG/<helper>.v"`
+5. 清理时删除其他中间产物，但保留这两份 replay-critical `.vo`：
+   - `coq/generated/<helper>.vo`
+   - `original/<helper>.vo`
+
+判断规则：
+
+- 如果 `audit_check_coqc.log` 显示 bare `coqc /abs/.../generated/<file>.v`，不要假设 §14 的 prefixed helper 就足够；
+- 如果同一个 `<helper>` 既要被 bare replay 命中，又要被 `-R "$GEN" "$LP"` replay 命中，就把它视为**两个逻辑库名**分别满足；
+- 这条只适用于 generated 文件短名导入的 workspace-local helper；strategy 重名冲突仍按 §12-§13 处理。

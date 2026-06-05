@@ -1,0 +1,6 @@
+From SimpleC.EE.CAV.verify_20260605_200638v_ex_perfect_number_code Require Import ex_perfect_number_code_goal ex_perfect_number_code_proof_auto ex_perfect_number_code_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include ex_perfect_number_code_proof_auto.
+  Include ex_perfect_number_code_proof_manual.
+End VC_Correctness.

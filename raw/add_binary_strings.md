@@ -33,7 +33,7 @@ char *add_binary_strings(const char *a, const char *b) {
         int sum = carry;
         if (i >= 0) sum += a[i--] - '0';
         if (j >= 0) sum += b[j--] - '0';
-        tmp[pos++] = (char)('0' + (sum % 2));
+        tmp[pos] = (char)('0' + (sum % 2)); pos++;
         carry = sum / 2;
     }
     char *out = (char *)malloc((unsigned long)pos + 1);

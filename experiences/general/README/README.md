@@ -12,7 +12,6 @@
 ## 1. Contract 入口
 
 - `../CONTRACT/README.md`
-- `../EVAL/README.md`
 
 ## 2. Verify 入口
 
@@ -45,7 +44,6 @@
 - merge / 双指针归并：看 `../INV/README.md` 11、12 和 `../PROOF/README.md` 21
 - 排序前缀 / insertion sort：看 `../INV/README.md` 13、15 和 `../PROOF/README.md` 31、32
 - `for` 循环初始化边界和 skip-loop：看 `../INV/README.md` 14
-- contract 是否真的刻画实现、eval case 怎么选：看 `../EVAL/README.md` 1、2、3
 - 需要 loop-exit assertion：看 `../ASSERTION/README.md` 4
 - 多分支 implication 太复杂：看 `../ASSERTION/README.md` 7
 - proof 编译失败但只看到一行报错：看 `../PROOF/README.md` 5

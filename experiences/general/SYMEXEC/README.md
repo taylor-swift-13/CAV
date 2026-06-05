@@ -12,6 +12,7 @@
 常见入口：
 
 - Canonical symexec 命令行（外部 workspace 的固定调用）：看 1
+- **重跑 symexec 用 `symexec_keep_proofs.py` 保留已证 witness,绝不手动删 proof_manual 从头证**：看 1、3
 - 自动 verify 进程卡住时，不要继续空等：看 2
 - 每次注释改动后都必须重新 `symexec`：看 3
 - `symexec` 失败时，先检查注释与控制点是否对齐：看 4
@@ -31,17 +32,21 @@
 - loop invariant 中直接使用的 Coq 类型必须显式 `Extern Coq` 声明：看 18
 - verify 注释里临时引入的 helper import 可能通过 `symexec` 但卡死 audit replay：看 19
 - `With` ghost 名和活跃局部变量重名时，注释里优先改写成稳定表达：看 20
+- Coq helper 若吃 `nat` 参数，不要直接在注释里喂 C `int` 变量：看 21
 
-题型/数据结构特定的 symexec 经验在 `<N>/<slug>.md` 累积。**不要手工浏览编号目录**，按 fingerprint 检索：
-
-```bash
-python3 scripts/search_fingerprint.py --scope general --problem-kind ... --data ... --pattern ...
-```
-
-详见 `doc/retrieval/INDEX.md`。
 ## 1. Canonical symexec 命令行（外部 workspace 的固定调用）
 
 **先看这条，不要现场逆向工具用法。** `symexec` 没有可用的 `--help`（执行它只会打印 `goal file not specified` 然后退出）；也不要 `cat run-example-linux.sh`、`chmod +x` 反复试、或翻 `QCP_examples/` 的样例去反推参数。本项目所有 verify 任务——标量、数组、链表——都用下面这一条固定命令，参数形状完全相同。
+
+**重跑 symexec 一律用保留已证定理的包装**（关键，见 §3）：
+
+```bash
+python3 scripts/symexec_keep_proofs.py --name <NAME> --stamp <STAMP>   # STAMP 含尾部 v/v1，与 workspace 一致
+```
+
+它内部就执行下面这条 canonical 命令,但会先快照当前 proof_manual.v 里**已 `Qed` 的 witness 和 agent 加的 helper**,symexec 重新生成后,对**VC 主体未变**的 witness 把旧证明拼回去——只有真正变了或没证过的留 `Admitted`。**不要自己 `rm proof_manual.v` 再裸调二进制**,那会把已证的全部清零、从头重证(实测把 41/0 的任务打回 0/27)。首跑没有旧证明时,wrapper 行为与裸 symexec 一致,可直接用。
+
+底层等价命令(wrapper 内部执行,需手动核对参数时参考):
 
 工作目录必须是 `QualifiedCProgramming/`（否则工具找不到自带的 lib）。verify workspace 在外层仓库 `output/verify_<timestamp>_<name>/`，annotated 工作副本固定在 `annotated/verify_<timestamp>_<name>.c`：
 
@@ -104,15 +109,12 @@ linux-binary/symexec \
 
 不要继续沿用旧的 `goal`、`proof_auto`、`proof_manual`、`goal_check`。
 
-重新跑当前 workspace 的 `symexec` 之前，必须先清理旧的 generated 文件：
+**重跑用 `scripts/symexec_keep_proofs.py`(见 §1),它会自动清理旧 generated 文件 + 保留 VC 未变的已证 witness。** 因此:
 
-- `coq/generated/<name>_goal.v`
-- `coq/generated/<name>_proof_auto.v`
-- `coq/generated/<name>_proof_manual.v`
-- `coq/generated/<name>_goal_check.v`
-- `coq/generated/<name>_proof_check.v`，如果存在
-
-否则工具可能因为旧的 `proof_manual.v` 已存在而拒绝更新，导致新的注释和旧的 witness 混在一起。
+- **不要自己手动 `rm` proof_manual.v 再裸跑 symexec**——那会丢掉所有已证明定理,等于从头重证(预算往往不够,把"几乎证完"的任务打成 Fail)。
+- wrapper 内部按需清理 `goal/proof_auto/proof_manual/goal_check/proof_check`,工具不会因旧文件存在而拒绝更新。
+- 注解改动导致某些 witness 的 VC 主体变了,这些会自动留 `Admitted`(只重证它们);VC 没变的 witness 旧证明原样保留。
+- 这条对应 §15"重新 symexec 后必须重新检查 VC 主体"——wrapper 已自动按 VC 主体逐条判定可否复用。
 
 ## 4. `symexec` 失败时，先检查注释与控制点是否对齐
 
@@ -418,4 +420,35 @@ Cannot find a physical path bound to logical path <helper>
 
 - 这条经验只针对 verify 注释层的 ghost/local 同名冲突；
 - 不意味着可以随意重命名 input contract 或 executable local；
-- 如果连等价改写后仍然只有保留该局部时才崩，再把它判断成 source/contract 形状问题，而不是普通 annotation 缺事实。
+
+## 21. Coq helper 若吃 `nat` 参数，不要直接在注释里喂 C `int` 变量（2026-06-05）
+
+如果 invariant / `Assert` 里想直接调用一个 Coq helper，而该 helper 的参数类型含有 `nat`，不要因为表面语义对得上，就直接把 C 循环变量或标量 `int` 塞进去，例如：
+
+- C 注释里写 `p == zpow_nat(d, i)`；
+- 其中 `i` 是循环变量，前端把它当 `Z`；
+- 题目 Coq 定义里却是 `zpow_nat : Z -> nat -> Z`。
+
+这类写法有一个很隐蔽的失败模式：
+
+- `symexec` 可能先成功，甚至正常生成 `goal.v`；
+- 但一到 `coqc goal.v` 就在生成的 VC 里报类型错，例如：
+
+```text
+The term "i" has type "Z" while it is expected to have type "nat".
+```
+
+判断规则：
+
+1. 这首先是**注释表达形状**问题，不是 manual proof 问题；
+2. 不要先在 `proof_manual.v` 里补 tactic，也不要指望 `symexec` 已经帮你做了 `Z.to_nat`；
+3. 优先把注释改写成 generated Coq 能直接过类型检查的形状：
+   - 若已有等价的 `Z` 版 helper，直接改用它；
+   - 否则在题目自带的 input/original Coq 模块里提供一个薄包装，例如 `foo_z x k := foo x (Z.to_nat k)`；
+4. 改完注释后清理 generated 文件并重新 `symexec`，不要沿用旧 VC。
+
+适用边界：
+
+- 常见于 nested scalar loop、digit scan、fuel recursion 这类题；
+- 尤其是 helper 本体本来就写成 `nat` 递归，但 C 状态量全是 `int` / `Z` 的情况；
+- 如果只是普通 Coq 名字没 `Extern Coq`，那是 §18 的问题，不是这条。

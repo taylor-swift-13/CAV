@@ -20,6 +20,6 @@ Evaluate an arithmetic expression with `+`, `-`, parentheses, and spaces.
 
 ```c
 int lc_basic_calculator_eval(const char *s) {
-    int stack[512], top = 0, res = 0, num = 0, sign = 1; for (int i = 0; s[i] != '\0'; i++) { char ch = s[i]; if (ch >= '0' && ch <= '9') num = num * 10 + ch - '0'; else if (ch == '+') { res += sign * num; num = 0; sign = 1; } else if (ch == '-') { res += sign * num; num = 0; sign = -1; } else if (ch == '(') { stack[top++] = res; stack[top++] = sign; res = 0; sign = 1; } else if (ch == ')') { res += sign * num; num = 0; int prev_sign = stack[--top]; int prev_res = stack[--top]; res = prev_res + prev_sign * res; } } return res + sign * num;
+    int stack[512], top = 0, res = 0, num = 0, sign = 1; for (int i = 0; s[i] != '\0'; i++) { char ch = s[i]; if (ch >= '0' && ch <= '9') num = num * 10 + ch - '0'; else if (ch == '+') { res += sign * num; num = 0; sign = 1; } else if (ch == '-') { res += sign * num; num = 0; sign = -1; } else if (ch == '(') { stack[top] = res; top++; stack[top] = sign; top++; res = 0; sign = 1; } else if (ch == ')') { res += sign * num; num = 0; int prev_sign = stack[--top]; int prev_res = stack[--top]; res = prev_res + prev_sign * res; } } return res + sign * num;
 }
 ```

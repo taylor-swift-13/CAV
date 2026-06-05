@@ -21,7 +21,7 @@ Return true if a length-at-least-two contiguous subarray has sum divisible by `k
 
 ```c
 int lc_continuous_subarray_sum_bool_csv(const char *nums, int k) {
-    int a[512], n = 0, i = 0; while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n++] = v; if (nums[i] == ',') i++; }
+    int a[512], n = 0, i = 0; while (nums[i] != '\0') { int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n] = v; n++; if (nums[i] == ',') i++; }
     for (int l = 0; l < n; l++) { int sum = 0; for (int r = l; r < n; r++) { sum += a[r]; if (r > l && sum % k == 0) return 1; } } return 0;
 }
 ```

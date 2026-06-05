@@ -20,6 +20,6 @@ Return the length of the longest valid parentheses substring.
 
 ```c
 int lc_longest_valid_parentheses_len(const char *s) {
-    int st[512], top = 0, best = 0; st[top++] = -1; for (int i = 0; s[i] != '\0'; i++) { if (s[i] == '(') st[top++] = i; else { top--; if (top == 0) st[top++] = i; else { int len = i - st[top - 1]; if (len > best) best = len; } } } return best;
+    int st[512], top = 0, best = 0; st[top] = -1; top++; for (int i = 0; s[i] != '\0'; i++) { if (s[i] == '(') { st[top] = i; top++; } else { top--; if (top == 0) { st[top] = i; top++; } else { int len = i - st[top - 1]; if (len > best) best = len; } } } return best;
 }
 ```

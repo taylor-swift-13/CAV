@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Fills an integer array in place with the scalar value k using one forward loop. The loop writes positions 0 through n-1 and leaves no element unchanged; when n is 0 the loop is skipped and the postcondition is satisfied by the empty array.",
-  "keywords": {
-    "problem_kind": "transform",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

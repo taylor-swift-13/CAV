@@ -26,7 +26,7 @@ Move all zeroes in comma-separated integer array `nums` to the end while preserv
 char *move_zeroes_csv(const char *nums) {
     int values[128];
     int n = 0, i = 0;
-    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } values[n++] = sign * v; if (nums[i] == ',') i++; }
+    while (nums[i] != '\0') { int sign = 1; if (nums[i] == '-') { sign = -1; i++; } int v = 0; while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } values[n] = sign * v; n++; if (nums[i] == ',') i++; }
     char *out = (char *)malloc(512);
     int pos = 0, first = 1, zeros = 0;
     for (int j = 0; j < n; j++) if (values[j] == 0) zeros++; else { pos += sprintf(out + pos, "%s%d", first ? "" : ",", values[j]); first = 0; }

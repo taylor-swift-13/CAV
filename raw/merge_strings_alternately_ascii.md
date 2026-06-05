@@ -29,7 +29,7 @@ char *merge_strings_alternately_ascii(const char *word1, const char *word2) {
     char *out = (char *)malloc((unsigned long)n + (unsigned long)m + 1);
     int pos = 0;
     int limit = n > m ? n : m;
-    for (int i = 0; i < limit; i++) { if (i < n) out[pos++] = word1[i]; if (i < m) out[pos++] = word2[i]; }
+    for (int i = 0; i < limit; i++) { if (i < n) { out[pos] = word1[i]; pos++; } if (i < m) { out[pos] = word2[i]; pos++; } }
     out[pos] = '\0';
     return out;
 }

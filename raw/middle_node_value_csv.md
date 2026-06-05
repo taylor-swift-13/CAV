@@ -30,7 +30,7 @@ int middle_node_value_csv(const char *list) {
         if (list[i] == '-') { sign = -1; i++; }
         int v = 0;
         while (list[i] >= '0' && list[i] <= '9') { v = v * 10 + (list[i] - '0'); i++; }
-        values[n++] = sign * v;
+        values[n] = sign * v; n++;
         if (list[i] == ',') i++;
     }
     return values[n / 2];

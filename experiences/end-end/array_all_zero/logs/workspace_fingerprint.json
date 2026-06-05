@@ -1,8 +1,0 @@
-{
-  "semantic_description": "The function scans an integer array from index 0 to n - 1 without modifying memory. It returns 0 immediately when it finds an element whose value is not zero; if the loop finishes, it returns 1 and the postcondition requires every valid array element to be zero. The main control structure is a for loop with an early return branch. For n = 0 the loop body is skipped and the function returns 1, with the universal all-zero property holding vacuously.",
-  "keywords": {
-    "problem_kind": "search",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

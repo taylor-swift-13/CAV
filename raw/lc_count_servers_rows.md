@@ -20,6 +20,6 @@ Return how many servers can communicate with at least one other server in the sa
 
 ```c
 int lc_count_servers_rows(const char *rows) {
-    char g[64][64]; int r = 0, cols = 0, i = 0; while (rows[i] != '\0') { int c = 0; while (rows[i] == '0' || rows[i] == '1') g[r][c++] = rows[i++]; if (cols == 0) cols = c; r++; if (rows[i] == ';') i++; } int row[64] = {0}, col[64] = {0}; for (int x = 0; x < r; x++) for (int y = 0; y < cols; y++) if (g[x][y] == '1') { row[x]++; col[y]++; } int ans = 0; for (int x = 0; x < r; x++) for (int y = 0; y < cols; y++) if (g[x][y] == '1' && (row[x] > 1 || col[y] > 1)) ans++; return ans;
+    char g[64][64]; int r = 0, cols = 0, i = 0; while (rows[i] != '\0') { int c = 0; while (rows[i] == '0' || rows[i] == '1') { g[r][c] = rows[i++]; c++; } if (cols == 0) cols = c; r++; if (rows[i] == ';') i++; } int row[64] = {0}, col[64] = {0}; for (int x = 0; x < r; x++) for (int y = 0; y < cols; y++) if (g[x][y] == '1') { row[x]++; col[y]++; } int ans = 0; for (int x = 0; x < r; x++) for (int y = 0; y < cols; y++) if (g[x][y] == '1' && (row[x] > 1 || col[y] > 1)) ans++; return ans;
 }
 ```

@@ -81,6 +81,11 @@ class Config:
         """Default model for non-solver single-stage runs, per agent backend."""
         return self._section("models").get(agent) or builtin
 
+    def timeout(self, stage: str, builtin: int) -> int:
+        """Per-stage wall-clock budget (seconds): contract/eval/verify/consolidate."""
+        v = self._section("timeouts").get(stage)
+        return v if isinstance(v, int) else builtin
+
 
 def load(cli_path: str | None = None) -> Config:
     path: Path | None = None

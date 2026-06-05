@@ -11,10 +11,12 @@ FORCE=0
 DRY_RUN=0
 JOBS=1
 CONTRACT_ROUNDS=2
-CONTRACT_TIMEOUT=300
-EVAL_TIMEOUT=900
-VERIFY_TIMEOUT=3600
-CONSOLIDATE_TIMEOUT=600
+# Empty = defer to config/agents.json `timeouts` (run_pipeline.py resolves them).
+# Set via the matching flag to override for this run.
+CONTRACT_TIMEOUT=""
+EVAL_TIMEOUT=""
+VERIFY_TIMEOUT=""
+CONSOLIDATE_TIMEOUT=""
 CONFIG=""
 AGENT=""
 MODEL=""
@@ -201,22 +203,23 @@ if ! [[ "$CONTRACT_ROUNDS" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_ROUNDS" -lt 1 ]]; the
   exit 2
 fi
 
-if ! [[ "$CONTRACT_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_TIMEOUT" -lt 1 ]]; then
+# Timeouts default to empty (defer to config). Validate only when explicitly set.
+if [[ -n "$CONTRACT_TIMEOUT" ]] && { ! [[ "$CONTRACT_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONTRACT_TIMEOUT" -lt 1 ]]; }; then
   echo "--contract-timeout must be a positive integer: $CONTRACT_TIMEOUT" >&2
   exit 2
 fi
 
-if ! [[ "$EVAL_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$EVAL_TIMEOUT" -lt 1 ]]; then
+if [[ -n "$EVAL_TIMEOUT" ]] && { ! [[ "$EVAL_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$EVAL_TIMEOUT" -lt 1 ]]; }; then
   echo "--eval-timeout must be a positive integer: $EVAL_TIMEOUT" >&2
   exit 2
 fi
 
-if ! [[ "$VERIFY_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$VERIFY_TIMEOUT" -lt 1 ]]; then
+if [[ -n "$VERIFY_TIMEOUT" ]] && { ! [[ "$VERIFY_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$VERIFY_TIMEOUT" -lt 1 ]]; }; then
   echo "--verify-timeout must be a positive integer: $VERIFY_TIMEOUT" >&2
   exit 2
 fi
 
-if ! [[ "$CONSOLIDATE_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONSOLIDATE_TIMEOUT" -lt 1 ]]; then
+if [[ -n "$CONSOLIDATE_TIMEOUT" ]] && { ! [[ "$CONSOLIDATE_TIMEOUT" =~ ^[0-9]+$ ]] || [[ "$CONSOLIDATE_TIMEOUT" -lt 1 ]]; }; then
   echo "--consolidate-timeout must be a positive integer: $CONSOLIDATE_TIMEOUT" >&2
   exit 2
 fi
@@ -243,10 +246,11 @@ run_one() {
 
   local cmd=(python3 "$PIPELINE_SCRIPT" "$RAW_PATH" --function-name "$name")
   cmd+=(--contract-rounds "$CONTRACT_ROUNDS")
-  cmd+=(--contract-timeout "$CONTRACT_TIMEOUT")
-  cmd+=(--eval-timeout "$EVAL_TIMEOUT")
-  cmd+=(--verify-timeout "$VERIFY_TIMEOUT")
-  cmd+=(--consolidate-timeout "$CONSOLIDATE_TIMEOUT")
+  # Only pass a timeout flag when set; otherwise run_pipeline.py uses config/agents.json.
+  [[ -n "$CONTRACT_TIMEOUT" ]] && cmd+=(--contract-timeout "$CONTRACT_TIMEOUT")
+  [[ -n "$EVAL_TIMEOUT" ]] && cmd+=(--eval-timeout "$EVAL_TIMEOUT")
+  [[ -n "$VERIFY_TIMEOUT" ]] && cmd+=(--verify-timeout "$VERIFY_TIMEOUT")
+  [[ -n "$CONSOLIDATE_TIMEOUT" ]] && cmd+=(--consolidate-timeout "$CONSOLIDATE_TIMEOUT")
   [[ $SKIP_EVAL -eq 1 ]] && cmd+=(--skip-eval)
   [[ $SKIP_CONSOLIDATE -eq 1 ]] && cmd+=(--skip-consolidate)
   [[ $EXPORT_EXAMPLES -eq 0 ]] && cmd+=(--no-export)

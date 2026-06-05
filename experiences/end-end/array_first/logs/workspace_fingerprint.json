@@ -1,8 +1,0 @@
-{
-  "semantic_description": "The function reads and returns the first element of an input integer array. The precondition requires n >= 1, the logical list length equals n, and the caller retains full ownership of the array. The implementation is straight-line code with no branches or loops, does not modify memory, and preserves the input array unchanged while returning l[0].",
-  "keywords": {
-    "problem_kind": "search",
-    "data": "array",
-    "pattern": "straight_line"
-  }
-}

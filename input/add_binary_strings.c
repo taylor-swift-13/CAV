@@ -2,45 +2,64 @@
 #include "../verification_list.h"
 #include "../char_array_def.h"
 
-/*@ Extern Coq (bin_val_aux : list Z -> Z -> Z) */
-/*@ Extern Coq (bin_val : list Z -> Z) */
-/*@ Extern Coq (is_bin_list : list Z -> Prop) */
-/*@ Extern Coq (is_canonical : list Z -> Prop) */
+/*@ Extern Coq (is_bin_chars : list Z -> Prop) */
+/*@ Extern Coq (add_binary_strings_spec : list Z -> list Z -> list Z) */
 /*@ Import Coq Require Import add_binary_strings */
 
-void add_binary_strings(char *a, int na, char *b, int nb, char *out)
-/*@ With la lb
+char *malloc_char_array(int n)
+/*@ Require n > 0 && emp
+    Ensure exists l, CharArray::full(__return, n, l)
+*/
+;
+
+char *add_binary_strings(const char *a, const char *b)
+/*@ With la lb na nb
     Require
-      a != 0 && b != 0 && out != 0 &&
+      a != 0 &&
+      b != 0 &&
       1 <= na &&
       1 <= nb &&
-      na + nb <= 2147483645 &&
+      na + nb + 1 <= 2147483647 &&
       Zlength(la) == na &&
       Zlength(lb) == nb &&
-      is_bin_list(la) &&
-      is_bin_list(lb) &&
-      CharArray::full(a, na + 1, app(la, cons(0, nil))) *
-      CharArray::full(b, nb + 1, app(lb, cons(0, nil))) *
-      CharArray::undef_full(out, na + nb + 2)
-    Ensure exists r,
-      1 <= Zlength(r) &&
-      Zlength(r) <= na@pre + nb@pre + 1 &&
-      is_bin_list(r) &&
-      is_canonical(r) &&
-      bin_val(r) == bin_val(la) + bin_val(lb) &&
-      CharArray::full(a, na@pre + 1, app(la, cons(0, nil))) *
-      CharArray::full(b, nb@pre + 1, app(lb, cons(0, nil))) *
-      CharArray::full(out, na@pre + nb@pre + 2,
-        app(r, cons(0, repeat_Z(0, na@pre + nb@pre + 1 - Zlength(r)))))
+      is_bin_chars(la) &&
+      is_bin_chars(lb) &&
+      CharArray::full((char *)a, na + 1, app(la, cons(0, nil))) *
+      CharArray::full((char *)b, nb + 1, app(lb, cons(0, nil)))
+    Ensure
+      exists t,
+        Zlength(t) == na + nb - Zlength(add_binary_strings_spec(la, lb)) &&
+        CharArray::full((char *)a, na + 1, app(la, cons(0, nil))) *
+        CharArray::full((char *)b, nb + 1, app(lb, cons(0, nil))) *
+        CharArray::full(__return, na + nb + 1,
+          app(app(add_binary_strings_spec(la, lb), cons(0, nil)), t))
 */
 {
-    int i;
-    int j;
-    int carry = 0;
-    int pos = 0;
+    int na = 0;
+    int nb = 0;
 
-    i = na - 1;
-    j = nb - 1;
+    while (1) {
+        if (a[na] == 0) {
+            break;
+        }
+        na++;
+    }
+    while (1) {
+        if (b[nb] == 0) {
+            break;
+        }
+        nb++;
+    }
+
+    int total = na + nb;
+
+    char *out = malloc_char_array(total + 1);
+    int i = na - 1;
+    int j = nb - 1;
+    int pos = total - 1;
+    int carry = 0;
+
+    out[total] = 0;
 
     while (i >= 0 || j >= 0 || carry) {
         int sum = carry;
@@ -52,30 +71,26 @@ void add_binary_strings(char *a, int na, char *b, int nb, char *out)
             sum += b[j] - 48;
             j--;
         }
-        out[pos] = 48 + sum % 2;
+        out[pos] = (char)(48 + (sum % 2));
         carry = sum / 2;
-        pos++;
-    }
-
-    while (pos > 1 && out[pos - 1] == 48) {
         pos--;
     }
 
-    int lo = 0;
-    int hi = pos - 1;
-    while (lo < hi) {
-        char tmp = out[lo];
-        out[lo] = out[hi];
-        out[hi] = tmp;
-        lo++;
-        hi--;
+    while (pos >= 0) {
+        out[pos] = 48;
+        pos--;
     }
 
-    out[pos] = 0;
-
-    int fill = pos + 1;
-    while (fill < na + nb + 2) {
-        out[fill] = 0;
-        fill++;
+    int start = 0;
+    while (start < total - 1 && out[start] == 48) {
+        start++;
     }
+
+    int k = 0;
+    while (start + k <= total) {
+        out[k] = out[start + k];
+        k++;
+    }
+
+    return out;
 }

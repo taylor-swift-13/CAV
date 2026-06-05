@@ -71,7 +71,13 @@ python3 scripts/search_fingerprint.py --fingerprint output/verify_<timestamp>_<n
 - 跑 symexec 前：`experiences/general/SYMEXEC/README.md`（命令在 §0；cwd = `QualifiedCProgramming/`）
 - 写 `proof_manual.v` 前：`experiences/general/PROOF/README.md`（tactic 起手式在 §3）
 - 编译前：`experiences/general/COMPILE/README.md` §5（cwd = `QualifiedCProgramming/SeparationLogic`；默认复用 `examples/*.vo`，缺失才回 `coq/deps/`）
-- 卡住才查 `doc/retrieval/INDEX.md`、`doc/predict/`、`experiences/end-end/`、`QCP_examples/`
+
+下面这些**只在命中具体触发时才读**（按需,不预读）：
+
+- 不知道用哪个谓词/数据结构表示 → `doc/predict/INDEX.md`
+- 不知道有哪个库 / 缺某个库引理或 tactic → `doc/LIBRARIES.md`
+- 某 witness 反复证不出、怀疑 VC 对**合法输入为假**(可能是输入/契约缺陷) → `doc/SOURCE_DEFECTS.md`
+- 需要一道**相似的完整已解题**(思路/witness 结构/proof pattern) → `doc/retrieval/INDEX.md` 的检索规则 → `experiences/end-end/` →(仍不够)`QCP_examples/`
 
 ## 4. 主流程
 

@@ -36,7 +36,7 @@ int aug_count_ge_array_000(const char *nums) {
         if (nums[i] == '-') { sign = -1; i++; }
         int v = 0;
         while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; }
-        values[n++] = sign * v;
+        values[n] = sign * v; n++;
         if (nums[i] == ',') i++;
     }
     int count = 0;

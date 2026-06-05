@@ -21,6 +21,6 @@ Rotate comma-separated `nums` to the right by `k` steps and return the first ele
 
 ```c
 int lc_rotate_array_first_csv(const char *nums, int k) {
-    int a[256], n = 0, i = 0; while (nums[i] != '\0') { int sign = 1, v = 0; if (nums[i] == '-') { sign = -1; i++; } while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n++] = sign * v; if (nums[i] == ',') i++; } k %= n; return a[(n - k) % n];
+    int a[256], n = 0, i = 0; while (nums[i] != '\0') { int sign = 1, v = 0; if (nums[i] == '-') { sign = -1; i++; } while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; } a[n] = sign * v; n++; if (nums[i] == ',') i++; } k %= n; return a[(n - k) % n];
 }
 ```

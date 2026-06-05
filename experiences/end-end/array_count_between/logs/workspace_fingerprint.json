@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Counts how many elements of a read-only integer array fall within the inclusive range [lo, hi] using a single forward scan. The function does not modify memory; when n is 0 it returns 0.",
-  "keywords": {
-    "problem_kind": "count",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

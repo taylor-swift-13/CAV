@@ -20,6 +20,6 @@ Return how many nonempty contiguous subarrays have sum exactly `goal`.
 
 ```c
 int lc_binary_subarrays_sum_count_csv(const char *nums, int goal) {
-    int a[512], n = 0, i = 0; while (nums[i] != '\0') { a[n++] = nums[i] - '0'; i++; if (nums[i] == ',') i++; } int ans = 0; for (int l = 0; l < n; l++) { int sum = 0; for (int r = l; r < n; r++) { sum += a[r]; if (sum == goal) ans++; } } return ans;
+    int a[512], n = 0, i = 0; while (nums[i] != '\0') { a[n] = nums[i] - '0'; n++; i++; if (nums[i] == ',') i++; } int ans = 0; for (int l = 0; l < n; l++) { int sum = 0; for (int r = l; r < n; r++) { sum += a[r]; if (sum == goal) ans++; } } return ans;
 }
 ```

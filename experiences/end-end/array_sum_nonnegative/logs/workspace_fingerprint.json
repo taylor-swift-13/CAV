@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Sums the nonnegative elements of a read-only integer array with one forward scan. The accumulator tracks the specification over the processed prefix, the array contents are preserved, and the empty array returns 0.",
-  "keywords": {
-    "problem_kind": "sum",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

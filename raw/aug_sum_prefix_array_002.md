@@ -36,7 +36,7 @@ int aug_sum_prefix_array_002(const char *nums) {
         if (nums[i] == '-') { sign = -1; i++; }
         int v = 0;
         while (nums[i] >= '0' && nums[i] <= '9') { v = v * 10 + (nums[i] - '0'); i++; }
-        values[n++] = sign * v;
+        values[n] = sign * v; n++;
         if (nums[i] == ',') i++;
     }
     int sum = 0;

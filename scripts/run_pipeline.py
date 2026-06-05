@@ -26,6 +26,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agent_metrics
+import agent_config
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = REPO_ROOT / "scripts"
@@ -84,10 +85,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("target", help="raw/<name>.md (full flow) or input/<name>.c (skip contract).")
     p.add_argument("--function-name")
     p.add_argument("--contract-rounds", type=int, default=2)
-    p.add_argument("--contract-timeout", type=int, default=300)
-    p.add_argument("--eval-timeout", type=int, default=900)
-    p.add_argument("--verify-timeout", type=int, default=3600)
-    p.add_argument("--consolidate-timeout", type=int, default=600)
+    # Timeout defaults are None here so config/agents.json `timeouts` can supply
+    # them; an explicit flag still wins. Resolved in main() (CLI > config > builtin).
+    p.add_argument("--contract-timeout", type=int, default=None)
+    p.add_argument("--eval-timeout", type=int, default=None)
+    p.add_argument("--verify-timeout", type=int, default=None)
+    p.add_argument("--consolidate-timeout", type=int, default=None)
     p.add_argument("--skip-eval", action="store_true", help="Skip the eval gate before verify.")
     p.add_argument("--skip-consolidate", action="store_true", help="Skip the final consolidate stage.")
     p.add_argument("--no-export", action="store_true", help="Do not export verified workspaces into experiences/end-end/.")
@@ -117,6 +120,12 @@ def common_flags(args) -> list[str]:
 
 def main() -> int:
     args = build_parser().parse_args()
+    # Resolve per-stage timeouts: explicit CLI flag > config/agents.json > builtin.
+    cfg = agent_config.load(args.config)
+    for stage, builtin in (("contract", 300), ("eval", 900), ("verify", 3600), ("consolidate", 600)):
+        attr = f"{stage}_timeout"
+        if getattr(args, attr) is None:
+            setattr(args, attr, cfg.timeout(stage, builtin))
     target = Path(args.target)
     if not target.is_absolute():
         target = (REPO_ROOT / target).resolve()

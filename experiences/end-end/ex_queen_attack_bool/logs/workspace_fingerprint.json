@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Loop-free function `ex_queen_attack_bool` returning `r1 == r2 || c1 == c2 || dr == dc`.",
+  "keywords": {
+    "problem_kind": "math",
+    "data": "scalar",
+    "pattern": "branch"
+  }
+}

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Scans an ASCII string once using a local 26-slot seen array. Uppercase letters are normalized to lowercase; non-letters are ignored; the function returns 0 at the first repeated alphabetic character and 1 otherwise, without modifying the input string.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "string",
-    "pattern": "single_loop"
-  }
-}
