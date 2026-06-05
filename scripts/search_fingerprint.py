@@ -174,7 +174,24 @@ def resolve_roots(scope: str, custom_root: str | None) -> list[Path]:
     return roots
 
 
-def search(query: dict[str, Any], roots: list[Path], *, min_keyword_matches: int, top: int) -> dict[str, Any]:
+def preferred_stage_rank(item: dict[str, Any], preferred_stage: str | None) -> int:
+    if not preferred_stage:
+        return 0 if item.get("layout") == "end-end" else 1
+    paths = item.get("paths") if isinstance(item.get("paths"), dict) else {}
+    doc = paths.get("doc")
+    if isinstance(doc, str) and doc.upper() == preferred_stage.upper():
+        return 0
+    return 1 if item.get("layout") == "end-end" else 2
+
+
+def search(
+    query: dict[str, Any],
+    roots: list[Path],
+    *,
+    min_keyword_matches: int,
+    top: int,
+    preferred_stage: str | None = None,
+) -> dict[str, Any]:
     query_kw = query.get("keywords") if isinstance(query.get("keywords"), dict) else {}
     query_desc = query.get("semantic_description") if isinstance(query.get("semantic_description"), str) else ""
 
@@ -217,7 +234,13 @@ def search(query: dict[str, Any], roots: list[Path], *, min_keyword_matches: int
                 "paths": artifact_paths(fp_path, layout, function_name),
             })
 
-    results.sort(key=lambda r: (-r["keyword_matches"], -r["semantic_overlap"], r["identifier"]))
+    results.sort(key=lambda r: (
+        -r["keyword_matches"],
+        preferred_stage_rank(r, preferred_stage),
+        0 if r["semantic_overlap"] > 0 else 1,
+        -r["semantic_overlap"],
+        r["identifier"],
+    ))
     for i, item in enumerate(results[:top], start=1):
         item["rank"] = i
     return {
@@ -225,6 +248,7 @@ def search(query: dict[str, Any], roots: list[Path], *, min_keyword_matches: int
             "function_name": query.get("function_name", ""),
             "keywords": {k: query_kw.get(k) for k in KEYS if k in query_kw},
             "semantic_description": query_desc,
+            "preferred_stage": preferred_stage or "",
         },
         "roots": [str(r) for r in roots],
         "scanned": scanned,
@@ -293,6 +317,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--root", default=None,
                    help="Override --scope by pointing at a single directory; layout auto-detected per match.")
     p.add_argument("--min-keyword-matches", type=int, default=2, choices=[0, 1, 2, 3])
+    p.add_argument("--prefer-stage", choices=["CONTRACT", "EVAL", "INV", "PROOF", "COMPILE"],
+                   default=None,
+                   help="Prefer general experiences from this stage when relevance is otherwise tied.")
     p.add_argument("--top", type=int, default=5)
     p.add_argument("--format", choices=["paths", "json", "markdown"], default="paths")
     return p
@@ -302,7 +329,13 @@ def main() -> int:
     args = build_parser().parse_args()
     query = load_query(args)
     roots = resolve_roots(args.scope, args.root)
-    result = search(query, roots, min_keyword_matches=args.min_keyword_matches, top=max(1, args.top))
+    result = search(
+        query,
+        roots,
+        min_keyword_matches=args.min_keyword_matches,
+        top=max(1, args.top),
+        preferred_stage=args.prefer_stage,
+    )
     if args.format == "paths":
         sys.stdout.write(render_paths(result))
     elif args.format == "markdown":

@@ -23,6 +23,8 @@
 
 普通的 `proof_manual.v` 还有 `Admitted`、某个 theorem 的 `coqc` 报错、`entailer!` / `lia` / witness tactic 暂时失败，都不是 proof-only 退出理由。只要能继续编辑 `proof_manual.v` 或添加允许范围内的 local helper，就必须继续证明并重新编译。
 
+proof-only 模式仍必须执行主 SKILL §0.1 的 fingerprint 检索。没有检索记录时，不允许因为单个 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败写 `Final Result: Fail`。
+
 ## 工作流仍按主 SKILL
 
 - §4.5a（10 次探索预算 try-first）继续生效；

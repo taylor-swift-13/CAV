@@ -526,8 +526,16 @@ def main() -> int:
 
     logs_dir = workspace_path / "logs"
     agent_env = build_agent_env(logs_dir)
-    reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
-    claude_effort_supported = agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
+    reasoning_effort_supported = (
+        codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
+        if agent == "codex"
+        else False
+    )
+    claude_effort_supported = (
+        agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
+        if agent == "claude"
+        else False
+    )
     emit_log(f"agent={agent}")
     emit_log(f"model={model}")
     emit_log(f"reasoning_effort={reasoning_effort}")

@@ -126,6 +126,17 @@ def _input_lines(input_path: Path, input_v_path: Path | None, function_name: str
     )
 
 
+def retrieval_lines(workspace_path: Path) -> str:
+    fingerprint = workspace_path / "logs" / "workspace_fingerprint.json"
+    return (
+        "Retrieval requirement:\n"
+        f"- Before manual proof edits, run: `python3 scripts/search_fingerprint.py --fingerprint {fingerprint} --scope all --min-keyword-matches 1 --prefer-stage PROOF --top 5 --format markdown`.\n"
+        "- Append the query, top 1-3 candidate paths, expanded files, and adopted/rejected proof patterns to `logs/proof_reasoning.md`.\n"
+        "- If the same theorem or same class of `coqc` error fails twice, run retrieval again before more tactic changes.\n"
+        "- Do not write `Final Result: Fail` for `proof_manual_has_obligations`, `Cannot find witness`, rewrite/unification, `entailer!`, or `lia` failures unless this retrieval record exists and the blocker is genuinely unrepairable in the current workspace."
+    )
+
+
 def build_prompt(
     skill_path: Path,
     input_path: Path,
@@ -140,6 +151,10 @@ def build_prompt(
         f"Follow this skill as the complete workflow: {skill_path}",
         "",
         "Persistence requirement: do not finish this agent run merely because a repairable gate failed. If symexec/coqc/proof/manual-obligation feedback points to a concrete annotation or proof edit inside this workspace, keep editing and rerunning the relevant gate until success, a genuinely unrepairable contract/input blocker is found, or the external timeout stops you. A single new blocker is work to continue, not a reason to write Final Result: Fail.",
+        "",
+        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit experiences/, doc/, skills/, scripts/, historical fingerprints, or unrelated inputs.",
+        "",
+        retrieval_lines(workspace_path),
         "",
         "Inputs:",
         _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
@@ -165,6 +180,10 @@ def build_proof_only_prompt(
         f"Follow this skill as the complete workflow: {skill_path}",
         "",
         "Persistence requirement: proof-only mode must keep proving while proof_manual.v can still be edited. Do not exit just because proof_manual_has_obligations remains, one theorem fails under coqc, or a tactic needs adjustment; continue the edit/compile loop until proof_manual.v has no placeholders and goal_check.v compiles, or until you identify a genuinely unprovable VC under the current contract.",
+        "",
+        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit experiences/, doc/, skills/, scripts/, historical fingerprints, or unrelated inputs.",
+        "",
+        retrieval_lines(workspace_path),
         "",
         "Mode: proof-only (also follow MODE_PROOF_ONLY.md per SKILL.md §4.5c).",
         "",
@@ -262,7 +281,7 @@ def verify_retry_feedback(attempt: int, detail: str, workspace_path: Path, funct
         f"- Proof manual: `{generated_dir / f'{function_name}_proof_manual.v'}`",
         f"- Goal check: `{generated_dir / f'{function_name}_goal_check.v'}`",
         "",
-        "Required next action: continue inside this same workspace until the concrete blocker is fixed. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
+        "Required next action: continue inside this same workspace until the concrete blocker is fixed. If this is a proof/manual-obligation or coqc blocker, first run `python3 scripts/search_fingerprint.py --fingerprint " + str(workspace_path / "logs" / "workspace_fingerprint.json") + " --scope all --min-keyword-matches 1 --prefer-stage PROOF --top 5 --format markdown` and record the candidates in `logs/proof_reasoning.md`. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
     ])
 
 
@@ -613,7 +632,6 @@ def update_trivial_fingerprint(workspace_path: Path, function_name: str, input_p
     returns = [x.strip() for x in re.findall(r"\breturn\s+([^;]+);", text)]
     returned = ", ".join(f"`{x}`" for x in returns) if returns else "scalar expression(s)"
     pattern = "branch" if re.search(r"\bif\b", text) else "straight_line"
-    has_pointer_or_array = "*" in text or "[" in text or "]" in text or "->" in text
     data_kind = "linked_list" if "sll" in input_path.read_text(encoding="utf-8", errors="replace") else ("array" if "[" in text else "scalar")
     data = {
         "semantic_description": f"Loop-free function `{function_name}` returning {returned}.",
@@ -676,15 +694,104 @@ def proof_manual_has_obligations(generated_dir: Path, function_name: str) -> boo
     return proof_file_has_obligations(generated_dir / f"{function_name}_proof_manual.v")
 
 
+STRATEGY_IMPORT_RE = re.compile(r"^\s*Require\s+Import\s+([A-Za-z0-9_]+_strategy_(?:goal|proof))\s*\.", re.M)
+QCP_STRATEGY_SOURCE = coq_runner.QCP_SL_DIR / "examples" / "QCP_demos_LLM"
+
+
+def clean_generated_non_v_entries(generated_dir: Path) -> list[str]:
+    removed: list[str] = []
+    if not generated_dir.exists():
+        return removed
+    for path in generated_dir.iterdir():
+        if path.is_file() and path.suffix == ".v" and not path.is_symlink():
+            continue
+        try:
+            if path.is_symlink() or path.is_file():
+                target = path.resolve(strict=False)
+                path.unlink()
+                removed.append(f"{path} -> {target}")
+            elif path.is_dir():
+                shutil.rmtree(path)
+                removed.append(str(path))
+        except OSError:
+            pass
+    return removed
+
+
+def rewrite_strategy_source(text: str) -> str:
+    return re.sub(
+        r"From\s+SimpleC\.EE\.QCP_demos_LLM\s+Require\s+Import\s+([A-Za-z0-9_]+)\.",
+        r"Require Import \1.",
+        text,
+    )
+
+
+def prepare_strategy_deps(generated_dir: Path) -> tuple[Path | None, list[str]]:
+    """Stage unqualified strategy imports for deterministic audit replay.
+
+    Generated QCP files import strategy modules as bare names such as
+    ``int_array_strategy_goal``. The shared ``examples/`` tree can contain
+    multiple same-named strategy libraries under different demos, so replay uses
+    workspace-local deps with imports rewritten to the same bare-name namespace.
+    """
+    needed: set[str] = set()
+    for v_file in generated_dir.glob("*.v"):
+        try:
+            text = v_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        needed.update(STRATEGY_IMPORT_RE.findall(text))
+    if not needed:
+        return None, []
+
+    deps_dir = generated_dir.parent / "deps"
+    deps_dir.mkdir(parents=True, exist_ok=True)
+    logs: list[str] = []
+    for module in sorted(needed):
+        source = QCP_STRATEGY_SOURCE / f"{module}.v"
+        target = deps_dir / f"{module}.v"
+        if not source.exists():
+            logs.append(f"missing strategy source: {source}")
+            continue
+        rewritten = rewrite_strategy_source(source.read_text(encoding="utf-8", errors="replace"))
+        if not target.exists() or target.read_text(encoding="utf-8", errors="replace") != rewritten:
+            target.write_text(rewritten, encoding="utf-8")
+            logs.append(f"staged strategy dep: {target}")
+    return deps_dir, logs
+
+
+def compile_strategy_deps(deps_dir: Path, timeout_seconds: int) -> tuple[bool, list[str]]:
+    logs: list[str] = []
+    for path in sorted(deps_dir.glob("*_strategy_goal.v")) + sorted(deps_dir.glob("*_strategy_proof.v")):
+        rc, out, err = coq_runner.run_coqc(path, extra_q=[(str(deps_dir), "")], timeout_seconds=timeout_seconds)
+        logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
+        if rc != 0:
+            return False, logs
+    return True, logs
+
+
 def compile_generated(workspace_path: Path, function_name: str, input_v_path: Path | None, timeout_seconds: int = 120) -> tuple[bool, list[str]]:
     generated_dir = workspace_path / "coq" / "generated"
     original_dir = workspace_path / "original"
     logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
-    extra_q = [(str(original_dir), "")]
+    removed_generated_junk = clean_generated_non_v_entries(generated_dir)
+    deps_dir, dep_logs = prepare_strategy_deps(generated_dir)
+    extra_q = []
+    if deps_dir is not None:
+        extra_q.append((str(deps_dir), ""))
+    extra_q.append((str(original_dir), ""))
     extra_r = [(str(generated_dir), logic_path)]
     logs: list[str] = []
+    logs.extend(f"removed generated non-v entry: {entry}" for entry in removed_generated_junk)
+    logs.extend(dep_logs)
 
     try:
+        if deps_dir is not None:
+            ok, dep_compile_logs = compile_strategy_deps(deps_dir, timeout_seconds)
+            logs.extend(dep_compile_logs)
+            if not ok:
+                return False, logs
+
         if input_v_path is not None:
             original_v = original_dir / input_v_path.name
             rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
@@ -750,13 +857,13 @@ def try_trivial_fast_path(
         emit_log("trivial_fast_path_failed stage=proof_manual_obligations")
         return False, 0
 
-    ok, compile_logs = compile_generated(workspace_path, function_name, input_v_path)
-    stdout_parts.extend(["\n# coqc\n", "\n".join(compile_logs)])
+    stdout_parts.append(
+        "\n# audit\n"
+        "Skipping pre-audit coqc replay; verify_audit_check owns the single "
+        "authoritative compile pass for this deterministic fast path.\n"
+    )
     stdout_log.write_text("".join(stdout_parts), encoding="utf-8")
     stderr_log.write_text("".join(stderr_parts), encoding="utf-8")
-    if not ok:
-        emit_log("trivial_fast_path_failed stage=coqc")
-        return False, 0
 
     gates_ok, gates_detail = verify_audit_check(
         workspace_path=workspace_path,
@@ -908,8 +1015,16 @@ def main() -> int:
     emit_log(f"model={model}")
     logs_dir = workspace_path / "logs"
     agent_env = build_agent_env(logs_dir)
-    reasoning_effort_supported = codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
-    claude_effort_supported = agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
+    reasoning_effort_supported = (
+        codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
+        if agent == "codex"
+        else False
+    )
+    claude_effort_supported = (
+        agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
+        if agent == "claude"
+        else False
+    )
     emit_log(f"reasoning_effort={reasoning_effort}")
     emit_log(f"reasoning_effort_supported={reasoning_effort_supported}")
     emit_log(f"claude_effort_supported={claude_effort_supported}")

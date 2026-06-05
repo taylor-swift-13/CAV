@@ -19,6 +19,23 @@ Verify 是长迭代任务。**不要**因为遇到一个可继续推进的 `syme
 
 普通的 `proof_manual_has_obligations`、单个 theorem 的 `coqc` 报错、`symexec` 的具体 annotation 报错、tactic 失败、load-path 可修复错误，都不是退出理由；这些是本轮继续工作的输入。
 
+## 0.1 检索纪律
+
+Verify 不能只靠局部猜 tactic 硬顶。进入 manual proof 后，必须先执行一次 fingerprint 检索，并把结果写入 `logs/proof_reasoning.md`：
+
+```bash
+python3 scripts/search_fingerprint.py --fingerprint output/verify_<timestamp>_<name>/logs/workspace_fingerprint.json --scope all --min-keyword-matches 1 --prefer-stage PROOF --top 5 --format markdown
+```
+
+同一个 theorem 或同一类 `coqc` 错误连续失败 2 次后，必须再次检索。检索记录至少包含：
+
+- 使用的查询命令；
+- 返回的前 1-3 个候选路径；
+- 实际展开阅读的候选；
+- 复用到的 proof / annotation pattern，或说明为什么候选不适用。
+
+没有检索记录时，不允许因为 `proof_manual_has_obligations`、`Cannot find witness`、rewrite/unification 失败、`entailer!`/`lia` 失败写 `Final Result: Fail`。这些错误必须先走检索，再继续证明。
+
 ## 1. 路径约定
 
 - 输入：`input/<name>.c`、可选 `input/<name>.v`
@@ -64,7 +81,7 @@ Verify 是长迭代任务。**不要**因为遇到一个可继续推进的 `syme
 4. 跑 `symexec`（每改 annotation 必须重跑）。以最新 witness 编号为准，不要盲用旧 proof。
 5. 看 `proof_manual.v`：
    - 若**没有需要手工证明的 theorem**（所有 witness 都在 `proof_auto.v` 的 `Admitted` 占位里）= trivial case，**直接跳 6**，不读 `experiences/general/PROOF/README.md`、不检索 retrieval/end-end/QCP_examples。
-   - 否则读 `experiences/general/PROOF/README.md`，按 §3 tactic 起手式套，编译失败迭代；每轮先 append `logs/proof_reasoning.md` 再改 proof。手工 witness 逐个证、当前没证完不跳下一个。可补 helper lemma；**不准** `Admitted` / `admit` / `Abort` / 新增 `Axiom` / 改 VC 目标 / 导入 `derivable1` 绕过。
+   - 否则读 `experiences/general/PROOF/README.md`，先按 §0.1 执行 fingerprint 检索，再按 §3 tactic 起手式套，编译失败迭代；每轮先 append `logs/proof_reasoning.md` 再改 proof。手工 witness 逐个证、当前没证完不跳下一个。可补 helper lemma；**不准** `Admitted` / `admit` / `Abort` / 新增 `Axiom` / 改 VC 目标 / 导入 `derivable1` 绕过。
 6. 按 `experiences/general/COMPILE/README.md` §5 编译 `goal` / `proof_auto` / `proof_manual` / `goal_check`。
 7. 自检 source integrity / freshness：确认 `input/<name>.c` / 可选 `input/<name>.v` 没被改；确认 `annotated/verify_<timestamp>_<name>.c` 里的函数 contract 和 executable C implementation 与原始 input 一致，只新增验证注解；确认当前 Coq 产物来自最新 annotated C。
 8. 清理 `coq/` 下非 `.v` 中间产物和 `input/` 下非 `.v`/`.c` 产物。
