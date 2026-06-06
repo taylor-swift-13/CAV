@@ -24,7 +24,7 @@ Contract 把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<na
 - `mid/.v` 只放题目专用 Coq 定义，definition-only（无 `Axiom`/`Hypothesis`/`Parameter`/`Conjecture`/`Variable`/`Admitted`/`admit`/`Abort`），且能被 `coqc` 编译。
 - 公共验证头一律**裸名 include**（头文件已复制到该 dataset 目录）：`#include "verification_stdlib.h"`、`"verification_list.h"`、`"int_array_def.h"`，字符数组用 `"char_array_def.h"`；禁 `../` 等路径前缀。
 - 保持原程序语义；必须改接口时只做 verification-friendly 改写。
-- **spec 质量与谓词选择照「职责划分」里的 `.agents` 文档**：优先「量词 + 已定义函数（`Permutation`/`Znth`/`Zlength`/`app`/`sorted` 等）」刻画输入输出关系，实在无法表达才写题目专用 `Fixpoint`/`Inductive`。
+- **spec 质量与谓词选择直接照「职责划分」里的 `.agents` 文档**；最终写入 `Require` / `Ensure` 的谓词必须落脚在 `Z` 语义上。
 - **RTE/UB 安全（contract 的核心义务）**：前条件必须排除空指针解引用、数组越界、除零、非法移位、有符号整数加减乘 / 取负 / `abs` / 累加 / 循环变元更新等所有可能溢出与 C UB/RTE（用 `Require` / 前条件，`INT_MIN <= ... <= INT_MAX` 风格界）。逐项审计结论写进 `logs/issues.md`，不依赖「运行时自然不会发生」。后条件优先写蕴含，避免顶层析取。
 
 ## 3. 宏观流程（极简 + 错误迭代）

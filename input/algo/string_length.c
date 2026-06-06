@@ -2,12 +2,12 @@
 #include "verification_list.h"
 #include "char_array_def.h"
 
-int string_length(char *s)
+int algo_string_length(char *s)
 /*@ With l n
     Require
       0 <= n && n < INT_MAX &&
       Zlength(l) == n &&
-      (forall (k: Z), (0 <= k && k < n) => l[k] != 0) &&
+      (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
       CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure
       __return == n &&

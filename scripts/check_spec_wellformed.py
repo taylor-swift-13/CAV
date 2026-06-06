@@ -36,26 +36,27 @@ _STARTED_RE = re.compile(r"Symbolic Execution into function")
 def prepare_input(src_c: Path, dst_c: Path) -> None:
     """Copy the contract C into a symexec-parseable form.
 
-    Drops the ``int_array_def.h`` include for this temporary parse check and
-    rewrites repo-root ``verification_*.h`` includes (``../`` or legacy
-    ``../../`` forms) to bare names symexec finds on its own search path.
-    Other repo-root spec headers such as ``char_array_def.h`` must also be
-    rewritten the same way when the input is staged into a temp directory.
+    Rewrites quoted includes to bare names and copies common plus task-local
+    headers into the temp directory, matching verify bootstrap behavior.
     """
     lines = []
     copied_repo_headers: set[str] = set()
     for line in src_c.read_text(encoding="utf-8", errors="replace").splitlines():
-        if "int_array_def.h" in line:
-            continue
         # normalize any ../ or ../../ prefix to bare (bare includes pass through unchanged)
         line = re.sub(r'(?:\.\./)+(verification_[A-Za-z0-9_]+\.h)', r'\1', line)
-        m = re.search(r'([A-Za-z0-9_]+_array_def\.h|sll_def\.h)', line)
-        if m is not None and line.lstrip().startswith("#"):
-            header = m.group(1)
+        m = re.search(r'#\s*include\s+"([^"]+)"', line)
+        if m is not None:
+            header = Path(m.group(1)).name
             copied_repo_headers.add(header)
             line = re.sub(r'#\s*include\s+"[^"]*?(' + re.escape(header) + r')"', r'#include "\1"', line)
         lines.append(line)
     dst_c.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    copied_repo_headers.update({
+        "verification_stdlib.h",
+        "verification_list.h",
+        "int_array_def.h",
+        "char_array_def.h",
+    })
     for header in copied_repo_headers:
         src = src_c.parent / header
         if not src.exists():

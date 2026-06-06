@@ -7,17 +7,17 @@ void string_to_lower_ascii(char *s)
     Require
       0 <= n && n < INT_MAX &&
       Zlength(l) == n &&
-      (forall (k: Z), (0 <= k && k < n) => l[k] != 0) &&
+      (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
       CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure
       exists lr,
-        Zlength(lr) == n@pre &&
+        Zlength(lr) == n &&
         (forall (i: Z),
-          (0 <= i && i < n@pre) =>
-          (((65 <= l[i] && l[i] <= 90) => lr[i] == l[i] + 32) &&
-           ((l[i] < 65 || 90 < l[i]) => lr[i] == l[i]))) &&
-        (forall (k: Z), (0 <= k && k < n@pre) => lr[k] != 0) &&
-        CharArray::full(s, n@pre + 1, app(lr, cons(0, nil)))
+          (0 <= i && i < n) =>
+          (((65 <= Znth(i, l, 0) && Znth(i, l, 0) <= 90) => Znth(i, lr, 0) == Znth(i, l, 0) + 32) &&
+           ((Znth(i, l, 0) < 65 || 90 < Znth(i, l, 0)) => Znth(i, lr, 0) == Znth(i, l, 0)))) &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, lr, 0) != 0) &&
+        CharArray::full(s, n + 1, app(lr, cons(0, nil)))
 */
 {
     int i = 0;

@@ -1,0 +1,34 @@
+# P102 Choose num
+
+## Problem (HumanEval 102)
+
+This function takes two positive numbers x && y && returns the
+biggest even integer number that is in the range [x, y] inclusive. If
+there's no such number, then the function should return -1.
+
+For example:
+p102_choose_num(12, 15) = 14
+p102_choose_num(13, 12) = -1
+
+## Reference Implementation
+
+```c
+/*
+This function takes two positive numbers x && y && returns the
+biggest even integer number that is in the range [x, y] inclusive. If
+there's no such number, then the function should return -1.
+
+For example:
+p102_choose_num(12, 15) = 14
+p102_choose_num(13, 12) = -1
+*/
+
+int p102_choose_num(int x, int y)
+
+{
+    if (y<x) return -1;
+    if (y==x && y%2==1) return -1;
+    if (y%2==1) return y-1;
+    return y;
+}
+```

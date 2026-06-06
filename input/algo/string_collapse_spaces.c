@@ -10,14 +10,14 @@ void string_collapse_spaces(char *s, char *out)
     Require
       0 <= n && n < INT_MAX &&
       Zlength(l) == n &&
-      (forall (k: Z), (0 <= k && k < n) => l[k] != 0) &&
+      (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
       CharArray::full(s, n + 1, app(l, cons(0, nil))) *
       CharArray::full(out, n + 1, d)
     Ensure
       exists t,
-        Zlength(t) == n@pre - Zlength(string_collapse_spaces_spec(l)) &&
-        CharArray::full(s, n@pre + 1, app(l, cons(0, nil))) *
-        CharArray::full(out, n@pre + 1,
+        Zlength(t) == n - Zlength(string_collapse_spaces_spec(l)) &&
+        CharArray::full(s, n + 1, app(l, cons(0, nil))) *
+        CharArray::full(out, n + 1,
           app(app(string_collapse_spaces_spec(l), cons(0, nil)), t))
 */
 {

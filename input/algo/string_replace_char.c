@@ -8,17 +8,17 @@ void string_replace_char(char *s, char old_c, char new_c)
       0 <= n && n < INT_MAX &&
       Zlength(l) == n &&
       new_c != 0 &&
-      (forall (k: Z), (0 <= k && k < n) => l[k] != 0) &&
+      (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
       CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure
       exists lr,
-        Zlength(lr) == n@pre &&
+        Zlength(lr) == n &&
         (forall (i: Z),
-          (0 <= i && i < n@pre) =>
-          ((l[i] == old_c@pre => lr[i] == new_c@pre) &&
-           (l[i] != old_c@pre => lr[i] == l[i]))) &&
-        (forall (k: Z), (0 <= k && k < n@pre) => lr[k] != 0) &&
-        CharArray::full(s, n@pre + 1, app(lr, cons(0, nil)))
+          (0 <= i && i < n) =>
+          ((Znth(i, l, 0) == old_c@pre => Znth(i, lr, 0) == new_c@pre) &&
+           (Znth(i, l, 0) != old_c@pre => Znth(i, lr, 0) == Znth(i, l, 0)))) &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, lr, 0) != 0) &&
+        CharArray::full(s, n + 1, app(lr, cons(0, nil)))
 */
 {
     int i = 0;

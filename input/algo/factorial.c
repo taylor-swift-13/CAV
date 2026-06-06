@@ -1,12 +1,12 @@
 #include "verification_stdlib.h"
 
-/*@ Extern Coq (factorial: Z -> Z) */
+/*@ Extern Coq (factorial_model: Z -> Z) */
 
 int factorial(int n)
 /*@ Require
       0 <= n && n <= 10 && emp
     Ensure
-      __return == factorial(n@pre) && emp
+      __return == factorial_model(n@pre) && emp
 */
 {
     int i;
