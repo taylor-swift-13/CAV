@@ -14,11 +14,11 @@ is_nested_132("[[]][[") -> true
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_132_pre_z: list Z -> Prop)
-               (problem_132_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (subseq_state_prefix_z: Z -> list Z -> Z) */
-/*@ Import Coq Require Import coins_132 */
+/*@ Extern Coq (problem_132_pre: list Z -> Prop)
+               (problem_132_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (subseq_state_prefix: Z -> list Z -> Z) */
+/*@ Import Coq Require Import is_nested_132 */
 
 int strlen(char *s)
 /*@ With l n
@@ -33,17 +33,17 @@ int is_nested_132(char *str)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_132_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_132_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_132_spec_z(l, __return) &&
+        problem_132_spec(l, __return) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil)))
 */
 {
     int state = 0;
     int i;
-    int n = strlen(str) /*@ where l = l, n = len */;
+    int n = strlen(str);
 
     for (i = 0; i < n; i++) {
         int chr = str[i];

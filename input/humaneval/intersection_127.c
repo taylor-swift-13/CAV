@@ -21,27 +21,27 @@ intersection_127({-3, -1}, {-5, 5}) ==> "YES"
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_127_pre_z: list Z -> list Z -> Prop)
-               (problem_127_spec_z: list Z -> list Z -> Z -> Prop)
+/*@ Extern Coq (problem_127_pre: list Z -> list Z -> Prop)
+               (problem_127_spec: list Z -> list Z -> Z -> Prop)
                (interval_int_range: list Z -> Prop)
-               (inter_start_z: list Z -> list Z -> Z)
-               (inter_end_z: list Z -> list Z -> Z)
-               (inter_len_z: list Z -> list Z -> Z)
-               (prime_prefix_z: Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_127 */
+               (inter_start: list Z -> list Z -> Z)
+               (inter_end: list Z -> list Z -> Z)
+               (inter_len: list Z -> list Z -> Z)
+               (prime_prefix: Z -> Z -> Prop) */
+/*@ Import Coq Require Import intersection_127 */
 
 int intersection_127(int* interval1, int interval1_size, int* interval2, int interval2_size)
 /*@ With i1 i2
     Require
         interval1_size == 2 &&
         interval2_size == 2 &&
-        problem_127_pre_z(i1, i2) &&
+        problem_127_pre(i1, i2) &&
         interval_int_range(i1) &&
         interval_int_range(i2) &&
         IntArray::full(interval1, interval1_size, i1) *
         IntArray::full(interval2, interval2_size, i2)
     Ensure
-        problem_127_spec_z(i1, i2, __return) &&
+        problem_127_spec(i1, i2, __return) &&
         IntArray::full(interval1, interval1_size, i1) *
         IntArray::full(interval2, interval2_size, i2)
 */

@@ -14,11 +14,11 @@ check_if_last_char_is_a_letter_134("") -> false
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_134_pre_z: list Z -> Prop)
-               (problem_134_spec_z: list Z -> Z -> Prop)
-               (is_alpha_z: Z -> Prop)
-               (ascii_range_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_134 */
+/*@ Extern Coq (problem_134_pre: list Z -> Prop)
+               (problem_134_spec: list Z -> Z -> Prop)
+               (is_alpha: Z -> Prop)
+               (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import check_if_last_char_is_a_letter_134 */
 
 int strlen(char *s)
 /*@ With l n
@@ -33,15 +33,15 @@ int check_if_last_char_is_a_letter_134(char *txt)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        ascii_range_z(l) &&
-        problem_134_pre_z(l) &&
+        ascii_range(l) &&
+        problem_134_pre(l) &&
         CharArray::full(txt, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_134_spec_z(l, __return) &&
+        problem_134_spec(l, __return) &&
         CharArray::full(txt, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(txt) /*@ where l = l, n = len */;
+    int n = strlen(txt);
     if (n == 0) return 0;
 
     int chr = txt[n - 1];

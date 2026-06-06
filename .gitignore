@@ -7,3 +7,11 @@ annotated/
 *.log
 *.tmp
 __pycache__/
+mid/
+*.vo
+*.vok
+*.vos
+*.glob
+*.aux
+.lia.cache
+.nia.cache

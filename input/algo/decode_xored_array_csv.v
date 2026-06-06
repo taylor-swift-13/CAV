@@ -3,6 +3,9 @@ Require Import Coq.Lists.List.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Fixpoint parse_digits (l : list Z) (acc : Z) : Z :=
   match l with
   | [] => acc
@@ -130,12 +133,12 @@ Definition decode_xored_array_csv_pre (l : list Z) (first out_cap : Z) : Prop :=
   0 <= out_cap /\
   match l with
   | [] =>
-      Z.of_nat (List.length (decode_xored_array_csv_spec l first)) + 1 <= out_cap
+      zlength (decode_xored_array_csv_spec l first) + 1 <= out_cap
   | _ =>
       ~ starts_with_comma l /\
       ~ ends_with_comma l /\
       no_adjacent_commas l /\
       all_valid_tokens (split_csv_tokens l) /\
-      Z.of_nat (List.length (decode_xored_array_csv_spec l first)) + 1 <= out_cap
+      zlength (decode_xored_array_csv_spec l first) + 1 <= out_cap
   end
 .

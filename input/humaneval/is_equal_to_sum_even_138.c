@@ -7,13 +7,13 @@ is_equal_to_sum_even_138(8) == true
 */
 #include "verification_stdlib.h"
 /*@ Extern Coq (problem_138_pre: Z -> Prop) */
-/*@ Extern Coq (problem_138_spec_z: Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_138 */
+/*@ Extern Coq (problem_138_spec: Z -> Z -> Prop) */
+/*@ Import Coq Require Import is_equal_to_sum_even_138 */
 int is_equal_to_sum_even_138(int n)
 /*@ Require
         INT_MIN <= n && n <= INT_MAX && emp
     Ensure
-        problem_138_spec_z(n@pre, __return) && emp
+        problem_138_spec(n@pre, __return) && emp
 */
 {
     if (n%2==0 && n>=8) return 1;

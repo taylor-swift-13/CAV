@@ -15,12 +15,12 @@ It is assumed that the input vectors will be non-empty.
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_110_pre_z: list Z -> list Z -> Prop)
-               (problem_110_spec_z: list Z -> list Z -> Z -> Prop)
-               (nonnegative_list_z: list Z -> Prop)
+/*@ Extern Coq (problem_110_pre: list Z -> list Z -> Prop)
+               (problem_110_spec: list Z -> list Z -> Z -> Prop)
+               (nonnegative_list: list Z -> Prop)
                (count_even_upto: Z -> list Z -> Z)
-               (count_even_list_z: list Z -> Z) */
-/*@ Import Coq Require Import coins_110 */
+               (count_even_list: list Z -> Z) */
+/*@ Import Coq Require Import exchange_110 */
 
 int exchange_110(int* lst1, int lst1_size, int* lst2, int lst2_size)
 /*@ With l1 l2
@@ -30,13 +30,13 @@ int exchange_110(int* lst1, int lst1_size, int* lst2, int lst2_size)
         lst1_size + lst2_size < INT_MAX &&
         Zlength(l1) == lst1_size &&
         Zlength(l2) == lst2_size &&
-        problem_110_pre_z(l1, l2) &&
-        nonnegative_list_z(l1) &&
-        nonnegative_list_z(l2) &&
+        problem_110_pre(l1, l2) &&
+        nonnegative_list(l1) &&
+        nonnegative_list(l2) &&
         IntArray::full(lst1, lst1_size, l1) *
         IntArray::full(lst2, lst2_size, l2)
     Ensure
-        problem_110_spec_z(l1, l2, __return) &&
+        problem_110_spec(l1, l2, __return) &&
         IntArray::full(lst1, lst1_size, l1) *
         IntArray::full(lst2, lst2_size, l2)
 */

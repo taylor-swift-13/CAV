@@ -1,34 +1,92 @@
-(* defs for solve_84 from: coins_84.v *)
+(* spec/84 *)
+(* def solve(N):
+"""Given a positive integer N, return the total sum of its digits in binary.
 
-Load "../spec/84".
+Example
+For N = 1000, the sum of digits will be 1 the output should be "1".
+For N = 150, the sum of digits will be 6 the output should be "110".
+For N = 147, the sum of digits will be 12 the output should be "1100".
+
+Variables:
+@N integer
+Constraints: 0 ≤ N ≤ 10000.
+Output:
+a string of binary number
+""" *)
+Require Import Coq.Strings.String.
+Require Import Coq.Arith.Arith.
+Require Import Coq.micromega.Lia.
+
+(*
+  辅助函数 1.1: 一个带有“燃料”的、用于计算十进制各位数字之和的函数。
+  递归在 fuel 参数上是结构性的，因此 Coq 可以接受这个定义。
+*)
+Fixpoint sum_decimal_digits_aux (fuel n : nat) : nat :=
+  match fuel with
+  | 0 => 0 (* 燃料耗尽，停止 *)
+  | S f' => (* 还有燃料，继续计算 *)
+    match n with
+    | 0 => 0
+    | _ => (n mod 10) + sum_decimal_digits_aux f' (n / 10)
+    end
+  end.
+
+(*
+  主函数 1: 计算自然数 N 的十进制各位数字之和。
+  我们提供 N 本身作为初始燃料，这足以确保计算完成。
+*)
+Definition sum_decimal_digits (n : nat) : nat :=
+  sum_decimal_digits_aux n n.
+
+(*
+  辅助函数 2.1: 一个带有“燃料”的、用于将正整数转为二进制字符串的函数。
+  同样，递归在 fuel 上是结构性的。这个辅助函数假定 n > 0。
+*)
+Fixpoint nat_to_binary_string_pos_aux (fuel n : nat) : string :=
+  match fuel with
+  | 0 => "" (* 燃料耗尽 *)
+  | S f' =>
+      if Nat.eqb n 0 then ""
+      else nat_to_binary_string_pos_aux f' (n / 2) ++ (if Nat.eqb (n mod 2) 0 then "0" else "1")
+  end.
+
+(*
+  主函数 2: 将自然数 N 转换为其二进制表示的字符串。
+  这里我们特殊处理 N=0 的情况，并为正数调用辅助函数。
+*)
+Definition nat_to_binary_string (n : nat) : string :=
+  if Nat.eqb n 0 then "0"
+  else nat_to_binary_string_pos_aux n n.
+
+Definition solve_impl (N : nat) : string :=
+  nat_to_binary_string (sum_decimal_digits N).
+
+
 
 Require Import Coq.ZArith.ZArith.
-Require Import Coq.Arith.Arith.
 Require Import Coq.Arith.PeanoNat.
 Require Import Coq.Lists.List.
-Require Import Coq.Strings.String.
 Require Import Coq.Strings.Ascii.
-Require Import Coq.micromega.Lia.
 From AUXLib Require Import Axioms ListLib.
 From SimpleC.SL Require Import IntLib.
-From SimpleC.EE Require Import string_bridge.
-From SimpleC.EE Require Export coins_44 coins_103.
+Require Import string_bridge.
+Require Import base_conversion_lib binary_digits_lib.
 Import ListNotations.
 
 Local Open Scope Z_scope.
 Local Open Scope string_scope.
 Local Open Scope list_scope.
 
-Definition problem_84_pre_z (N : Z) : Prop :=
-  problem_84_pre (Z.to_nat N).
+Definition problem_84_pre (N : Z) : Prop :=
+  0 <= N <= 10 * 1000.
 
-Definition problem_84_spec_z (N : Z) (output : list Z) : Prop :=
-  problem_84_spec (Z.to_nat N) (string_of_list_z output).
+Definition problem_84_spec (N : Z) (output : list Z) : Prop :=
+  string_of_list output = solve_impl (Z.to_nat N).
 
-Definition decimal_sum_value_z (orig sum : Z) : Prop :=
+Definition decimal_sum_value (orig sum : Z) : Prop :=
   sum = Z.of_nat (sum_decimal_digits (Z.to_nat orig)).
 
-Definition decimal_sum_state_z (orig x sum : Z) : Prop :=
+Definition decimal_sum_state (orig x sum : Z) : Prop :=
   0 <= x /\
   0 <= sum /\
   sum + x <= orig /\
@@ -36,220 +94,3 @@ Definition decimal_sum_state_z (orig x sum : Z) : Prop :=
     (Z.to_nat x <= fuel)%nat /\
     sum + Z.of_nat (sum_decimal_digits_aux fuel (Z.to_nat x)) =
       Z.of_nat (sum_decimal_digits (Z.to_nat orig)).
-
-Lemma decimal_sum_state_init : forall orig,
-  0 <= orig ->
-  decimal_sum_state_z orig orig 0.
-Proof.
-  intros orig Horig.
-  unfold decimal_sum_state_z.
-  repeat split; try lia.
-  exists (Z.to_nat orig).
-  split; [lia|].
-  unfold sum_decimal_digits.
-  reflexivity.
-Qed.
-
-Lemma sum_decimal_digits_aux_step_z : forall fuel x,
-  0 < x ->
-  Z.of_nat (sum_decimal_digits_aux (S fuel) (Z.to_nat x)) =
-    x mod 10 +
-    Z.of_nat (sum_decimal_digits_aux fuel (Z.to_nat (x / 10))).
-Proof.
-  intros fuel x Hx.
-  destruct (Z.to_nat x) as [|xn] eqn:Hxnat; [lia|].
-  change (sum_decimal_digits_aux (S fuel) (S xn)) with
-    ((S xn mod 10 + sum_decimal_digits_aux fuel (S xn / 10))%nat).
-  rewrite Nat2Z.inj_add.
-  replace (Z.of_nat (S xn mod 10)) with (x mod 10).
-  2:{
-    rewrite <- Hxnat.
-    rewrite Nat2Z.inj_mod by lia.
-    rewrite Z2Nat.id by lia.
-    reflexivity.
-  }
-  replace (sum_decimal_digits_aux fuel (S xn / 10)) with
-    (sum_decimal_digits_aux fuel (Z.to_nat (x / 10))).
-  2:{
-    rewrite <- Hxnat.
-    rewrite Z2Nat.inj_div by lia.
-    reflexivity.
-  }
-  reflexivity.
-Qed.
-
-Lemma decimal_sum_state_step : forall orig x sum,
-  0 < x ->
-  decimal_sum_state_z orig x sum ->
-  decimal_sum_state_z orig (x / 10) (sum + x mod 10).
-Proof.
-  intros orig x sum Hx [Hx_nonneg [Hsum [Hbound Hstate]]].
-  unfold decimal_sum_state_z.
-  repeat split.
-  - apply Z.div_pos; lia.
-  - pose proof (Z.mod_pos_bound x 10 ltac:(lia)).
-    lia.
-  - assert (x = 10 * (x / 10) + x mod 10).
-    { apply Z.div_mod; lia. }
-    assert (x / 10 <= 10 * (x / 10)).
-    { pose proof (Z.div_pos x 10 ltac:(lia) ltac:(lia)). nia. }
-    lia.
-  - destruct Hstate as [fuel [Hfuel Hstate]].
-    destruct fuel as [|fuel']; [lia|].
-    exists fuel'.
-    split.
-    + rewrite Z2Nat.inj_div by lia.
-      apply Nat.lt_succ_r.
-      eapply Nat.lt_le_trans.
-      * apply Nat.div_lt; lia.
-      * exact Hfuel.
-    + rewrite <- Hstate.
-      rewrite sum_decimal_digits_aux_step_z by lia.
-      lia.
-Qed.
-
-Lemma decimal_sum_state_sum_bound : forall orig x sum,
-  0 <= orig ->
-  orig <= 10000 ->
-  decimal_sum_state_z orig x sum ->
-  sum <= 10000.
-Proof.
-  intros orig x sum Horig Horig_bound [Hx [Hsum [Hbound _]]].
-  lia.
-Qed.
-
-Lemma decimal_sum_state_done : forall orig sum,
-  decimal_sum_state_z orig 0 sum ->
-  decimal_sum_value_z orig sum.
-Proof.
-  intros orig sum [_ [_ [_ [fuel [_ Hstate]]]]].
-  unfold decimal_sum_value_z.
-  assert (sum_decimal_digits_aux fuel 0 = 0)%nat as Hzero.
-  { destruct fuel; reflexivity. }
-  change (Z.to_nat 0) with 0%nat in Hstate.
-  rewrite Hzero in Hstate.
-  lia.
-Qed.
-
-Lemma nat_to_binary_string_pos_aux_zero : forall fuel,
-  nat_to_binary_string_pos_aux fuel 0 = "".
-Proof.
-  destruct fuel; reflexivity.
-Qed.
-
-Lemma nat_to_binary_string_pos_aux_to_digits : forall fuel n,
-  (0 < n)%nat ->
-  (n < Nat.pow 2 fuel)%nat ->
-  nat_to_binary_string_pos_aux fuel n =
-    string_of_list_z (binary_digits_z (Z.of_nat n)).
-Proof.
-  induction fuel as [|fuel IH]; intros n Hn Hbound.
-  - simpl in Hbound. lia.
-  - destruct n as [|n']; [lia|].
-    simpl nat_to_binary_string_pos_aux.
-    replace (Nat.eqb (S n') 0) with false by (symmetry; apply Nat.eqb_neq; lia).
-    destruct n' as [|n''].
-    + rewrite nat_to_binary_string_pos_aux_zero.
-      unfold binary_digits_z.
-      rewrite base_digits_z_small by lia.
-      reflexivity.
-    + rewrite IH.
-      2:{ change (0 < S (S n'') / 2)%nat.
-          apply Nat.div_str_pos; lia. }
-      2:{
-        change (S (S n'') / 2 < 2 ^ fuel)%nat.
-        apply Nat.div_lt_upper_bound; [lia|].
-        replace (2 ^ S fuel)%nat with (2 * 2 ^ fuel)%nat in Hbound by (simpl; lia).
-        lia.
-      }
-      unfold binary_digits_z at 2.
-      rewrite base_digits_z_step by lia.
-      rewrite string_of_list_z_app.
-      unfold binary_digits_z.
-      replace (Z.of_nat (S (S n'')) / 2) with
-        (Z.of_nat (S (S n'') / 2)) by
-        (rewrite Nat2Z.inj_div by lia; reflexivity).
-      replace (Z.of_nat (S (S n'')) mod 2) with
-        (Z.of_nat (S (S n'') mod 2)) by
-        (rewrite Nat2Z.inj_mod by lia; reflexivity).
-      destruct (Nat.eqb (S (S n'') mod 2) 0) eqn:Hmod.
-      * apply Nat.eqb_eq in Hmod.
-        rewrite Hmod.
-        simpl.
-        rewrite ascii_of_z_48.
-        change (match snd (Nat.divmod n'' 1 1 1) with
-                | O => 1%nat
-                | S _ => 0%nat
-                end) with (S (S n'') mod 2)%nat.
-        rewrite Hmod.
-        reflexivity.
-      * apply Nat.eqb_neq in Hmod.
-        assert (S (S n'') mod 2 = 1)%nat as Hone.
-        { pose proof (Nat.mod_upper_bound (S (S n'')) 2 ltac:(lia)).
-          lia. }
-        rewrite Hone.
-        simpl.
-        rewrite ascii_of_z_49.
-        change (match snd (Nat.divmod n'' 1 1 1) with
-                | O => 1%nat
-                | S _ => 0%nat
-                end) with (S (S n'') mod 2)%nat.
-        rewrite Hone.
-        reflexivity.
-Qed.
-
-Lemma nat_lt_pow2_self_84 : forall n,
-  (0 < n)%nat -> (n < 2 ^ n)%nat.
-Proof.
-  induction n; intros Hn; try lia.
-  destruct n.
-  - simpl. lia.
-  - replace (2 ^ S (S n))%nat with (2 * 2 ^ S n)%nat by (simpl; lia).
-    pose proof (IHn ltac:(lia)).
-    assert (1 <= 2 ^ S n)%nat.
-    { pose proof (Nat.pow_nonzero 2 (S n) ltac:(lia)). lia. }
-    lia.
-Qed.
-
-Lemma nat_to_binary_string_84_to_digits : forall n,
-  nat_to_binary_string n =
-    string_of_list_z (binary_digits_z (Z.of_nat n)).
-Proof.
-  intros n.
-  unfold nat_to_binary_string.
-  destruct (Nat.eqb n 0) eqn:Hn0.
-  - apply Nat.eqb_eq in Hn0. subst n.
-    unfold binary_digits_z.
-    rewrite base_digits_z_zero by lia.
-    reflexivity.
-  - apply Nat.eqb_neq in Hn0.
-    apply nat_to_binary_string_pos_aux_to_digits.
-    + lia.
-    + apply nat_lt_pow2_self_84. lia.
-Qed.
-
-Lemma problem_84_spec_z_intro : forall N out_l sum,
-  0 <= N ->
-  decimal_sum_value_z N sum ->
-  out_l = binary_digits_z sum ->
-  problem_84_spec_z N out_l.
-Proof.
-  intros N out_l sum HN Hsum Hout.
-  subst out_l.
-  unfold problem_84_spec_z, problem_84_spec, solve_impl.
-  unfold decimal_sum_value_z in Hsum.
-  subst sum.
-  symmetry.
-  apply nat_to_binary_string_84_to_digits.
-Qed.
-
-Lemma problem_84_spec_z_zero :
-  problem_84_spec_z 0 [48].
-Proof.
-  apply problem_84_spec_z_intro with (sum := 0).
-  - lia.
-  - reflexivity.
-  - unfold binary_digits_z.
-    rewrite base_digits_z_zero by lia.
-    reflexivity.
-Qed.

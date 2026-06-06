@@ -11,4 +11,9 @@ Fixpoint count_divisors_upto (n : Z) (fuel : nat) : Z :=
   end.
 
 Definition count_divisors_spec (n : Z) : Z :=
-  count_divisors_upto n (Z.to_nat n).
+  snd (Z.iter n
+    (fun st =>
+       let '(d, count) := st in
+       let d' := d + 1 in
+       (d', count + if Z.eq_dec (Z.rem n d') 0 then 1 else 0))
+    (0, 0)).

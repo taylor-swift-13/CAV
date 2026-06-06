@@ -11,12 +11,12 @@ Example:
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_64_pre_z: list Z -> Prop)
-               (problem_64_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
+/*@ Extern Coq (problem_64_pre: list Z -> Prop)
+               (problem_64_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
                (count_regular_vowels_upto: Z -> list Z -> Z)
                (last_y_add: list Z -> Z) */
-/*@ Import Coq Require Import coins_64 */
+/*@ Import Coq Require Import vowels_count_64 */
 
 int strlen(char *s)
 /*@ With l n
@@ -31,15 +31,15 @@ int vowels_count_64(char *s)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_64_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_64_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_64_spec_z(l, __return) &&
+        problem_64_spec(l, __return) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s) /*@ where l = l, n = len */;
+    int n = strlen(s);
     int count = 0;
     int i;
     

@@ -1,279 +1,120 @@
-(* defs for get_closest_vowel_118 from: coins_118.v *)
+(* spec/118 *)
+(* You are given a word. Your task is to find the closest vowel that stands between
+two consonants from the right side of the word (case sensitive).
 
-Load "../spec/118".
+Vowels in the beginning and ending doesn't count. Return empty string if you didn't
+find any vowel met the above condition.
+
+You may assume that the given string contains English letter only.
+
+Example:
+get_closest_vowel("yogurt") ==> "u"
+get_closest_vowel("FULL") ==> "U"
+get_closest_vowel("quick") ==> ""
+get_closest_vowel("ab") ==> ""*)
+
+(* 导入所需的 Coq 库 *)
+Require Import Coq.Strings.String Coq.Strings.Ascii.
+Require Import Arith.
+Require Import Coq.Logic.FunctionalExtensionality.
+
+(*
+ * 辅助定义
+ *)
+
+(* 定义：检查一个字符是否为元音（区分大小写） *)
+Definition is_vowel_nat (c : ascii) : Prop :=
+  match c with
+  | "a"%char | "e"%char | "i"%char | "o"%char | "u"%char => True
+  | "A"%char | "E"%char | "I"%char | "O"%char | "U"%char => True
+  | _ => False
+  end.
+
+(* 定义：检查一个字符是否为英文字母 *)
+Definition is_alpha_nat (c : ascii) : Prop :=
+  let n := nat_of_ascii c in
+  (65 <= n /\ n <= 90) \/ (97 <= n /\ n <= 122).
+
+(* 定义：检查一个字符是否为辅音 *)
+Definition is_consonant_nat (c : ascii) : Prop :=
+  is_alpha_nat c /\ ~ is_vowel_nat c.
+
+(* 输入字符串只包含英文字母 *)
+
 
 Require Import Coq.ZArith.ZArith.
 Require Import Coq.Lists.List.
-Require Import Coq.Strings.String.
-Require Import Coq.Strings.Ascii.
 Require Import Lia.
 From AUXLib Require Import ListLib.
-From SimpleC.EE Require Export string_bridge.
+Require Import string_bridge.
 Import ListNotations.
 
 Local Open Scope string_scope.
 Local Open Scope Z_scope.
 
-Definition is_vowel_z (x : Z) : Prop :=
+Definition is_vowel (x : Z) : Prop :=
   x = 65 \/ x = 69 \/ x = 73 \/ x = 79 \/ x = 85 \/
   x = 97 \/ x = 101 \/ x = 105 \/ x = 111 \/ x = 117.
 
-Definition is_alpha_z (x : Z) : Prop :=
+Definition is_alpha (x : Z) : Prop :=
   65 <= x <= 90 \/ 97 <= x <= 122.
 
-Definition is_consonant_z (x : Z) : Prop :=
-  is_alpha_z x /\ ~ is_vowel_z x.
+Definition is_consonant (x : Z) : Prop :=
+  is_alpha x /\ ~ is_vowel x.
 
-Definition alpha_range_z (l : list Z) : Prop :=
-  forall i, 0 <= i < Zlength l -> is_alpha_z (Znth i l 0).
+Definition alpha_range (l : list Z) : Prop :=
+  forall i, 0 <= i < Zlength l -> is_alpha (Znth i l 0).
 
-Definition closest_vowel_candidate_z (l : list Z) (i : Z) : Prop :=
+Definition closest_vowel_candidate (l : list Z) (i : Z) : Prop :=
   1 <= i < Zlength l - 1 /\
-  is_consonant_z (Znth (i - 1) l 0) /\
-  is_vowel_z (Znth i l 0) /\
-  is_consonant_z (Znth (i + 1) l 0).
+  is_consonant (Znth (i - 1) l 0) /\
+  is_vowel (Znth i l 0) /\
+  is_consonant (Znth (i + 1) l 0).
 
-Definition no_candidate_after_z (i : Z) (l : list Z) : Prop :=
-  forall j, i < j < Zlength l - 1 -> ~ closest_vowel_candidate_z l j.
+Definition no_candidate_after (i : Z) (l : list Z) : Prop :=
+  forall j, i < j < Zlength l - 1 -> ~ closest_vowel_candidate l j.
 
-Definition problem_118_pre_z (word : list Z) : Prop :=
-  problem_118_pre (string_of_list_z word).
+Definition problem_118_pre (word : list Z) : Prop :=
+  let fix all_letters (w : string) : Prop :=
+    match w with
+    | EmptyString => True
+    | String ch rest =>
+        let n := Z.of_nat (nat_of_ascii ch) in ((65 <= n /\ n <= 90) \/ (97 <= n /\ n <= 122)) /\ all_letters rest
+    end in all_letters ((string_of_list word)).
 
-Definition problem_118_spec_z (word output : list Z) : Prop :=
-  problem_118_spec (string_of_list_z word) (string_of_list_z output).
-
-Lemma is_vowel_z_to_is_vowel : forall x,
-  is_vowel_z x ->
-  is_vowel (ascii_of_z x).
-Proof.
-  intros x H.
-  unfold is_vowel_z in H.
-  repeat (destruct H as [-> | H]; [simpl; exact I |]).
-  subst; simpl; exact I.
-Qed.
-
-Lemma is_alpha_z_to_is_alpha : forall x,
-  0 <= x < 256 ->
-  is_alpha_z x ->
-  is_alpha (ascii_of_z x).
-Proof.
-  intros x Hrange Halpha.
-  unfold is_alpha_z in Halpha.
-  unfold is_alpha.
-  rewrite nat_of_ascii_ascii_of_z by exact Hrange.
-  lia.
-Qed.
-
-Lemma is_vowel_to_is_vowel_z : forall x,
-  0 <= x < 256 ->
-  is_vowel (ascii_of_z x) ->
-  is_vowel_z x.
-Proof.
-  intros x Hrange Hv.
-  unfold ascii_of_z in Hv.
-  remember (ascii_of_nat (Z.to_nat x)) as a eqn:Ha.
-  destruct a as [b0 b1 b2 b3 b4 b5 b6 b7].
-  destruct b0, b1, b2, b3, b4, b5, b6, b7; simpl in Hv; try contradiction;
-    apply (f_equal nat_of_ascii) in Ha;
-    rewrite nat_ascii_embedding in Ha by lia;
-    cbn in Ha;
-    unfold is_vowel_z; lia.
-Qed.
-
-Lemma is_consonant_z_to_is_consonant : forall x,
-  0 <= x < 256 ->
-  is_consonant_z x ->
-  is_consonant (ascii_of_z x).
-Proof.
-  intros x Hrange [Halpha Hnot_vowel].
-  unfold is_consonant.
-  split.
-  - apply is_alpha_z_to_is_alpha; assumption.
-  - intro Hv.
-    apply Hnot_vowel.
-    apply is_vowel_to_is_vowel_z; assumption.
-Qed.
-
-Lemma candidate_z_to_spec_candidate : forall l i,
-  ascii_range_z l ->
-  closest_vowel_candidate_z l i ->
-  exists c_prev c_curr c_next,
-    String.get (Z.to_nat (i - 1)) (string_of_list_z l) = Some c_prev /\
-    String.get (Z.to_nat i) (string_of_list_z l) = Some c_curr /\
-    String.get (Z.to_nat (i + 1)) (string_of_list_z l) = Some c_next /\
-    is_consonant c_prev /\ is_vowel c_curr /\ is_consonant c_next /\
-    c_curr = ascii_of_z (Znth i l 0).
-Proof.
-  intros l i Hrange Hcand.
-  unfold closest_vowel_candidate_z in Hcand.
-  destruct Hcand as [Hi [Hprev [Hcur Hnext]]].
-  exists (ascii_of_z (Znth (i - 1) l 0)).
-  exists (ascii_of_z (Znth i l 0)).
-  exists (ascii_of_z (Znth (i + 1) l 0)).
-  split.
-  - rewrite string_get_string_of_list_z_z; [reflexivity | lia].
-  - split.
-    + rewrite string_get_string_of_list_z_z; [reflexivity | lia].
-    + split.
-      * rewrite string_get_string_of_list_z_z; [reflexivity | lia].
-      * split.
-        -- apply is_consonant_z_to_is_consonant.
-           ++ apply Hrange. lia.
-           ++ exact Hprev.
-        -- split.
-           ++ apply is_vowel_z_to_is_vowel. exact Hcur.
-           ++ split.
-              ** apply is_consonant_z_to_is_consonant.
-                 --- apply Hrange. lia.
-                 --- exact Hnext.
-              ** reflexivity.
-Qed.
-
-Lemma spec_candidate_to_candidate_z : forall l i c_prev c_curr c_next,
-  ascii_range_z l ->
-  alpha_range_z l ->
-  1 <= Z.of_nat i < Zlength l - 1 ->
-  String.get (i - 1) (string_of_list_z l) = Some c_prev ->
-  String.get i (string_of_list_z l) = Some c_curr ->
-  String.get (i + 1) (string_of_list_z l) = Some c_next ->
-  is_consonant c_prev ->
-  is_vowel c_curr ->
-  is_consonant c_next ->
-  closest_vowel_candidate_z l (Z.of_nat i).
-Proof.
-  intros l i c_prev c_curr c_next Hrange Halpha Hi Hprev_get Hcur_get Hnext_get
-         Hprev Hcur Hnext.
-  unfold closest_vowel_candidate_z.
-  split; [lia |].
-  split.
-  - unfold is_consonant_z.
-    split.
-    + apply Halpha. lia.
-    + intro Hvz.
-      destruct Hprev as [_ Hnot].
-      apply Hnot.
-      assert (Hget :
-        String.get (Z.to_nat (Z.of_nat i - 1)) (string_of_list_z l) =
-        Some (ascii_of_z (Znth (Z.of_nat i - 1) l 0))).
-      { apply string_get_string_of_list_z_z. lia. }
-      replace (Z.to_nat (Z.of_nat i - 1)) with (i - 1)%nat in Hget by lia.
-      rewrite Hprev_get in Hget. inversion Hget; subst.
-      apply is_vowel_z_to_is_vowel. exact Hvz.
-  - split.
-    + assert (Hget :
-        String.get (Z.to_nat (Z.of_nat i)) (string_of_list_z l) =
-        Some (ascii_of_z (Znth (Z.of_nat i) l 0))).
-      { apply string_get_string_of_list_z_z. lia. }
-      rewrite Nat2Z.id in Hget.
-      rewrite Hcur_get in Hget. inversion Hget; subst.
-      apply is_vowel_to_is_vowel_z.
-      * apply Hrange. lia.
-      * exact Hcur.
-    + unfold is_consonant_z.
-      split.
-      * apply Halpha. lia.
-      * intro Hvz.
-        destruct Hnext as [_ Hnot].
-        apply Hnot.
-        assert (Hget :
-          String.get (Z.to_nat (Z.of_nat i + 1)) (string_of_list_z l) =
-          Some (ascii_of_z (Znth (Z.of_nat i + 1) l 0))).
-        { apply string_get_string_of_list_z_z. lia. }
-        replace (Z.to_nat (Z.of_nat i + 1)) with (i + 1)%nat in Hget by lia.
-        rewrite Hnext_get in Hget. inversion Hget; subst.
-        apply is_vowel_z_to_is_vowel. exact Hvz.
-Qed.
-
-Lemma no_candidate_after_step : forall i l,
-  ~ closest_vowel_candidate_z l i ->
-  no_candidate_after_z i l ->
-  no_candidate_after_z (i - 1) l.
-Proof.
-  unfold no_candidate_after_z.
-  intros i l Hnot Hafter j Hj.
-  destruct (Z.eq_dec j i) as [-> | Hne].
-  - exact Hnot.
-  - apply Hafter. lia.
-Qed.
-
-Lemma no_candidate_after_start : forall l,
-  no_candidate_after_z (Zlength l - 2) l.
-Proof.
-  unfold no_candidate_after_z.
-  intros l j Hj.
-  lia.
-Qed.
-
-Lemma problem_118_spec_z_found : forall l i,
-  ascii_range_z l ->
-  alpha_range_z l ->
-  closest_vowel_candidate_z l i ->
-  no_candidate_after_z i l ->
-  problem_118_spec_z l [Znth i l 0].
-Proof.
-  intros l i Hrange Halpha Hcand Hafter.
-  unfold problem_118_spec_z, problem_118_spec.
-  left.
-  exists (Z.to_nat i).
-  exists (ascii_of_z (Znth i l 0)).
-  unfold closest_vowel_candidate_z in Hcand.
-  destruct Hcand as [Hi Hrest].
-  split.
-  - rewrite string_of_list_z_length.
-    rewrite <- z_to_nat_Zlength.
-    lia.
-  - split.
-    + destruct Hrest as [Hprev [Hcur Hnext]].
-      pose proof (candidate_z_to_spec_candidate l i Hrange
-        (conj Hi (conj Hprev (conj Hcur Hnext)))) as Hspec.
-      destruct Hspec as [c_prev [c_curr [c_next Hspec]]].
-      exists c_prev, c_next.
-      destruct Hspec as [H1 [H2 [H3 [H4 [H5 [H6 Hcurr]]]]]].
-      split; [replace (Z.to_nat i - 1)%nat with (Z.to_nat (i - 1)) by lia; exact H1 |].
-      split; [rewrite <- Hcurr; exact H2 |].
-      split; [replace (Z.to_nat i + 1)%nat with (Z.to_nat (i + 1)) by lia; exact H3 |].
-      split; [exact H4 |].
-      split; [rewrite <- Hcurr; exact H5 |].
-      exact H6.
-    + split.
-      * simpl. reflexivity.
-      * intros j Hj Hbad.
-        apply (Hafter (Z.of_nat j)).
-        -- rewrite string_of_list_z_length in Hj.
-           rewrite <- z_to_nat_Zlength in Hj.
-           lia.
-        -- destruct Hbad as [j_prev [j_curr [j_next [Hprev [Hcur [Hnext Hcons]]]]]].
-           destruct Hcons as [Hcprev [Hvcurr Hcnext]].
-           eapply spec_candidate_to_candidate_z with
-             (c_prev := j_prev) (c_curr := j_curr) (c_next := j_next);
-             try eassumption.
-           ++ rewrite string_of_list_z_length in Hj.
-              rewrite <- z_to_nat_Zlength in Hj.
-              lia.
-Qed.
-
-Lemma problem_118_spec_z_not_found : forall l,
-  ascii_range_z l ->
-  alpha_range_z l ->
-  no_candidate_after_z 0 l ->
-  problem_118_spec_z l [].
-Proof.
-  intros l Hrange Halpha Hnone.
-  unfold problem_118_spec_z, problem_118_spec.
-  right.
-  split.
-  - intros i Hi Hbad.
-    apply (Hnone (Z.of_nat i)).
-    + rewrite string_of_list_z_length in Hi.
-      rewrite <- z_to_nat_Zlength in Hi.
-      lia.
-    + destruct Hbad as [c_prev [c_curr [c_next [Hprev [Hcur [Hnext Hcons]]]]]].
-      destruct Hcons as [Hcprev [Hvcurr Hcnext]].
-      apply spec_candidate_to_candidate_z with
-        (c_prev := c_prev) (c_curr := c_curr) (c_next := c_next);
-        try assumption.
-      rewrite string_of_list_z_length in Hi.
-      rewrite <- z_to_nat_Zlength in Hi.
-      lia.
-  - reflexivity.
-Qed.
+Definition problem_118_spec (word output : list Z) : Prop :=
+  (((* 情况一：找到了符合条件的元音 *)
+    (exists i c_curr,
+      1 <= i < String.length ((string_of_list word)) - 1 /\
+      (*
+       * 断言在 i-1, i, i+1 的位置上确实存在字符 (c_prev, c_curr, c_next)，
+       * 并且这些字符满足 "辅音-元音-辅音" 的模式。
+       * 这是处理 `option ascii` 类型的关键。
+       *)
+      (exists c_prev c_next,
+          String.get (i - 1) ((string_of_list word)) = Some c_prev /\
+          String.get i ((string_of_list word)) = Some c_curr /\
+          String.get (i + 1) ((string_of_list word)) = Some c_next /\
+          is_consonant_nat c_prev /\ is_vowel_nat c_curr /\ is_consonant_nat c_next) /\
+      ((string_of_list output)) = String c_curr ""%string /\
+      (* 并且，这是最右边（即索引最大）的一个 *)
+      (forall j,
+        i < j < String.length ((string_of_list word)) - 1 ->
+        ~ (exists j_prev j_curr j_next,
+              String.get (j - 1) ((string_of_list word)) = Some j_prev /\
+              String.get j ((string_of_list word)) = Some j_curr /\
+              String.get (j + 1) ((string_of_list word)) = Some j_next /\
+              is_consonant_nat j_prev /\ is_vowel_nat j_curr /\ is_consonant_nat j_next))
+    )
+    \/
+    (* 情况二：不存在符合条件的元音 *)
+    (
+      (forall i,
+        1 <= i < String.length ((string_of_list word)) - 1 ->
+        ~ (exists c_prev c_curr c_next,
+              String.get (i - 1) ((string_of_list word)) = Some c_prev /\
+              String.get i ((string_of_list word)) = Some c_curr /\
+              String.get (i + 1) ((string_of_list word)) = Some c_next /\
+              is_consonant_nat c_prev /\ is_vowel_nat c_curr /\ is_consonant_nat c_next)) /\
+      ((string_of_list output)) = ""%string
+    ))%nat).

@@ -9,17 +9,17 @@ Return a string containing space-delimited numbers starting from 0 upto n inclus
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_15_pre_z: Z -> Prop)
-               (problem_15_spec_z: Z -> list Z -> Prop)
-               (sequence_prefix_z: Z -> list Z)
-               (sequence_output_z: Z -> list Z)
-               (sequence_output_bound_z: Z -> Prop)
-               (base_digits_z: Z -> Z -> list Z)
-               (base_count_state_z: Z -> Z -> Z -> Z -> Prop)
-               (base_fill_full_state_z: Z -> Z -> Z -> Z -> list Z -> Prop)
+/*@ Extern Coq (problem_15_pre: Z -> Prop)
+               (problem_15_spec: Z -> list Z -> Prop)
+               (sequence_prefix: Z -> list Z)
+               (sequence_output: Z -> list Z)
+               (sequence_output_bound: Z -> Prop)
+               (base_digits: Z -> Z -> list Z)
+               (base_count_state: Z -> Z -> Z -> Z -> Prop)
+               (base_fill_full_state: Z -> Z -> Z -> Z -> list Z -> Prop)
                (repeat_Z: {A} -> A -> Z -> list A) */
-/*@ Import Coq Require Import coins_44 */
-/*@ Import Coq Require Import coins_15 */
+/*@ Import Coq Require Import string_sequence_15 */
+/*@ Import Coq Require Import string_sequence_15 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -31,12 +31,12 @@ char* string_sequence_15(int n)
 /*@ Require
         0 <= n &&
         12 * (n + 1) + 1 < INT_MAX &&
-        problem_15_pre_z(n) &&
-        sequence_output_bound_z(n)
+        problem_15_pre(n) &&
+        sequence_output_bound(n)
     Ensure exists out_l len cap,
         cap == 12 * (n + 1) + 1 &&
         len == Zlength(out_l) &&
-        problem_15_spec_z(n, out_l) &&
+        problem_15_spec(n, out_l) &&
         CharArray::full(__return, len + 1, app(out_l, cons(0, nil))) *
         CharArray::undef_seg(__return, len + 1, cap)
 */

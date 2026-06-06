@@ -16,12 +16,12 @@ match_parens_119({")", ")"}) == "No"
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_119_pre_z: list Z -> list Z -> Prop)
-               (problem_119_spec_z: list Z -> list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
+/*@ Extern Coq (problem_119_pre: list Z -> list Z -> Prop)
+               (problem_119_spec: list Z -> list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
                (paren_level_upto: Z -> list Z -> Z)
                (paren_good_prefix_flag: Z -> list Z -> Z) */
-/*@ Import Coq Require Import coins_119 */
+/*@ Import Coq Require Import match_parens_119 */
 
 int strlen(char *s)
 /*@ With l n
@@ -39,13 +39,13 @@ int match_parens_119(char *s1, char *s2)
         len1 + len2 < INT_MAX &&
         Zlength(l1) == len1 &&
         Zlength(l2) == len2 &&
-        problem_119_pre_z(l1, l2) &&
-        ascii_range_z(l1) &&
-        ascii_range_z(l2) &&
+        problem_119_pre(l1, l2) &&
+        ascii_range(l1) &&
+        ascii_range(l2) &&
         CharArray::full(s1, len1 + 1, app(l1, cons(0, nil))) *
         CharArray::full(s2, len2 + 1, app(l2, cons(0, nil)))
     Ensure
-        problem_119_spec_z(l1, l2, __return) &&
+        problem_119_spec(l1, l2, __return) &&
         CharArray::full(s1, len1 + 1, app(l1, cons(0, nil))) *
         CharArray::full(s2, len2 + 1, app(l2, cons(0, nil)))
 */
@@ -53,8 +53,8 @@ int match_parens_119(char *s1, char *s2)
     int i;
     int count = 0;
     int can = 1;
-    int n1 = strlen(s1) /*@ where l = l1, n = len1 */;
-    int n2 = strlen(s2) /*@ where l = l2, n = len2 */;
+    int n1 = strlen(s1);
+    int n2 = strlen(s2);
 
     for (i = 0; i < n1; i++) {
         if (s1[i] == 40) {

@@ -6,13 +6,13 @@ the decoded string. Only decode_cyclic_38 is verified for problem 38.
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_38_pre_z: list Z -> Prop)
-               (problem_38_spec_z: list Z -> list Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (full_decode_len_z: Z -> Z)
-               (decode_char_z: Z -> list Z -> Z -> Z)
-               (decode_source_index_z: Z -> Z -> Z) */
-/*@ Import Coq Require Import coins_38 */
+/*@ Extern Coq (problem_38_pre: list Z -> Prop)
+               (problem_38_spec: list Z -> list Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (full_decode_len: Z -> Z)
+               (decode_char: Z -> list Z -> Z -> Z)
+               (decode_source_index: Z -> Z -> Z) */
+/*@ Import Coq Require Import decode_cyclic_38 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -33,18 +33,18 @@ char *decode_cyclic_38(char *s)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_38_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_38_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure
         exists out_l,
         Zlength(out_l) == len &&
-        problem_38_spec_z(l, out_l) &&
+        problem_38_spec(l, out_l) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil))) *
         CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {
-    int n = strlen(s) /*@ where l = l, n = len */;
+    int n = strlen(s);
     char *out = malloc_char_array(n + 1);
     int full = (n / 3) * 3;
     int i;

@@ -24,12 +24,12 @@ Note:
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_107_pre_z: Z -> Prop)
-               (problem_107_spec_z: Z -> list Z -> Prop)
+/*@ Extern Coq (problem_107_pre: Z -> Prop)
+               (problem_107_spec: Z -> list Z -> Prop)
                (pal_reverse_loop_state: Z -> Z -> Z -> Prop)
-               (is_pal_z: Z -> Z)
+               (is_pal: Z -> Z)
                (pal_count_prefix: Z -> Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_107 */
+/*@ Import Coq Require Import even_odd_palindrome_107 */
 
 typedef struct {
     int* data;
@@ -54,7 +54,7 @@ static int is_pal(int x)
         x == x0 &&
         1 <= x0 && x0 <= 1000 && emp
     Ensure
-        __return == is_pal_z(x0) && emp
+        __return == is_pal(x0) && emp
 */
 {
     int r = 0;
@@ -72,14 +72,14 @@ IntArray *even_odd_palindrome_107(int n)
     Require
         n == n0 &&
         1 <= n0 && n0 <= 1000 &&
-        problem_107_pre_z(n0)
+        problem_107_pre(n0)
     Ensure
         exists data output_l output_size,
         __return != 0 &&
         data != 0 &&
         output_size == 2 &&
         output_l == cons(Znth(0, output_l, 0), cons(Znth(1, output_l, 0), nil)) &&
-        problem_107_spec_z(n0, output_l) &&
+        problem_107_spec(n0, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, output_size, output_l)

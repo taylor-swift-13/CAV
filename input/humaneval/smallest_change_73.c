@@ -12,22 +12,22 @@ smallest_change_73({1, 2, 3, 2, 1}) == 0
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_73_pre_z: list Z -> Prop)
-               (problem_73_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_73_pre: list Z -> Prop)
+               (problem_73_spec: list Z -> Z -> Prop)
                (count_half_mismatches_upto: Z -> list Z -> Z)
                (smallest_change_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_73 */
+/*@ Import Coq Require Import smallest_change_73 */
 
 int smallest_change_73(int *arr, int arr_size)
 /*@ With lv
     Require
         0 <= arr_size && arr_size < INT_MAX &&
         arr_size == Zlength(lv) &&
-        problem_73_pre_z(lv) &&
+        problem_73_pre(lv) &&
         smallest_change_int_range(lv) &&
         IntArray::full(arr, arr_size, lv)
     Ensure
-        problem_73_spec_z(lv, __return) &&
+        problem_73_spec(lv, __return) &&
         IntArray::full(arr, arr_size, lv)
 */
 {

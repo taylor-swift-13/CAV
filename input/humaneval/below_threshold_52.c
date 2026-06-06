@@ -12,7 +12,7 @@ Return 1 if all numbers in the vector l are below threshold t, 0 otherwise.
 /*@ Extern Coq (problem_52_pre: list Z -> Prop)
                (problem_52_spec: list Z -> Z -> bool -> Prop)
                (true: bool) (false: bool) */
-/*@ Import Coq Require Import coins_52 */
+/*@ Import Coq Require Import below_threshold_52 */
 
 int below_threshold_52(int *l, int l_size, int t)
 /*@ With input_l

@@ -1,45 +1,174 @@
-(* defs for parse_nested_parens_6 from: coins_6.v *)
+(* spec/6 *)
+(* Input to this function is a string represented multiple groups for nested parentheses separated by spaces.
+For each of the group, output the deepest level of nesting of parentheses.
+E.g. (()()) has maximum two levels of nesting while ((())) has three.
 
-Load "../spec/6".
+>>> parse_nested_parens('(()()) ((())) () ((())()())')
+[2, 3, 1, 3] *)
+
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Strings.String.
+Require Import Coq.Lists.List.
+Require Import Arith.
+Require Import PeanoNat.
+Import ListNotations.
+Open Scope string_scope.
+
+(* 定义 '(' 和 ')' 和 ' ' 的 ASCII 表示 *)
+Definition lparen : ascii := "(".
+Definition rparen : ascii := ")".
+Definition space : ascii := " ".
+
+(*
+  规约 1: MaxDepth(g)
+  计算单个括号组的最大嵌套深度。
+*)
+Fixpoint max_depth_aux (g : string) (current_depth max_seen : nat) : nat :=
+  match g with
+  | EmptyString => max_seen
+  | String h t =>
+    if ascii_dec h lparen then
+      let new_depth := S current_depth in
+      max_depth_aux t new_depth (Nat.max max_seen new_depth)
+    else if ascii_dec h rparen then
+      max_depth_aux t (Nat.pred current_depth) max_seen
+    else
+      max_depth_aux t current_depth max_seen (* 忽略其他字符 *)
+  end.
+
+Definition MaxDepth (g : string) : nat :=
+  max_depth_aux g 0 0.
+
+(*
+  规约 2: SplitOnSpaces(S)
+  将一个字符列表按空格分割成一个列表的列表。
+*)
+Fixpoint SplitOnSpaces_aux (current_group : list ascii) (S : string) : list string :=
+  match S with
+  | EmptyString =>
+    match current_group with
+    | [] => []
+    | _ => [string_of_list_ascii (List.rev current_group)]
+    end
+  | String h t =>
+    if ascii_dec h space then
+      match current_group with
+      | [] => SplitOnSpaces_aux [] t (* 多个或前导空格 *)
+      | _ => (string_of_list_ascii (List.rev current_group)) :: SplitOnSpaces_aux [] t
+      end
+    else
+      SplitOnSpaces_aux (h :: current_group) t
+  end.
+
+Definition SplitOnSpaces (S : string) : list string :=
+  SplitOnSpaces_aux [] S.
+
+(*
+  最终的程序规约: parse_nested_parens_spec(input, output)
+  输入是 string, 输出是 list nat。
+*)
+
+(*
+  辅助断言: 检查一个字符是否为括号或空格
+  直接使用等式，其类型为 Prop
+*)
+Definition is_paren_or_space (c : ascii) : Prop :=
+  c = lparen \/ c = rparen \/ c = space.
+
+Fixpoint IsBalanced_aux (l : string) (count : nat) : Prop :=
+  match l with
+  | EmptyString => count = 0
+  | String h t =>
+    if ascii_dec h lparen then
+      IsBalanced_aux t (S count)
+    else if ascii_dec h rparen then
+      match count with
+      | 0 => False (* 右括号比左括号多，不平衡 *)
+      | S n' => IsBalanced_aux t n'
+      end
+    else
+      IsBalanced_aux t count (* 忽略其他字符 *)
+  end.
+
+Definition IsBalanced (l : string) : Prop :=
+  IsBalanced_aux l 0.
+  
+
+Fixpoint parse_nested_parens_scan_aux
+  (input : string) (out : list nat) (in_group : bool)
+  (current_depth max_seen : nat) : list nat :=
+  match input with
+  | EmptyString =>
+    if in_group then out ++ [max_seen] else out
+  | String h t =>
+    if ascii_dec h space then
+      if in_group then
+        parse_nested_parens_scan_aux t (out ++ [max_seen]) false 0 0
+      else
+        parse_nested_parens_scan_aux t out false current_depth max_seen
+    else if ascii_dec h lparen then
+      let new_depth := S current_depth in
+      parse_nested_parens_scan_aux t out true new_depth (Nat.max max_seen new_depth)
+    else if ascii_dec h rparen then
+      parse_nested_parens_scan_aux t out true (Nat.pred current_depth) max_seen
+    else
+      parse_nested_parens_scan_aux t out in_group current_depth max_seen
+  end.
+
+Definition parse_nested_parens_impl (input : string) : list nat :=
+  parse_nested_parens_scan_aux input [] false 0 0.
+
+(*
+  辅助函数: 检查字符串中的所有字符是否满足属性 P
+*)
+Fixpoint ForallChars (P : ascii -> Prop) (s : string) : Prop :=
+  match s with
+  | EmptyString => True
+  | String h t => P h /\ ForallChars P t
+  end.
+
+(*
+  前提条件: separate_paren_groups_pre
+  1. 输入列表中的所有字符都必须是括号或空格。
+  2. 移除空格后的输入列表必须是平衡的。
+*)
+
 
 Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
-Require Import Coq.Lists.List.
-Require Import Coq.Strings.String.
-Require Import Coq.Strings.Ascii.
 Require Import Coq.micromega.Lia.
 From AUXLib Require Import ListLib.
-From SimpleC.EE Require Export string_bridge.
-Import ListNotations.
+Require Import string_bridge.
 
 Local Open Scope Z_scope.
 Local Open Scope list_scope.
 
-Definition problem_6_pre_z (input : list Z) : Prop :=
-  problem_6_pre (string_of_list_z input).
+Definition problem_6_pre (input : list Z) : Prop :=
+  (ForallChars is_paren_or_space ((string_of_list input))) /\
+  (IsBalanced ((string_of_list input))).
 
-Definition problem_6_spec_z (input output : list Z) : Prop :=
-  problem_6_spec (string_of_list_z input) (map Z.to_nat output).
+Definition problem_6_spec (input output : list Z) : Prop :=
+  output = map Z.of_nat (parse_nested_parens_impl (string_of_list input)).
 
 Definition paren_zmax (a b : Z) : Z :=
   if Z.leb a b then b else a.
 
-Definition paren_final_output_z (out : list Z) (in_group max_level : Z) : list Z :=
+Definition paren_final_output (out : list Z) (in_group max_level : Z) : list Z :=
   if Z.eqb in_group 0 then out else out ++ [max_level].
 
-Definition paren_step_output_z (out : list Z) (in_group max_level ch : Z) : list Z :=
-  if Z.eqb ch 32 then paren_final_output_z out in_group max_level else out.
+Definition paren_step_output (out : list Z) (in_group max_level ch : Z) : list Z :=
+  if Z.eqb ch 32 then paren_final_output out in_group max_level else out.
 
-Definition paren_step_in_group_z (in_group ch : Z) : Z :=
+Definition paren_step_in_group (in_group ch : Z) : Z :=
   if Z.eqb ch 32 then 0 else 1.
 
-Definition paren_step_level_z (in_group level ch : Z) : Z :=
+Definition paren_step_level (in_group level ch : Z) : Z :=
   if Z.eqb ch 32 then
     if Z.eqb in_group 0 then level else 0
   else if Z.eqb ch 40 then level + 1
   else if Z.ltb 0 level then level - 1 else 0.
 
-Definition paren_step_max_z (in_group level max_level ch : Z) : Z :=
+Definition paren_step_max (in_group level max_level ch : Z) : Z :=
   if Z.eqb ch 32 then
     if Z.eqb in_group 0 then max_level else 0
   else if Z.eqb ch 40 then paren_zmax max_level (level + 1)
@@ -51,10 +180,10 @@ Fixpoint paren_scan_aux
   | [] => (out, in_group, level, max_level)
   | ch :: rest =>
       paren_scan_aux rest
-        (paren_step_output_z out in_group max_level ch)
-        (paren_step_in_group_z in_group ch)
-        (paren_step_level_z in_group level ch)
-        (paren_step_max_z in_group level max_level ch)
+        (paren_step_output out in_group max_level ch)
+        (paren_step_in_group in_group ch)
+        (paren_step_level in_group level ch)
+        (paren_step_max in_group level max_level ch)
   end.
 
 Definition paren_state_out (st : list Z * Z * Z * Z) : list Z :=
@@ -69,464 +198,27 @@ Definition paren_state_level (st : list Z * Z * Z * Z) : Z :=
 Definition paren_state_max (st : list Z * Z * Z * Z) : Z :=
   match st with (_, _, _, max_level) => max_level end.
 
-Definition paren_prefix_state_z (i : Z) (input : list Z) : list Z * Z * Z * Z :=
+Definition paren_prefix_state (i : Z) (input : list Z) : list Z * Z * Z * Z :=
   paren_scan_aux (sublist 0 i input) [] 0 0 0.
 
-Definition paren_prefix_output_z (i : Z) (input : list Z) : list Z :=
-  paren_state_out (paren_prefix_state_z i input).
+Definition paren_prefix_output (i : Z) (input : list Z) : list Z :=
+  paren_state_out (paren_prefix_state i input).
 
-Definition paren_prefix_in_group_z (i : Z) (input : list Z) : Z :=
-  paren_state_in_group (paren_prefix_state_z i input).
+Definition paren_prefix_in_group (i : Z) (input : list Z) : Z :=
+  paren_state_in_group (paren_prefix_state i input).
 
-Definition paren_prefix_level_z (i : Z) (input : list Z) : Z :=
-  paren_state_level (paren_prefix_state_z i input).
+Definition paren_prefix_level (i : Z) (input : list Z) : Z :=
+  paren_state_level (paren_prefix_state i input).
 
-Definition paren_prefix_max_z (i : Z) (input : list Z) : Z :=
-  paren_state_max (paren_prefix_state_z i input).
+Definition paren_prefix_max (i : Z) (input : list Z) : Z :=
+  paren_state_max (paren_prefix_state i input).
 
-Definition paren_output_z (input : list Z) : list Z :=
+Definition paren_output (input : list Z) : list Z :=
   let st := paren_scan_aux input [] 0 0 0 in
-  paren_final_output_z (paren_state_out st) (paren_state_in_group st) (paren_state_max st).
+  paren_final_output (paren_state_out st) (paren_state_in_group st) (paren_state_max st).
 
-Lemma paren_scan_aux_step : forall prefix ch out in_group level max_level,
-  paren_scan_aux (prefix ++ [ch]) out in_group level max_level =
-  let st := paren_scan_aux prefix out in_group level max_level in
-  paren_scan_aux [ch]
-    (paren_state_out st)
-    (paren_state_in_group st)
-    (paren_state_level st)
-    (paren_state_max st).
-Proof.
-  induction prefix as [| h t IH]; intros ch out in_group level max_level; simpl.
-  - reflexivity.
-  - rewrite IH. reflexivity.
-Qed.
-
-Lemma paren_scan_aux_one : forall ch out in_group level max_level,
-  paren_scan_aux [ch] out in_group level max_level =
-  (paren_step_output_z out in_group max_level ch,
-   paren_step_in_group_z in_group ch,
-   paren_step_level_z in_group level ch,
-   paren_step_max_z in_group level max_level ch).
-Proof.
-  reflexivity.
-Qed.
-
-Lemma paren_prefix_step : forall input i,
-  0 <= i < Zlength input ->
-  paren_prefix_output_z (i + 1) input =
-    paren_step_output_z
-      (paren_prefix_output_z i input)
-      (paren_prefix_in_group_z i input)
-      (paren_prefix_max_z i input)
-      (Znth i input 0) /\
-  paren_prefix_in_group_z (i + 1) input =
-    paren_step_in_group_z
-      (paren_prefix_in_group_z i input)
-      (Znth i input 0) /\
-  paren_prefix_level_z (i + 1) input =
-    paren_step_level_z
-      (paren_prefix_in_group_z i input)
-      (paren_prefix_level_z i input)
-      (Znth i input 0) /\
-  paren_prefix_max_z (i + 1) input =
-    paren_step_max_z
-      (paren_prefix_in_group_z i input)
-      (paren_prefix_level_z i input)
-      (paren_prefix_max_z i input)
-      (Znth i input 0).
-Proof.
-  intros input i Hi.
-  unfold paren_prefix_output_z, paren_prefix_in_group_z,
-    paren_prefix_level_z, paren_prefix_max_z, paren_prefix_state_z.
-  assert (sublist 0 (i + 1) input = sublist 0 i input ++ [Znth i input 0]) as Hsub.
-  {
-    rewrite (sublist_split 0 (i + 1) i input);
-      [| lia | rewrite <- Zlength_correct; lia].
-    rewrite (sublist_single i input 0) by (rewrite <- Zlength_correct; lia).
-    reflexivity.
-  }
-  rewrite Hsub.
-  rewrite paren_scan_aux_step.
-  rewrite paren_scan_aux_one.
-  repeat split; reflexivity.
-Qed.
-
-Lemma paren_prefix_step_app : forall input i,
-  0 <= i < Zlength input ->
-  paren_prefix_output_z (i + 1) input =
-    paren_step_output_z
-      (paren_prefix_output_z i input)
-      (paren_prefix_in_group_z i input)
-      (paren_prefix_max_z i input)
-      (Znth i (app input (cons 0 nil)) 0) /\
-  paren_prefix_in_group_z (i + 1) input =
-    paren_step_in_group_z
-      (paren_prefix_in_group_z i input)
-      (Znth i (app input (cons 0 nil)) 0) /\
-  paren_prefix_level_z (i + 1) input =
-    paren_step_level_z
-      (paren_prefix_in_group_z i input)
-      (paren_prefix_level_z i input)
-      (Znth i (app input (cons 0 nil)) 0) /\
-  paren_prefix_max_z (i + 1) input =
-    paren_step_max_z
-      (paren_prefix_in_group_z i input)
-      (paren_prefix_level_z i input)
-      (paren_prefix_max_z i input)
-      (Znth i (app input (cons 0 nil)) 0).
-Proof.
-  intros input i Hi.
-  pose proof (paren_prefix_step input i Hi) as Hstep.
-  replace (Znth i (app input (cons 0 nil)) 0) with (Znth i input 0).
-  - exact Hstep.
-  - rewrite app_Znth1; lia.
-Qed.
-
-Lemma paren_prefix_full_final : forall input len,
-  len = Zlength input ->
-  paren_final_output_z
-    (paren_prefix_output_z len input)
-    (paren_prefix_in_group_z len input)
-    (paren_prefix_max_z len input) =
-  paren_output_z input.
-Proof.
-  intros input len Hlen.
-  unfold paren_prefix_output_z, paren_prefix_in_group_z,
-    paren_prefix_max_z, paren_prefix_state_z, paren_output_z.
-  rewrite (sublist_self input len Hlen).
-  destruct (paren_scan_aux input [] 0 0 0) as [[[out in_group] level] max_level].
-  reflexivity.
-Qed.
-
-Lemma paren_step_in_group_range : forall in_group ch,
-  0 <= paren_step_in_group_z in_group ch <= 1.
-Proof.
-  intros. unfold paren_step_in_group_z.
-  destruct (Z.eqb ch 32); lia.
-Qed.
-
-Lemma paren_zmax_bounds : forall a b i,
-  0 <= a <= i ->
-  0 <= b <= i ->
-  0 <= paren_zmax a b <= i.
-Proof.
-  intros a b i Ha Hb.
-  unfold paren_zmax.
-  destruct (Z.leb a b); lia.
-Qed.
-
-Lemma paren_step_max_bounds : forall in_group level max_level ch i,
-  0 <= in_group <= 1 ->
-  -i <= level <= i ->
-  0 <= max_level <= i ->
-  ch = 32 \/ ch = 40 \/ ch = 41 ->
-  0 <= paren_step_max_z in_group level max_level ch <= i + 1.
-Proof.
-  intros in_group level max_level ch i Hin Hlevel Hmax Hch.
-  unfold paren_step_max_z.
-  destruct Hch as [-> | [-> | ->]]; simpl.
-  - destruct (Z.eqb in_group 0); lia.
-  - replace (Z.eqb 40 32) with false by reflexivity.
-    replace (Z.eqb 40 40) with true by reflexivity.
-    unfold paren_zmax.
-    destruct (Z.leb_spec max_level (level + 1)); lia.
-  - replace (Z.eqb 41 32) with false by reflexivity.
-    replace (Z.eqb 41 40) with false by reflexivity.
-    lia.
-Qed.
-
-Lemma paren_step_level_bounds : forall in_group level ch i,
-  0 <= in_group <= 1 ->
-  -i <= level <= i ->
-  ch = 32 \/ ch = 40 \/ ch = 41 ->
-  -(i + 1) <= paren_step_level_z in_group level ch <= i + 1.
-Proof.
-  intros in_group level ch i Hin Hlevel Hch.
-  unfold paren_step_level_z.
-  destruct Hch as [-> | [-> | ->]]; simpl.
-  - destruct (Z.eqb in_group 0); lia.
-  - replace (Z.eqb 40 32) with false by reflexivity.
-    replace (Z.eqb 40 40) with true by reflexivity.
-    lia.
-  - replace (Z.eqb 41 32) with false by reflexivity.
-    replace (Z.eqb 41 40) with false by reflexivity.
-    lia.
-Qed.
-
-Lemma ascii_of_z_eq_32 : forall z,
-  0 <= z < 256 ->
-  (ascii_of_z z = " "%char <-> z = 32).
-Proof.
-  intros z Hz.
-  split; intros H.
-  - apply f_equal with (f := nat_of_ascii) in H.
-    rewrite nat_of_ascii_ascii_of_z in H by exact Hz.
-    change (nat_of_ascii " "%char) with 32%nat in H.
-    lia.
-  - subst. reflexivity.
-Qed.
-
-Lemma ascii_of_z_eq_40 : forall z,
-  0 <= z < 256 ->
-  (ascii_of_z z = "("%char <-> z = 40).
-Proof.
-  intros z Hz.
-  split; intros H.
-  - apply f_equal with (f := nat_of_ascii) in H.
-    rewrite nat_of_ascii_ascii_of_z in H by exact Hz.
-    change (nat_of_ascii "("%char) with 40%nat in H.
-    lia.
-  - subst. reflexivity.
-Qed.
-
-Lemma ascii_of_z_eq_41 : forall z,
-  0 <= z < 256 ->
-  (ascii_of_z z = ")"%char <-> z = 41).
-Proof.
-  intros z Hz.
-  split; intros H.
-  - apply f_equal with (f := nat_of_ascii) in H.
-    rewrite nat_of_ascii_ascii_of_z in H by exact Hz.
-    change (nat_of_ascii ")"%char) with 41%nat in H.
-    lia.
-  - subst. reflexivity.
-Qed.
-
-Fixpoint chars_are_paren_space_z (l : list Z) : Prop :=
+Fixpoint chars_are_paren_space (l : list Z) : Prop :=
   match l with
   | [] => True
-  | x :: xs => (x = 40 \/ x = 41 \/ x = 32) /\ chars_are_paren_space_z xs
+  | x :: xs => (x = 40 \/ x = 41 \/ x = 32) /\ chars_are_paren_space xs
   end.
-
-Lemma ForallChars_paren_space_z : forall l,
-  ascii_range_z l ->
-  ForallChars is_paren_or_space (string_of_list_z l) ->
-  chars_are_paren_space_z l.
-Proof.
-  induction l as [| x xs IH]; intros Hrange Hforall_all; simpl; auto.
-  simpl in Hforall_all.
-  destruct Hforall_all as [Hchar Hforall].
-  assert (Hxrange : 0 <= x < 256).
-  { specialize (Hrange 0). rewrite Zlength_cons in Hrange.
-    change (Znth 0 (x :: xs) 0) with x in Hrange.
-    apply Hrange. pose proof (Zlength_nonneg xs); lia. }
-  split.
-  - destruct Hchar as [Hopen | [Hclose | Hspace]].
-    + left. apply ascii_of_z_eq_40; assumption.
-    + right; left. apply ascii_of_z_eq_41; assumption.
-    + right; right. apply ascii_of_z_eq_32; assumption.
-  - apply IH.
-    + intros i Hi.
-      specialize (Hrange (i + 1)).
-      rewrite Zlength_cons in Hrange.
-      replace (Znth i xs 0) with (Znth (i + 1) (x :: xs) 0).
-      * apply Hrange. lia.
-      * unfold Znth.
-        replace (Z.to_nat (i + 1)) with (S (Z.to_nat i)) by lia.
-        reflexivity.
-    + exact Hforall.
-Qed.
-
-Lemma problem_6_pre_z_chars : forall l,
-  ascii_range_z l ->
-  problem_6_pre_z l ->
-  chars_are_paren_space_z l.
-Proof.
-  intros l Hrange Hpre.
-  unfold problem_6_pre_z, problem_6_pre in Hpre.
-  destruct Hpre as [Hforall _].
-  apply ForallChars_paren_space_z; assumption.
-Qed.
-
-Lemma paren_step_output_len : forall out in_group max_level ch,
-  Zlength (paren_step_output_z out in_group max_level ch) =
-  Zlength out +
-  (if Z.eqb ch 32 then if Z.eqb in_group 0 then 0 else 1 else 0).
-Proof.
-  intros.
-  unfold paren_step_output_z, paren_final_output_z.
-  destruct (Z.eqb ch 32); [destruct (Z.eqb in_group 0) |]; rewrite ?Zlength_app, ?Zlength_cons, ?Zlength_nil; lia.
-Qed.
-
-Lemma paren_prefix_output_len_bound : forall input i,
-  0 <= i ->
-  i <= Zlength input ->
-  Zlength (paren_prefix_output_z i input) <= i.
-Proof.
-  intros input i Hi Hle.
-  remember (Z.to_nat i) as n eqn:Hn.
-  assert (i = Z.of_nat n) by lia.
-  subst i.
-  clear Hn Hi.
-  induction n as [| n IH].
-  - unfold paren_prefix_output_z, paren_prefix_state_z.
-    replace (sublist 0 0 input) with (@nil Z) by (rewrite sublist_nil; reflexivity).
-    cbn. lia.
-  - assert (0 <= Z.of_nat n < Zlength input) as Hidx by lia.
-    pose proof (paren_prefix_step input (Z.of_nat n) Hidx) as [Hout _].
-    rewrite Nat2Z.inj_succ.
-    replace (Z.succ (Z.of_nat n)) with (Z.of_nat n + 1) by lia.
-    rewrite Hout.
-    rewrite paren_step_output_len.
-    specialize (IH ltac:(lia)).
-    destruct (Z.eqb (Znth (Z.of_nat n) input 0) 32);
-      destruct (Z.eqb (paren_prefix_in_group_z (Z.of_nat n) input) 0); lia.
-Qed.
-
-Lemma Z_to_nat_paren_zmax : forall a b,
-  0 <= a ->
-  0 <= b ->
-  Z.to_nat (paren_zmax a b) = Nat.max (Z.to_nat a) (Z.to_nat b).
-Proof.
-  intros a b Ha Hb.
-  unfold paren_zmax.
-  destruct (Z.leb_spec a b).
-  - rewrite Nat.max_r; [reflexivity | apply Z2Nat.inj_le; lia].
-  - rewrite Nat.max_l; [reflexivity | apply Z2Nat.inj_le; lia].
-Qed.
-
-Lemma Z_to_nat_clamped_pred : forall level,
-  0 <= level ->
-  Z.to_nat (if (0 <? level)%Z then level - 1 else 0) =
-  Nat.pred (Z.to_nat level).
-Proof.
-  intros level Hlevel.
-  destruct (Z.ltb_spec 0 level).
-  - rewrite Z2Nat.inj_sub by lia.
-    destruct (Z.to_nat level) eqn:Hn.
-    + lia.
-    + simpl. lia.
-  - assert (level = 0) by lia.
-    subst. reflexivity.
-Qed.
-
-Lemma bool_of_in_group_0 : forall in_group,
-  in_group = 0 ->
-  negb (Z.eqb in_group 0) = false.
-Proof.
-  intros; subst; reflexivity.
-Qed.
-
-Lemma bool_of_in_group_nonzero : forall in_group,
-  in_group <> 0 ->
-  negb (Z.eqb in_group 0) = true.
-Proof.
-  intros in_group Hnz.
-  rewrite Z.eqb_neq by exact Hnz.
-  reflexivity.
-Qed.
-
-Lemma paren_scan_aux_string_correct : forall input out in_group level max_level,
-  ascii_range_z input ->
-  chars_are_paren_space_z input ->
-  0 <= in_group <= 1 ->
-  0 <= level ->
-  0 <= max_level ->
-  map Z.to_nat
-    (let st := paren_scan_aux input out in_group level max_level in
-     paren_final_output_z (paren_state_out st) (paren_state_in_group st) (paren_state_max st)) =
-  parse_nested_parens_scan_aux
-    (string_of_list_z input)
-    (map Z.to_nat out)
-    (negb (Z.eqb in_group 0))
-    (Z.to_nat level)
-    (Z.to_nat max_level).
-Proof.
-  induction input as [| ch rest IH]; intros out in_group level max_level Hrange Hchars Hin Hlevel Hmax.
-  - simpl.
-    unfold paren_final_output_z.
-    destruct (Z.eqb_spec in_group 0).
-    + subst. reflexivity.
-    + rewrite map_app. reflexivity.
-  - simpl in Hchars.
-    destruct Hchars as [Hch Hchars].
-    assert (Hch_range : 0 <= ch < 256).
-    { specialize (Hrange 0).
-      rewrite Zlength_cons in Hrange.
-      change (Znth 0 (ch :: rest) 0) with ch in Hrange.
-      apply Hrange. pose proof (Zlength_nonneg rest); lia. }
-    assert (Hrange_rest : ascii_range_z rest).
-    {
-      intros i Hi.
-      specialize (Hrange (i + 1)).
-      rewrite Zlength_cons in Hrange.
-      replace (Znth i rest 0) with (Znth (i + 1) (ch :: rest) 0).
-      - apply Hrange. lia.
-      - unfold Znth.
-        replace (Z.to_nat (i + 1)) with (S (Z.to_nat i)) by lia.
-        reflexivity.
-    }
-    destruct Hch as [Hopen | [Hclose | Hspace]].
-    + subst ch.
-      simpl.
-      destruct (ascii_dec (ascii_of_z 40) space) as [Hs | Hs].
-      { apply ascii_of_z_eq_32 in Hs; lia. all: lia. }
-      destruct (ascii_dec (ascii_of_z 40) lparen) as [_ | Hnot]; [| exfalso; apply Hnot; reflexivity].
-      apply IH; try assumption; try lia.
-      * apply paren_step_in_group_range.
-      * unfold paren_step_level_z.
-        replace (Z.eqb 40 32) with false by reflexivity.
-        replace (Z.eqb 40 40) with true by reflexivity.
-        lia.
-      * unfold paren_step_max_z.
-        replace (Z.eqb 40 32) with false by reflexivity.
-        replace (Z.eqb 40 40) with true by reflexivity.
-        unfold paren_zmax.
-        destruct (Z.leb_spec max_level (level + 1)); lia.
-    + subst ch.
-      simpl.
-      destruct (ascii_dec (ascii_of_z 41) space) as [Hs | Hs].
-      { apply ascii_of_z_eq_32 in Hs; lia. all: lia. }
-      destruct (ascii_dec (ascii_of_z 41) lparen) as [Ho | Ho].
-      { apply ascii_of_z_eq_40 in Ho; lia. all: lia. }
-      destruct (ascii_dec (ascii_of_z 41) rparen) as [_ | Hnot]; [| exfalso; apply Hnot; reflexivity].
-      rewrite <- Z_to_nat_clamped_pred by lia.
-      apply IH; try assumption; try lia.
-      * apply paren_step_in_group_range.
-      * unfold paren_step_level_z.
-        replace (Z.eqb 41 32) with false by reflexivity.
-        replace (Z.eqb 41 40) with false by reflexivity.
-        destruct (Z.ltb_spec 0 level); lia.
-      * unfold paren_step_max_z.
-        replace (Z.eqb 41 32) with false by reflexivity.
-        replace (Z.eqb 41 40) with false by reflexivity.
-        lia.
-    + subst ch.
-      simpl.
-      destruct (ascii_dec (ascii_of_z 32) space) as [_ | Hnot]; [| exfalso; apply Hnot; reflexivity].
-      destruct (Z.eqb_spec in_group 0).
-      * subst in_group.
-        apply IH; try assumption; try lia.
-        -- apply paren_step_in_group_range.
-        -- unfold paren_step_level_z.
-           rewrite Z.eqb_refl. reflexivity.
-        -- unfold paren_step_max_z.
-           rewrite Z.eqb_refl. reflexivity.
-      * rewrite map_app.
-        apply IH; try assumption; try lia.
-        -- apply paren_step_in_group_range.
-        -- unfold paren_step_level_z.
-           rewrite Z.eqb_refl.
-           replace (Z.eqb in_group 0) with false by (symmetry; apply Z.eqb_neq; exact n).
-           lia.
-        -- unfold paren_step_max_z.
-           rewrite Z.eqb_refl.
-           replace (Z.eqb in_group 0) with false by (symmetry; apply Z.eqb_neq; exact n).
-           lia.
-Qed.
-
-Lemma problem_6_spec_z_intro : forall input output,
-  ascii_range_z input ->
-  problem_6_pre_z input ->
-  output = paren_output_z input ->
-  problem_6_spec_z input output.
-Proof.
-  intros input output Hrange Hpre Hout.
-  unfold problem_6_spec_z, problem_6_spec.
-  rewrite Hout.
-  unfold parse_nested_parens_impl, paren_output_z.
-  pose proof (problem_6_pre_z_chars input Hrange Hpre) as Hchars.
-  rewrite paren_scan_aux_string_correct; try assumption; try lia.
-  reflexivity.
-Qed.

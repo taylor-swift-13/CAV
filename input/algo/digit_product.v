@@ -28,7 +28,21 @@ Definition digit_product_z (n : Z) : Z :=
   if Z.leb n 0 then
     0
   else
-    digit_product_loop_fuel n 1 (Z.to_nat n).
+    snd (Z.iter n
+      (fun st =>
+         let '(cur, acc) := st in
+         if Z.leb cur 0 then (cur, acc)
+         else (Z.div cur 10, acc * Z.rem cur 10))
+      (n, 1)).
 
 Definition digit_product_pre_z (n : Z) : Prop :=
-  0 <= n /\ digit_product_safe_fuel n 1 (Z.to_nat n).
+  0 <= n /\
+  forall i,
+    0 <= i <= n ->
+    let '(_, acc) := Z.iter i
+      (fun st =>
+         let '(cur, acc) := st in
+         if Z.leb cur 0 then (cur, acc)
+         else (Z.div cur 10, acc * Z.rem cur 10))
+      (n, 1) in
+    -2147483648 <= acc <= 2147483647.

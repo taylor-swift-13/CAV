@@ -3,6 +3,9 @@ Require Import Coq.Lists.List.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Definition is_digitb (c : Z) : bool :=
   Z.leb 48 c && Z.leb c 57.
 
@@ -134,7 +137,7 @@ Fixpoint ex_matrix_row_sum_aux (l : list Z) (fuel : nat) (current target : Z) : 
 Definition ex_matrix_row_sum_pre (l : list Z) (row : Z) : Prop :=
   parser_safe_aux l (List.length l) /\
   row_sum_safe_aux l (List.length l) 1 row 0 /\
-  Z.of_nat (List.length l) <= 2147483646.
+  zlength l <= 2147483646.
 
 Definition ex_matrix_row_sum_spec (l : list Z) (row : Z) : Z :=
   ex_matrix_row_sum_aux l (List.length l) 1 row.

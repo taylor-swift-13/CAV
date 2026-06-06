@@ -14,25 +14,25 @@ For lst = {0,8,1,2,1,7} the output should be 7
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_94_pre_z: list Z -> Prop)
-               (problem_94_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_94_pre: list Z -> Prop)
+               (problem_94_spec: list Z -> Z -> Prop)
                (largest_prime_prefix: Z -> list Z -> Z -> Prop)
                (prime_scan_state: Z -> Z -> Z -> Prop)
                (digit_sum_state: Z -> Z -> Z -> Prop)
                (list_nonneg_int_range: list Z -> Prop)
                (digit_sum_int_range: Z -> Prop) */
-/*@ Import Coq Require Import coins_94 */
+/*@ Import Coq Require Import skjkasdkd_94 */
 
 int skjkasdkd_94(int* lst, int lst_size)
 /*@ With lv
     Require
         0 <= lst_size && lst_size < INT_MAX &&
         lst_size == Zlength(lv) &&
-        problem_94_pre_z(lv) &&
+        problem_94_pre(lv) &&
         list_nonneg_int_range(lv) &&
         IntArray::full(lst, lst_size, lv)
     Ensure
-        problem_94_spec_z(lv, __return) &&
+        problem_94_spec(lv, __return) &&
         IntArray::full(lst, lst_size, lv)
 */
 {

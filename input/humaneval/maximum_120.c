@@ -26,13 +26,13 @@ Note:
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_120_pre_z: list Z -> Z -> Prop)
-               (problem_120_spec_z: list Z -> Z -> list Z -> Prop)
+/*@ Extern Coq (problem_120_pre: list Z -> Z -> Prop)
+               (problem_120_spec: list Z -> Z -> list Z -> Prop)
                (copy_prefix: list Z -> Z -> list Z)
                (maximum_output_prefix: list Z -> Z -> Z -> Z -> list Z)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_120 */
+/*@ Import Coq Require Import maximum_120 */
 
 typedef struct {
     int* data;
@@ -89,14 +89,14 @@ IntArray *maximum_120(int *arr, int arr_size, int k)
         1 <= arr_size && arr_size <= 1000 &&
         0 <= k && k <= arr_size &&
         arr_size == Zlength(input_l) &&
-        problem_120_pre_z(input_l, k) &&
+        problem_120_pre(input_l, k) &&
         IntArray::full(arr, arr_size, input_l)
     Ensure
         exists data output_l,
         __return != 0 &&
         data != 0 &&
         k == Zlength(output_l) &&
-        problem_120_spec_z(input_l, k, output_l) &&
+        problem_120_spec(input_l, k, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), k) *
         IntArray::full(data, k, output_l) *

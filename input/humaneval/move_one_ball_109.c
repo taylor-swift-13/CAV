@@ -10,23 +10,23 @@ move_one_ball_109({3, 5, 4, 1, 2}) ==> 0
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_109_pre_z: list Z -> Prop)
-               (problem_109_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_109_pre: list Z -> Prop)
+               (problem_109_spec: list Z -> Z -> Prop)
                (count_descents_prefix: Z -> list Z -> Z)
                (cyclic_descents: list Z -> Z)
                (descents_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_109 */
+/*@ Import Coq Require Import move_one_ball_109 */
 
 int move_one_ball_109(int *arr, int arr_size)
 /*@ With input_l
     Require
         1 <= arr_size && arr_size < INT_MAX &&
         arr_size == Zlength(input_l) &&
-        problem_109_pre_z(input_l) &&
+        problem_109_pre(input_l) &&
         descents_int_range(input_l) &&
         IntArray::full(arr, arr_size, input_l)
     Ensure
-        problem_109_spec_z(input_l, __return) &&
+        problem_109_spec(input_l, __return) &&
         IntArray::full(arr, arr_size, input_l)
 */
 {

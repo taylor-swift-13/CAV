@@ -13,14 +13,14 @@ rounded_avg_103(20, 33) => "11010"
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_103_pre_z: Z -> Z -> Prop)
-               (problem_103_spec_z: Z -> Z -> list Z -> Prop)
+/*@ Extern Coq (problem_103_pre: Z -> Z -> Prop)
+               (problem_103_spec: Z -> Z -> list Z -> Prop)
                (avg_103: Z -> Z -> Z)
-               (binary_digits_z: Z -> list Z)
-               (binary_count_state_z: Z -> Z -> Z -> Prop)
-               (binary_fill_full_state_z: Z -> Z -> Z -> list Z -> Prop)
+               (binary_digits: Z -> list Z)
+               (binary_count_state: Z -> Z -> Z -> Prop)
+               (binary_fill_full_state: Z -> Z -> Z -> list Z -> Prop)
                (repeat_Z: {A} -> A -> Z -> list A) */
-/*@ Import Coq Require Import coins_103 */
+/*@ Import Coq Require Import rounded_avg_103 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -33,11 +33,11 @@ char* rounded_avg_103(int n, int m)
         0 < n && 0 < m &&
         n < INT_MAX && m < INT_MAX &&
         n + m < INT_MAX &&
-        problem_103_pre_z(n, m)
+        problem_103_pre(n, m)
     Ensure exists out_l len,
         1 <= len && len < INT_MAX &&
         Zlength(out_l) == len &&
-        problem_103_spec_z(n, m, out_l) &&
+        problem_103_spec(n, m, out_l) &&
         CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {

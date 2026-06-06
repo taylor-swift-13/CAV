@@ -7,18 +7,18 @@ Rewritten to avoid local arrays: uses two rolling variables.
 */
 #include "verification_stdlib.h"
 
-/*@ Extern Coq (problem_55_pre_z: Z -> Prop)
-               (problem_55_spec_z: Z -> Z -> Prop)
+/*@ Extern Coq (problem_55_pre: Z -> Prop)
+               (problem_55_spec: Z -> Z -> Prop)
                (fib_seq: Z -> Z)
                (fib_step_int_range: Z -> Prop) */
-/*@ Import Coq Require Import coins_55 */
+/*@ Import Coq Require Import fib_55 */
 
 int fib_55(int n)
 /*@ Require
         1 <= n && n < 100 &&
-        problem_55_pre_z(n) &&
+        problem_55_pre(n) &&
         fib_step_int_range(n) && emp
-    Ensure problem_55_spec_z(n, __return) && emp
+    Ensure problem_55_spec(n, __return) && emp
 */
 {
     int a;

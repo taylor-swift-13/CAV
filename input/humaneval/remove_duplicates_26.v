@@ -1,5 +1,4 @@
-(* defs for remove_duplicates_26 from: 26.v *)
-
+(* spec/26 *)
 (*  From a list of integers, remove all elements that occur more than once.
 Keep order of elements left the same as in the input.
 >>> remove_duplicates([1, 2, 3, 2, 4])
@@ -54,3 +53,62 @@ Definition problem_26_spec (input : list Z) (output : list Z) : Prop :=
         nth_error input i1 = Some v1 /\
         nth_error input i2 = Some v2 /\
         (i1 < i2)%nat)).
+
+Require Import Lia.
+From AUXLib Require Import ListLib.
+
+Definition list_contains (x : Z) (l : list Z) : Prop :=
+  In x l.
+
+Definition list_not_contains (x : Z) (l : list Z) : Prop :=
+  ~ In x l.
+
+Definition appears_twice (x : Z) (l : list Z) : Prop :=
+  exists i j,
+    i <> j /\
+    nth_error l i = Some x /\
+    nth_error l j = Some x.
+
+Fixpoint seen_values_aux (seen rest : list Z) : list Z :=
+  match rest with
+  | [] => seen
+  | x :: xs =>
+      if in_dec Z.eq_dec x seen
+      then seen_values_aux seen xs
+      else seen_values_aux (seen ++ [x]) xs
+  end.
+
+Definition seen_values (l : list Z) : list Z :=
+  seen_values_aux [] l.
+
+Fixpoint duplicate_values (seen duplicates rest : list Z) : list Z :=
+  match rest with
+  | [] => duplicates
+  | x :: xs =>
+      if in_dec Z.eq_dec x duplicates then
+        duplicate_values seen duplicates xs
+      else if in_dec Z.eq_dec x seen then
+        duplicate_values seen (duplicates ++ [x]) xs
+      else
+        duplicate_values (seen ++ [x]) duplicates xs
+  end.
+
+Definition remove_duplicates_first_loop
+  (input : list Z) (i : Z) (has1 has2 : list Z) : Prop :=
+  0 <= i <= Zlength input /\
+  has1 = seen_values (sublist 0 i input) /\
+  has2 = duplicate_values [] [] (sublist 0 i input).
+
+Fixpoint filter_not_in (duplicates input : list Z) : list Z :=
+  match input with
+  | [] => []
+  | x :: xs =>
+      if in_dec Z.eq_dec x duplicates
+      then filter_not_in duplicates xs
+      else x :: filter_not_in duplicates xs
+  end.
+
+Definition remove_duplicates_second_loop
+  (input has2 : list Z) (i : Z) (output : list Z) : Prop :=
+  0 <= i <= Zlength input /\
+  output = filter_not_in has2 (sublist 0 i input).

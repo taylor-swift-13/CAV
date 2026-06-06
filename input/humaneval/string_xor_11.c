@@ -33,8 +33,8 @@ char *string_xor_11(char *a, char *b)
 */
 {
     int i;
-    int n1 = strlen(a) /*@ where l = l1, n = na */;
-    int n2 = strlen(b) /*@ where l = l2, n = nb */;
+    int n1 = strlen(a);
+    int n2 = strlen(b);
     int n;
     if (n1 < n2) {
         n = n1;

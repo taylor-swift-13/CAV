@@ -30,7 +30,7 @@ import agent_config
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = REPO_ROOT / "scripts"
 OUTPUT_ROOT = REPO_ROOT / "output"
-INPUT_ROOT = REPO_ROOT / "input"
+MID_ROOT = REPO_ROOT / "mid"
 
 
 def emit(msg: str) -> None:
@@ -86,7 +86,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--dataset",
         default=None,
-        help="Dataset label for raw/<dataset>/ input. Full raw runs write generated C/V under input/<dataset>_<timestamp>/ to avoid conflicts.",
+        help="Dataset name for raw/<dataset>/ input. Full raw runs write generated C/V under mid/<dataset>/; input/<dataset>/ stays read-only.",
     )
     p.add_argument("--contract-rounds", type=int, default=None, help=argparse.SUPPRESS)
     # Timeout defaults are None here so config/agents.json `timeouts` can supply
@@ -135,19 +135,17 @@ def main() -> int:
         return 2
     name = args.function_name or target.stem
     ds = args.dataset
-    label = name  # dataset tag is carried in <name> itself; --dataset only selects raw/input/<ds>/ folders
     is_raw = target.suffix == ".md"
     base_ts = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
-    input_dataset = f"{ds}_{base_ts}" if is_raw and ds else (base_ts if is_raw else ds)
-    pipeline_dir = OUTPUT_ROOT / f"pipeline_{base_ts}_{label}"
+    pipeline_dir = OUTPUT_ROOT / f"pipeline_{base_ts}_{name}"
     pipeline_dir.mkdir(parents=True, exist_ok=True)
     workspaces: list[Path] = []
     cf = common_flags(args)
-    input_c = (INPUT_ROOT / input_dataset / f"{name}.c") if input_dataset else (INPUT_ROOT / f"{name}.c")
+    input_c = (MID_ROOT / ds / f"{name}.c") if ds else (MID_ROOT / f"{name}.c")
 
     emit(f"target={target} name={name} raw={is_raw} dir={pipeline_dir}")
     if is_raw:
-        emit(f"generated_input_dataset={input_dataset} input_c={input_c}")
+        emit(f"generated_input_dataset={ds} input_c={input_c}")
 
     # ---- Contract block (contract -> eval) ----
     eval_verdict = None
@@ -159,10 +157,10 @@ def main() -> int:
         while True:
             rnd += 1
             ts = f"{base_ts}c{rnd}"
-            contract_ws = OUTPUT_ROOT / f"contract_{ts}_{label}"
+            contract_ws = OUTPUT_ROOT / f"contract_{ts}_{name}"
             cmd = [sys.executable, str(SCRIPTS / "run_contract.py"), str(target),
-                   "--function-name", name, "--timestamp", ts, "--workspace-name", label,
-                   "--timeout-seconds", str(args.contract_timeout), "--dataset", input_dataset, *cf]
+                   "--function-name", name, "--timestamp", ts, "--workspace-name", name,
+                   "--timeout-seconds", str(args.contract_timeout), "--dataset", ds, *cf]
             if restart_file:
                 cmd += ["--restart-context-file", str(restart_file)]
             contract_rc = run_stage(cmd)
@@ -192,9 +190,9 @@ def main() -> int:
                 break
 
             ets = f"{base_ts}e{rnd}"
-            eval_ws = OUTPUT_ROOT / f"eval_{ets}_{label}"
+            eval_ws = OUTPUT_ROOT / f"eval_{ets}_{name}"
             ecmd = [sys.executable, str(SCRIPTS / "run_eval.py"), str(input_c),
-                    "--function-name", name, "--timestamp", ets, "--workspace-name", label,
+                    "--function-name", name, "--timestamp", ets, "--workspace-name", name,
                     "--timeout-seconds", str(args.eval_timeout), *cf]
             eval_rc = run_stage(ecmd)
             workspaces.append(eval_ws)
@@ -233,9 +231,9 @@ def main() -> int:
 
     # ---- Verify block (run_verify owns retry and deterministic audit check) ----
     ts = f"{base_ts}v"
-    verify_ws = OUTPUT_ROOT / f"verify_{ts}_{label}"
+    verify_ws = OUTPUT_ROOT / f"verify_{ts}_{name}"
     cmd = [sys.executable, str(SCRIPTS / "run_verify.py"), str(input_c),
-           "--function-name", name, "--timestamp", ts, "--workspace-name", label,
+           "--function-name", name, "--timestamp", ts, "--workspace-name", name,
            "--timeout-seconds", str(args.verify_timeout), *cf]
     verify_rc = run_stage(cmd)
     workspaces.append(verify_ws)

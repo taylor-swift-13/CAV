@@ -16,15 +16,15 @@ Here is a legend:
 #include "char_array_def.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_17_pre_z: list Z -> Prop)
-               (problem_17_spec_z: list Z -> list Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (music_prefix_output_z: Z -> list Z -> list Z)
-               (music_prefix_state_z: Z -> list Z -> Z)
-               (music_step_output_z: list Z -> Z -> Z -> list Z)
-               (music_step_state_z: Z -> Z -> Z)
-               (music_final_output_z: list Z -> Z -> list Z) */
-/*@ Import Coq Require Import coins_17 */
+/*@ Extern Coq (problem_17_pre: list Z -> Prop)
+               (problem_17_spec: list Z -> list Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (music_prefix_output: Z -> list Z -> list Z)
+               (music_prefix_state: Z -> list Z -> Z)
+               (music_step_output: list Z -> Z -> Z -> list Z)
+               (music_step_state: Z -> Z -> Z)
+               (music_final_output: list Z -> Z -> list Z) */
+/*@ Import Coq Require Import parse_music_17 */
 
 typedef struct {
     int *data;
@@ -57,15 +57,15 @@ IntArray *parse_music_17(char *music_string)
         music_string == orig &&
         0 <= len && len + 1 < INT_MAX &&
         Zlength(l) == len &&
-        problem_17_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_17_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(music_string, len + 1, app(l, cons(0, nil)))
     Ensure
         exists data output_l output_size,
         __return != 0 &&
         output_size == Zlength(output_l) &&
         0 <= output_size && output_size <= len + 1 &&
-        problem_17_spec_z(l, output_l) &&
+        problem_17_spec(l, output_l) &&
         CharArray::full(orig, len + 1, app(l, cons(0, nil))) *
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
@@ -74,7 +74,7 @@ IntArray *parse_music_17(char *music_string)
 */
 {
     IntArray *out = malloc_int_array_struct();
-    int n = strlen(music_string) /*@ where l = l, n = len */;
+    int n = strlen(music_string);
     out->size = 0;
     out->data = malloc_int_array(n + 1);
     int *data = out->data;

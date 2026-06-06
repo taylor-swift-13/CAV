@@ -10,11 +10,11 @@ Example:
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_122_pre_z: list Z -> Z -> Prop)
-               (problem_122_spec_z: list Z -> Z -> Z -> Prop)
+/*@ Extern Coq (problem_122_pre: list Z -> Z -> Prop)
+               (problem_122_spec: list Z -> Z -> Z -> Prop)
                (sum_two_digit_upto: Z -> list Z -> Z)
                (sum_two_digit_int_range: Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_122 */
+/*@ Import Coq Require Import add_elements_122 */
 
 int add_elements_122(int *arr, int arr_size, int k)
 /*@ With lv
@@ -22,11 +22,11 @@ int add_elements_122(int *arr, int arr_size, int k)
         1 <= arr_size && arr_size < INT_MAX &&
         1 <= k && k <= arr_size &&
         arr_size == Zlength(lv) &&
-        problem_122_pre_z(lv, k) &&
+        problem_122_pre(lv, k) &&
         sum_two_digit_int_range(k, lv) &&
         IntArray::full(arr, arr_size, lv)
     Ensure
-        problem_122_spec_z(lv, k, __return) &&
+        problem_122_spec(lv, k, __return) &&
         IntArray::full(arr, arr_size, lv)
 */
 {

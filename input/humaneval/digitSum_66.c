@@ -15,12 +15,12 @@ Examples:
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_66_pre_z: list Z -> Prop)
-               (problem_66_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
+/*@ Extern Coq (problem_66_pre: list Z -> Prop)
+               (problem_66_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
                (sum_upper_upto: Z -> list Z -> Z)
                (digit_sum_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_66 */
+/*@ Import Coq Require Import digitSum_66 */
 
 int strlen(char *s)
 /*@ With l n
@@ -35,17 +35,17 @@ int digitSum_66(char *s)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_66_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_66_pre(l) &&
+        ascii_range(l) &&
         digit_sum_int_range(l) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_66_spec_z(l, __return) &&
+        problem_66_spec(l, __return) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
     int sum = 0;
-    int n = strlen(s) /*@ where l = l, n = len */;
+    int n = strlen(s);
     int i;
     
     for (i = 0; i < n; i++) {

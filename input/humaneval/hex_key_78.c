@@ -20,11 +20,11 @@ For num = "2020" the output should be 2.
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_78_pre_z: list Z -> Prop)
-               (problem_78_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
+/*@ Extern Coq (problem_78_pre: list Z -> Prop)
+               (problem_78_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
                (count_prime_hex_upto: Z -> list Z -> Z) */
-/*@ Import Coq Require Import coins_78 */
+/*@ Import Coq Require Import hex_key_78 */
 
 int strlen(char *s)
 /*@ With l n
@@ -39,16 +39,16 @@ int hex_key_78(char *num)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_78_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_78_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(num, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_78_spec_z(l, __return) &&
+        problem_78_spec(l, __return) &&
         CharArray::full(num, len + 1, app(l, cons(0, nil)))
 */
 {
     int out = 0;
-    int n = strlen(num) /*@ where l = l, n = len */;
+    int n = strlen(num);
     int i;
     
     for (i = 0; i < n; i++) {

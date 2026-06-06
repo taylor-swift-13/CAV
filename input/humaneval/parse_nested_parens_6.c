@@ -11,19 +11,19 @@ E.g. (()()) has maximum two levels of nesting while ((())) has three.
 #include "char_array_def.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_6_pre_z: list Z -> Prop)
-               (problem_6_spec_z: list Z -> list Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (paren_prefix_output_z: Z -> list Z -> list Z)
-               (paren_prefix_in_group_z: Z -> list Z -> Z)
-               (paren_prefix_level_z: Z -> list Z -> Z)
-               (paren_prefix_max_z: Z -> list Z -> Z)
-               (paren_final_output_z: list Z -> Z -> Z -> list Z)
-               (paren_step_output_z: list Z -> Z -> Z -> Z -> list Z)
-               (paren_step_in_group_z: Z -> Z -> Z)
-               (paren_step_level_z: Z -> Z -> Z -> Z)
-               (paren_step_max_z: Z -> Z -> Z -> Z) */
-/*@ Import Coq Require Import coins_6 */
+/*@ Extern Coq (problem_6_pre: list Z -> Prop)
+               (problem_6_spec: list Z -> list Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (paren_prefix_output: Z -> list Z -> list Z)
+               (paren_prefix_in_group: Z -> list Z -> Z)
+               (paren_prefix_level: Z -> list Z -> Z)
+               (paren_prefix_max: Z -> list Z -> Z)
+               (paren_final_output: list Z -> Z -> Z -> list Z)
+               (paren_step_output: list Z -> Z -> Z -> Z -> list Z)
+               (paren_step_in_group: Z -> Z -> Z)
+               (paren_step_level: Z -> Z -> Z -> Z)
+               (paren_step_max: Z -> Z -> Z -> Z) */
+/*@ Import Coq Require Import parse_nested_parens_6 */
 
 typedef struct {
     int *data;
@@ -56,15 +56,15 @@ IntArray *parse_nested_parens_6(char *paren_string)
         paren_string == orig &&
         0 <= len && len + 1 < INT_MAX &&
         Zlength(l) == len &&
-        problem_6_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_6_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(paren_string, len + 1, app(l, cons(0, nil)))
     Ensure
         exists data output_l output_size,
         __return != 0 &&
         output_size == Zlength(output_l) &&
         0 <= output_size && output_size <= len &&
-        problem_6_spec_z(l, output_l) &&
+        problem_6_spec(l, output_l) &&
         CharArray::full(orig, len + 1, app(l, cons(0, nil))) *
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
@@ -73,7 +73,7 @@ IntArray *parse_nested_parens_6(char *paren_string)
 */
 {
     IntArray *out = malloc_int_array_struct();
-    int n = strlen(paren_string) /*@ where l = l, n = len */;
+    int n = strlen(paren_string);
     out->size = 0;
     out->data = malloc_int_array(n);
     int *data = out->data;

@@ -14,19 +14,19 @@ Please write a function to efficiently compute the n-th element of the fibfib_63
 */
 #include "verification_stdlib.h"
 
-/*@ Extern Coq (problem_63_pre_z: Z -> Prop)
-               (problem_63_spec_z: Z -> Z -> Prop)
-               (fibfib_z: Z -> Z)
+/*@ Extern Coq (problem_63_pre: Z -> Prop)
+               (problem_63_spec: Z -> Z -> Prop)
+               (fibfib: Z -> Z)
                (fibfib_step_int_range: Z -> Prop) */
-/*@ Import Coq Require Import coins_63 */
+/*@ Import Coq Require Import fibfib_63 */
 
 int fibfib_63(int n)
 /*@ Require
         0 <= n && n < 100 &&
-        problem_63_pre_z(n) &&
+        problem_63_pre(n) &&
         fibfib_step_int_range(n)
     Ensure
-        problem_63_spec_z(n, __return) && emp
+        problem_63_spec(n, __return) && emp
 */
 {
     if (n == 0) {

@@ -7,14 +7,14 @@ Return sorted unique_34 elements in a vector
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_34_pre_z: list Z -> Prop)
-               (problem_34_spec_z: list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_34_pre: list Z -> Prop)
+               (problem_34_spec: list Z -> list Z -> Prop)
                (list_contains: Z -> list Z -> Prop)
                (list_not_contains: Z -> list Z -> Prop)
                (unique_first_loop: list Z -> Z -> list Z -> Prop)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_34 */
+/*@ Import Coq Require Import unique_34 */
 
 typedef struct {
     int* data;
@@ -80,7 +80,7 @@ IntArray *unique_34(int *l, int l_size)
     Require
         0 <= l_size && l_size < INT_MAX &&
         l_size == Zlength(input_l) &&
-        problem_34_pre_z(input_l) &&
+        problem_34_pre(input_l) &&
         IntArray::full(l, l_size, input_l)
     Ensure
         exists data output_l output_size data_l,
@@ -90,7 +90,7 @@ IntArray *unique_34(int *l, int l_size)
         output_size == Zlength(output_l) &&
         l_size == Zlength(data_l) &&
         sublist(0, output_size, data_l) == output_l &&
-        problem_34_spec_z(input_l, output_l) &&
+        problem_34_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(l, l_size, input_l) *

@@ -15,6 +15,17 @@ Fixpoint ex_pascals_triangle_value_binom (row col : nat) : Z :=
       ex_pascals_triangle_value_binom row' (S col')
   end.
 
-Definition ex_pascals_triangle_value_spec (row col ret : Z) : Prop :=
-  ret = ex_pascals_triangle_value_binom (Z.to_nat row) (Z.to_nat col).
+Inductive ex_pascals_triangle_value_z : Z -> Z -> Z -> Prop :=
+| pascal_left_edge :
+    forall row, 0 <= row -> ex_pascals_triangle_value_z row 0 1
+| pascal_right_edge :
+    forall row, 0 <= row -> ex_pascals_triangle_value_z row row 1
+| pascal_inner :
+    forall row col a b,
+      0 < col < row ->
+      ex_pascals_triangle_value_z (row - 1) (col - 1) a ->
+      ex_pascals_triangle_value_z (row - 1) col b ->
+      ex_pascals_triangle_value_z row col (a + b).
 
+Definition ex_pascals_triangle_value_spec (row col ret : Z) : Prop :=
+  ex_pascals_triangle_value_z row col ret.

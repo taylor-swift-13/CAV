@@ -14,15 +14,15 @@ fruit_distribution_67("100 apples && 1 oranges",120) -> 120 - 100 - 1 = 19
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_67_pre_z: list Z -> Z -> Prop)
-               (problem_67_spec_z: list Z -> Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (fruit_state_safe_z: list Z -> Prop)
-               (fruit_output_safe_z: list Z -> Z -> Prop)
-               (fruit_num1_prefix_z: Z -> list Z -> Z)
-               (fruit_num2_prefix_z: Z -> list Z -> Z)
-               (fruit_cur_prefix_z: Z -> list Z -> Z) */
-/*@ Import Coq Require Import coins_67 */
+/*@ Extern Coq (problem_67_pre: list Z -> Z -> Prop)
+               (problem_67_spec: list Z -> Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (fruit_state_safe: list Z -> Prop)
+               (fruit_output_safe: list Z -> Z -> Prop)
+               (fruit_num1_prefix: Z -> list Z -> Z)
+               (fruit_num2_prefix: Z -> list Z -> Z)
+               (fruit_cur_prefix: Z -> list Z -> Z) */
+/*@ Import Coq Require Import fruit_distribution_67 */
 
 int strlen(char *s)
 /*@ With l n
@@ -37,12 +37,12 @@ int fruit_distribution_67(char *s, int total)
     Require 0 <= len && len < INT_MAX &&
             0 <= total &&
             Zlength(l) == len &&
-            problem_67_pre_z(l, total) &&
-            ascii_range_z(l) &&
-            fruit_state_safe_z(l) &&
-            fruit_output_safe_z(l, total) &&
+            problem_67_pre(l, total) &&
+            ascii_range(l) &&
+            fruit_state_safe(l) &&
+            fruit_output_safe(l, total) &&
             CharArray::full(s, len + 1, app(l, cons(0, nil)))
-    Ensure problem_67_spec_z(l, total, __return) &&
+    Ensure problem_67_spec(l, total, __return) &&
            CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
@@ -50,7 +50,7 @@ int fruit_distribution_67(char *s, int total)
     int num2 = -1;
     int cur = -1;
     int i;
-    int slen = strlen(s) /*@ where l = l, n = len */;
+    int slen = strlen(s);
 
     for (i = 0; i < slen; i++) {
         int chr = s[i];

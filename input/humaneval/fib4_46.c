@@ -15,19 +15,19 @@ Please write a function to efficiently compute the n-th element of the fib4_46 n
 */
 #include "verification_stdlib.h"
 
-/*@ Extern Coq (problem_46_pre_z: Z -> Prop)
-               (problem_46_spec_z: Z -> Z -> Prop)
-               (fib4_z: Z -> Z)
+/*@ Extern Coq (problem_46_pre: Z -> Prop)
+               (problem_46_spec: Z -> Z -> Prop)
+               (fib4: Z -> Z)
                (fib4_step_int_range: Z -> Prop) */
-/*@ Import Coq Require Import coins_46 */
+/*@ Import Coq Require Import fib4_46 */
 
 int fib4_46(int n)
 /*@ Require
         0 <= n && n < 100 &&
-        problem_46_pre_z(n) &&
+        problem_46_pre(n) &&
         fib4_step_int_range(n)
     Ensure
-        problem_46_spec_z(n, __return) && emp
+        problem_46_spec(n, __return) && emp
 */
 {
     if (n == 0) {

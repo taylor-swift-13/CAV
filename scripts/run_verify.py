@@ -192,6 +192,57 @@ def build_proof_only_prompt(
     return "\n".join(lines) + "\n"
 
 
+def _phase_log(workspace_path: Path, event: str, detail: str = "") -> None:
+    """Append a timestamped phase event to <ws>/logs/phase_timeline.tsv (best-effort).
+    Mirrors symexec_keep_proofs.log_phase so initial symexec + agent reruns share one timeline."""
+    try:
+        import time as _t
+        p = workspace_path / "logs" / "phase_timeline.tsv"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "a", encoding="utf-8") as f:
+            f.write(f"{_t.time():.3f}\t{_t.strftime('%Y-%m-%d %H:%M:%S')}\t{event}\t{detail}\n")
+    except Exception:
+        pass
+
+
+def phase_timing_lines(metrics_md_path: Path, start_iso: str, end_iso: str) -> list[str]:
+    """Aggregate phase_timeline.tsv into per annotation↔proof cycle durations.
+    Each symexec run bounds a cycle; the gap to the next symexec (or run end) is the
+    time spent proving/editing against that annotation version."""
+    import datetime
+    tl = metrics_md_path.parent / "phase_timeline.tsv"
+    if not tl.exists():
+        return []
+    def _ep(iso: str):
+        try:
+            return datetime.datetime.fromisoformat(iso).timestamp()
+        except Exception:
+            return None
+    starts: list[float] = []
+    last_ep = None
+    for ln in tl.read_text(encoding="utf-8", errors="replace").splitlines():
+        p = ln.split("\t")
+        if len(p) < 3:
+            continue
+        try:
+            ep = float(p[0])
+        except ValueError:
+            continue
+        last_ep = ep
+        if p[2] in ("symexec_init_start", "symexec_rerun_start"):
+            starts.append(ep)
+    if not starts:
+        return []
+    run_start, run_end = _ep(start_iso), (_ep(end_iso) or last_ep)
+    out = [f"- Annotation↔proof cycles (symexec runs): `{len(starts)}`"]
+    if run_start:
+        out.append(f"  - initial annotation (run start → 1st symexec): `{starts[0]-run_start:.1f}s`")
+    for i, s in enumerate(starts):
+        nxt = starts[i + 1] if i + 1 < len(starts) else (run_end or s)
+        out.append(f"  - cycle {i+1}: symexec, then `{max(0.0, nxt - s):.1f}s` proving/edit before next")
+    return out
+
+
 def write_metrics(
     metrics_md_path: Path,
     *,
@@ -234,6 +285,7 @@ def write_metrics(
     ]
     lines.extend(agent_metrics.usage_lines(
         usage, prompt_path=prompt_path, last_message_path=last_message_path))
+    lines.extend(phase_timing_lines(metrics_md_path, start_iso, end_iso))
     lines.extend(["- Experience updates: none", f"Final Result: {status}"])
     metrics_md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -407,7 +459,12 @@ def symexec_freshness_gate(
         f"--proof-auto-file={(fresh_dir / f'{function_name}_proof_auto.v').resolve()}",
         f"--proof-manual-file={(fresh_dir / f'{function_name}_proof_manual.v').resolve()}",
         f"--coq-logic-path={logic_path}",
-        "-slp", str(REPO_ROOT / "annotated") + "/", "SimpleC.EE.CAV",
+        # Strategy lib path = canonical QCP_demos_LLM strategies, qualified to
+        # SimpleC.EE.QCP_demos_LLM so generated goal.v emits prefixed requires
+        # (`From SimpleC.EE.QCP_demos_LLM Require Import int_array_strategy_goal`),
+        # which resolve uniquely even with duplicate demo dirs on the load-path.
+        # humaneval cases reuse the generic, pre-built int/char-array strategies.
+        "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "QCP_demos_LLM") + "/", "SimpleC.EE.QCP_demos_LLM",
         f"--input-file={annotated_abs}",
         "--no-exec-info",
     ]
@@ -515,6 +572,7 @@ def is_loop_free_candidate(input_path: Path) -> tuple[bool, str]:
 def run_symexec(workspace_path: Path, annotated_c_path: Path, function_name: str, timeout_seconds: int = 120) -> tuple[int, str, str]:
     generated_dir = workspace_path / "coq" / "generated"
     generated_dir.mkdir(parents=True, exist_ok=True)
+    _phase_log(workspace_path, "symexec_init_start")
     for old in generated_dir.glob(f"{function_name}_*.v"):
         old.unlink()
     logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
@@ -524,7 +582,12 @@ def run_symexec(workspace_path: Path, annotated_c_path: Path, function_name: str
         f"--proof-auto-file={generated_dir / f'{function_name}_proof_auto.v'}",
         f"--proof-manual-file={generated_dir / f'{function_name}_proof_manual.v'}",
         f"--coq-logic-path={logic_path}",
-        "-slp", str(REPO_ROOT / "annotated") + "/", "SimpleC.EE.CAV",
+        # Strategy lib path = canonical QCP_demos_LLM strategies, qualified to
+        # SimpleC.EE.QCP_demos_LLM so generated goal.v emits prefixed requires
+        # (`From SimpleC.EE.QCP_demos_LLM Require Import int_array_strategy_goal`),
+        # which resolve uniquely even with duplicate demo dirs on the load-path.
+        # humaneval cases reuse the generic, pre-built int/char-array strategies.
+        "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "QCP_demos_LLM") + "/", "SimpleC.EE.QCP_demos_LLM",
         f"--input-file={annotated_c_path}",
         "--no-exec-info",
     ]
@@ -786,6 +849,14 @@ def bootstrap_workspace(workspace_path: Path, input_path: Path, input_v_path: Pa
     annotated_c = REPO_ROOT / "annotated" / f"{workspace_path.name}.c"
     shutil.copy2(input_path, original_c)
     shutil.copy2(input_path, annotated_c)
+
+    # Provision the bare-include verification headers next to the annotated C so
+    # symexec resolves `#include "int_array_def.h"` etc. (run_verify's analog of
+    # run_contract's mid/ header provisioning). Source = the input .c's dataset dir.
+    for _h in ("verification_stdlib.h", "verification_list.h", "int_array_def.h", "char_array_def.h"):
+        _src = input_path.parent / _h
+        if _src.exists():
+            shutil.copy2(_src, REPO_ROOT / "annotated" / _h)
 
     if input_v_path is not None:
         dst_v = workspace_path / "original" / input_v_path.name
@@ -1175,6 +1246,15 @@ def main() -> int:
     # from workspace dirs, keeping .v/.c sources. Never touches the shared QCP tree.
     removed = coq_runner.clean_compile_artifacts(workspace_path / "coq")
     removed += coq_runner.clean_compile_artifacts(workspace_path / "original", recursive=False)
+    # The input .v (input/<ds>/<name>.v) compiles in place when goal.v Requires it;
+    # drop only THIS problem's intermediates (race-safe under parallel verify_batch).
+    for _suf in (".vo", ".glob", ".vok", ".vos"):
+        _f = input_path.with_suffix(_suf)
+        if _f.exists():
+            _f.unlink(); removed.append(str(_f))
+    _aux = input_path.parent / f".{input_path.stem}.aux"
+    if _aux.exists():
+        _aux.unlink(); removed.append(str(_aux))
     emit_log(f"cleaned_compile_artifacts count={len(removed)}")
 
     overall_end_iso = iso_now()

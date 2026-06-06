@@ -3,96 +3,48 @@ name: c-qcp-eval
 description: Evaluate an existing C/QCP implementation by judging whether the contract fully characterizes the target behavior.
 ---
 
-跨阶段共用规则（读写边界、效率、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 eval-specific 内容。
+Eval 做整体 judge：contract 是否真正、完整刻画目标程序的输入输出关系（sound + complete）。
 
-按需读：`QualifiedCProgramming/README.md`、`QualifiedCProgramming/tutorial/`、`QualifiedCProgramming/SeparationLogic/examples/`。实现、contract 和 `.v` 文件作为只读语义目标。
+## 职责划分（先读）
 
-阶段职责：eval 负责整体语义 judge，判断 spec 是否 sound / complete。contract runner 负责 QCP wellformed、companion `.v` 编译、verify 阶段注释检查和 `.v` 假设检查。eval 的 Coq 使用场景是本文件 §3 的 `compute_queries`，用于对具体闭式项做 `vm_compute`。
+- **spec 质量判据的细则完全依照 QCP `.agents/skills/annotation-checking/docs/spec-quality-checklist.md`**（前条件强度/安全、后条件强度、soundness、coverage、completeness 的判定口径）。照那边判，本 skill 不复述。**read-before-act：judge 之前必须先读这份 checklist 再下判定,不能凭印象。**
+- **本 skill 只管 CAV 这边**：输入输出、judge/verdict 产物格式、issues。
+- **唯一文字产物 = `logs/issues.md` + `logs/metrics.md` + `logs/final_result.md`（verdict）**；不写过程 reasoning 日志。
+- eval 是**纯 LLM judge**：不生成测试用例、不写 `cases/`、不把成功条件建立在用例覆盖上。
+- 跨阶段共用读写边界/效率/`Final Result` 格式见 `skills/COMMON.md`。
 
-## 1. 输入
+## 1. 输入输出（CAV）
 
-- 实现/规格 C 文件、可选 companion `.v`
-- target function、workspace path、evaluation 目录
+- 输入：实现/规格 C + 可选 companion `.v`（只读语义目标）、target function、workspace。
+- 输出：`output/eval_<ts>_<name>/` 下 `original/<name>.c`(+`.v`)、`logs/{issues,metrics,final_result}.md`。
 
-## 2. 输出
+## 2. LLM Judge（写 `logs/final_result.md`）
 
-`output/eval_<timestamp>_<name>/` 下：
+逐项写 `Pass`/`Fail`/`Inconclusive` + 一句依据（判据口径见职责划分的 spec-quality-checklist）：
 
-- `original/<name>.c`（+ `.v` 如有）
-- `evaluation/evaluation.json`（可选，仅当需要结构化记录 judge/compute 依据）
-- `logs/test_reasoning.md`、`logs/issues.md`、`logs/metrics.md`、`logs/final_result.md`
-- agent 输出文件由 runner 自动放在 `logs/`
+- `Precondition strength`（最强错误：`requires false`）
+- `Precondition safety`（前条件排除除零/空指针/越界/UB 溢出/非法移位）
+- `Postcondition strength`（最弱错误：`ensures true`）
+- `Soundness`（正确程序的所有输入输出都满足 spec）
+- `Parameter coverage`（约束所有输入/输出/必要后状态）
+- `Path coverage`（覆盖所有路径/分支）
+- `Completeness`（任意满足 spec 的程序都应是该问题的正确程序）
 
-## 3. Optional Compute Queries
+全 `Pass` → `Judge verdict: Pass`；任一失败 → `Judge verdict: Fail`；无法判断 → `Judge verdict: Inconclusive`。
 
-不要生成 positive/negative 测试用例，不要写 `cases/cases.json`，不要把 eval 成功条件建立在测试用例覆盖上。
-
-如果某个判断可以归约到「具体闭式 Coq term `vm_compute` 求值」（典型：递归函数应用到字面量、复杂 list 操作的归一形式），把该计算任务 append 到 `evaluation/compute_queries.json`，由 runner 用 `vm_compute` 给出归一结果：
-
-```json
-{"queries": [
-  {"id": "q1", "clause": "<clause text>",
-   "coq_expr": "<closed Coq term of bool/Z/list/...>",
-   "requires": ["Require Import ZArith.", "From SimpleC.EE Require Import ..."]}
-]}
-```
-
-runner 会对每条 query 跑 `vm_compute` 并触发 finalize pass。这一轮先把相关判断标成 undecided；`Correct` verdict 需要所有 computable 判断都有决定性结果。
-
-## 4. LLM Judge（写入 `logs/final_result.md`）
-
-必须做整体 judge，判断 contract 是否真正刻画 raw 题目对应程序的完整输入输出关系。
-
-逐项判断并在 `logs/final_result.md` 写出 `Pass` / `Fail` / `Inconclusive` 和一句依据：
-
-- `Precondition strength`: 前条件是否过强，导致合法输入情况不能被刻画；最强错误形态是 `requires false`。
-- `Precondition safety`: 前条件是否足以排除实现的运行时错误/未定义行为风险，例如除零、空指针解引用、数组越界、无效内存访问、会触发 C UB 的溢出或非法移位。
-- `Postcondition strength`: 后条件是否过弱或 trivial，导致不能刻画程序行为；最弱错误形态是 `ensures true`。
-- `Soundness`: 正确程序的所有输入输出是否都满足 spec。
-- `Parameter coverage`: spec 是否约束了所有输入、输出和必要后状态参数。
-- `Path coverage`: spec 是否覆盖程序所有路径/分支。
-- `Completeness`: spec 是否完整刻画输入输出关系；任意满足 spec 的程序都应是这个问题的正确程序。
-
-只有上面全部为 `Pass`，才能写：
-
-```text
-Judge verdict: Pass
-```
-
-任一项失败写 `Judge verdict: Fail`。无法判断写 `Judge verdict: Inconclusive`。
-
-## 5. Aggregate verdict（写入 `logs/final_result.md`）
-
-`Spec verdict:` 之一：
-
-- `Correct` — contract sound + complete，且没有未消化的 undecided/compute query
-- `Buggy` — contract 过强、过弱、unsound、incomplete，或遗漏关键输入/路径/后状态约束
-- `Inconclusive` — 证据不足或仍有未消化的 compute query / undecided 判断
-
-`logs/final_result.md` 必须同时包含：
+## 3. Aggregate verdict（写 `logs/final_result.md`，两行都要）
 
 ```text
 Spec verdict: Correct|Buggy|Inconclusive
 Judge verdict: Pass|Fail|Inconclusive
 ```
 
-## 6. Eval Integrity
+- `Correct` = sound + complete
+- `Buggy` = 过强 / 过弱 / unsound / incomplete / 漏关键输入·路径·后状态约束
+- `Inconclusive` = 证据不足以判定
 
-- eval 产物只写入当前 eval workspace 的 `evaluation/` 和 `logs/`。
-- 不生成测试用例，不写 `cases/`。
-- `Correct` verdict 需要整体 judge 给出决定性通过依据。
+## 4. 宏观流程 + 完成判据
 
-## 7. 完成判据
+读实现/contract → 按 §2 逐项 judge → 写 `final_result.md` 两行 verdict + `issues.md` / `metrics.md`。
 
-`Final Result: Success` 只在以下条件全部满足时写：
-
-- `logs/final_result.md` 是 `Spec verdict: Correct`
-- `logs/final_result.md` 是 `Judge verdict: Pass`
-
-`Spec verdict: Buggy`、`Spec verdict: Inconclusive`、`Judge verdict: Fail`、`Judge verdict: Inconclusive` 都对应 `Final Result: Fail`。
-
-## 8. 条件性 mode addendum
-
-| Prompt 标记 | 附录文件 | 含义 |
-|------------|---------|------|
-| `Compute results:` 路径出现 | `MODE_FINALIZE.md` | runner 跑完 compute_queries 后的 finalize pass，需把 vm_compute 的归一形折回 evaluation |
+`Final Result: Success` 仅当 `Spec verdict: Correct` 且 `Judge verdict: Pass`；`Buggy` / `Inconclusive` / `Judge verdict: Fail` / `Judge verdict: Inconclusive` 一律 `Final Result: Fail`。

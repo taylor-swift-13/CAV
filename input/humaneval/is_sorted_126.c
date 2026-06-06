@@ -17,22 +17,22 @@ is_sorted_126({1, 2, 2, 2, 3, 4}) ➞ false
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_126_pre_z: list Z -> Prop)
-               (problem_126_spec_z: list Z -> bool -> Prop)
+/*@ Extern Coq (problem_126_pre: list Z -> Prop)
+               (problem_126_spec: list Z -> bool -> Prop)
                (sorted_no_triple_prefix: Z -> list Z -> Prop)
                (true: bool) (false: bool) */
-/*@ Import Coq Require Import coins_126 */
+/*@ Import Coq Require Import is_sorted_126 */
 
 int is_sorted_126(int* lst, int lst_size)
 /*@ With lv
     Require
         1 <= lst_size && lst_size < INT_MAX &&
         lst_size == Zlength(lv) &&
-        problem_126_pre_z(lv) &&
+        problem_126_pre(lv) &&
         IntArray::full(lst, lst_size, lv)
     Ensure
-        ((__return != 0) && problem_126_spec_z(lv, true) ||
-         (__return == 0) && problem_126_spec_z(lv, false)) &&
+        ((__return != 0) && problem_126_spec(lv, true) ||
+         (__return == 0) && problem_126_spec(lv, false)) &&
         IntArray::full(lst, lst_size, lv)
 */
 {

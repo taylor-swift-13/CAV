@@ -1,5 +1,4 @@
-(* defs for triples_sum_to_zero_40 from: 40.v *)
-
+(* spec/40 *)
 (* triples_sum_to_zero takes a list of integers as an input.
 it returns True if there are three distinct elements in the list that
 sum to zero, and False otherwise.
@@ -19,7 +18,6 @@ False *)
 
 ​	∃i,j,k i<>k /\ i<>j /\ j<>k /\ input[i] + input[j] + input[k] = 0 → output = true /\
 ​	∀i,j,k i<>k /\ i<>j /\ j<>k /\ input[i] + input[j] + input[k] <> 0 → output = false *)
-
 
 Require Import Coq.Lists.List.
 Require Import Coq.ZArith.ZArith.
@@ -43,3 +41,44 @@ Definition problem_40_spec (input : list Z) (output : bool) : Prop :=
     (k < length input)%nat /\
     (nth i input 0 + nth j input 0 + nth k input 0 = 0))
   <-> (output = true).
+
+Require Import Coq.micromega.Lia.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+
+Local Open Scope Z_scope.
+
+Definition triple_sum_int_range (l : list Z) (n : Z) : Prop :=
+  forall i j k,
+    0 <= i < j ->
+    j < k ->
+    k < n ->
+    INT_MIN <= Znth i l 0 + Znth j l 0 <= INT_MAX /\
+    INT_MIN <= Znth i l 0 + Znth j l 0 + Znth k l 0 <= INT_MAX.
+
+Definition triple_sum_zero (l : list Z) (i j k : Z) : Prop :=
+  Znth i l 0 + Znth j l 0 + Znth k l 0 = 0.
+
+Definition scanned_i (l : list Z) (n i : Z) : Prop :=
+  forall p q r,
+    0 <= p < q ->
+    q < r ->
+    r < n ->
+    p < i ->
+    ~ triple_sum_zero l p q r.
+
+Definition scanned_j (l : list Z) (n i j : Z) : Prop :=
+  scanned_i l n i /\
+  forall q r,
+    i < q ->
+    q < r ->
+    r < n ->
+    q < j ->
+    ~ triple_sum_zero l i q r.
+
+Definition scanned_k (l : list Z) (n i j k : Z) : Prop :=
+  scanned_j l n i j /\
+  forall r,
+    j < r ->
+    r < k ->
+    ~ triple_sum_zero l i j r.

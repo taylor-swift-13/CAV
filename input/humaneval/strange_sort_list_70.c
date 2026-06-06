@@ -12,14 +12,14 @@ strange_sort_vector({}) == {}
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_70_pre_z: list Z -> Prop)
-               (problem_70_spec_z: list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_70_pre: list Z -> Prop)
+               (problem_70_spec: list Z -> list Z -> Prop)
                (copy_prefix: Z -> list Z -> list Z)
                (strange_output_prefix: Z -> Z -> list Z -> list Z)
                (strange_output: Z -> list Z -> list Z)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_70 */
+/*@ Import Coq Require Import strange_sort_list_70 */
 
 typedef struct {
     int* data;
@@ -64,7 +64,7 @@ void sort_int_array(int *array, int init_size, int size, int ascending)
         sublist(0, init_size, sorted_full_l) == sorted_l &&
         sorted_int_list_by(ascending, sorted_l) &&
         Permutation(l, sorted_l) &&
-        problem_70_spec_z(l, strange_output(init_size, sorted_l)) &&
+        problem_70_spec(l, strange_output(init_size, sorted_l)) &&
         IntArray::full(array, size, sorted_full_l)
 */;
 
@@ -73,14 +73,14 @@ IntArray *strange_sort_list_70(int *lst, int lst_size)
     Require
         0 <= lst_size && lst_size < INT_MAX &&
         lst_size == Zlength(input_l) &&
-        problem_70_pre_z(input_l) &&
+        problem_70_pre(input_l) &&
         IntArray::full(lst, lst_size, input_l)
     Ensure
         exists data output_l,
         __return != 0 &&
         data != 0 &&
         lst_size == Zlength(output_l) &&
-        problem_70_spec_z(input_l, output_l) &&
+        problem_70_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), lst_size) *
         IntArray::full(lst, lst_size, input_l) *

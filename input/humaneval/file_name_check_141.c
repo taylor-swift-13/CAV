@@ -16,16 +16,16 @@ file_name_check_141("1example.dll")  => "No" // (the name should start with a la
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_141_pre_z: list Z -> Prop)
-               (problem_141_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (is_digit_z: Z -> Prop)
-               (is_alpha_z: Z -> Prop)
-               (suffix_ok_z: list Z -> Prop)
+/*@ Extern Coq (problem_141_pre: list Z -> Prop)
+               (problem_141_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (is_digit: Z -> Prop)
+               (is_alpha: Z -> Prop)
+               (suffix_ok: list Z -> Prop)
                (digit_count_upto: Z -> list Z -> Z)
                (dot_count_upto: Z -> list Z -> Z)
-               (file_name_checks_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_141 */
+               (file_name_checks: list Z -> Prop) */
+/*@ Import Coq Require Import file_name_check_141 */
 
 int strlen(char *s)
 /*@ With l n
@@ -40,11 +40,11 @@ int file_name_check_141(char *file_name)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_141_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_141_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(file_name, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_141_spec_z(l, __return) &&
+        problem_141_spec(l, __return) &&
         CharArray::full(file_name, len + 1, app(l, cons(0, nil)))
 */
 {
@@ -53,7 +53,7 @@ int file_name_check_141(char *file_name)
     int i = 0;
     int alpha = 0;
     int suffix = 0;
-    int n = strlen(file_name) /*@ where l = l, n = len */;
+    int n = strlen(file_name);
 
     if (n < 5) {
         return 0;

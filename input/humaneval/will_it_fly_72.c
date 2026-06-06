@@ -7,21 +7,21 @@ is less than || equal the maximum possible weight w.
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_72_pre_z: list Z -> Z -> Prop)
-               (problem_72_spec_z: list Z -> Z -> Z -> Prop)
+/*@ Extern Coq (problem_72_pre: list Z -> Z -> Prop)
+               (problem_72_spec: list Z -> Z -> Z -> Prop)
                (will_it_fly_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_72 */
+/*@ Import Coq Require Import will_it_fly_72 */
 
 int will_it_fly_72(int *q, int q_size, int w)
 /*@ With lv
     Require
         0 <= q_size && q_size < INT_MAX &&
         q_size == Zlength(lv) &&
-        problem_72_pre_z(lv, w) &&
+        problem_72_pre(lv, w) &&
         will_it_fly_int_range(lv) &&
         IntArray::full(q, q_size, lv)
     Ensure
-        problem_72_spec_z(lv, w, __return) &&
+        problem_72_spec(lv, w, __return) &&
         IntArray::full(q, q_size, lv)
 */
 {

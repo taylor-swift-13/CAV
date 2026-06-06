@@ -12,18 +12,18 @@ Examples:
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_156_pre_z: Z -> Prop)
-               (problem_156_spec_z: Z -> list Z -> Prop)
-               (roman_digit_z: Z -> Z -> Z -> Z -> list Z -> Prop)
-               (roman_thousand_list_z: Z -> list Z)
-               (roman_thousand_z: Z -> list Z -> Prop)
-               (roman_prefix1_list_z: Z -> list Z)
-               (roman_prefix1_z: Z -> list Z -> Prop)
-               (roman_prefix2_list_z: Z -> list Z)
-               (roman_prefix2_z: Z -> list Z -> Prop)
-               (roman_output_list_z: Z -> list Z)
-               (roman_output_z: Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_156 */
+/*@ Extern Coq (problem_156_pre: Z -> Prop)
+               (problem_156_spec: Z -> list Z -> Prop)
+               (roman_digit: Z -> Z -> Z -> Z -> list Z -> Prop)
+               (roman_thousand_list: Z -> list Z)
+               (roman_thousand: Z -> list Z -> Prop)
+               (roman_prefix1_list: Z -> list Z)
+               (roman_prefix1: Z -> list Z -> Prop)
+               (roman_prefix2_list: Z -> list Z)
+               (roman_prefix2: Z -> list Z -> Prop)
+               (roman_output_list: Z -> list Z)
+               (roman_output: Z -> list Z -> Prop) */
+/*@ Import Coq Require Import int_to_mini_romank_156 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -43,7 +43,7 @@ int append_roman_digit(char *out, int pos, int one, int ten, int five, int digit
         CharArray::full(out, pos, prefix) *
         CharArray::undef_seg(out, pos, cap)
     Ensure exists chunk,
-        roman_digit_z(one, ten, five, digit, chunk) &&
+        roman_digit(one, ten, five, digit, chunk) &&
         __return == pos + Zlength(chunk) &&
         CharArray::full(out, __return, app(prefix, chunk)) *
         CharArray::undef_seg(out, __return, cap)
@@ -95,11 +95,11 @@ int append_roman_digit(char *out, int pos, int one, int ten, int five, int digit
 char* int_to_mini_romank_156(int number)
 /*@ Require
         1 <= number && number <= 1000 &&
-        problem_156_pre_z(number)
+        problem_156_pre(number)
     Ensure exists out_l len,
         0 <= len && len < 64 &&
         Zlength(out_l) == len &&
-        problem_156_spec_z(number, out_l) &&
+        problem_156_spec(number, out_l) &&
         CharArray::full(__return, len + 1, app(out_l, cons(0, nil))) *
         CharArray::undef_seg(__return, len + 1, 64)
 */
@@ -117,13 +117,13 @@ char* int_to_mini_romank_156(int number)
     }
 
     h = (number / 100) % 10;
-    k = append_roman_digit(out, k, 99, 109, 100, h) /*@ where prefix = roman_thousand_list_z(original), cap = 64 */;
+    k = append_roman_digit(out, k, 99, 109, 100, h);
 
     t = (number / 10) % 10;
-    k = append_roman_digit(out, k, 120, 99, 108, t) /*@ where prefix = roman_prefix1_list_z(original), cap = 64 */;
+    k = append_roman_digit(out, k, 120, 99, 108, t);
 
     o = number % 10;
-    k = append_roman_digit(out, k, 105, 120, 118, o) /*@ where prefix = roman_prefix2_list_z(original), cap = 64 */;
+    k = append_roman_digit(out, k, 105, 120, 118, o);
 
     out[k] = 0;
     return out;

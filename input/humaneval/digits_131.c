@@ -7,18 +7,18 @@ digits_131(4)  == 0
 digits_131(235) == 15
 */
 #include "verification_stdlib.h"
-/*@ Extern Coq (problem_131_pre_z: Z -> Prop) */
-/*@ Extern Coq (problem_131_spec_z: Z -> Z -> Prop) */
-/*@ Extern Coq (tail_odd_prod_z: Z -> Z) */
-/*@ Extern Coq (digits_state_z: Z -> Z -> Z -> Z) */
-/*@ Import Coq Require Import coins_131 */
+/*@ Extern Coq (problem_131_pre: Z -> Prop) */
+/*@ Extern Coq (problem_131_spec: Z -> Z -> Prop) */
+/*@ Extern Coq (tail_odd_prod: Z -> Z) */
+/*@ Extern Coq (digits_state: Z -> Z -> Z -> Z) */
+/*@ Import Coq Require Import digits_131 */
 int digits_131(int n)
 /*@ Require
-        problem_131_pre_z(n) &&
+        problem_131_pre(n) &&
         1 <= n && n <= INT_MAX &&
-    tail_odd_prod_z(n) <= INT_MAX && emp
+    tail_odd_prod(n) <= INT_MAX && emp
     Ensure
-    problem_131_spec_z(n@pre, __return) && emp
+    problem_131_spec(n@pre, __return) && emp
 */
 {
     int prod=1,has=0;

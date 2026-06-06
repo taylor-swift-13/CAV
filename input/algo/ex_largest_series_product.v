@@ -37,7 +37,14 @@ Definition ex_largest_series_product_spec (l : list Z) (span : Z) : Z :=
   if Z.eqb span 0 then
     1
   else
-    largest_series_product_aux l span (Z.to_nat (zlength l - span)).
+    snd (Z.iter (zlength l - span)
+      (fun st =>
+         let '(cur, best) := st in
+         match cur with
+         | [] => (cur, best)
+         | _ :: xs => (xs, Z.max best (window_product xs 0 span))
+         end)
+      (l, window_product l 0 span)).
 
 Definition ex_largest_series_product_pre (l : list Z) (span : Z) : Prop :=
   0 <= span /\

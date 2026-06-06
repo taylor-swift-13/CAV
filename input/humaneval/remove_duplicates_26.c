@@ -14,7 +14,7 @@ Keep order of elements left the same as in the input.
                (list_not_contains: Z -> list Z -> Prop)
                (remove_duplicates_first_loop: list Z -> Z -> list Z -> list Z -> Prop)
                (remove_duplicates_second_loop: list Z -> list Z -> Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_26 */
+/*@ Import Coq Require Import remove_duplicates_26 */
 
 typedef struct {
     int* data;

@@ -7,13 +7,13 @@ f_106(5) == {1, 2, 6, 24, 15}
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_106_pre_z: Z -> Prop)
-               (problem_106_spec_z: Z -> list Z -> Prop)
+/*@ Extern Coq (problem_106_pre: Z -> Prop)
+               (problem_106_spec: Z -> list Z -> Prop)
                (f_seq: Z -> list Z)
-               (triangular_z: Z -> Z)
-               (factorial_z: Z -> Z)
+               (triangular: Z -> Z)
+               (factorial: Z -> Z)
                (f_seq_int_range: Z -> Prop) */
-/*@ Import Coq Require Import coins_106 */
+/*@ Import Coq Require Import f_106 */
 
 typedef struct {
     int* data;
@@ -37,7 +37,7 @@ IntArray *f_106(int n)
     Require
         n == n0 &&
         1 <= n0 && n0 < INT_MAX &&
-        problem_106_pre_z(n0) &&
+        problem_106_pre(n0) &&
         f_seq_int_range(n0)
     Ensure
         exists data output_l output_size,
@@ -46,7 +46,7 @@ IntArray *f_106(int n)
         output_size == n0 &&
         output_size == Zlength(output_l) &&
         output_l == f_seq(n0) &&
-        problem_106_spec_z(n0, output_l) &&
+        problem_106_spec(n0, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, output_size, output_l)

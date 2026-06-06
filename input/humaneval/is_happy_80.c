@@ -14,12 +14,12 @@ is_happy_80("xyy") => false
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_80_pre_z: list Z -> Prop)
-               (problem_80_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (happy_prefix_z: Z -> list Z -> Prop)
-               (happy_adjacent_z: Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_80 */
+/*@ Extern Coq (problem_80_pre: list Z -> Prop)
+               (problem_80_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (happy_prefix: Z -> list Z -> Prop)
+               (happy_adjacent: Z -> list Z -> Prop) */
+/*@ Import Coq Require Import is_happy_80 */
 
 int strlen(char *s)
 /*@ With l n
@@ -34,15 +34,15 @@ int is_happy_80(char *s)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_80_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_80_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_80_spec_z(l, __return) &&
+        problem_80_spec(l, __return) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s) /*@ where l = l, n = len */;
+    int n = strlen(s);
     int i;
     if (n < 3) {
         return 0;

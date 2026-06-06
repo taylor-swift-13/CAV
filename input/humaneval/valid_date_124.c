@@ -22,12 +22,12 @@ valid_date_124("06/04/2020") => false
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_124_pre_z: list Z -> Prop)
-               (problem_124_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
+/*@ Extern Coq (problem_124_pre: list Z -> Prop)
+               (problem_124_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
                (date_prefix_valid: Z -> list Z -> Prop)
-               (valid_date_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_124 */
+               (valid_date: list Z -> Prop) */
+/*@ Import Coq Require Import valid_date_124 */
 
 int strlen(char *s)
 /*@ With l n
@@ -42,16 +42,16 @@ int valid_date_124(char *date)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_124_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_124_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(date, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_124_spec_z(l, __return) &&
+        problem_124_spec(l, __return) &&
         CharArray::full(date, len + 1, app(l, cons(0, nil)))
 */
 {
     int i;
-    int n = strlen(date) /*@ where l = l, n = len */;
+    int n = strlen(date);
     if (n != 10) {
         return 0;
     }

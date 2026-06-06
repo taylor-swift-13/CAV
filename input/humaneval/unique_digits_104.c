@@ -14,15 +14,15 @@ For example:
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_104_pre_z: list Z -> Prop)
-               (problem_104_spec_z: list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_104_pre: list Z -> Prop)
+               (problem_104_spec: list Z -> list Z -> Prop)
                (unique_digits_prefix: list Z -> Z -> list Z -> Prop)
                (odd_digit_scan_state: Z -> Z -> Z -> Prop)
-               (only_odd_digits_z: Z -> Prop)
-               (has_even_digit_z: Z -> Prop)
+               (only_odd_digits: Z -> Prop)
+               (has_even_digit: Z -> Prop)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_104 */
+/*@ Import Coq Require Import unique_digits_104 */
 
 typedef struct {
     int* data;
@@ -66,8 +66,8 @@ int has_only_odd_digits_int(int value)
 /*@ Require
         0 < value && value < INT_MAX
     Ensure
-        ((__return != 0) && only_odd_digits_z(value) ||
-         (__return == 0) && has_even_digit_z(value))
+        ((__return != 0) && only_odd_digits(value) ||
+         (__return == 0) && has_even_digit(value))
 */
 {
     int num = value;
@@ -90,7 +90,7 @@ IntArray *unique_digits_104(int *x, int x_size)
     Require
         0 <= x_size && x_size < INT_MAX &&
         x_size == Zlength(input_l) &&
-        problem_104_pre_z(input_l) &&
+        problem_104_pre(input_l) &&
         IntArray::full(x, x_size, input_l)
     Ensure
         exists data output_l output_size data_l,
@@ -100,7 +100,7 @@ IntArray *unique_digits_104(int *x, int x_size)
         output_size == Zlength(output_l) &&
         x_size == Zlength(data_l) &&
         sublist(0, output_size, data_l) == output_l &&
-        problem_104_spec_z(input_l, output_l) &&
+        problem_104_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, x_size, data_l) *

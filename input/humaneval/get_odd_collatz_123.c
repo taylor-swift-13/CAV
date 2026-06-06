@@ -18,12 +18,12 @@ get_odd_collatz_123(5) returns {1, 5} // The collatz sequence for 5 is {5, 16, 8
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_123_pre_z: Z -> Prop)
-               (problem_123_spec_z: Z -> list Z -> Prop)
+/*@ Extern Coq (problem_123_pre: Z -> Prop)
+               (problem_123_spec: Z -> list Z -> Prop)
                (odd_collatz_prefix: Z -> Z -> list Z -> Prop)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_123 */
+/*@ Import Coq Require Import get_odd_collatz_123 */
 
 typedef struct {
     int* data;
@@ -65,7 +65,7 @@ void sort_int_array(int *array, int init_size, int size, int ascending)
 
 IntArray *get_odd_collatz_123(int n)
 /*@ Require
-        problem_123_pre_z(n)
+        problem_123_pre(n)
     Ensure
         exists data output_l output_size data_l,
         __return != 0 &&
@@ -74,7 +74,7 @@ IntArray *get_odd_collatz_123(int n)
         output_size == Zlength(output_l) &&
         1024 == Zlength(data_l) &&
         sublist(0, output_size, data_l) == output_l &&
-        problem_123_spec_z(n, output_l) &&
+        problem_123_spec(n, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, 1024, data_l)

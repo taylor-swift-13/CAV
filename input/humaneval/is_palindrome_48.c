@@ -13,10 +13,10 @@ false
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_48_pre_z: list Z -> Prop)
-               (problem_48_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_48 */
+/*@ Extern Coq (problem_48_pre: list Z -> Prop)
+               (problem_48_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import is_palindrome_48 */
 
 int strlen(char *s)
 /*@ With l n
@@ -31,16 +31,16 @@ int is_palindrome_48(char *text)
     Require
         0 <= n && n < INT_MAX &&
         Zlength(l) == n &&
-        problem_48_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_48_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(text, n + 1, app(l, cons(0, nil)))
     Ensure
-        problem_48_spec_z(l, __return) &&
+        problem_48_spec(l, __return) &&
         CharArray::full(text, n + 1, app(l, cons(0, nil)))
 */
 {
     int i = 0;
-    int j = strlen(text) /*@ where l = l, n = n */;
+    int j = strlen(text);
 
     if (j == 0) {
         return 1;

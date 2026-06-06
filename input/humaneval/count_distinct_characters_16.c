@@ -9,13 +9,13 @@ Given a string, find out how many distinct characters (regardless of case) does 
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_16_pre_z: list Z -> Prop)
-               (problem_16_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (lower_z: Z -> Z)
-               (lower_seen_state_z: Z -> Z -> list Z -> Z -> Z -> Prop)
+/*@ Extern Coq (problem_16_pre: list Z -> Prop)
+               (problem_16_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (lower: Z -> Z)
+               (lower_seen_state: Z -> Z -> list Z -> Z -> Z -> Prop)
                (count_distinct_lower_upto: Z -> list Z -> Z) */
-/*@ Import Coq Require Import coins_16 */
+/*@ Import Coq Require Import count_distinct_characters_16 */
 
 int strlen(char *s)
 /*@ With l n
@@ -29,14 +29,14 @@ int count_distinct_characters_16(char *str)
 /*@ With l len
     Require 0 <= len && len < INT_MAX &&
             Zlength(l) == len &&
-            problem_16_pre_z(l) &&
-            ascii_range_z(l) &&
+            problem_16_pre(l) &&
+            ascii_range(l) &&
             CharArray::full(str, len + 1, app(l, cons(0, nil)))
-    Ensure problem_16_spec_z(l, __return) &&
+    Ensure problem_16_spec(l, __return) &&
            CharArray::full(str, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(str) /*@ where l = l, n = len */;
+    int n = strlen(str);
     int count = 0;
     int i;
 

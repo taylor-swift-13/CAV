@@ -10,7 +10,7 @@ choose_num_102(13, 12) = -1
 #include "verification_stdlib.h"
 /*@ Extern Coq (problem_102_pre: Z -> Z -> Prop) */
 /*@ Extern Coq (problem_102_spec: Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_102 */
+/*@ Import Coq Require Import choose_num_102 */
 int choose_num_102(int x, int y)
 /*@ Require
         problem_102_pre(x, y) &&

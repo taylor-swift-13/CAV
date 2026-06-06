@@ -10,10 +10,10 @@ Given an integer. return a vector that has the number of even && odd digits resp
 #include "int_array_def.h"
 
 /*@ Extern Coq (Zabs: Z -> Z)
-               (problem_155_pre_z: Z -> Prop)
-               (problem_155_spec_z: Z -> list Z -> Prop)
+               (problem_155_pre: Z -> Prop)
+               (problem_155_spec: Z -> list Z -> Prop)
                (digit_count_state: Z -> Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_155 */
+/*@ Import Coq Require Import even_odd_count_155 */
 
 typedef struct {
     int* data;
@@ -47,14 +47,14 @@ IntArray *even_odd_count_155(int num)
 /*@ Require
         INT_MIN < num && num < INT_MAX &&
         Zabs(num) + 1 < INT_MAX &&
-        problem_155_pre_z(num)
+        problem_155_pre(num)
     Ensure
         exists data output_l output_size,
         __return != 0 &&
         data != 0 &&
         output_size == 2 &&
         output_size == Zlength(output_l) &&
-        problem_155_spec_z(num, output_l) &&
+        problem_155_spec(num, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, output_size, output_l)

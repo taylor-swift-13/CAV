@@ -13,15 +13,15 @@ base numbers are less than 10.
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_44_pre_z: Z -> Z -> Prop)
-               (problem_44_spec_z: Z -> Z -> list Z -> Prop)
-               (base_digits_z: Z -> Z -> list Z)
-               (base_digits_pos_z: Z -> Z -> list Z)
-               (base_count_state_z: Z -> Z -> Z -> Z -> Prop)
-               (base_fill_state_z: Z -> Z -> Z -> Z -> list Z -> Prop)
-               (base_fill_full_state_z: Z -> Z -> Z -> Z -> list Z -> Prop)
+/*@ Extern Coq (problem_44_pre: Z -> Z -> Prop)
+               (problem_44_spec: Z -> Z -> list Z -> Prop)
+               (base_digits: Z -> Z -> list Z)
+               (base_digits_pos: Z -> Z -> list Z)
+               (base_count_state: Z -> Z -> Z -> Z -> Prop)
+               (base_fill_state: Z -> Z -> Z -> Z -> list Z -> Prop)
+               (base_fill_full_state: Z -> Z -> Z -> Z -> list Z -> Prop)
                (repeat_Z: {A} -> A -> Z -> list A) */
-/*@ Import Coq Require Import coins_44 */
+/*@ Import Coq Require Import change_base_44 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -33,11 +33,11 @@ char* change_base_44(int x, int base)
 /*@ Require
         0 <= x && x < INT_MAX &&
         2 <= base && base < 10 &&
-        problem_44_pre_z(x, base)
+        problem_44_pre(x, base)
     Ensure exists out_l len,
         1 <= len && len < INT_MAX &&
         Zlength(out_l) == len &&
-        problem_44_spec_z(x, base, out_l) &&
+        problem_44_spec(x, base, out_l) &&
         CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {

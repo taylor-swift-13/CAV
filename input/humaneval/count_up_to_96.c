@@ -13,11 +13,11 @@ count_up_to_96(18) => {2,3,5,7,11,13,17}
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_96_pre_z: Z -> Prop)
-               (problem_96_spec_z: Z -> list Z -> Prop)
+/*@ Extern Coq (problem_96_pre: Z -> Prop)
+               (problem_96_spec: Z -> list Z -> Prop)
                (count_up_to_state: Z -> list Z -> Prop)
                (prime_test_state: Z -> list Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_96 */
+/*@ Import Coq Require Import count_up_to_96 */
 
 typedef struct {
     int* data;
@@ -39,13 +39,13 @@ int *malloc_int_array(int size)
 IntArray *count_up_to_96(int n)
 /*@ Require
         0 <= n && n < INT_MAX &&
-        problem_96_pre_z(n)
+        problem_96_pre(n)
     Ensure
         exists data output_l output_size,
         __return != 0 &&
         output_size == Zlength(output_l) &&
         0 <= output_size && output_size <= n &&
-        problem_96_spec_z(n, output_l) &&
+        problem_96_spec(n, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::seg(data, 0, output_size, output_l) *

@@ -64,7 +64,7 @@ Definition problem_103_pre (n m : Z) : Prop :=
   (n) > 0 /\ (m) > 0.
 
 Definition problem_103_spec (n m : Z) (output : list Z) : Prop :=
-  (((string_of_list output)) = rounded_avg_impl n m).
+  ((string_of_list output)) = rounded_avg_impl n m. 
 
 Definition avg_103 (n m : Z) : Z := (n + m) / 2.
 

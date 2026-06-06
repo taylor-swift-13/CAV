@@ -19,7 +19,7 @@ import coq_runner
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SKILL = REPO_ROOT / "skills" / "contract" / "SKILL.md"
 OUTPUT_ROOT = REPO_ROOT / "output"
-INPUT_ROOT = REPO_ROOT / "input"
+MID_ROOT = REPO_ROOT / "mid"
 DEFAULT_MODEL = "gpt-5.4"
 DEFAULT_CLAUDE_MODEL = "sonnet"
 DEFAULT_REASONING_EFFORT = "medium"
@@ -528,7 +528,7 @@ def main() -> int:
     emit_log(f"workspace={workspace_path}")
 
     function_name = args.function_name or args.function_name_positional or raw_path.stem
-    _input_dir = (INPUT_ROOT / args.dataset) if getattr(args, "dataset", None) else INPUT_ROOT
+    _input_dir = (MID_ROOT / args.dataset) if args.dataset else MID_ROOT
     _input_dir.mkdir(parents=True, exist_ok=True)
     # Co-locate verification headers so generated C can include them by bare name.
     for _h in ROOT_HEADER_INCLUDES:

@@ -14,11 +14,11 @@ Example:
 #include "int_array_def.h"
 
 /*@ Extern Coq (Zabs: Z -> Z)
-               (problem_128_pre_z: list Z -> Prop)
-               (problem_128_spec_z: list Z -> Z -> Prop)
+               (problem_128_pre: list Z -> Prop)
+               (problem_128_spec: list Z -> Z -> Prop)
                (prod_signs_prefix: Z -> list Z -> Z -> Z -> Prop)
                (prod_signs_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_128 */
+/*@ Import Coq Require Import prod_signs_128 */
 
 int abs(int x)
 /*@ Require
@@ -36,11 +36,11 @@ int prod_signs_128(int* arr, int arr_size)
     Require
         0 <= arr_size && arr_size < INT_MAX &&
         arr_size == Zlength(input_l) &&
-        problem_128_pre_z(input_l) &&
+        problem_128_pre(input_l) &&
         prod_signs_int_range(input_l) &&
         IntArray::full(arr, arr_size, input_l)
     Ensure
-        problem_128_spec_z(input_l, __return) &&
+        problem_128_spec(input_l, __return) &&
         IntArray::full(arr, arr_size, input_l)
 */
 {

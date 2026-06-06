@@ -12,12 +12,12 @@ e.g. -123 has signed digits -1, 2, && 3.
 #include "int_array_def.h"
 
 /*@ Extern Coq (Zabs: Z -> Z)
-               (problem_108_pre_z: list Z -> Prop)
-               (problem_108_spec_z: list Z -> Z -> Prop)
+               (problem_108_pre: list Z -> Prop)
+               (problem_108_spec: list Z -> Z -> Prop)
                (count_nums_prefix: Z -> list Z -> Z -> Prop)
                (count_nums_int_range: list Z -> Prop)
                (digit_scan_state: Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_108 */
+/*@ Import Coq Require Import count_nums_108 */
 
 int abs(int x)
 /*@ Require
@@ -35,11 +35,11 @@ int count_nums_108(int* n, int n_size)
     Require
         0 <= n_size && n_size < INT_MAX &&
         n_size == Zlength(input_l) &&
-        problem_108_pre_z(input_l) &&
+        problem_108_pre(input_l) &&
         count_nums_int_range(input_l) &&
         IntArray::full(n, n_size, input_l)
     Ensure
-        problem_108_spec_z(input_l, __return) &&
+        problem_108_spec(input_l, __return) &&
         IntArray::full(n, n_size, input_l)
 */
 {

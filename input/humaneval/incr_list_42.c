@@ -11,7 +11,7 @@ Return vector with elements incremented by 1.
                (problem_42_spec: list Z -> list Z -> Prop)
                (list_incr_int_range: list Z -> Prop)
                (map_incr: list Z -> list Z) */
-/*@ Import Coq Require Import coins_42 */
+/*@ Import Coq Require Import incr_list_42 */
 
 typedef struct {
     int* data;

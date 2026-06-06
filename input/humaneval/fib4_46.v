@@ -1,6 +1,48 @@
-(* defs for fib4_46 from: coins_46.v *)
+(* spec/46 *)
+(* The Fib4 number sequence is a sequence similar to the Fibbonacci sequnece that's defined as follows:
+fib4_nat(0) -> 0
+fib4_nat(1) -> 0
+fib4_nat(2) -> 2
+fib4_nat(3) -> 0
+fib4_nat(n) -> fib4_nat(n-1) + fib4_nat(n-2) + fib4_nat(n-3) + fib4_nat(n-4).
+Please write a function to efficiently compute the n-th element of the fib4_nat number sequence. Do not use recursion.
+>>> fib4_nat(5)
+4
+>>> fib4_nat(6)
+8
+>>> fib4_nat(7)
+14 *)
 
-Load "../spec/46".
+(* 
+  Spec(input : int, output : int) :=
+
+​	∃ Fib : list int,
+​		Fib[0] = 0 /\ Fib[1] = 0 /\ Fib[2] = 2 /\ Fib[3] = 0 /\
+​		∀i ∈ N, i >3 → Fib[i] = Fib[i-1] + Fib[i-2] + Fib[i-3] + Fib[i-4] /\
+​		output = Fib[input] *)
+
+Require Import Coq.Arith.Arith.
+
+(* 使用 Fixpoint 表示 fib4_nat 序列 *)
+Fixpoint fib4_nat (n : nat) : nat :=
+  match n with
+  | 0 => 0
+  | S n1 =>
+    match n1 with
+    | 0 => 0
+    | S n2 =>
+      match n2 with
+      | 0 => 2
+      | S n3 =>
+        match n3 with
+        | 0 => 0
+        | S n4 => fib4_nat n1 + fib4_nat n2 + fib4_nat n3 + fib4_nat n4
+        end
+      end
+    end
+  end.
+
+
 
 Require Import Coq.ZArith.ZArith.
 Require Import Coq.micromega.Lia.
@@ -9,120 +51,18 @@ Require Import Logic.LogicGenerator.demo932.Interface.
 
 Local Open Scope Z_scope.
 
-Definition fib4_z (n : Z) : Z :=
-  Z.of_nat (fib4 (Z.to_nat n)).
+Definition fib4 (n : Z) : Z :=
+  Z.of_nat (fib4_nat (Z.to_nat n)).
 
-Definition problem_46_pre_z (n : Z) : Prop :=
-  0 <= n /\ problem_46_pre (Z.to_nat n).
+Definition problem_46_pre (n : Z) : Prop :=
+  0 <= n.
 
-Definition problem_46_spec_z (n output : Z) : Prop :=
-  0 <= n /\ 0 <= output /\
-  problem_46_spec (Z.to_nat n) (Z.to_nat output).
-
-Lemma fib4_z_original_spec : forall n,
-  0 <= n ->
-  problem_46_spec_z n (fib4_z n).
-Proof.
-  intros n Hn.
-  unfold problem_46_spec_z, problem_46_spec, fib4_z.
-  split; [lia|].
-  split; [lia|].
-  rewrite Nat2Z.id.
-  reflexivity.
-Qed.
-
-Lemma fib4_z_0 :
-  fib4_z 0 = 0.
-Proof. reflexivity. Qed.
-
-Lemma fib4_z_1 :
-  fib4_z 1 = 0.
-Proof. reflexivity. Qed.
-
-Lemma fib4_z_2 :
-  fib4_z 2 = 2.
-Proof. reflexivity. Qed.
-
-Lemma fib4_z_3 :
-  fib4_z 3 = 0.
-Proof. reflexivity. Qed.
-
-Lemma fib4_z_step : forall i,
-  4 <= i ->
-  fib4_z i =
-    fib4_z (i - 1) + fib4_z (i - 2) +
-    fib4_z (i - 3) + fib4_z (i - 4).
-Proof.
-  intros i Hi.
-  unfold fib4_z.
-  assert (Hi0: Z.to_nat i = S (S (S (S (Z.to_nat (i - 4)))))).
-  { apply Nat2Z.inj.
-    rewrite Z2Nat.id by lia.
-    rewrite !Nat2Z.inj_succ.
-    rewrite Z2Nat.id by lia.
-    lia. }
-  assert (Hi1: Z.to_nat (i - 1) = S (S (S (Z.to_nat (i - 4))))).
-  { apply Nat2Z.inj.
-    rewrite Z2Nat.id by lia.
-    rewrite !Nat2Z.inj_succ.
-    rewrite Z2Nat.id by lia.
-    lia. }
-  assert (Hi2: Z.to_nat (i - 2) = S (S (Z.to_nat (i - 4)))).
-  { apply Nat2Z.inj.
-    rewrite Z2Nat.id by lia.
-    rewrite !Nat2Z.inj_succ.
-    rewrite Z2Nat.id by lia.
-    lia. }
-  assert (Hi3: Z.to_nat (i - 3) = S (Z.to_nat (i - 4))).
-  { apply Nat2Z.inj.
-    rewrite Z2Nat.id by lia.
-    rewrite !Nat2Z.inj_succ.
-    rewrite Z2Nat.id by lia.
-    lia. }
-  rewrite Hi0, Hi1, Hi2, Hi3.
-  simpl.
-  lia.
-Qed.
+Definition problem_46_spec (n output : Z) : Prop :=
+  0 <= n /\ output = fib4 n.
 
 Definition fib4_step_int_range (n : Z) : Prop :=
   forall i,
     4 <= i <= n ->
-    INT_MIN <= fib4_z (i - 4) + fib4_z (i - 3) <= INT_MAX /\
-    INT_MIN <= fib4_z (i - 4) + fib4_z (i - 3) + fib4_z (i - 2) <= INT_MAX /\
-    INT_MIN <= fib4_z (i - 4) + fib4_z (i - 3) + fib4_z (i - 2) + fib4_z (i - 1) <= INT_MAX.
-
-Lemma problem_46_spec_z_base_0 :
-  problem_46_spec_z 0 0.
-Proof.
-  unfold problem_46_spec_z.
-  unfold problem_46_spec.
-  simpl.
-  lia.
-Qed.
-
-Lemma problem_46_spec_z_base_1 :
-  problem_46_spec_z 1 0.
-Proof.
-  unfold problem_46_spec_z.
-  unfold problem_46_spec.
-  simpl.
-  lia.
-Qed.
-
-Lemma problem_46_spec_z_base_2 :
-  problem_46_spec_z 2 2.
-Proof.
-  unfold problem_46_spec_z.
-  unfold problem_46_spec.
-  simpl.
-  lia.
-Qed.
-
-Lemma problem_46_spec_z_base_3 :
-  problem_46_spec_z 3 0.
-Proof.
-  unfold problem_46_spec_z.
-  unfold problem_46_spec.
-  simpl.
-  lia.
-Qed.
+    INT_MIN <= fib4 (i - 4) + fib4 (i - 3) <= INT_MAX /\
+    INT_MIN <= fib4 (i - 4) + fib4 (i - 3) + fib4 (i - 2) <= INT_MAX /\
+    INT_MIN <= fib4 (i - 4) + fib4 (i - 3) + fib4 (i - 2) + fib4 (i - 1) <= INT_MAX.

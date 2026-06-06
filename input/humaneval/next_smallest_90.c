@@ -12,13 +12,13 @@ next_smallest_90({1, 1}) == None
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_90_pre_z: list Z -> Prop)
-               (problem_90_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_90_pre: list Z -> Prop)
+               (problem_90_spec: list Z -> Z -> Prop)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (no_distinct_prefix: Z -> list Z -> Prop)
                (next_smallest_sorted_bridge: list Z -> list Z -> Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_90 */
+/*@ Import Coq Require Import next_smallest_90 */
 
 void sort_int_array(int *array, int init_size, int size, int ascending)
 /*@ With l
@@ -45,11 +45,11 @@ int next_smallest_90(int *lst, int lst_size)
         0 <= lst_size && lst_size < INT_MAX &&
         (lst_size > 1 => lst != 0) &&
         lst_size == Zlength(input_l) &&
-        problem_90_pre_z(input_l) &&
+        problem_90_pre(input_l) &&
         IntArray::full(lst, lst_size, input_l)
     Ensure
         exists final_l,
-        problem_90_spec_z(input_l, __return) &&
+        problem_90_spec(input_l, __return) &&
         lst_size == Zlength(final_l) &&
         IntArray::full(lst, lst_size, final_l)
 */

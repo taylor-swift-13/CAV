@@ -12,20 +12,20 @@ can_arrange_135({1,2,3}) = -1
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_135_pre_z: list Z -> Prop)
-               (problem_135_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_135_pre: list Z -> Prop)
+               (problem_135_spec: list Z -> Z -> Prop)
                (can_arrange_prefix: Z -> list Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_135 */
+/*@ Import Coq Require Import can_arrange_135 */
 
 int can_arrange_135(int* arr, int arr_size)
 /*@ With input_l
     Require
         0 <= arr_size && arr_size < INT_MAX &&
         arr_size == Zlength(input_l) &&
-        problem_135_pre_z(input_l) &&
+        problem_135_pre(input_l) &&
         IntArray::full(arr, arr_size, input_l)
     Ensure
-        problem_135_spec_z(input_l, __return) &&
+        problem_135_spec(input_l, __return) &&
         IntArray::full(arr, arr_size, input_l)
 */
 {

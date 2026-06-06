@@ -7,11 +7,11 @@ For a given string, flip lowercase characters to uppercase && uppercase to lower
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_27_pre_z: list Z -> Prop)
-               (problem_27_spec_z: list Z -> list Z -> Prop)
-               (flip_char_z: Z -> Z)
-               (char_range_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_27 */
+/*@ Extern Coq (problem_27_pre: list Z -> Prop)
+               (problem_27_spec: list Z -> list Z -> Prop)
+               (flip_char: Z -> Z)
+               (char_range: list Z -> Prop) */
+/*@ Import Coq Require Import filp_case_27 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -31,18 +31,18 @@ char *filp_case_27(char *str)
 /*@ With l len
     Require 0 <= len && len < INT_MAX &&
             Zlength(l) == len &&
-            problem_27_pre_z(l) &&
-            char_range_z(l) &&
+            problem_27_pre(l) &&
+            char_range(l) &&
             CharArray::full(str, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
             Zlength(out_l) == len &&
-            problem_27_spec_z(l, out_l) &&
+            problem_27_spec(l, out_l) &&
             CharArray::full(str, len + 1, app(l, cons(0, nil))) *
             CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {
     int i;
-    int n = strlen(str) /*@ where l = l, n = len */;
+    int n = strlen(str);
     char *out = malloc_char_array(n + 1);
 
     for (i = 0; i < n; i++) {

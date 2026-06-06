@@ -19,11 +19,11 @@ tri_130(3) = {1, 3, 2, 8}
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_130_pre_z: Z -> Prop)
-               (problem_130_spec_z: Z -> list Z -> Prop)
+/*@ Extern Coq (problem_130_pre: Z -> Prop)
+               (problem_130_spec: Z -> list Z -> Prop)
                (tri_sequence: Z -> list Z)
                (tri_seq_int_range: Z -> Prop) */
-/*@ Import Coq Require Import coins_130 */
+/*@ Import Coq Require Import tri_130 */
 
 typedef struct {
     int* data;
@@ -47,7 +47,7 @@ IntArray *tri_130(int n)
     Require
         n == n0 &&
         0 <= n0 && n0 + 1 < INT_MAX &&
-        problem_130_pre_z(n0) &&
+        problem_130_pre(n0) &&
         tri_seq_int_range(n0)
     Ensure
         exists data output_l output_size,
@@ -56,7 +56,7 @@ IntArray *tri_130(int n)
         output_size == n0 + 1 &&
         output_size == Zlength(output_l) &&
         output_l == tri_sequence(n0) &&
-        problem_130_spec_z(n0, output_l) &&
+        problem_130_spec(n0, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, output_size, output_l)

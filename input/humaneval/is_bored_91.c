@@ -13,13 +13,13 @@ For example:
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_91_pre_z: list Z -> Prop)
-               (problem_91_spec_z: list Z -> Z -> Prop)
-               (bored_sum_prefix_z: Z -> list Z -> Z)
-               (bored_isstart_prefix_z: Z -> list Z -> Z)
-               (bored_isi_prefix_z: Z -> list Z -> Z)
-               (ascii_range_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_91 */
+/*@ Extern Coq (problem_91_pre: list Z -> Prop)
+               (problem_91_spec: list Z -> Z -> Prop)
+               (bored_sum_prefix: Z -> list Z -> Z)
+               (bored_isstart_prefix: Z -> list Z -> Z)
+               (bored_isi_prefix: Z -> list Z -> Z)
+               (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import is_bored_91 */
 
 int strlen(char *s)
 /*@ With l n
@@ -34,11 +34,11 @@ int is_bored_91(char *S)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        ascii_range_z(l) &&
-        problem_91_pre_z(l) &&
+        ascii_range(l) &&
+        problem_91_pre(l) &&
         CharArray::full(S, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_91_spec_z(l, __return) &&
+        problem_91_spec(l, __return) &&
         CharArray::full(S, len + 1, app(l, cons(0, nil)))
 */
 {
@@ -46,7 +46,7 @@ int is_bored_91(char *S)
     int isstart = 1;
     int isi = 0;
     int sum = 0;
-    int n = strlen(S) /*@ where l = l, n = len */;
+    int n = strlen(S);
 
     for (i = 0; i < n; i++) {
         int chr = S[i];

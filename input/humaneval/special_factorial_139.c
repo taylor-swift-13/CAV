@@ -13,15 +13,15 @@ factorial of this integer.
 #include "verification_stdlib.h"
 /*@ Extern Coq (factorial: Z -> Z)
                (bfact_coq: Z -> Z) */
-/*@ Extern Coq (problem_139_pre_z: Z -> Prop) */
-/*@ Extern Coq (problem_139_spec_z: Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_139 */
+/*@ Extern Coq (problem_139_pre: Z -> Prop) */
+/*@ Extern Coq (problem_139_spec: Z -> Z -> Prop) */
+/*@ Import Coq Require Import special_factorial_139 */
 long long special_factorial_139(int n)
 /*@ Require
-        problem_139_pre_z(n) &&
+        problem_139_pre(n) &&
         1 <= n && n <= 8 && emp
     Ensure
-        problem_139_spec_z(n@pre, __return) && emp
+        problem_139_spec(n@pre, __return) && emp
 */
 {
     long long fact=1,bfact=1;

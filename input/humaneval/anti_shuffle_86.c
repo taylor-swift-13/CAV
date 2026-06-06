@@ -14,15 +14,15 @@ anti_shuffle_86("Hello World!!!") returns "Hello !!!Wdlor"
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_86_pre_z: list Z -> Prop)
-               (problem_86_spec_z: list Z -> list Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (sort_chars_z: list Z -> list Z)
-               (anti_out_prefix_z: Z -> list Z -> list Z)
-               (anti_cur_prefix_z: Z -> list Z -> list Z)
-               (anti_shuffle_output_z: list Z -> list Z)
+/*@ Extern Coq (problem_86_pre: list Z -> Prop)
+               (problem_86_spec: list Z -> list Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (sort_chars: list Z -> list Z)
+               (anti_out_prefix: Z -> list Z -> list Z)
+               (anti_cur_prefix: Z -> list Z -> list Z)
+               (anti_shuffle_output: list Z -> list Z)
                (empty_z_list: list Z) */
-/*@ Import Coq Require Import coins_86 */
+/*@ Import Coq Require Import anti_shuffle_86 */
 
 int strlen(char *s)
 /*@ With l len
@@ -58,7 +58,7 @@ void sort_char_array(char *p, int n)
         Zlength(l) == n &&
         CharArray::full(p, n, l)
     Ensure
-        CharArray::full(p, n, sort_chars_z(l))
+        CharArray::full(p, n, sort_chars(l))
 */
 ;
 
@@ -84,16 +84,16 @@ char* anti_shuffle_86(char *s)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_86_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_86_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
-        problem_86_spec_z(l, out_l) &&
+        problem_86_spec(l, out_l) &&
         CharArray::full(__return, Zlength(out_l) + 1, app(out_l, cons(0, nil))) *
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s) /*@ where l = l, len = len */;
+    int n = strlen(s);
     int cap = n + 1;
     char *out = malloc_char_array(cap);
     char *cur = malloc_char_array(cap);
@@ -106,10 +106,8 @@ char* anti_shuffle_86(char *s)
             cur[cur_len] = s[i];
             cur_len = cur_len + 1;
         } else {
-            sort_char_array(cur, cur_len) /*@ where l = anti_cur_prefix_z(i, l) */;
-            copy_char_array(out, out_len, cur, cur_len, cap)
-                /*@ where dst_l = anti_out_prefix_z(i, l),
-                          src_l = sort_chars_z(anti_cur_prefix_z(i, l)) */;
+            sort_char_array(cur, cur_len);
+            copy_char_array(out, out_len, cur, cur_len, cap);
             out_len = out_len + cur_len;
             cur_len = 0;
             out[out_len] = 32;
@@ -117,13 +115,10 @@ char* anti_shuffle_86(char *s)
         }
     }
 
-    sort_char_array(cur, cur_len) /*@ where l = anti_cur_prefix_z(n, l) */;
-    copy_char_array(out, out_len, cur, cur_len, cap)
-        /*@ where dst_l = anti_out_prefix_z(n, l),
-                  src_l = sort_chars_z(anti_cur_prefix_z(n, l)) */;
+    sort_char_array(cur, cur_len);
+    copy_char_array(out, out_len, cur, cur_len, cap);
     out_len = out_len + cur_len;
-    free_char_array(cur, cur_len, cap)
-        /*@ where l = sort_chars_z(anti_cur_prefix_z(n, l)) */;
+    free_char_array(cur, cur_len, cap);
     cur_len = 0;
 
     out[out_len] = 0;

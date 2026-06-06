@@ -1,13 +1,4 @@
-(* defs for is_equal_to_sum_even_138 from: coins_138.v, 138.v *)
-
-Load "../spec/138".
-
-(* Adapt bool result to Z: r <> 0 means true *)
-Definition problem_138_spec_z (n r : Z) : Prop :=
-  r <> 0 <-> exists e1 e2 e3 e4 : Z,
-    is_positive_even e1 /\ is_positive_even e2 /\ is_positive_even e3 /\ is_positive_even e4 /\
-    n = e1 + e2 + e3 + e4.
-
+(* spec/138 *)
 (* def is_equal_to_sum_even(n):
 """Evaluate whether the given number n can be written as the sum of exactly 4 positive even numbers
 Example
@@ -26,10 +17,9 @@ Definition is_positive_even (e : Z) : Prop :=
 Definition problem_138_pre (n : Z) : Prop := True.
 
 (* Spec：当且仅当存在四个正偶数之和等于 n 时返回 true *)
-Definition problem_138_spec (n : Z) (b : bool) : Prop :=
-  b = true <-> exists e1 e2 e3 e4 : Z,
-    is_positive_even e1 /\
-    is_positive_even e2 /\
-    is_positive_even e3 /\
-    is_positive_even e4 /\
+
+(* Adapt bool result to Z: r <> 0 means true *)
+Definition problem_138_spec (n r : Z) : Prop :=
+  r <> 0 <-> exists e1 e2 e3 e4 : Z,
+    is_positive_even e1 /\ is_positive_even e2 /\ is_positive_even e3 /\ is_positive_even e4 /\
     n = e1 + e2 + e3 + e4.

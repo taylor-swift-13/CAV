@@ -30,9 +30,9 @@ Have fun :)
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_159_pre_z: Z -> Z -> Z -> Prop)
-               (problem_159_spec_z: Z -> Z -> Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_159 */
+/*@ Extern Coq (problem_159_pre: Z -> Z -> Z -> Prop)
+               (problem_159_spec: Z -> Z -> Z -> list Z -> Prop) */
+/*@ Import Coq Require Import eat_159 */
 
 typedef struct {
     int* data;
@@ -53,14 +53,14 @@ int *malloc_int_array(int size)
 
 IntArray *eat_159(int number,int need,int remaining)
 /*@ Require
-        problem_159_pre_z(number, need, remaining)
+        problem_159_pre(number, need, remaining)
     Ensure
         exists data output_l output_size,
         __return != 0 &&
         data != 0 &&
         output_size == 2 &&
         output_size == Zlength(output_l) &&
-        problem_159_spec_z(number, need, remaining, output_l) &&
+        problem_159_spec(number, need, remaining, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, output_size, output_l)

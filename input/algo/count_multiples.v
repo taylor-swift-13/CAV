@@ -11,4 +11,9 @@ Fixpoint count_multiples_upto (k : Z) (fuel : nat) : Z :=
   end.
 
 Definition count_multiples_spec (n k : Z) : Z :=
-  count_multiples_upto k (Z.to_nat n).
+  snd (Z.iter n
+    (fun st =>
+       let '(x, count) := st in
+       let x' := x + 1 in
+       (x', count + if Z.eq_dec (Z.rem x' k) 0 then 1 else 0))
+    (0, 0)).

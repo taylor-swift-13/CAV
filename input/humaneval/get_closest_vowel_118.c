@@ -17,15 +17,15 @@ get_closest_vowel_118("ab") ==> ""
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_118_pre_z: list Z -> Prop)
-               (problem_118_spec_z: list Z -> list Z -> Prop)
-               (is_vowel_z: Z -> Prop)
-               (is_consonant_z: Z -> Prop)
-               (alpha_range_z: list Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (closest_vowel_candidate_z: list Z -> Z -> Prop)
-               (no_candidate_after_z: Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_118 */
+/*@ Extern Coq (problem_118_pre: list Z -> Prop)
+               (problem_118_spec: list Z -> list Z -> Prop)
+               (is_vowel: Z -> Prop)
+               (is_consonant: Z -> Prop)
+               (alpha_range: list Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (closest_vowel_candidate: list Z -> Z -> Prop)
+               (no_candidate_after: Z -> list Z -> Prop) */
+/*@ Import Coq Require Import get_closest_vowel_118 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -45,8 +45,8 @@ int strlen(char *s)
 
 int is_vowel_code(int ch)
 /*@ Require emp
-    Ensure ((__return == 1 && is_vowel_z(ch@pre)) ||
-            (__return == 0 && ! is_vowel_z(ch@pre))) &&
+    Ensure ((__return == 1 && is_vowel(ch@pre)) ||
+            (__return == 0 && ! is_vowel(ch@pre))) &&
            emp
 */
 {
@@ -68,14 +68,14 @@ char *get_closest_vowel_118(char *word)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_118_pre_z(l) &&
-        ascii_range_z(l) &&
-        alpha_range_z(l) &&
+        problem_118_pre(l) &&
+        ascii_range(l) &&
+        alpha_range(l) &&
         CharArray::full(word, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l out_n,
         Zlength(out_l) == out_n &&
         0 <= out_n && out_n <= 1 &&
-        problem_118_spec_z(l, out_l) &&
+        problem_118_spec(l, out_l) &&
         CharArray::full(word, len + 1, app(l, cons(0, nil))) *
         CharArray::full(__return, out_n + 1, app(out_l, cons(0, nil)))
 */
@@ -87,7 +87,7 @@ char *get_closest_vowel_118(char *word)
     int cur_vowel;
     int right_vowel;
     int left_vowel;
-    int n = strlen(word) /*@ where l = l, n = len */;
+    int n = strlen(word);
     cur = 0;
     right = 0;
     left = 0;

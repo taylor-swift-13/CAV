@@ -13,8 +13,8 @@ For example:
 #include "int_array_def.h"
 
 /*@ Extern Coq (Zabs: Z -> Z)
-               (problem_145_pre_z: list Z -> Prop)
-               (problem_145_spec_z: list Z -> list Z -> Prop)
+               (problem_145_pre: list Z -> Prop)
+               (problem_145_spec: list Z -> list Z -> Prop)
                (signed_digit_score_result: Z -> Z -> Prop)
                (signed_digit_tail_state: Z -> Z -> Z -> Prop)
                (first_digit_state_145: Z -> Z -> Prop)
@@ -23,7 +23,7 @@ For example:
                (order_sort_outer_state: Z -> list Z -> list Z -> list Z -> Prop)
                (order_sort_inner_state: Z -> Z -> list Z -> list Z -> list Z -> Prop)
                (order_by_points_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_145 */
+/*@ Import Coq Require Import order_by_points_145 */
 
 typedef struct {
     int* data;
@@ -100,7 +100,7 @@ IntArray *order_by_points_145(int* nums, int nums_size)
     Require
         0 <= nums_size && nums_size < INT_MAX &&
         nums_size == Zlength(input_l) &&
-        problem_145_pre_z(input_l) &&
+        problem_145_pre(input_l) &&
         order_by_points_int_range(input_l) &&
         IntArray::full(nums, nums_size, input_l)
     Ensure
@@ -109,7 +109,7 @@ IntArray *order_by_points_145(int* nums, int nums_size)
         data != 0 &&
         output_size == nums_size &&
         output_size == Zlength(output_l) &&
-        problem_145_spec_z(input_l, output_l) &&
+        problem_145_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(nums, nums_size, input_l) *

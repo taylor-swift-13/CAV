@@ -14,10 +14,10 @@ Input number should be equal to the product of all factors
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_25_pre_z: Z -> Prop)
-               (problem_25_spec_z: Z -> list Z -> Prop)
+/*@ Extern Coq (problem_25_pre: Z -> Prop)
+               (problem_25_spec: Z -> list Z -> Prop)
                (factorize_loop_state: Z -> Z -> Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_25 */
+/*@ Import Coq Require Import factorize_25 */
 
 typedef struct {
     int* data;
@@ -41,13 +41,13 @@ IntArray *factorize_25(int n)
     Require
         n == n0 &&
         2 <= n0 && n0 < INT_MAX &&
-        problem_25_pre_z(n0)
+        problem_25_pre(n0)
     Ensure
         exists data output_l output_size,
         __return != 0 &&
         output_size == Zlength(output_l) &&
         0 <= output_size && output_size <= n0 &&
-        problem_25_spec_z(n0, output_l) &&
+        problem_25_spec(n0, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::seg(data, 0, output_size, output_l) *

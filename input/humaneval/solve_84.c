@@ -16,15 +16,15 @@ Output:
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_84_pre_z: Z -> Prop)
-               (problem_84_spec_z: Z -> list Z -> Prop)
-               (decimal_sum_state_z: Z -> Z -> Z -> Prop)
-               (decimal_sum_value_z: Z -> Z -> Prop)
-               (binary_digits_z: Z -> list Z)
-               (binary_count_state_z: Z -> Z -> Z -> Prop)
-               (binary_fill_full_state_z: Z -> Z -> Z -> list Z -> Prop)
+/*@ Extern Coq (problem_84_pre: Z -> Prop)
+               (problem_84_spec: Z -> list Z -> Prop)
+               (decimal_sum_state: Z -> Z -> Z -> Prop)
+               (decimal_sum_value: Z -> Z -> Prop)
+               (binary_digits: Z -> list Z)
+               (binary_count_state: Z -> Z -> Z -> Prop)
+               (binary_fill_full_state: Z -> Z -> Z -> list Z -> Prop)
                (repeat_Z: {A} -> A -> Z -> list A) */
-/*@ Import Coq Require Import coins_84 */
+/*@ Import Coq Require Import solve_84 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -35,11 +35,11 @@ char *malloc_char_array(int n)
 char* solve_84(int N)
 /*@ Require
         0 <= N && N <= 10000 &&
-        problem_84_pre_z(N)
+        problem_84_pre(N)
     Ensure exists out_l len,
         1 <= len && len < INT_MAX &&
         Zlength(out_l) == len &&
-        problem_84_spec_z(N, out_l) &&
+        problem_84_spec(N, out_l) &&
         CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {

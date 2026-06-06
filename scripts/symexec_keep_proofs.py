@@ -8,7 +8,7 @@ This wrapper preserves it:
   1. snapshot the current proof_manual.v: keep each proven (`Qed.`/`Defined.`)
      `proof_of_<func>_<wit>` block, plus any agent-added helper lemmas; record
      each witness's VC body from goal.v.
-  2. run the real symexec (canonical command from SYMEXEC/README §1).
+  2. run the real symexec (canonical symexec command, same as run_verify.run_symexec).
   3. for each freshly-generated witness whose VC body in the NEW goal.v is
      byte-identical to the OLD one, splice the old proof back in (PROOF §24:
      only reuse when the VC body is unchanged); re-insert helper lemmas.
@@ -17,15 +17,31 @@ This wrapper preserves it:
 On symexec failure the original generated files are restored, so the workspace
 is never left worse than before.
 
-Usage (drop-in for the SYMEXEC §1 command):
+Usage (drop-in for the canonical symexec command):
   python3 scripts/symexec_keep_proofs.py --name <NAME> --stamp <STAMP>
 """
-import argparse, re, shutil, subprocess, sys, tempfile
+import argparse, re, shutil, subprocess, sys, tempfile, time
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SYMEXEC_BIN = REPO_ROOT / "QualifiedCProgramming" / "linux-binary" / "symexec"
 GEN_SUFFIXES = ("goal", "proof_auto", "proof_manual", "goal_check", "proof_check")
+
+
+def log_phase(workspace: Path, event: str, detail: str = "") -> None:
+    """Append a timestamped phase event to <ws>/logs/phase_timeline.tsv.
+
+    Each symexec rerun bounds one annotation↔proof cycle; run_verify aggregates
+    these into per-cycle durations for metrics. Best-effort: never raises.
+    """
+    try:
+        line = f"{time.time():.3f}\t{time.strftime('%Y-%m-%d %H:%M:%S')}\t{event}\t{detail}\n"
+        p = workspace / "logs" / "phase_timeline.tsv"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "a", encoding="utf-8") as f:
+            f.write(line)
+    except Exception:
+        pass
 
 ITEM_BOUNDARY = re.compile(r"(?m)^(?=(?:Lemma|Theorem|Corollary|Definition|Fixpoint)\s)")
 NAME_RE = re.compile(r"^(?:Lemma|Theorem|Corollary|Definition|Fixpoint)\s+([A-Za-z_][\w']*)")
@@ -70,6 +86,7 @@ def main() -> int:
     annotated = REPO_ROOT / "annotated" / f"verify_{stamp}_{name}.c"
     logic_path = f"SimpleC.EE.CAV.verify_{stamp}_{name}"
     gen.mkdir(parents=True, exist_ok=True)
+    log_phase(ws, "symexec_rerun_start")  # bounds a new annotation↔proof cycle
 
     pm = gen / f"{name}_proof_manual.v"
     old_goal = gen / f"{name}_goal.v"
@@ -92,7 +109,7 @@ def main() -> int:
                 old_helpers.append(it)
         old_goal_defs = goal_defs(old_goal.read_text(encoding="utf-8", errors="replace"))
 
-    # ---- back up current generated files, then clean (SYMEXEC §3) ----
+    # ---- back up current generated files, then clean ----
     backup = Path(tempfile.mkdtemp(prefix="symexec_keep_"))
     for suf in GEN_SUFFIXES:
         f = gen / f"{name}_{suf}.v"
@@ -107,7 +124,10 @@ def main() -> int:
         f"--proof-auto-file={gen / f'{name}_proof_auto.v'}",
         f"--proof-manual-file={gen / f'{name}_proof_manual.v'}",
         f"--coq-logic-path={logic_path}",
-        "-slp", str(REPO_ROOT / "annotated") + "/", "SimpleC.EE.CAV",
+        # MUST match run_verify.run_symexec: canonical QCP_demos_LLM strategies
+        # qualified to SimpleC.EE.QCP_demos_LLM so goal.v emits prefixed strategy
+        # requires (unique, no `matches several files`). Keep these two in sync.
+        "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "QCP_demos_LLM") + "/", "SimpleC.EE.QCP_demos_LLM",
         f"--input-file={annotated}",
         "--no-exec-info",
     ]
@@ -121,6 +141,7 @@ def main() -> int:
             shutil.copy2(f, gen / f.name)
         print(f"[keep-proofs] symexec failed (exit {proc.returncode}); restored previous generated files", file=sys.stderr)
         shutil.rmtree(backup, ignore_errors=True)
+        log_phase(ws, "symexec_rerun_done", f"fail rc={proc.returncode}")
         return proc.returncode or 1
 
     # ---- 3. splice preserved proofs into the fresh proof_manual ----
@@ -148,6 +169,7 @@ def main() -> int:
 
     print(f"[keep-proofs] preserved={preserved} helpers={len(old_helpers)} "
           f"still_admitted={admitted} dropped_vc_changed={changed}", file=sys.stderr)
+    log_phase(ws, "symexec_rerun_done", f"ok preserved={preserved} admitted={admitted} changed={changed}")
     return 0
 
 

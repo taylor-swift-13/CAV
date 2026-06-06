@@ -20,7 +20,7 @@ Examples:
                (search_inner_to_outer_69: list Z -> Z -> list Z -> list Z -> Z -> Z -> Prop)
                (search_after_val_write_69: list Z -> Z -> list Z -> list Z -> Z -> Z -> Z -> Prop)
                (search_outer_add_new_69: list Z -> Z -> list Z -> list Z -> Z -> Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_69 */
+/*@ Import Coq Require Import search_69 */
 
 int *malloc_int_array(int size)
 /*@ Require size >= 0 && size < INT_MAX

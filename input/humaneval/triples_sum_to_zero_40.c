@@ -19,7 +19,7 @@ true
                (scanned_j: list Z -> Z -> Z -> Z -> Prop)
                (scanned_k: list Z -> Z -> Z -> Z -> Z -> Prop)
                (true: bool) (false: bool) */
-/*@ Import Coq Require Import coins_40 */
+/*@ Import Coq Require Import triples_sum_to_zero_40 */
 
 int triples_sum_to_zero_40(int *l, int l_size)
 /*@ With input_l

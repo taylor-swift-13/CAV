@@ -1,5 +1,4 @@
-(* defs for pairs_sum_to_zero_43 from: 43.v *)
-
+(* spec/43 *)
 (* pairs_sum_to_zero takes a list of integers as an input.
 it returns True if there are two distinct elements in the list that
 sum to zero, and False otherwise.
@@ -41,3 +40,33 @@ Definition problem_43_spec (input : list Z) (output : bool) : Prop :=
     (j < length input)%nat /\
     (nth i input 0 + nth j input 0 = 0))
   <-> (output = true).
+
+Require Import Coq.micromega.Lia.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+
+Local Open Scope Z_scope.
+
+Definition pair_sum_int_range (l : list Z) (n : Z) : Prop :=
+  forall i j,
+    0 <= i < j ->
+    j < n ->
+    INT_MIN <= Znth i l 0 + Znth j l 0 <= INT_MAX.
+
+Definition pair_sum_zero (l : list Z) (i j : Z) : Prop :=
+  Znth i l 0 + Znth j l 0 = 0.
+
+Definition scanned_i (l : list Z) (n i : Z) : Prop :=
+  forall p q,
+    0 <= p < q ->
+    q < n ->
+    p < i ->
+    ~ pair_sum_zero l p q.
+
+Definition scanned_j (l : list Z) (n i j : Z) : Prop :=
+  scanned_i l n i /\
+  forall q,
+    i < q ->
+    q < n ->
+    q < j ->
+    ~ pair_sum_zero l i q.

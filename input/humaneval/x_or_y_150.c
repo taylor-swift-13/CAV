@@ -8,15 +8,15 @@ for x_or_y_150(15, 8, 5) == 5
 
 */
 #include "verification_stdlib.h"
-/*@ Extern Coq (problem_150_spec_z: Z -> Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_150 */
+/*@ Extern Coq (problem_150_spec: Z -> Z -> Z -> Z -> Prop) */
+/*@ Import Coq Require Import x_or_y_150 */
 int x_or_y_150(int n, int x, int y)
 /*@ Require
         2 <= n && n <= INT_MAX &&
         INT_MIN <= x && x <= INT_MAX &&
         INT_MIN <= y && y <= INT_MAX && emp
     Ensure
-        problem_150_spec_z(n@pre, x@pre, y@pre, __return) && emp
+        problem_150_spec(n@pre, x@pre, y@pre, __return) && emp
 */
 {
     int isp=1;

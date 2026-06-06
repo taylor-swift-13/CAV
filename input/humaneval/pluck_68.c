@@ -35,11 +35,11 @@ Constraints:
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_68_pre_z: list Z -> Prop)
-               (problem_68_spec_z: list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_68_pre: list Z -> Prop)
+               (problem_68_spec: list Z -> list Z -> Prop)
                (list_nonnegative: list Z -> Prop)
                (pluck_loop_state: list Z -> Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_68 */
+/*@ Import Coq Require Import pluck_68 */
 
 typedef struct {
     int* data;
@@ -63,7 +63,7 @@ IntArray *pluck_68(int *arr, int arr_size)
     Require
         0 <= arr_size && arr_size < INT_MAX &&
         arr_size == Zlength(input_l) &&
-        problem_68_pre_z(input_l) &&
+        problem_68_pre(input_l) &&
         list_nonnegative(input_l) &&
         IntArray::full(arr, arr_size, input_l)
     Ensure
@@ -72,7 +72,7 @@ IntArray *pluck_68(int *arr, int arr_size)
         0 <= output_size && output_size <= 2 &&
         (output_size == 0 || output_size == 2) &&
         output_size == Zlength(output_l) &&
-        problem_68_spec_z(input_l, output_l) &&
+        problem_68_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(arr, arr_size, input_l) *

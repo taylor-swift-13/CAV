@@ -14,13 +14,13 @@ simplify_144("7/10", "10/2") = false
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_144_pre_z: list Z -> list Z -> Prop)
-               (problem_144_spec_z: list Z -> list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (fraction_parts_z: list Z -> Z -> Z -> Z -> Prop)
-               (fraction_values_safe_z: Z -> Z -> Z -> Z -> Prop)
-               (parse_digits_z: list Z -> Z) */
-/*@ Import Coq Require Import coins_144 */
+/*@ Extern Coq (problem_144_pre: list Z -> list Z -> Prop)
+               (problem_144_spec: list Z -> list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (fraction_parts: list Z -> Z -> Z -> Z -> Prop)
+               (fraction_values_safe: Z -> Z -> Z -> Z -> Prop)
+               (parse_digits: list Z -> Z) */
+/*@ Import Coq Require Import simplify_144 */
 
 int strlen(char *s)
 /*@ With l n
@@ -37,16 +37,16 @@ int simplify_144(char *x, char *n)
         0 <= lenn && lenn < INT_MAX &&
         Zlength(lx) == lenx &&
         Zlength(ln) == lenn &&
-        problem_144_pre_z(lx, ln) &&
-        ascii_range_z(lx) &&
-        ascii_range_z(ln) &&
-        fraction_parts_z(lx, sx, ax, bx) &&
-        fraction_parts_z(ln, sn, cn, dn) &&
-        fraction_values_safe_z(ax, bx, cn, dn) &&
+        problem_144_pre(lx, ln) &&
+        ascii_range(lx) &&
+        ascii_range(ln) &&
+        fraction_parts(lx, sx, ax, bx) &&
+        fraction_parts(ln, sn, cn, dn) &&
+        fraction_values_safe(ax, bx, cn, dn) &&
         CharArray::full(x, lenx + 1, app(lx, cons(0, nil))) *
         CharArray::full(n, lenn + 1, app(ln, cons(0, nil)))
     Ensure
-        problem_144_spec_z(lx, ln, __return) &&
+        problem_144_spec(lx, ln, __return) &&
         CharArray::full(x, lenx + 1, app(lx, cons(0, nil))) *
         CharArray::full(n, lenn + 1, app(ln, cons(0, nil)))
 */
@@ -57,7 +57,7 @@ int simplify_144(char *x, char *n)
     int d = 0;
     int i;
 
-    int x_len = strlen(x) /*@ where l = lx, n = lenx */;
+    int x_len = strlen(x);
 
     for (i = 0; x[i] != 47; i++) {
         a = a * 10 + (x[i] - 48);
@@ -69,7 +69,7 @@ int simplify_144(char *x, char *n)
         b = b * 10 + (x[i] - 48);
     }
 
-    int n_len = strlen(n) /*@ where l = ln, n = lenn */;
+    int n_len = strlen(n);
 
     
     for (i = 0; n[i] != 47; i++) {

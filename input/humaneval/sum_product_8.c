@@ -16,7 +16,7 @@ Empty sum should be equal to 0 && empty product should be equal to 1.
                (prefix_sum: list Z -> Z -> Z)
                (prefix_product: list Z -> Z -> Z)
                (prefix_sum_product_int_range: list Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_8 */
+/*@ Import Coq Require Import sum_product_8 */
 
 int *malloc_int_array(int size)
 /*@ Require size >= 0 && size < INT_MAX

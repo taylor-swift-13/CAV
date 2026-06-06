@@ -13,10 +13,10 @@ largest_smallest_integers_136({0}) == {0,0}
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_136_pre_z: list Z -> Prop)
-               (problem_136_spec_z: list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_136_pre: list Z -> Prop)
+               (problem_136_spec: list Z -> list Z -> Prop)
                (largest_smallest_prefix: Z -> list Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_136 */
+/*@ Import Coq Require Import largest_smallest_integers_136 */
 
 typedef struct {
     int* data;
@@ -40,7 +40,7 @@ IntArray *largest_smallest_integers_136(int* lst, int lst_size)
     Require
         0 <= lst_size && lst_size < INT_MAX &&
         lst_size == Zlength(input_l) &&
-        problem_136_pre_z(input_l) &&
+        problem_136_pre(input_l) &&
         IntArray::full(lst, lst_size, input_l)
     Ensure
         exists data output_l output_size,
@@ -48,7 +48,7 @@ IntArray *largest_smallest_integers_136(int* lst, int lst_size)
         data != 0 &&
         output_size == 2 &&
         output_size == Zlength(output_l) &&
-        problem_136_spec_z(input_l, output_l) &&
+        problem_136_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(lst, lst_size, input_l) *

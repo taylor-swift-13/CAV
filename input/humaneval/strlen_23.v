@@ -1,6 +1,18 @@
-(* defs for strlen_23 from: coins_23.v *)
+(* spec/23 *)
+(* """ Return length of given string
+>>> strlen('')
+0
+>>> strlen('abc')
+3
+""" *)
 
-Load "../spec/23".
+(* ​	Spec(input : string, output : int) :=
+
+​		output = length(input) *)
+Require Import String.
+
+(* Pre: no additional constraints for `strlen` by default *)
+
 
 Require Import Coq.ZArith.ZArith.
 Require Import Coq.Lists.List.
@@ -8,25 +20,14 @@ Require Import Coq.Strings.String.
 Require Import Coq.Strings.Ascii.
 Require Import Lia.
 From AUXLib Require Import ListLib.
-From SimpleC.EE Require Import string_bridge.
+Require Import string_bridge.
 Import ListNotations.
 
 Local Open Scope Z_scope.
 Local Open Scope string_scope.
 
-Definition problem_23_pre_z (input : list Z) : Prop :=
-  problem_23_pre (string_of_list_z input).
+Definition problem_23_pre (input : list Z) : Prop :=
+  True.
 
-Definition problem_23_spec_z (input : list Z) (output : Z) : Prop :=
-  problem_23_spec (string_of_list_z input) (Z.to_nat output).
-
-Lemma problem_23_spec_z_intro :
-  forall input output,
-    output = Zlength input ->
-    problem_23_spec_z input output.
-Proof.
-  intros input output Hout.
-  subst output.
-  unfold problem_23_spec_z, problem_23_spec.
-  apply nat_of_z_Zlength.
-Qed.
+Definition problem_23_spec (input : list Z) (output : Z) : Prop :=
+  output = Z.of_nat (String.length (string_of_list input)).

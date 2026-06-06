@@ -10,14 +10,14 @@ Return sorted unique common_58 elements for two vectors.
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_58_pre_z: list Z -> list Z -> Prop)
-               (problem_58_spec_z: list Z -> list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_58_pre: list Z -> list Z -> Prop)
+               (problem_58_spec: list Z -> list Z -> list Z -> Prop)
                (list_contains: Z -> list Z -> Prop)
                (list_not_contains: Z -> list Z -> Prop)
                (common_first_loop: list Z -> list Z -> Z -> list Z -> Prop)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_58 */
+/*@ Import Coq Require Import common_58 */
 
 typedef struct {
     int* data;
@@ -85,7 +85,7 @@ IntArray *common_58(int *l1, int l1_size, int *l2, int l2_size)
         0 <= l2_size && l2_size < INT_MAX &&
         l1_size == Zlength(input_l1) &&
         l2_size == Zlength(input_l2) &&
-        problem_58_pre_z(input_l1, input_l2) &&
+        problem_58_pre(input_l1, input_l2) &&
         IntArray::full(l1, l1_size, input_l1) *
         IntArray::full(l2, l2_size, input_l2)
     Ensure
@@ -96,7 +96,7 @@ IntArray *common_58(int *l1, int l1_size, int *l2, int l2_size)
         output_size == Zlength(output_l) &&
         l1_size == Zlength(data_l) &&
         sublist(0, output_size, data_l) == output_l &&
-        problem_58_spec_z(input_l1, input_l2, output_l) &&
+        problem_58_spec(input_l1, input_l2, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(l1, l1_size, input_l1) *

@@ -8,11 +8,11 @@ Level i (0-indexed) has n + 2*i stones (always increments by 2).
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_100_pre_z: Z -> Prop)
-               (problem_100_spec_z: Z -> list Z -> Prop)
+/*@ Extern Coq (problem_100_pre: Z -> Prop)
+               (problem_100_spec: Z -> list Z -> Prop)
                (pile_int_range: Z -> Prop)
                (make_pile: Z -> list Z) */
-/*@ Import Coq Require Import coins_100 */
+/*@ Import Coq Require Import make_a_pile_100 */
 
 typedef struct {
     int* data;
@@ -36,7 +36,7 @@ IntArray *make_a_pile_100(int n)
     Require
         n == n0 &&
         1 <= n0 && n0 < INT_MAX &&
-        problem_100_pre_z(n0) &&
+        problem_100_pre(n0) &&
         pile_int_range(n0)
     Ensure
         exists data output_l output_size,
@@ -45,7 +45,7 @@ IntArray *make_a_pile_100(int n)
         output_size == n0 &&
         output_size == Zlength(output_l) &&
         output_l == make_pile(n0) &&
-        problem_100_spec_z(n0, output_l) &&
+        problem_100_spec(n0, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, output_size, output_l)

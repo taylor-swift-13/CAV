@@ -15,11 +15,11 @@ Examples:
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_93_pre_z: list Z -> Prop)
-               (problem_93_spec_z: list Z -> list Z -> Prop)
-               (encode_char_z: Z -> Z)
-               (ascii_range_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_93 */
+/*@ Extern Coq (problem_93_pre: list Z -> Prop)
+               (problem_93_spec: list Z -> list Z -> Prop)
+               (encode_char: Z -> Z)
+               (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import encode_93 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -39,17 +39,17 @@ char *encode_93(char *message)
 /*@ With l len
     Require 0 <= len && len < INT_MAX &&
             Zlength(l) == len &&
-            problem_93_pre_z(l) &&
-            ascii_range_z(l) &&
+            problem_93_pre(l) &&
+            ascii_range(l) &&
             CharArray::full(message, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
             Zlength(out_l) == len &&
-            problem_93_spec_z(l, out_l) &&
+            problem_93_spec(l, out_l) &&
             CharArray::full(message, len + 1, app(l, cons(0, nil))) *
             CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {
-    int n = strlen(message) /*@ where l = l, n = len */;
+    int n = strlen(message);
     char *out = malloc_char_array(n + 1);
     int i;
 

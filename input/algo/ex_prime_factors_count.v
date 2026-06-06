@@ -18,4 +18,15 @@ Fixpoint ex_prime_factors_count_go (n d : Z) (fuel : nat) : Z :=
   end.
 
 Definition ex_prime_factors_count_spec (n : Z) : Z :=
-  ex_prime_factors_count_go n 2 (Z.to_nat n).
+  let '(_, _, count) := Z.iter n
+    (fun st =>
+       let '(cur, d, count) := st in
+       if Z.leb cur 1 then (cur, d, count)
+       else
+         if Z.leb (d * d) cur then
+           if Z.eqb (Z.rem cur d) 0
+           then (Z.div cur d, d, count + 1)
+           else (cur, d + 1, count)
+         else (1, d, count + 1))
+    (n, 2, 0) in
+  count.

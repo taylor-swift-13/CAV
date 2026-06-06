@@ -11,13 +11,13 @@ generate_integers_163(10, 14) => {}
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_163_pre_z: Z -> Z -> Prop)
-               (problem_163_spec_z: Z -> Z -> list Z -> Prop)
+/*@ Extern Coq (problem_163_pre: Z -> Z -> Prop)
+               (problem_163_spec: Z -> Z -> list Z -> Prop)
                (generate_prefix: Z -> Z -> Z -> list Z -> Prop)
                (generate_bounds: Z -> Z -> Z -> Z -> Prop)
                (z_min: Z -> Z -> Z)
                (z_max: Z -> Z -> Z) */
-/*@ Import Coq Require Import coins_163 */
+/*@ Import Coq Require Import generate_integers_163 */
 
 typedef struct {
     int* data;
@@ -40,7 +40,7 @@ IntArray *generate_integers_163(int a,int b)
 /*@ With (a0: Z) (b0: Z)
     Require
         a == a0 && b == b0 &&
-        problem_163_pre_z(a0, b0) &&
+        problem_163_pre(a0, b0) &&
         0 < a0 && a0 < INT_MAX &&
         0 < b0 && b0 < INT_MAX
     Ensure
@@ -49,7 +49,7 @@ IntArray *generate_integers_163(int a,int b)
         data != 0 &&
         0 <= output_size && output_size <= capacity &&
         capacity == 10 &&
-        problem_163_spec_z(a0, b0, output_l) &&
+        problem_163_spec(a0, b0, output_l) &&
         output_size == Zlength(output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *

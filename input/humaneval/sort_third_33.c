@@ -12,15 +12,15 @@ indices divisible by three are the corresponding values of l, but sorted.
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_33_pre_z: list Z -> Prop)
-               (problem_33_spec_z: list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_33_pre: list Z -> Prop)
+               (problem_33_spec: list Z -> list Z -> Prop)
                (third_count: Z -> Z)
                (third_values_prefix: Z -> list Z -> list Z)
                (sort_third_output_prefix: Z -> list Z -> list Z -> list Z)
                (sort_third_output: list Z -> list Z -> list Z)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_33 */
+/*@ Import Coq Require Import sort_third_33 */
 
 typedef struct {
     int* data;
@@ -73,7 +73,7 @@ IntArray *sort_third_33(int *l, int l_size)
     Require
         0 <= l_size && l_size < INT_MAX - 2 &&
         l_size == Zlength(input_l) &&
-        problem_33_pre_z(input_l) &&
+        problem_33_pre(input_l) &&
         IntArray::full(l, l_size, input_l)
     Ensure
         exists data output_l output_size,
@@ -81,7 +81,7 @@ IntArray *sort_third_33(int *l, int l_size)
         data != 0 &&
         output_size == l_size &&
         output_size == Zlength(output_l) &&
-        problem_33_spec_z(input_l, output_l) &&
+        problem_33_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(data, output_size, output_l) *

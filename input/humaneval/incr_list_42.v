@@ -1,5 +1,4 @@
-(* defs for incr_list_42 from: 42.v *)
-
+(* spec/42 *)
 (* Return list with elements incremented by 1.
 >>> incr_list([1, 2, 3])
 [2, 3, 4]
@@ -21,3 +20,15 @@ Definition problem_42_pre (input : list Z) : Prop := True.
 Definition problem_42_spec(input output : list Z) : Prop :=
   length input = length output /\
   forall i : nat, i < length output -> nth i output 0%Z = ((nth i input 0%Z) + 1)%Z.
+
+Require Import Coq.micromega.Lia.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+
+Local Open Scope Z_scope.
+
+Definition map_incr (l : list Z) : list Z :=
+  map (fun x => x + 1) l.
+
+Definition list_incr_int_range (l : list Z) : Prop :=
+  forall i, 0 <= i < Zlength l -> INT_MIN <= Znth i l 0 + 1 <= INT_MAX.

@@ -1,5 +1,4 @@
-(* defs for rolling_max_9 from: 9.v *)
-
+(* spec/9 *)
 (* """ From a given list of integers, generate a list of rolling maximum element found until given moment
 in the sequence.
 >>> rolling_max([1, 2, 3, 2, 3, 4, 2])
@@ -26,3 +25,29 @@ Definition problem_9_spec (input output : list Z) :=
     (i < length output)%nat ->
     (forall j, (j <= i)%nat -> nth j input 0 <= nth i output 0) /\
     (exists j, (j <= i)%nat /\ nth j input 0 = nth i output 0).
+
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Lists.List.
+Require Import Lia.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+From AUXLib Require Import ListLib.
+
+Local Open Scope Z_scope.
+
+Definition list_int_range (l : list Z) : Prop :=
+  forall i, (i < length l)%nat -> INT_MIN <= nth i l 0 <= INT_MAX.
+
+Fixpoint running_max_val (mx : Z) (l : list Z) : Z :=
+  match l with
+  | [] => mx
+  | x :: xs => running_max_val (Z.max mx x) xs
+  end.
+
+Fixpoint rolling_max_f (mx : Z) (l : list Z) : list Z :=
+  match l with
+  | [] => []
+  | x :: xs =>
+      let m := Z.max mx x in
+      m :: rolling_max_f m xs
+  end.

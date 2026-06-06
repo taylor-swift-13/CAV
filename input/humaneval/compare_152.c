@@ -9,11 +9,11 @@ the value is 0, and if not, the value is the absolute difference between the gue
 #include "int_array_def.h"
 
 /*@ Extern Coq (Zabs: Z -> Z)
-               (problem_152_pre_z: list Z -> list Z -> Prop)
-               (problem_152_spec_z: list Z -> list Z -> list Z -> Prop)
+               (problem_152_pre: list Z -> list Z -> Prop)
+               (problem_152_spec: list Z -> list Z -> list Z -> Prop)
                (compare_prefix: Z -> list Z -> list Z -> list Z -> Prop)
                (compare_int_range: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_152 */
+/*@ Import Coq Require Import compare_152 */
 
 typedef struct {
     int* data;
@@ -51,7 +51,7 @@ IntArray *compare_152(int* game, int game_size, int* guess, int guess_size)
         game_size == Zlength(game_l) &&
         guess_size == Zlength(guess_l) &&
         game_size == guess_size &&
-        problem_152_pre_z(game_l, guess_l) &&
+        problem_152_pre(game_l, guess_l) &&
         compare_int_range(game_l, guess_l) &&
         IntArray::full(game, game_size, game_l) *
         IntArray::full(guess, guess_size, guess_l)
@@ -61,7 +61,7 @@ IntArray *compare_152(int* game, int game_size, int* guess, int guess_size)
         data != 0 &&
         output_size == game_size &&
         output_size == Zlength(output_l) &&
-        problem_152_spec_z(game_l, guess_l, output_l) &&
+        problem_152_spec(game_l, guess_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), output_size) *
         IntArray::full(game, game_size, game_l) *

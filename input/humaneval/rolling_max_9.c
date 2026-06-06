@@ -13,7 +13,7 @@ out = {1, 2, 3, 3, 3, 4, 4}
                (list_int_range: list Z -> Prop)
                (rolling_max_f: Z -> list Z -> list Z)
                (running_max_val: Z -> list Z -> Z) */
-/*@ Import Coq Require Import coins_9 */
+/*@ Import Coq Require Import rolling_max_9 */
 
 int *rolling_max_9(int *numbers, int numbers_size, int *out, int out_size)
 /*@ With lv (numbers0: Z) (numbers_size0: Z) (out0: Z) (out_size0: Z)

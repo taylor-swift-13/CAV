@@ -11,22 +11,22 @@ solution({30, 13, 24, 321}) ==> 0
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_121_pre_z: list Z -> Prop)
-               (problem_121_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_121_pre: list Z -> Prop)
+               (problem_121_spec: list Z -> Z -> Prop)
                (sum_odd_at_even_upto: Z -> list Z -> Z)
                (sum_odd_at_even_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_121 */
+/*@ Import Coq Require Import solutions_121 */
 
 int solutions_121(int *lst, int lst_size)
 /*@ With lv
     Require
         1 <= lst_size && lst_size < INT_MAX &&
         lst_size == Zlength(lv) &&
-        problem_121_pre_z(lv) &&
+        problem_121_pre(lv) &&
         sum_odd_at_even_int_range(lv) &&
         IntArray::full(lst, lst_size, lv)
     Ensure
-        problem_121_spec_z(lv, __return) &&
+        problem_121_spec(lv, __return) &&
         IntArray::full(lst, lst_size, lv)
 */
 {

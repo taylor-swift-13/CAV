@@ -14,7 +14,7 @@ is_simple_power_76(5, 3) => false
 /*@ Extern Coq (problem_76_pre: Z -> Z -> Prop) */
 /*@ Extern Coq (is_simple_power_spec: Z -> Z -> Z -> Prop) */
 /*@ Extern Coq (sp_inv: Z -> Z -> Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_76 */
+/*@ Import Coq Require Import is_simple_power_76 */
 int is_simple_power_76(int x, int n)
 /*@ Require
         1 <= x && x <= INT_MAX &&

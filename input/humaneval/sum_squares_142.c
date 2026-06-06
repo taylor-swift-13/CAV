@@ -13,22 +13,22 @@ For lst = {-1,-5,2,-1,-5}  the output should be -126
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_142_pre_z: list Z -> Prop)
-               (problem_142_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_142_pre: list Z -> Prop)
+               (problem_142_spec: list Z -> Z -> Prop)
                (transformed_prefix_sum: Z -> list Z -> Z)
                (sum_squares_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_142 */
+/*@ Import Coq Require Import sum_squares_142 */
 
 int sum_squares_142(int* lst, int lst_size)
 /*@ With input_l
     Require
         0 <= lst_size && lst_size < INT_MAX &&
         lst_size == Zlength(input_l) &&
-        problem_142_pre_z(input_l) &&
+        problem_142_pre(input_l) &&
         sum_squares_int_range(input_l) &&
         IntArray::full(lst, lst_size, input_l)
     Ensure
-        problem_142_spec_z(input_l, __return) &&
+        problem_142_spec(input_l, __return) &&
         IntArray::full(lst, lst_size, input_l)
 */
 {

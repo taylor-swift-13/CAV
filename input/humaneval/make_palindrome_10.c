@@ -14,13 +14,13 @@ Algorithm idea is simple:
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_10_pre_z: list Z -> Prop)
-               (problem_10_spec_z: list Z -> list Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (pal_suffix_z: Z -> list Z -> Prop)
-               (first_pal_suffix_z: Z -> list Z -> Prop)
-               (make_pal_output_z: Z -> list Z -> list Z) */
-/*@ Import Coq Require Import coins_10 */
+/*@ Extern Coq (problem_10_pre: list Z -> Prop)
+               (problem_10_spec: list Z -> list Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (pal_suffix: Z -> list Z -> Prop)
+               (first_pal_suffix: Z -> list Z -> Prop)
+               (make_pal_output: Z -> list Z -> list Z) */
+/*@ Import Coq Require Import make_palindrome_10 */
 
 int strlen(char *s)
 /*@ With l len
@@ -42,11 +42,11 @@ int is_pal_suffix(char *s, int start, int n)
         0 <= start && start <= n &&
         0 <= n && n < INT_MAX &&
         Zlength(l) == n &&
-        ascii_range_z(l) &&
+        ascii_range(l) &&
         CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure
-        ((__return == 1 && pal_suffix_z(start, l)) ||
-         (__return == 0 && !(pal_suffix_z(start, l)))) &&
+        ((__return == 1 && pal_suffix(start, l)) ||
+         (__return == 0 && !(pal_suffix(start, l)))) &&
         CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 {
@@ -72,22 +72,22 @@ char *make_palindrome_10(char *str)
     Require
         0 <= len && len < INT_MAX / 2 &&
         Zlength(l) == len &&
-        problem_10_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_10_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
-        problem_10_spec_z(l, out_l) &&
+        problem_10_spec(l, out_l) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil))) *
         CharArray::full(__return, Zlength(out_l) + 1, app(out_l, cons(0, nil)))
 */
 {
-    int n = strlen(str) /*@ where l = l, len = len */;
+    int n = strlen(str);
     int best = n;
     int i;
 
     for (i = 0; i < n; i++) {
         if (best == n) {
-            int ok = is_pal_suffix(str, i, n) /*@ where l = l */;
+            int ok = is_pal_suffix(str, i, n);
             if (ok == 1) {
                 best = i;
             }

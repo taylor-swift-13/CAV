@@ -17,7 +17,7 @@ true
                (scanned_i: list Z -> Z -> Z -> Prop)
                (scanned_j: list Z -> Z -> Z -> Z -> Prop)
                (true: bool) (false: bool) */
-/*@ Import Coq Require Import coins_43 */
+/*@ Import Coq Require Import pairs_sum_to_zero_43 */
 
 int pairs_sum_to_zero_43(int *l, int l_size)
 /*@ With input_l

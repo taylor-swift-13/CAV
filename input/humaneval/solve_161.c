@@ -8,13 +8,13 @@ If the string contains no letters, reverse the string.
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_161_pre_z: list Z -> Prop)
-               (problem_161_spec_z: list Z -> list Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
-               (contains_letter_prefix_z: Z -> list Z -> Z)
-               (contains_letter_z: list Z -> Z)
-               (flip_char_z: Z -> Z) */
-/*@ Import Coq Require Import coins_161 */
+/*@ Extern Coq (problem_161_pre: list Z -> Prop)
+               (problem_161_spec: list Z -> list Z -> Prop)
+               (ascii_range: list Z -> Prop)
+               (contains_letter_prefix: Z -> list Z -> Z)
+               (contains_letter: list Z -> Z)
+               (flip_char: Z -> Z) */
+/*@ Import Coq Require Import solve_161 */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp
@@ -34,18 +34,18 @@ char *solve_161(char *s)
 /*@ With l len
     Require 0 <= len && len < INT_MAX &&
             Zlength(l) == len &&
-            problem_161_pre_z(l) &&
-            ascii_range_z(l) &&
+            problem_161_pre(l) &&
+            ascii_range(l) &&
             CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
             Zlength(out_l) == len &&
-            problem_161_spec_z(l, out_l) &&
+            problem_161_spec(l, out_l) &&
             CharArray::full(s, len + 1, app(l, cons(0, nil))) *
             CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {
     int i;
-    int n = strlen(s) /*@ where l = l, n = len */;
+    int n = strlen(s);
     int has_letter = 0;
     char *out = malloc_char_array(n + 1);
 

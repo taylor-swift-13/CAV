@@ -9,9 +9,9 @@ Return length of given string
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_23_pre_z: list Z -> Prop)
-               (problem_23_spec_z: list Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_23 */
+/*@ Extern Coq (problem_23_pre: list Z -> Prop)
+               (problem_23_spec: list Z -> Z -> Prop) */
+/*@ Import Coq Require Import strlen_23 */
 
 int strlen_23(char *s)
 /*@ With l n
@@ -26,14 +26,14 @@ int string_length(char *str)
     Require
         0 <= n && n < INT_MAX &&
         Zlength(l) == n &&
-        problem_23_pre_z(l) &&
+        problem_23_pre(l) &&
         CharArray::full(str, n + 1, app(l, cons(0, nil)))
     Ensure
         __return == n &&
-        problem_23_spec_z(l, __return) &&
+        problem_23_spec(l, __return) &&
         CharArray::full(str, n + 1, app(l, cons(0, nil)))
 */
 {
-    int ret = strlen_23(str) /*@ where l = l, n = n */;
+    int ret = strlen_23(str);
     return ret;
 }

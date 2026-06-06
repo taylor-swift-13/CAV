@@ -8,22 +8,22 @@ Examples:
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_85_pre_z: list Z -> Prop)
-               (problem_85_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_85_pre: list Z -> Prop)
+               (problem_85_spec: list Z -> Z -> Prop)
                (sum_even_at_odd_upto: Z -> list Z -> Z)
                (add_int_range: list Z -> Prop) */
-/*@ Import Coq Require Import coins_85 */
+/*@ Import Coq Require Import add_85 */
 
 int add_85(int *lst, int lst_size)
 /*@ With lv
     Require
         0 <= lst_size && lst_size < INT_MAX &&
         lst_size == Zlength(lv) &&
-        problem_85_pre_z(lv) &&
+        problem_85_pre(lv) &&
         add_int_range(lv) &&
         IntArray::full(lst, lst_size, lv)
     Ensure
-        problem_85_spec_z(lv, __return) &&
+        problem_85_spec(lv, __return) &&
         IntArray::full(lst, lst_size, lv)
 */
 {

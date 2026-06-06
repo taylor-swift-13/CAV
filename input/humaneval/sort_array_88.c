@@ -16,14 +16,14 @@ Examples:
 #include "verification_list.h"
 #include "int_array_def.h"
 
-/*@ Extern Coq (problem_88_pre_z: list Z -> Prop)
-               (problem_88_spec_z: list Z -> list Z -> Prop)
+/*@ Extern Coq (problem_88_pre: list Z -> Prop)
+               (problem_88_spec: list Z -> list Z -> Prop)
                (sort_array_input_range: list Z -> Prop)
                (copy_prefix: Z -> list Z -> list Z)
                (sorted_int_list_by: Z -> list Z -> Prop)
                (reverse_loop: Z -> Z -> list Z -> list Z)
                (Permutation: list Z -> list Z -> Prop) */
-/*@ Import Coq Require Import coins_88 */
+/*@ Import Coq Require Import sort_array_88 */
 
 typedef struct {
     int* data;
@@ -57,9 +57,9 @@ void sort_int_array(int *array, int size)
         sorted_int_list_by(1, sorted_l) &&
         Permutation(l, sorted_l) &&
         ((size == 0 || (Znth(0, input_l, 0) + Znth(size - 1, input_l, 0)) % 2 != 0) =>
-            problem_88_spec_z(input_l, sorted_l)) &&
+            problem_88_spec(input_l, sorted_l)) &&
         (0 < size && (Znth(0, input_l, 0) + Znth(size - 1, input_l, 0)) % 2 == 0 =>
-            problem_88_spec_z(input_l, reverse_loop(size, size / 2, sorted_l))) &&
+            problem_88_spec(input_l, reverse_loop(size, size / 2, sorted_l))) &&
         IntArray::full(array, size, sorted_l)
 */;
 
@@ -68,7 +68,7 @@ IntArray *sort_array_88(int *array, int array_size)
     Require
         0 <= array_size && array_size < INT_MAX &&
         array_size == Zlength(input_l) &&
-        problem_88_pre_z(input_l) &&
+        problem_88_pre(input_l) &&
         sort_array_input_range(input_l) &&
         IntArray::full(array, array_size, input_l)
     Ensure
@@ -76,7 +76,7 @@ IntArray *sort_array_88(int *array, int array_size)
         __return != 0 &&
         data != 0 &&
         array_size == Zlength(output_l) &&
-        problem_88_spec_z(input_l, output_l) &&
+        problem_88_spec(input_l, output_l) &&
         data_at(&(__return -> data), data) *
         data_at(&(__return -> size), array_size) *
         IntArray::full(array, array_size, input_l) *

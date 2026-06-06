@@ -15,12 +15,12 @@ false
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_56_pre_z: list Z -> Prop)
-               (problem_56_spec_z: list Z -> Z -> Prop)
+/*@ Extern Coq (problem_56_pre: list Z -> Prop)
+               (problem_56_spec: list Z -> Z -> Prop)
                (angle_level_upto: Z -> list Z -> Z)
                (angle_nonnegative_prefix: Z -> list Z -> Prop)
-               (ascii_range_z: list Z -> Prop) */
-/*@ Import Coq Require Import coins_56 */
+               (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import correct_bracketing_56 */
 
 int strlen(char *s)
 /*@ With l n
@@ -35,16 +35,16 @@ int correct_bracketing_56(char *brackets)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        ascii_range_z(l) &&
-        problem_56_pre_z(l) &&
+        ascii_range(l) &&
+        problem_56_pre(l) &&
         CharArray::full(brackets, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_56_spec_z(l, __return) &&
+        problem_56_spec(l, __return) &&
         CharArray::full(brackets, len + 1, app(l, cons(0, nil)))
 */
 {
     int level = 0;
-    int n = strlen(brackets) /*@ where l = l, n = len */;
+    int n = strlen(brackets);
     int i;
     
     for (i = 0; i < n; i++) {

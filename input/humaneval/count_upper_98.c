@@ -10,11 +10,11 @@ count_upper_98("dBBE") returns 0
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_98_pre_z: list Z -> Prop)
-               (problem_98_spec_z: list Z -> Z -> Prop)
-               (ascii_range_z: list Z -> Prop)
+/*@ Extern Coq (problem_98_pre: list Z -> Prop)
+               (problem_98_spec: list Z -> Z -> Prop)
+               (ascii_range: list Z -> Prop)
                (count_upper_even_upto: Z -> list Z -> Z) */
-/*@ Import Coq Require Import coins_98 */
+/*@ Import Coq Require Import count_upper_98 */
 
 int strlen(char *s)
 /*@ With l n
@@ -29,15 +29,15 @@ int count_upper_98(char *s)
     Require
         0 <= len && len < INT_MAX &&
         Zlength(l) == len &&
-        problem_98_pre_z(l) &&
-        ascii_range_z(l) &&
+        problem_98_pre(l) &&
+        ascii_range(l) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_98_spec_z(l, __return) &&
+        problem_98_spec(l, __return) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s) /*@ where l = l, n = len */;
+    int n = strlen(s);
     int count = 0;
     int i;
     

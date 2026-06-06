@@ -3,6 +3,9 @@ Require Import Coq.Lists.List.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Fixpoint parse_digits (l : list Z) (acc : Z) : Z :=
   match l with
   | [] => acc
@@ -96,8 +99,8 @@ Fixpoint has_duplicate_z (l : list Z) : bool :=
 Definition contains_duplicate_csv_pre (l : list Z) : Prop :=
   allowed_chars l /\
   parser_safe_aux l (List.length l) /\
-  Z.of_nat (List.length (parse_csv l)) <= 64 /\
-  Z.of_nat (List.length l) <= 2147483647.
+  zlength (parse_csv l) <= 64 /\
+  zlength l <= 2147483647.
 
 Definition contains_duplicate_csv_spec (l : list Z) : Z :=
   if has_duplicate_z (parse_csv l) then 1 else 0.

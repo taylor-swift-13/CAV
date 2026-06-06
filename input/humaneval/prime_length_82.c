@@ -11,10 +11,10 @@ prime_length_82("orange") == false
 #include "verification_list.h"
 #include "char_array_def.h"
 
-/*@ Extern Coq (problem_82_pre_z: list Z -> Prop)
-               (problem_82_spec_z: list Z -> Z -> Prop)
-               (prime_prefix_z: Z -> Z -> Prop) */
-/*@ Import Coq Require Import coins_82 */
+/*@ Extern Coq (problem_82_pre: list Z -> Prop)
+               (problem_82_spec: list Z -> Z -> Prop)
+               (prime_prefix: Z -> Z -> Prop) */
+/*@ Import Coq Require Import prime_length_82 */
 
 int strlen(char *s)
 /*@ With l n
@@ -29,15 +29,15 @@ int prime_length_82(char *str)
     Require
         0 <= len && len <= 2147302921 &&
         Zlength(l) == len &&
-        problem_82_pre_z(l) &&
+        problem_82_pre(l) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil)))
     Ensure
-        problem_82_spec_z(l, __return) &&
+        problem_82_spec(l, __return) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil)))
 */
 {
     int i;
-    int n = strlen(str) /*@ where l = l, n = len */;
+    int n = strlen(str);
     if (n < 2) return 0;
 
     for (i = 2; i * i <= n; i++) {

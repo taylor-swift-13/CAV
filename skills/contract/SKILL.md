@@ -1,75 +1,57 @@
 ---
 name: contract
-description: Contract skill，把原始题意 + C 实现整理成 verify 友好的 `input/<name>.c` / `.v`。
+description: Contract skill，把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<name>.c` / `.v`(raw→pipeline 的产物;`input/` 是只读 curated 数据,contract 不写)。
 ---
 
-跨阶段共用规则（读写边界、效率、reasoning log、`Final Result` 格式）见 `skills/COMMON.md`。本文件只描述 contract-specific 内容。
+Contract 把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<name>.c`(+ 可选 `.v`)。
 
-任务开始读：`QualifiedCProgramming/README.md`、`QualifiedCProgramming/tutorial/`。其他 QCP 文档/例子卡住再按需读。
+## 职责划分（先读）
 
-## 1. 输入
+- **写 spec 的 how-to（注解语法、谓词选择、spec 质量）完全依照 QCP `.agents/skills/`**：`annotation-filling/docs/`（`annotation-rules.md`、`predicate-first-annotation.md`、`builtin-array-string-support.md`、`array-predicate-selection.md`）、`annotation-checking/docs/spec-quality-checklist.md`。照那边写，本 skill 不复述。**read-before-act：用到这些规则时必须先读对应文档再动手,不能凭猜。**
+- **本 skill 只管 CAV 工程约束**：输入输出路径、读写边界、contract 专有硬规则、well-formed/编译 gate、宏观错误迭代、issues。
+- **唯一文字产物 = `logs/issues.md`（含 RTE/UB 审计结论、每条 gate 失败 / critic finding 的对照修复）+ `logs/metrics.md`**；不写过程 reasoning 日志。
+- 跨阶段共用读写边界/效率/`Final Result` 格式见 `skills/COMMON.md`。
 
-原始 C 实现、原始题意 / 自然语言描述、约束 / 边界 / 示例、可选辅助定义草稿。
+## 1. 输入输出（CAV）
 
-## 2. 输出
+- 输入：原始 C 实现 + 题意 / 约束 / 边界 / 示例。
+- 输出：`mid/<dataset>/<name>.c`（目标函数 + 完整 contract，**不含**任何 verify 阶段注释）；仅在确需额外 Coq 定义时写 `mid/<dataset>/<name>.v`。
+- `input/` 是只读 curated 数据，contract **不写**。
 
-- `input/<name>.c`（目标函数 + 完整 contract，**不含**任何 verify 阶段注释）
-- `input/<name>.v`（仅当确实需要额外 Coq 定义；能不用就不用）
-- `output/contract_<timestamp>_<name>/logs/reasoning.md`、`issues.md`、`metrics.md`
+## 2. CAV 硬规则
 
-## 3. 硬规则
+- `mid/.c` 只含目标函数 + 完整 contract；**不要**提前写 `Inv` / `Assert` / `which implies` / bridge / loop-exit（那是 verify 阶段）。
+- `mid/.v` 只放题目专用 Coq 定义，definition-only（无 `Axiom`/`Hypothesis`/`Parameter`/`Conjecture`/`Variable`/`Admitted`/`admit`/`Abort`），且能被 `coqc` 编译。
+- 公共验证头一律**裸名 include**（头文件已复制到该 dataset 目录）：`#include "verification_stdlib.h"`、`"verification_list.h"`、`"int_array_def.h"`，字符数组用 `"char_array_def.h"`；禁 `../` 等路径前缀。
+- 保持原程序语义；必须改接口时只做 verification-friendly 改写。
+- **spec 质量与谓词选择照「职责划分」里的 `.agents` 文档**：优先「量词 + 已定义函数（`Permutation`/`Znth`/`Zlength`/`app`/`sorted` 等）」刻画输入输出关系，实在无法表达才写题目专用 `Fixpoint`/`Inductive`。
+- **RTE/UB 安全（contract 的核心义务）**：前条件必须排除空指针解引用、数组越界、除零、非法移位、有符号整数加减乘 / 取负 / `abs` / 累加 / 循环变元更新等所有可能溢出与 C UB/RTE（用 `Require` / 前条件，`INT_MIN <= ... <= INT_MAX` 风格界）。逐项审计结论写进 `logs/issues.md`，不依赖「运行时自然不会发生」。后条件优先写蕴含，避免顶层析取。
 
-- **先写** `logs/reasoning.md`（语义、边界、内存与 Coq 依赖判断），**再写** `input/<name>.c`
-- `input/<name>.c` 只包含目标函数 + 完整 contract；**不要**提前写 `Inv` / `Assert` / `which implies` / bridge / loop-exit assertion（那是 verify 阶段的事）
-- `input/<name>.v` 只放题目专用 Coq 定义
-- 保持原程序语义不变；必须改接口时，只做 verification-friendly 改写
-- **规格优先用「量词 + 已定义函数」表达输入输出关系，而不是把实现重写一遍**。能用 stdlib / 已有谓词 / 已有函数(`Permutation`、`Znth`、`app`、`Zlength`、`join`/连接、`sorted` 等)+ `exists` / `forall` 刻画"输出和输入满足什么关系"时,就不要新写递归。**只有关系实在无法用现有部件 + 量词表达时,才退而写题目专用 `Fixpoint` / `Inductive`**。优先写**逆关系/特征性质**:如"按空格拆分→字符串数组",写成 `exists ps, join_sep(ps, ' ') == 输入 && (每段不含空格)`(用更简单的 `join` 逆向刻画),而不是定义一个 `split` 递归。
-- `input/<dataset>/` 下的 C 文件引用公共验证头时，用**裸名直接 include**（头文件已复制到该 dataset 目录内）：
-  ```c
-  #include "verification_stdlib.h"
-  #include "verification_list.h"
-  #include "int_array_def.h"
-  ```
-  需要字符数组时同理 `#include "char_array_def.h"`。不要写 `../`、`../../` 或其它路径前缀。
-- contract 设计要保证下游所有 VC 可证，尤其要避免运行时错误（RTE）和 C undefined behavior（UB）：指针解引用需要显式非空前提；数组访问需要长度/下标边界前提；除法/取模需要除数非零；左/右移需要位宽范围内的 shift count；所有可能发生的有符号整数加减乘、一元取负、`abs`、累加、循环计数更新等都要用 `INT_MIN <= ... <= INT_MAX` 风格的前提或中间值约束排除溢出；后条件优先写蕴含关系，避免不必要的顶层析取。
-- 生成 spec 时要先做一遍 RTE/UB 审计并写入 `logs/reasoning.md`：逐项列出空指针、越界、除零、非法移位、整数溢出、无效内存访问、循环变元更新风险。不能证明安全的输入必须加 `Require` / 前条件；不要依赖 C 运行时“自然不会发生”的假设。
+## 3. 宏观流程（极简 + 错误迭代）
 
-## 4. 最短流程
+1. 读题意和代码；按需读「职责划分」的 `.agents` 文档与 `QualifiedCProgramming/SeparationLogic/examples/`，不预读。
+2. 生成 `mid/<dataset>/<name>.c`（+ 必要的 `.v`）。
+3. 跑 gate（`check_spec_wellformed` / 可选 `coqc .v`）；失败就读**第一个**报错 → 改 → 重跑，**循环到通过或确认不可修**。
+4. gate 全过 → 写 metrics + `Final Result: Success`；确属不可修（题意矛盾、需越界改动）→ `issues.md` 记录 + `Final Result: Fail`。
 
-1. 读原始题意和代码
-2. 写 `logs/reasoning.md`（语义、边界、内存、Coq 依赖判断）
-3. 生成 `input/<name>.c`
-4. 判断是否真的需要 `input/<name>.v`，需要才写
-5. 写 `logs/issues.md`、`logs/metrics.md`
-
-写合同时**按需读**(不预读):选空间谓词、纯函数/语义部件(`Znth`/`Zlength`/max-min/Int 界/集合)优先看 `QualifiedCProgramming/tutorial/` 和 `QualifiedCProgramming/SeparationLogic/examples/`。
-
-## 5. 完成判据
-
-`logs/metrics.md` 写自判摘要即可；runner 会复核并覆盖最终 metrics。
+## 4. 完成判据（CAV gate）
 
 `Final Result: Success` 仅当：
 
-- `input/<name>.c` 前后条件完整、无 verify 阶段注释混入
-- `logs/reasoning.md` 已记录 RTE/UB 审计，且 contract 前条件足以排除空指针、越界、除零、非法移位、整数溢出和其它 C UB/RTE
-- `input/<dataset>/<name>.c` 中 root 头文件 include 使用裸名 `<header>`（头文件与 .c 同目录）
-- `input/<name>.c` 已通过 QCP well-formedness gate：`check_spec_wellformed == well_formed`，也就是 symexec 至少能解析 contract 并开始 symbolic execution
-- `.v`（如有）只包含额外逻辑定义，不含 `Axiom` / `Hypothesis` / `Parameter` / `Conjecture` / `Variable` / `Admitted` / `admit` / `Abort` 等假设或占位，且必须能被 `coqc` 编译通过
-- `reasoning.md` / `issues.md` / `metrics.md` 已写完
+- `mid/.c` 前后条件完整、无 verify 阶段注释、root 头裸名 include
+- 通过 QCP well-formedness：`check_spec_wellformed == well_formed`
+- 前条件排除所有 RTE/UB（审计写入 `issues.md`）
+- `.v`（如有）definition-only 且 `coqc` 通过
+- `issues.md` / `metrics.md` 写完
 
-如果任一机器 gate 失败，必须写 `Final Result: Fail`，并在 `logs/issues.md` 中记录：
+任一 gate 失败且不能在本阶段修复 → `Final Result: Fail`，并在 `logs/issues.md` 记：失败 gate 名（verify-stage annotation scan / input V definition-only scan / `check_spec_wellformed` / `coqc mid/.v`）、退出码、关键报错、本轮 `mid/.c`/`.v` 路径、下一轮修正点。runner 会用同组 contract syntax check 复核后才放行 eval/verify。
 
-- 失败的 gate 名称（如 verify-stage annotation scan、input V definition-only scan、`check_spec_wellformed` 或 `coqc input/<name>.v`）
-- 退出码
-- 关键报错
-- 本轮生成的 `input/<name>.c` / `.v` 路径
-- 下一轮 contract 需要修正的具体点
+## 5. 带反馈重跑（统一 retry 机制）
 
-Agent 自判成功后，runner 还会用同一组 contract syntax check 复核：检查 `input/<name>.c` 存在且无 verify 阶段 `Inv` / `Assert` / `which implies` 注释、root 头文件 include 为裸名 `<header>`、QCP wellformed、可选 `.v` definition-only 且能 `coqc`。只有 runner 复核通过，contract 阶段才允许进入 eval 或 verify。
+由 `Critic findings:` 块（被 eval critic 拒）或 `Restart feedback` 块（被 runner syntax check 拒）任一触发。**这是带反馈的接力重跑，不是从零重做**：
 
-## 6. 条件性 mode addendum
-
-| Prompt 标记 | 含义 |
-|------------|------|
-| `Critic findings:` 块出现 | 上一轮 contract 被 eval critic 拒绝的 RE-RUN。把每条 critic finding 当 blocker，在 `logs/reasoning.md` 追加一段对照检查 + 修复说明；修完再重新输出 `input/<name>.{c,v}`。修复期间不要扩到与 finding 无关的改动。 |
-| `Restart feedback` 块出现 | 上一轮 contract 被 runner syntax check 拒绝的重试。必须逐条修复反馈中的机器 gate 失败原因；修完后重新输出 `input/<name>.{c,v}`，并在 `logs/reasoning.md` / `logs/issues.md` 追加本轮修复说明。 |
+- **先读再动**：读上一轮的 `logs/issues.md`、`logs/continue.md`（如有）、上一轮生成的 `mid/<dataset>/<name>.{c,v}`，定位到底哪条 finding / gate 失败。
+- **continue.md 追加 section**（改文件之前）：在 `logs/continue.md` 末尾追加一段（**只追加不覆盖**）——上轮被拒的 finding / gate 原文、当前精确定位、本轮准备改哪几行、为什么这样改能修。
+- **逐条修，保留已通过工作**：把每条 finding / gate 失败原因当 blocker 逐条修；只改与之相关处，**不扩散**到无关改动；保留上一轮已通过的 contract 部分。
+- 在 `logs/issues.md` 追加逐条对照（finding/失败原文 1–2 行 + 当前状态 + 修复动作 + 结果）。
+- 修完重新输出 `mid/<dataset>/<name>.{c,v}`，重跑对应 gate（§3/§4），直到通过或确认不可修。可继续推进的反馈 blocker 不能以 `Final Result: Fail` 收尾。
