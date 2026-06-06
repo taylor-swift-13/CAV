@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -56,6 +57,112 @@ def ensure_parent(path: Path) -> None:
 
 def emit_log(message: str) -> None:
     print(f"[verify] {message}", flush=True)
+
+
+def iso_from_epoch(epoch: float) -> str:
+    return dt.datetime.fromtimestamp(epoch).astimezone().strftime("%Y-%m-%d %H:%M:%S.%f %z")
+
+
+def _tsv_cell(value: object) -> str:
+    return str(value if value is not None else "").replace("\t", " ").replace("\n", " ").replace("\r", " ")
+
+
+def _timeline_row(epoch: float, line_no: int, raw_line: str) -> str:
+    event_type = ""
+    item_type = ""
+    item_status = ""
+    item_id = ""
+    command = ""
+    try:
+        obj = json.loads(raw_line)
+    except json.JSONDecodeError:
+        obj = {}
+    if isinstance(obj, dict):
+        event_type = obj.get("type") or ""
+        item = obj.get("item")
+        if isinstance(item, dict):
+            item_type = item.get("type") or ""
+            item_status = item.get("status") or ""
+            item_id = item.get("id") or ""
+            command = item.get("command") or ""
+    return "\t".join(
+        _tsv_cell(v)
+        for v in (
+            f"{epoch:.6f}",
+            iso_from_epoch(epoch),
+            line_no,
+            event_type,
+            item_type,
+            item_status,
+            item_id,
+            command,
+        )
+    )
+
+
+def run_agent_with_timeline(
+    cmd: list[str],
+    *,
+    prompt: str,
+    stdout_jsonl: Path,
+    stdout_timeline: Path,
+    stderr_log: Path,
+    cwd: Path,
+    timeout: int,
+    env: dict[str, str],
+) -> int:
+    ensure_parent(stdout_jsonl)
+    stdout_timeline.parent.mkdir(parents=True, exist_ok=True)
+    with stdout_jsonl.open("w", encoding="utf-8") as out_f, \
+            stdout_timeline.open("w", encoding="utf-8") as timeline_f, \
+            stderr_log.open("w", encoding="utf-8") as err_f:
+        timeline_f.write("epoch\tiso_time\tline_no\tevent_type\titem_type\titem_status\titem_id\tcommand\n")
+        proc = subprocess.Popen(
+            cmd,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=err_f,
+            text=True,
+            cwd=cwd,
+            env=env,
+            bufsize=1,
+        )
+        writer_error: list[BaseException] = []
+
+        def write_prompt() -> None:
+            try:
+                assert proc.stdin is not None
+                proc.stdin.write(prompt)
+                proc.stdin.close()
+            except BaseException as exc:
+                writer_error.append(exc)
+
+        def read_stdout() -> None:
+            assert proc.stdout is not None
+            line_no = 0
+            for line in proc.stdout:
+                line_no += 1
+                epoch = time.time()
+                out_f.write(line)
+                out_f.flush()
+                timeline_f.write(_timeline_row(epoch, line_no, line) + "\n")
+                timeline_f.flush()
+
+        writer = threading.Thread(target=write_prompt, daemon=True)
+        reader = threading.Thread(target=read_stdout, daemon=True)
+        writer.start()
+        reader.start()
+        try:
+            returncode = proc.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait()
+            reader.join(timeout=5)
+            writer.join(timeout=5)
+            raise
+        reader.join(timeout=5)
+        writer.join(timeout=5)
+        return returncode
 
 
 def build_agent_env(logs_dir: Path) -> dict[str, str]:
@@ -153,6 +260,8 @@ def build_prompt(
         "",
         "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit skills/, scripts/, QualifiedCProgramming/, or unrelated inputs.",
         "",
+        "Symexec rerun rule: before any symexec rerun, the previous coq/generated files must be preserved under coq/last for reference. The runner's run_symexec helper does this automatically. After symexec regenerates proof_manual.v, consult coq/last/*_proof_manual.v and reuse the prior proof structure manually; if an old witness statement and the new witness statement are exactly identical, copy that proof verbatim from coq/last. Do not expect proofs to be spliced automatically and do not rewrite from scratch when coq/last has useful proof text.",
+        "",
         "Inputs:",
         _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
     ]
@@ -180,6 +289,8 @@ def build_proof_only_prompt(
         "",
         "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit skills/, scripts/, QualifiedCProgramming/, or unrelated inputs.",
         "",
+        "Do not rerun symexec in proof-only mode. If a prior generated snapshot exists under coq/last, it is read-only reference material for proof structure.",
+        "",
         "Mode: proof-only (also follow MODE_PROOF_ONLY.md per SKILL.md §4.5c).",
         "",
         "Inputs:",
@@ -194,7 +305,7 @@ def build_proof_only_prompt(
 
 def _phase_log(workspace_path: Path, event: str, detail: str = "") -> None:
     """Append a timestamped phase event to <ws>/logs/phase_timeline.tsv (best-effort).
-    Mirrors symexec_keep_proofs.log_phase so initial symexec + agent reruns share one timeline."""
+    Initial symexec and agent-triggered reruns share this timeline."""
     try:
         import time as _t
         p = workspace_path / "logs" / "phase_timeline.tsv"
@@ -205,7 +316,7 @@ def _phase_log(workspace_path: Path, event: str, detail: str = "") -> None:
         pass
 
 
-def phase_timing_lines(metrics_md_path: Path, start_iso: str, end_iso: str) -> list[str]:
+def phase_timing_lines(metrics_md_path: Path, start_iso: str, end_iso: str, stdout_timeline: Path | None = None) -> list[str]:
     """Aggregate phase_timeline.tsv into per annotation↔proof cycle durations.
     Each symexec run bounds a cycle; the gap to the next symexec (or run end) is the
     time spent proving/editing against that annotation version."""
@@ -214,11 +325,17 @@ def phase_timing_lines(metrics_md_path: Path, start_iso: str, end_iso: str) -> l
     if not tl.exists():
         return []
     def _ep(iso: str):
-        try:
-            return datetime.datetime.fromisoformat(iso).timestamp()
-        except Exception:
-            return None
+        for parser in (
+            lambda s: datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S %z"),
+            datetime.datetime.fromisoformat,
+        ):
+            try:
+                return parser(iso).timestamp()
+            except Exception:
+                continue
+        return None
     starts: list[float] = []
+    dones: list[float] = []
     last_ep = None
     for ln in tl.read_text(encoding="utf-8", errors="replace").splitlines():
         p = ln.split("\t")
@@ -231,10 +348,40 @@ def phase_timing_lines(metrics_md_path: Path, start_iso: str, end_iso: str) -> l
         last_ep = ep
         if p[2] in ("symexec_init_start", "symexec_rerun_start"):
             starts.append(ep)
+        elif p[2] in ("symexec_init_done", "symexec_rerun_done"):
+            dones.append(ep)
     if not starts:
         return []
+    coqc_done: list[float] = []
+    if stdout_timeline and stdout_timeline.exists():
+        for ln in stdout_timeline.read_text(encoding="utf-8", errors="replace").splitlines()[1:]:
+            p = ln.split("\t")
+            if len(p) < 8:
+                continue
+            try:
+                ep = float(p[0])
+            except ValueError:
+                continue
+            event_type, item_type, item_status, command = p[3], p[4], p[5], p[7]
+            if event_type == "item.completed" and item_type == "command_execution" and item_status == "completed":
+                if re.search(r"(^|[/\s'\"])(coqc|coqtop)(\s|$)", command):
+                    coqc_done.append(ep)
     run_start, run_end = _ep(start_iso), (_ep(end_iso) or last_ep)
     out = [f"- Annotation↔proof cycles (symexec runs): `{len(starts)}`"]
+    if run_start and run_end:
+        annotation_seconds = 0.0
+        prev_symexec = run_start
+        for s in starts:
+            coqc_since_prev_symexec = [c for c in coqc_done if prev_symexec <= c <= s]
+            if coqc_since_prev_symexec:
+                annotation_seconds += max(0.0, s - max(coqc_since_prev_symexec))
+            else:
+                annotation_seconds += max(0.0, s - prev_symexec)
+            prev_symexec = s
+        total_seconds = max(0.0, run_end - run_start)
+        proof_seconds = max(0.0, total_seconds - annotation_seconds)
+        out.append(f"- Annotation phase time (estimated seconds): `{annotation_seconds:.1f}`")
+        out.append(f"- Proof phase time (estimated seconds): `{proof_seconds:.1f}`")
     if run_start:
         out.append(f"  - initial annotation (run start → 1st symexec): `{starts[0]-run_start:.1f}s`")
     for i, s in enumerate(starts):
@@ -258,10 +405,12 @@ def write_metrics(
     usage: dict[str, int] | None,
     prompt_path: Path,
     stdout_jsonl: Path,
+    stdout_timeline: Path | None = None,
     stderr_log: Path,
     last_message_path: Path,
     input_c: Path,
     input_v: Path | None,
+    annotated_snapshot: Path | None = None,
 ) -> None:
     lines = [
         "# Verify Metrics",
@@ -278,16 +427,27 @@ def write_metrics(
         f"- Reasoning effort: `{reasoning_effort or 'n/a'}`",
         f"- Input C: `{input_c}`",
         f"- Input V: `{input_v if input_v else '<not provided>'}`",
+        f"- Annotated C snapshot: `{annotated_snapshot if annotated_snapshot else '<not saved>'}`",
         f"- Prompt file: `{prompt_path}`",
         f"- Agent stdout: `{stdout_jsonl}`",
+        f"- Agent stdout timeline: `{stdout_timeline if stdout_timeline else '<not recorded>'}`",
         f"- Agent stderr: `{stderr_log}`",
         f"- Agent last message: `{last_message_path}`",
     ]
     lines.extend(agent_metrics.usage_lines(
         usage, prompt_path=prompt_path, last_message_path=last_message_path))
-    lines.extend(phase_timing_lines(metrics_md_path, start_iso, end_iso))
+    lines.extend(phase_timing_lines(metrics_md_path, start_iso, end_iso, stdout_timeline))
     lines.extend(["- Experience updates: none", f"Final Result: {status}"])
     metrics_md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def save_annotated_snapshot(workspace_path: Path, annotated_c_path: Path) -> Path | None:
+    if not annotated_c_path.exists():
+        return None
+    snapshot = workspace_path / "annotated" / annotated_c_path.name
+    snapshot.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(annotated_c_path, snapshot)
+    return snapshot
 
 
 def update_issues_on_failure(issues_path: Path, stage: str, exit_code: int, stderr_log: Path) -> None:
@@ -326,9 +486,10 @@ def verify_retry_feedback(attempt: int, detail: str, workspace_path: Path, funct
         f"- Detail: `{detail}`",
         f"- Generated dir: `{generated_dir}`",
         f"- Proof manual: `{generated_dir / f'{function_name}_proof_manual.v'}`",
+        f"- Previous generated snapshot for reference: `{workspace_path / 'coq' / 'last'}`",
         f"- Goal check: `{generated_dir / f'{function_name}_goal_check.v'}`",
         "",
-        "Required next action: continue inside this same workspace until the concrete blocker is fixed. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
+        "Required next action: continue inside this same workspace until the concrete blocker is fixed. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. If symexec regenerated proof_manual.v, use coq/last/*_proof_manual.v as the reference for prior proof structure; if an old witness statement and the new witness statement are exactly identical, copy that proof verbatim from coq/last. Do not rewrite from scratch when a previous proof shape is available. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
     ])
 
 
@@ -569,10 +730,24 @@ def is_loop_free_candidate(input_path: Path) -> tuple[bool, str]:
     return True, "loop_free"
 
 
+def snapshot_generated_for_reference(workspace_path: Path, function_name: str) -> Path | None:
+    generated_dir = workspace_path / "coq" / "generated"
+    if not generated_dir.exists() or not any(generated_dir.glob(f"{function_name}_*.v")):
+        return None
+    last_dir = workspace_path / "coq" / "last"
+    if last_dir.exists():
+        shutil.rmtree(last_dir)
+    shutil.copytree(generated_dir, last_dir)
+    return last_dir
+
+
 def run_symexec(workspace_path: Path, annotated_c_path: Path, function_name: str, timeout_seconds: int = 120) -> tuple[int, str, str]:
     generated_dir = workspace_path / "coq" / "generated"
     generated_dir.mkdir(parents=True, exist_ok=True)
     _phase_log(workspace_path, "symexec_init_start")
+    last_dir = snapshot_generated_for_reference(workspace_path, function_name)
+    if last_dir is not None:
+        _phase_log(workspace_path, "symexec_previous_generated_snapshot", str(last_dir))
     for old in generated_dir.glob(f"{function_name}_*.v"):
         old.unlink()
     logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
@@ -816,6 +991,7 @@ def try_trivial_fast_path(
         "Deterministic loop-free fast path completed successfully.\n",
         encoding="utf-8",
     )
+    annotated_snapshot = save_annotated_snapshot(workspace_path, annotated_c_path)
     write_metrics(
         metrics_path(workspace_path),
         status="Success",
@@ -830,10 +1006,12 @@ def try_trivial_fast_path(
         usage=None,
         prompt_path=prompt_log,
         stdout_jsonl=stdout_log,
+        stdout_timeline=None,
         stderr_log=stderr_log,
         last_message_path=last_message,
         input_c=input_path,
         input_v=input_v_path,
+        annotated_snapshot=annotated_snapshot,
     )
     emit_log("trivial_fast_path_success")
     return True, 0
@@ -974,6 +1152,7 @@ def main() -> int:
     run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
     prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
     stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
+    stdout_timeline: Path | None = None
     stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
     last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
 
@@ -981,6 +1160,7 @@ def main() -> int:
         prompt = build_prompt(skill_path, input_path, input_v_path, function_name, workspace_path, annotated_c_path, 1)
         ensure_parent(prompt_path)
         prompt_path.write_text(prompt, encoding="utf-8")
+        annotated_snapshot = save_annotated_snapshot(workspace_path, annotated_c_path)
         write_metrics(
             metrics_path(workspace_path),
             status="Success",
@@ -995,10 +1175,12 @@ def main() -> int:
             usage=None,
             prompt_path=prompt_path,
             stdout_jsonl=stdout_jsonl,
+            stdout_timeline=None,
             stderr_log=stderr_log,
             last_message_path=last_message_path,
             input_c=input_path,
             input_v=input_v_path,
+            annotated_snapshot=annotated_snapshot,
         )
         emit_log("dry_run=true")
         print(str(workspace_path))
@@ -1054,6 +1236,7 @@ def main() -> int:
         run_label = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
         prompt_path = logs_dir / f"agent_prompt_{run_label}.txt"
         stdout_jsonl = logs_dir / f"agent_stdout_{run_label}.jsonl"
+        stdout_timeline = logs_dir / f"agent_stdout_{run_label}.jsonl.timeline.tsv"
         stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
         last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
         retry_context = verify_restart_context
@@ -1120,18 +1303,16 @@ def main() -> int:
                     cmd.extend(["--model", model])
                 if reasoning_effort and claude_effort_supported:
                     cmd.extend(["--effort", reasoning_effort])
-                with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
-                    proc = subprocess.run(
-                        cmd,
-                        input=prompt,
-                        text=True,
-                        stdout=out_f,
-                        stderr=err_f,
-                        cwd=REPO_ROOT,
-                        timeout=round_timeout,
-                        env=agent_env,
-                    )
-                proc_returncode = proc.returncode
+                proc_returncode = run_agent_with_timeline(
+                    cmd,
+                    prompt=prompt,
+                    stdout_jsonl=stdout_jsonl,
+                    stdout_timeline=stdout_timeline,
+                    stderr_log=stderr_log,
+                    cwd=REPO_ROOT,
+                    timeout=round_timeout,
+                    env=agent_env,
+                )
                 last_message = agent_metrics.extract_claude_last_message(stdout_jsonl)
                 if last_message is not None:
                     last_message_path.write_text(last_message, encoding="utf-8")
@@ -1155,18 +1336,16 @@ def main() -> int:
                 if model:
                     cmd.extend(["--model", model])
                 cmd.append("--no-thinking" if reasoning_effort == "no-thinking" else "--thinking")
-                with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
-                    proc = subprocess.run(
-                        cmd,
-                        input=prompt,
-                        text=True,
-                        stdout=out_f,
-                        stderr=err_f,
-                        cwd=REPO_ROOT,
-                        timeout=round_timeout,
-                        env=agent_env,
-                    )
-                proc_returncode = proc.returncode
+                proc_returncode = run_agent_with_timeline(
+                    cmd,
+                    prompt=prompt,
+                    stdout_jsonl=stdout_jsonl,
+                    stdout_timeline=stdout_timeline,
+                    stderr_log=stderr_log,
+                    cwd=REPO_ROOT,
+                    timeout=round_timeout,
+                    env=agent_env,
+                )
                 if stdout_jsonl.exists():
                     last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
             else:
@@ -1185,19 +1364,21 @@ def main() -> int:
                     cmd.extend(["--model", model])
                 if reasoning_effort and reasoning_effort_supported:
                     cmd.extend(["--reasoning-effort", reasoning_effort])
+                    emit_log(f"codex_reasoning_effort_mode=flag value={reasoning_effort}")
+                elif reasoning_effort:
+                    cmd.extend(["-c", f"model_reasoning_effort={reasoning_effort}"])
+                    emit_log(f"codex_reasoning_effort_mode=config value={reasoning_effort}")
                 cmd.append("-")
-                with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
-                    proc = subprocess.run(
-                        cmd,
-                        input=prompt,
-                        text=True,
-                        stdout=out_f,
-                        stderr=err_f,
-                        cwd=REPO_ROOT,
-                        timeout=round_timeout,
-                        env=agent_env,
-                    )
-                proc_returncode = proc.returncode
+                proc_returncode = run_agent_with_timeline(
+                    cmd,
+                    prompt=prompt,
+                    stdout_jsonl=stdout_jsonl,
+                    stdout_timeline=stdout_timeline,
+                    stderr_log=stderr_log,
+                    cwd=REPO_ROOT,
+                    timeout=round_timeout,
+                    env=agent_env,
+                )
         except subprocess.TimeoutExpired:
             proc_returncode = 124
             failure_detail = f"external agent run exceeded remaining timeout budget of {round_timeout} seconds"
@@ -1266,6 +1447,7 @@ def main() -> int:
     emit_log(f"cleaned_compile_artifacts count={len(removed)}")
 
     overall_end_iso = iso_now()
+    annotated_snapshot = save_annotated_snapshot(workspace_path, annotated_c_path)
     write_metrics(
         metrics_path(workspace_path),
         status="Success" if proc_returncode == 0 else "Fail",
@@ -1280,13 +1462,16 @@ def main() -> int:
         usage=usage_total,
         prompt_path=prompt_path,
         stdout_jsonl=stdout_jsonl,
+        stdout_timeline=stdout_timeline,
         stderr_log=stderr_log,
         last_message_path=last_message_path,
         input_c=input_path,
         input_v=input_v_path,
+        annotated_snapshot=annotated_snapshot,
     )
 
     emit_log(f"stdout_jsonl={stdout_jsonl}")
+    emit_log(f"stdout_timeline={stdout_timeline if stdout_timeline else '<not recorded>'}")
     emit_log(f"stderr_log={stderr_log}")
     emit_log(f"last_message={last_message_path}")
 
