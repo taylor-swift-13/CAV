@@ -11,11 +11,10 @@ This module owns the token side so the four runners stop carrying divergent
 copies. It provides:
 
   * ``parse_usage(agent, path)`` — agent-aware usage extraction. ``codex`` keeps
-    the last ``turn.completed.usage`` in the JSONL stream; ``claude`` reads the
-    top-level ``usage`` of the single JSON object. ``kimicode`` currently has no
-    stable token parser here, so stages fall back to approximate counts. (The old per-runner
-    ``parse_usage`` was codex-only, so claude solver runs silently fell back to
-    word-count approximation.)
+    the last ``turn.completed.usage`` in the JSONL stream; ``claude`` reads
+    either result usage or assistant-message usage from stream JSON; ``kimicode``
+    reads saved local session Wire ``StatusUpdate.token_usage`` events, falling
+    back to context ``_usage.token_count`` entries when Wire usage is missing.
   * ``add_usage(acc, new)`` — sum usage across rounds. Solver stages
     (contract/verify) run multiple rounds; previously only the last round's
     tokens were reported. Each round is a fresh agent session, so summing the
@@ -31,6 +30,8 @@ from dataclasses import dataclass, field
 import json
 from pathlib import Path
 import re
+import shutil
+import time
 
 
 # Canonical order for token fields. codex emits ``cached_input_tokens``; claude
@@ -38,11 +39,55 @@ import re
 # whichever are present, always in this order, then any extra int fields.
 UNIFIED_USAGE_KEYS = (
     "input_tokens",
-    "cached_input_tokens",
     "output_tokens",
+    "total_tokens",
+    "uncached_input_tokens",
+    "cached_input_tokens",
     "cache_creation_input_tokens",
     "cache_read_input_tokens",
+    "claude_stream_input_tokens",
+    "claude_stream_output_tokens",
+    "claude_stream_cache_creation_input_tokens",
+    "claude_stream_cache_read_input_tokens",
+    "claude_stream_assistant_events",
+    "kimi_status_update_events",
+    "kimi_context_token_count_first",
+    "kimi_context_token_count_last",
+    "kimi_context_token_count_max",
+    "kimi_context_token_count_delta_sum",
+    "kimi_context_usage_events",
 )
+
+CLAUDE_INPUT_DETAIL_KEYS = ("cache_creation_input_tokens", "cache_read_input_tokens")
+CLAUDE_STREAM_INPUT_DETAIL_KEYS = (
+    "claude_stream_input_tokens",
+    "claude_stream_cache_creation_input_tokens",
+    "claude_stream_cache_read_input_tokens",
+)
+
+
+def normalize_usage_totals(usage: dict[str, int] | None, agent: str) -> dict[str, int] | None:
+    """Expose comparable ``input_tokens``, ``output_tokens`` and ``total_tokens``."""
+    if not usage:
+        return usage
+    out = dict(usage)
+    if agent == "claude":
+        if "input_tokens" in out:
+            input_detail = sum(out.get(k, 0) for k in CLAUDE_INPUT_DETAIL_KEYS)
+            if input_detail:
+                out.setdefault("uncached_input_tokens", out["input_tokens"])
+                out["input_tokens"] = out["input_tokens"] + input_detail
+        elif any(k in out for k in CLAUDE_STREAM_INPUT_DETAIL_KEYS):
+            out["input_tokens"] = sum(out.get(k, 0) for k in CLAUDE_STREAM_INPUT_DETAIL_KEYS)
+            out["output_tokens"] = out.get("claude_stream_output_tokens", 0)
+    if not isinstance(out.get("total_tokens"), int):
+        input_tokens = out.get("input_tokens")
+        output_tokens = out.get("output_tokens")
+        if isinstance(input_tokens, int) or isinstance(output_tokens, int):
+            out["total_tokens"] = (input_tokens if isinstance(input_tokens, int) else 0) + (
+                output_tokens if isinstance(output_tokens, int) else 0
+            )
+    return out
 
 
 def token_count(path: Path | None) -> int:
@@ -68,7 +113,7 @@ def parse_codex_usage(stdout_jsonl: Path | None) -> dict[str, int] | None:
             usage = obj["usage"]
     if usage is None:
         return None
-    return {k: v for k, v in usage.items() if isinstance(v, int)}
+    return normalize_usage_totals({k: v for k, v in usage.items() if isinstance(v, int)}, "codex")
 
 
 def parse_claude_usage(stdout_path: Path | None) -> dict[str, int] | None:
@@ -93,10 +138,13 @@ def parse_claude_usage(stdout_path: Path | None) -> dict[str, int] | None:
     if isinstance(obj, dict):
         usage = obj.get("usage")
         if isinstance(usage, dict):
-            return {k: v for k, v in usage.items() if isinstance(v, int)}
+            return normalize_usage_totals({k: v for k, v in usage.items() if isinstance(v, int)}, "claude")
         return None
-    # --output-format stream-json: scan for the last `result` event's usage.
-    usage = None
+    # --output-format stream-json: prefer the final `result` event's cumulative
+    # usage when present, and also expose the assistant-message stream totals.
+    result_usage = None
+    stream_usage: dict[str, int] = {}
+    assistant_events = 0
     for raw in text.splitlines():
         raw = raw.strip()
         if not raw.startswith("{"):
@@ -105,11 +153,208 @@ def parse_claude_usage(stdout_path: Path | None) -> dict[str, int] | None:
             ev = json.loads(raw)
         except json.JSONDecodeError:
             continue
-        if isinstance(ev, dict) and ev.get("type") == "result" and isinstance(ev.get("usage"), dict):
-            usage = ev["usage"]
-    if usage is None:
+        if not isinstance(ev, dict):
+            continue
+        if ev.get("type") == "result" and isinstance(ev.get("usage"), dict):
+            result_usage = ev["usage"]
+        message = ev.get("message")
+        if ev.get("type") == "assistant" and isinstance(message, dict) and isinstance(message.get("usage"), dict):
+            assistant_events += 1
+            for key, value in message["usage"].items():
+                if isinstance(value, int):
+                    stream_usage[key] = stream_usage.get(key, 0) + value
+    usage: dict[str, int] = {}
+    if isinstance(result_usage, dict):
+        usage.update({k: v for k, v in result_usage.items() if isinstance(v, int)})
+    for key, value in stream_usage.items():
+        usage[f"claude_stream_{key}"] = value
+    if assistant_events:
+        usage["claude_stream_assistant_events"] = assistant_events
+    if not usage:
         return None
-    return {k: v for k, v in usage.items() if isinstance(v, int)}
+    return normalize_usage_totals(usage, "claude")
+
+
+def parse_kimicode_wire_usage(wire_jsonl: Path | None) -> dict[str, int] | None:
+    """Kimi Code token accounting from saved Wire ``StatusUpdate`` events."""
+    if wire_jsonl is None or not wire_jsonl.exists():
+        return None
+    input_other = 0
+    output = 0
+    input_cache_read = 0
+    input_cache_creation = 0
+    events = 0
+    for raw in wire_jsonl.read_text(encoding="utf-8", errors="replace").splitlines():
+        raw = raw.strip()
+        if not raw.startswith("{"):
+            continue
+        try:
+            obj = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        message = obj.get("message")
+        if not isinstance(message, dict) or message.get("type") != "StatusUpdate":
+            continue
+        payload = message.get("payload")
+        if not isinstance(payload, dict) or not isinstance(payload.get("token_usage"), dict):
+            continue
+        token_usage = payload["token_usage"]
+        input_other += token_usage.get("input_other", 0) if isinstance(token_usage.get("input_other"), int) else 0
+        output += token_usage.get("output", 0) if isinstance(token_usage.get("output"), int) else 0
+        input_cache_read += (
+            token_usage.get("input_cache_read", 0) if isinstance(token_usage.get("input_cache_read"), int) else 0
+        )
+        input_cache_creation += (
+            token_usage.get("input_cache_creation", 0)
+            if isinstance(token_usage.get("input_cache_creation"), int)
+            else 0
+        )
+        events += 1
+    if not events:
+        return None
+    return normalize_usage_totals(
+        {
+            "input_tokens": input_other + input_cache_read + input_cache_creation,
+            "output_tokens": output,
+            "uncached_input_tokens": input_other,
+            "cached_input_tokens": input_cache_read,
+            "cache_creation_input_tokens": input_cache_creation,
+            "kimi_status_update_events": events,
+        },
+        "kimicode",
+    )
+
+
+def parse_kimicode_context_usage(context_jsonl: Path | None) -> dict[str, int] | None:
+    """Kimi Code context-token accounting from a saved ``context*.jsonl``.
+
+    Kimi 1.41.0 does not emit input/output token usage in ``--output-format
+    stream-json``. Its local session context records ``{"role": "_usage",
+    "token_count": ...}`` entries instead. These are cumulative context-token
+    counts. We attribute each usage delta to output when the preceding message
+    is an assistant message, and to input otherwise; first/last/max are kept as
+    Kimi-specific detail fields.
+    """
+    if context_jsonl is None or not context_jsonl.exists():
+        return None
+    counts: list[int] = []
+    input_tokens = 0
+    output_tokens = 0
+    previous_count: int | None = None
+    previous_role: str | None = None
+    for raw in context_jsonl.read_text(encoding="utf-8", errors="replace").splitlines():
+        raw = raw.strip()
+        if not raw.startswith("{"):
+            continue
+        try:
+            obj = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        role = obj.get("role")
+        if role == "_usage" and isinstance(obj.get("token_count"), int):
+            current = obj["token_count"]
+            counts.append(current)
+            delta = current if previous_count is None else max(0, current - previous_count)
+            if previous_role == "assistant":
+                output_tokens += delta
+            else:
+                input_tokens += delta
+            previous_count = current
+        elif isinstance(role, str) and role != "_usage":
+            previous_role = role
+    if not counts:
+        return None
+    delta_sum = 0
+    prev = counts[0]
+    for current in counts[1:]:
+        if current >= prev:
+            delta_sum += current - prev
+        prev = current
+    return normalize_usage_totals({
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "kimi_context_token_count_first": counts[0],
+        "kimi_context_token_count_last": counts[-1],
+        "kimi_context_token_count_max": max(counts),
+        "kimi_context_token_count_delta_sum": delta_sum,
+        "kimi_context_usage_events": len(counts),
+    }, "kimicode")
+
+
+def find_saved_kimicode_context(logs_dir: Path) -> Path | None:
+    candidates = sorted(
+        logs_dir.glob("kimi_session_context_*.jsonl"),
+        key=lambda p: p.stat().st_mtime if p.exists() else 0,
+        reverse=True,
+    )
+    return candidates[0] if candidates else None
+
+
+def find_saved_kimicode_wire(logs_dir: Path) -> Path | None:
+    candidates = sorted(
+        logs_dir.glob("kimi_session_wire_*.jsonl"),
+        key=lambda p: p.stat().st_mtime if p.exists() else 0,
+        reverse=True,
+    )
+    return candidates[0] if candidates else None
+
+
+def capture_kimicode_context_usage(
+    *,
+    logs_dir: Path,
+    started_at: float,
+    ended_at: float | None = None,
+    needles: list[str] | None = None,
+) -> Path | None:
+    """Copy Kimi session usage files touched by this run into ``logs_dir``.
+
+    Kimi currently stores session files under ``~/.kimi/sessions`` even when
+    XDG dirs are redirected. We select context files modified during the agent
+    run window, copy the matching ``context*.jsonl`` and sibling ``wire.jsonl``,
+    and parse the saved copies later without depending on global Kimi state.
+    """
+    kimi_sessions = Path.home() / ".kimi" / "sessions"
+    if not kimi_sessions.exists():
+        return None
+    upper = ended_at if ended_at is not None else time.time()
+    candidates: list[Path] = []
+    for path in kimi_sessions.glob("*/*/context*.jsonl"):
+        try:
+            mtime = path.stat().st_mtime
+        except OSError:
+            continue
+        if started_at - 5 <= mtime <= upper + 30:
+            candidates.append(path)
+    if not candidates:
+        return None
+    matched: list[Path] = []
+    for path in candidates:
+        if not needles:
+            break
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if any(needle and needle in text for needle in needles):
+            matched.append(path)
+    source = max(matched or candidates, key=lambda p: p.stat().st_mtime)
+    out = logs_dir / f"kimi_session_context_{int(source.stat().st_mtime)}.jsonl"
+    try:
+        shutil.copy2(source, out)
+    except OSError:
+        return None
+    wire_source = source.parent / "wire.jsonl"
+    if wire_source.exists():
+        wire_out = logs_dir / f"kimi_session_wire_{int(wire_source.stat().st_mtime)}.jsonl"
+        try:
+            shutil.copy2(wire_source, wire_out)
+        except OSError:
+            pass
+    return out
 
 
 def extract_claude_last_message(stdout_path: Path | None) -> str | None:
@@ -150,7 +395,11 @@ def parse_usage(agent: str, stdout_path: Path | None) -> dict[str, int] | None:
     if agent == "claude":
         return parse_claude_usage(stdout_path)
     if agent == "kimicode":
-        return None
+        if stdout_path is None:
+            return None
+        return parse_kimicode_wire_usage(find_saved_kimicode_wire(stdout_path.parent)) or parse_kimicode_context_usage(
+            find_saved_kimicode_context(stdout_path.parent)
+        )
     return parse_codex_usage(stdout_path)
 
 

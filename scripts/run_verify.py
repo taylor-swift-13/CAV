@@ -1385,6 +1385,13 @@ def main() -> int:
             emit_log(f"agent_exec_timeout attempt={attempt} detail={failure_detail}")
         end_wall = time.time()
         filter_stderr_in_place(stderr_log)
+        if agent == "kimicode":
+            agent_metrics.capture_kimicode_context_usage(
+                logs_dir=workspace_path / "logs",
+                started_at=start_wall,
+                ended_at=end_wall,
+                needles=[str(workspace_path), workspace_name],
+            )
 
         usage_total = agent_metrics.add_usage(usage_total, agent_metrics.parse_usage(agent, stdout_jsonl))
 

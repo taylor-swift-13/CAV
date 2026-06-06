@@ -192,6 +192,7 @@ def run_agent_once(
             cmd.extend(["--reasoning-effort", reasoning_effort])
         cmd.append("-")
 
+    start_wall = time.time()
     try:
         with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
             proc = subprocess.run(cmd, input=prompt, text=True, stdout=out_f,
@@ -199,6 +200,7 @@ def run_agent_once(
         rc = proc.returncode
     except subprocess.TimeoutExpired:
         rc = 124
+    end_wall = time.time()
     filter_stderr_in_place(stderr_log)
     if agent == "claude":
         last_message = agent_metrics.extract_claude_last_message(stdout_jsonl)
@@ -208,6 +210,13 @@ def run_agent_once(
             last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
     elif agent == "kimicode" and stdout_jsonl.exists():
         last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
+    if agent == "kimicode":
+        agent_metrics.capture_kimicode_context_usage(
+            logs_dir=logs_dir,
+            started_at=start_wall,
+            ended_at=end_wall,
+            needles=[str(logs_dir.parent)],
+        )
     usage = agent_metrics.parse_usage(agent, stdout_jsonl)
     return rc, usage, stdout_jsonl
 
