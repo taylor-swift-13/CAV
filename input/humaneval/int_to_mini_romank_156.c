@@ -44,6 +44,7 @@ int append_roman_digit(char *out, int pos, int one, int ten, int five, int digit
         CharArray::undef_seg(out, pos, cap)
     Ensure exists chunk,
         roman_digit(one, ten, five, digit, chunk) &&
+        pos <= __return && __return < cap &&
         __return == pos + Zlength(chunk) &&
         CharArray::full(out, __return, app(prefix, chunk)) *
         CharArray::undef_seg(out, __return, cap)
@@ -92,6 +93,28 @@ int append_roman_digit(char *out, int pos, int one, int ten, int five, int digit
     }
 }
 
+int append_roman_thousand(char *out, int number)
+/*@ With cap
+    Require
+        1 <= number && number <= 1000 &&
+        1 < cap && cap <= INT_MAX &&
+        CharArray::undef_full(out, cap)
+    Ensure exists prefix,
+        roman_thousand(number, prefix) &&
+        0 <= __return && __return < cap &&
+        __return == Zlength(prefix) &&
+        CharArray::full(out, __return, prefix) *
+        CharArray::undef_seg(out, __return, cap)
+*/
+{
+    if (number == 1000) {
+        out[0] = 109;
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 char* int_to_mini_romank_156(int number)
 /*@ Require
         1 <= number && number <= 1000 &&
@@ -111,19 +134,19 @@ char* int_to_mini_romank_156(int number)
     int o = 0;
     char *out = malloc_char_array(64);
 
-    if (number == 1000) {
-        out[0] = 109;
-        k = 1;
-    }
+    k = append_roman_thousand(out, number) /*@ where cap = 64 */;
 
     h = (number / 100) % 10;
-    k = append_roman_digit(out, k, 99, 109, 100, h);
+    k = append_roman_digit(out, k, 99, 109, 100, h)
+        /*@ where prefix = roman_thousand_list(number), cap = 64 */;
 
     t = (number / 10) % 10;
-    k = append_roman_digit(out, k, 120, 99, 108, t);
+    k = append_roman_digit(out, k, 120, 99, 108, t)
+        /*@ where prefix = roman_prefix1_list(number), cap = 64 */;
 
     o = number % 10;
-    k = append_roman_digit(out, k, 105, 120, 118, o);
+    k = append_roman_digit(out, k, 105, 120, 118, o)
+        /*@ where prefix = roman_prefix2_list(number), cap = 64 */;
 
     out[k] = 0;
     return out;

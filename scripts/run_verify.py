@@ -850,10 +850,18 @@ def bootstrap_workspace(workspace_path: Path, input_path: Path, input_v_path: Pa
     shutil.copy2(input_path, original_c)
     shutil.copy2(input_path, annotated_c)
 
-    # Provision the bare-include verification headers next to the annotated C so
-    # symexec resolves `#include "int_array_def.h"` etc. (run_verify's analog of
-    # run_contract's mid/ header provisioning). Source = the input .c's dataset dir.
-    for _h in ("verification_stdlib.h", "verification_list.h", "int_array_def.h", "char_array_def.h"):
+    # Provision bare-include headers next to the annotated C so symexec resolves
+    # both common verification headers and task-local headers such as sll_def.h.
+    include_names = {
+        "verification_stdlib.h",
+        "verification_list.h",
+        "int_array_def.h",
+        "char_array_def.h",
+    }
+    include_names.update(re.findall(r'#\s*include\s+"([^"]+)"', input_path.read_text(encoding="utf-8", errors="replace")))
+    for _h in sorted(include_names):
+        if "/" in _h or "\\" in _h:
+            continue
         _src = input_path.parent / _h
         if _src.exists():
             shutil.copy2(_src, REPO_ROOT / "annotated" / _h)

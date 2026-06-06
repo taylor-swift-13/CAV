@@ -13,7 +13,7 @@ Return length of given string
                (problem_23_spec: list Z -> Z -> Prop) */
 /*@ Import Coq Require Import strlen_23 */
 
-int strlen_23(char *s)
+int c_strlen_23(char *s)
 /*@ With l n
     Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
@@ -21,7 +21,7 @@ int strlen_23(char *s)
 */
 ;
 
-int string_length(char *str)
+int strlen_23(char *str)
 /*@ With l n
     Require
         0 <= n && n < INT_MAX &&
@@ -34,6 +34,6 @@ int string_length(char *str)
         CharArray::full(str, n + 1, app(l, cons(0, nil)))
 */
 {
-    int ret = strlen_23(str);
+    int ret = c_strlen_23(str);
     return ret;
 }
