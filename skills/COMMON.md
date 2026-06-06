@@ -15,6 +15,7 @@
 - 不用 `--help` 反推命令（symexec、coqc、claude/codex 等由 runner 脚本封装）
 - 不读 `scripts/` 编排脚本（`run_*.py`、`agent_loop.py`、`coq_runner.py` 等）
 - 不读 `QualifiedCProgramming/` 下除 `.agents/skills/`、README、`tutorial/`、`SeparationLogic/README.md`、`QCP_examples/`、`SeparationLogic/examples/` 外的库源码
+- 不读其它 workspace（包括 `output/` 下其它 stage、其它时间戳、其它题目的 workspace）；只能读当前任务 workspace
 - 不读自己的 harness transcript（`logs/agent_stdout_*.jsonl`、`logs/agent_prompt_*`）
 - 不做 `git log` / `git show` 考古
 - 不 `cat run-example-linux.sh` 反推参数
@@ -23,7 +24,7 @@
 
 - 当前 workspace 的 `logs/*`
 - stage 特有的工作面（详见各 `SKILL.md`，例如 verify 的 `annotated/...c` + `coq/generated/<name>_proof_manual.v`、contract 的 `input/<name>.c`/`.v`、eval 的 `cases/` + `evaluation/`）
-- **不写** `scripts/`、其它 stage 的 workspace、`QualifiedCProgramming/` 源码
+- **不写** `scripts/`、其它 stage / 其它任务的 workspace、`QualifiedCProgramming/` 源码
 
 ## 2. 参考资料边界
 

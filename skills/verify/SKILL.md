@@ -26,7 +26,7 @@ Verify 在 QCP C 程序上做 annotation + proof + compile，**不重写 contrac
 - 背景：`QualifiedCProgramming/README.md`、`SeparationLogic/README.md`、`tutorial/`。
 - 例子：`QualifiedCProgramming/QCP_examples/` 和 `QualifiedCProgramming/SeparationLogic/examples/`。
 
-**不要读**：`scripts/` 编排脚本、`QualifiedCProgramming/` 下除上面白名单外的库源码、自己的 `logs/agent_stdout_*.jsonl`、`git log`/`git show` 考古、`symexec --help` 之类反推命令。
+**不要读**：`scripts/` 编排脚本、`QualifiedCProgramming/` 下除上面白名单外的库源码、其它 workspace（包括 `output/` 下其它 stage、其它时间戳、其它题目的 workspace）、自己的 `logs/agent_stdout_*.jsonl`、`git log`/`git show` 考古、`symexec --help` 之类反推命令。
 
 **写**：当前 `annotated/...c`、当前 workspace 的 `coq/generated/<name>_proof_manual.v`（+ 必要本地 helper）、当前 workspace 的 `logs/*`。其余一律不写——包括 `input/`、`scripts/`、其它 workspace、QCP 源码。
 
