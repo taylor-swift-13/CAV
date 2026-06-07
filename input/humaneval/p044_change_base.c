@@ -35,6 +35,7 @@ char* p044_change_base(int x, int base)
         2 <= base && base < 10 &&
         problem_44_pre(x, base)
     Ensure exists out_l len,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
         1 <= len && len < INT_MAX &&
         Zlength(out_l) == len &&
         problem_44_spec(x, base, out_l) &&

@@ -26,8 +26,12 @@ p154_cycpattern_check("himenss","simen") => true
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -43,9 +47,13 @@ int rotation_match_at(char *a, char *b, int pos, int shift, int n, int m)
         ascii_range(b_l) &&
         0 <= pos && pos + m <= n &&
         0 <= shift && shift < m &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
         CharArray::full(b, m + 1, app(b_l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
         ((__return == 1 && rotation_match_at_spec(pos, shift, a_l, b_l)) ||
          (__return == 0 && !(rotation_match_at_spec(pos, shift, a_l, b_l)))) &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
@@ -78,9 +86,13 @@ int rotation_occurs_at_shift(char *a, char *b, int shift, int n, int m)
         ascii_range(a_l) &&
         ascii_range(b_l) &&
         0 <= shift && shift < m &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
         CharArray::full(b, m + 1, app(b_l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
         ((__return == 1 && rotation_shift_has_match(shift, a_l, b_l)) ||
          (__return == 0 && !(rotation_shift_has_match(shift, a_l, b_l)))) &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
@@ -109,9 +121,13 @@ int p154_cycpattern_check(char *a, char *b)
         problem_154_pre(a_l, b_l) &&
         ascii_range(a_l) &&
         ascii_range(b_l) &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
         CharArray::full(b, m + 1, app(b_l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
         problem_154_spec(a_l, b_l, __return) &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
         CharArray::full(b, m + 1, app(b_l, cons(0, nil)))

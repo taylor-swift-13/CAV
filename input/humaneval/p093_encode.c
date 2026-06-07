@@ -29,8 +29,12 @@ char *malloc_char_array(int n)
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -41,8 +45,11 @@ char *p093_encode(char *message)
             Zlength(l) == len &&
             problem_93_pre(l) &&
             ascii_range(l) &&
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
             CharArray::full(message, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
             Zlength(out_l) == len &&
             problem_93_spec(l, out_l) &&
             CharArray::full(message, len + 1, app(l, cons(0, nil))) *

@@ -18,8 +18,12 @@ p098_count_upper("dBBE") returns 0
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -31,8 +35,10 @@ int p098_count_upper(char *s)
         Zlength(l) == len &&
         problem_98_pre(l) &&
         ascii_range(l) &&
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         problem_98_spec(l, __return) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */

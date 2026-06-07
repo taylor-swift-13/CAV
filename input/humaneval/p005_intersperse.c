@@ -4,12 +4,15 @@
 
 void p005_intersperse(const int *numbers, int numbers_size, int delimeter,
          int *out)
-/*@ With l outl
-    Require 0 <= numbers_size && numbers_size < INT_MAX &&
+/*@ With l
+    Require 0 < numbers_size && 2 * numbers_size - 1 < INT_MAX &&
+            Zlength(l) == numbers_size &&
             IntArray::full(numbers, numbers_size, l) *
-        IntArray::undef_full(out, 2 * numbers_size - 1)
-    Ensure IntArray::full(numbers, numbers_size, l) *
-       IntArray::full(out, 2 * numbers_size - 1 ,outl)
+            IntArray::undef_full(out, 2 * numbers_size - 1)
+    Ensure exists outl,
+            Zlength(outl) == 2 * numbers_size - 1 &&
+            IntArray::full(numbers, numbers_size, l) *
+            IntArray::full(out, 2 * numbers_size - 1, outl)
 */
 {
     int k = 0;
@@ -30,4 +33,3 @@ void p005_intersperse(const int *numbers, int numbers_size, int delimeter,
     }
 
 }
-

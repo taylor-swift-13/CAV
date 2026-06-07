@@ -31,8 +31,12 @@ char *malloc_char_array(int n)
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -43,8 +47,11 @@ char *p051_remove_vowels(char *text)
             Zlength(l) == len &&
             problem_51_pre(l) &&
             char_range(l) &&
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
             CharArray::full(text, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l out_len,
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
+            (forall (k: Z), (0 <= k && k < out_len) => Znth(k, out_l, 0) != 0) &&
             0 <= out_len && out_len <= len &&
             Zlength(out_l) == out_len &&
             problem_51_spec(l, out_l) &&

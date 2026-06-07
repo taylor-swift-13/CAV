@@ -3,6 +3,9 @@ Require Import Coq.Lists.List.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Fixpoint parse_digits (l : list Z) (acc : Z) : Z :=
   match l with
   | [] => acc
@@ -75,7 +78,7 @@ Fixpoint all_multiples_of_5 (xs : list Z) : bool :=
 Definition aug_all_multiple_array_003_pre (l : list Z) : Prop :=
   let toks := split_csv_tokens l in
   all_valid_tokens toks /\
-  Z.of_nat (List.length toks) <= 64.
+  zlength toks <= 64.
 
 Definition aug_all_multiple_array_003_spec (l : list Z) : Z :=
   if all_multiples_of_5 (parse_csv_impl l) then 1 else 0.

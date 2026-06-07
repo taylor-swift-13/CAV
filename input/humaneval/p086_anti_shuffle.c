@@ -26,8 +26,12 @@ p086_anti_shuffle("Hello World!!!") returns "Hello !!!Wdlor"
 
 int strlen(char *s)
 /*@ With l len
-    Require CharArray::full(s, len + 1, app(l, cons(0, nil)))
+    Require 0 <= len && len < INT_MAX &&
+            Zlength(l) == len &&
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure __return == len &&
+           (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 ;
@@ -86,8 +90,11 @@ char* p086_anti_shuffle(char *s)
         Zlength(l) == len &&
         problem_86_pre(l) &&
         ascii_range(l) &&
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
+        (forall (k: Z), (0 <= k && k < Zlength(out_l)) => Znth(k, out_l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         problem_86_spec(l, out_l) &&
         CharArray::full(__return, Zlength(out_l) + 1, app(out_l, cons(0, nil))) *
         CharArray::full(s, len + 1, app(l, cons(0, nil)))

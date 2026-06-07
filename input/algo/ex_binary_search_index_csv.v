@@ -3,6 +3,9 @@ Require Import Coq.Lists.List.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Definition is_digitb (c : Z) : bool :=
   Z.leb 48 c && Z.leb c 57.
 
@@ -100,16 +103,14 @@ Fixpoint sorted_nondecreasing (xs : list Z) : Prop :=
   end.
 
 Definition binary_search_index_spec_values (xs : list Z) (target r : Z) : Prop :=
-  (r = -1 /\
-   forall i : Z,
-     0 <= i < Z.of_nat (List.length xs) ->
-     nth (Z.to_nat i) xs 0 <> target) \/
-  (0 <= r < Z.of_nat (List.length xs) /\
-   nth (Z.to_nat r) xs 0 = target).
+  (r = -1 /\ ~ In target xs) \/
+  (exists prefix suffix,
+     xs = prefix ++ target :: suffix /\
+     r = zlength prefix).
 
 Definition ex_binary_search_index_csv_pre (l : list Z) : Prop :=
   parser_safe l /\
-  Z.of_nat (List.length (parse_csv l)) <= 128 /\
+  zlength (parse_csv l) <= 128 /\
   sorted_nondecreasing (parse_csv l).
 
 Definition ex_binary_search_index_csv_spec (l : list Z) (target r : Z) : Prop :=

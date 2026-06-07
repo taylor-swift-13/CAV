@@ -26,8 +26,12 @@ p067_fruit_distribution("100 apples && 1 oranges",120) -> 120 - 100 - 1 = 19
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -41,8 +45,10 @@ int p067_fruit_distribution(char *s, int total)
             ascii_range(l) &&
             fruit_state_safe(l) &&
             fruit_output_safe(l, total) &&
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
             CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure problem_67_spec(l, total, __return) &&
+           (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {

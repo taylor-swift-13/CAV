@@ -19,8 +19,10 @@ int p023_strlen(char *str)
         0 <= n && n < INT_MAX &&
         Zlength(l) == n &&
         problem_23_pre(l) &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
         CharArray::full(str, n + 1, app(l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
         __return == n &&
         problem_23_spec(l, __return) &&
         CharArray::full(str, n + 1, app(l, cons(0, nil)))

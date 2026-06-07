@@ -28,16 +28,24 @@ false
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
 
 char *strchr(char *s, int c)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure ((__return == 0 && ! char_in(c, l)) ||
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
             (__return != 0 && char_in(c, l))) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
@@ -57,6 +65,8 @@ int p054_same_chars(char *s0, char *s1)
             CharArray::full(s0, n0 + 1, app(l0, cons(0, nil))) *
             CharArray::full(s1, n1 + 1, app(l1, cons(0, nil)))
     Ensure problem_54_spec(l0, l1, __return) &&
+           (forall (k: Z), (0 <= k && k < n0) => Znth(k, l0, 0) != 0) &&
+           (forall (k: Z), (0 <= k && k < n1) => Znth(k, l1, 0) != 0) &&
            CharArray::full(s0, n0 + 1, app(l0, cons(0, nil))) *
            CharArray::full(s1, n1 + 1, app(l1, cons(0, nil)))
 */

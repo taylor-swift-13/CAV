@@ -25,8 +25,12 @@ p119_match_parens({")", ")"}) == "No"
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -42,9 +46,13 @@ int p119_match_parens(char *s1, char *s2)
         problem_119_pre(l1, l2) &&
         ascii_range(l1) &&
         ascii_range(l2) &&
+        (forall (k: Z), (0 <= k && k < len1) => Znth(k, l1, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < len2) => Znth(k, l2, 0) != 0) &&
         CharArray::full(s1, len1 + 1, app(l1, cons(0, nil))) *
         CharArray::full(s2, len2 + 1, app(l2, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < len1) => Znth(k, l1, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < len2) => Znth(k, l2, 0) != 0) &&
         problem_119_spec(l1, l2, __return) &&
         CharArray::full(s1, len1 + 1, app(l1, cons(0, nil))) *
         CharArray::full(s2, len2 + 1, app(l2, cons(0, nil)))

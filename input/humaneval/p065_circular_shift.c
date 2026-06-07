@@ -36,6 +36,7 @@ char* p065_circular_shift(int x, int shift)
         problem_65_pre(x, shift) &&
         Zlength(decimal_digits(x)) + 1 < 64
     Ensure exists out_l len scratch,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
         len == Zlength(out_l) &&
         len == Zlength(circular_shift_output(x, shift)) &&
         problem_65_spec(x, shift, out_l) &&

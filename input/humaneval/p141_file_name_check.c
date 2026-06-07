@@ -29,8 +29,12 @@ p141_file_name_check("1example.dll")  => "No" // (the name should start with a l
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -42,8 +46,10 @@ int p141_file_name_check(char *file_name)
         Zlength(l) == len &&
         problem_141_pre(l) &&
         ascii_range(l) &&
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         CharArray::full(file_name, len + 1, app(l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         problem_141_spec(l, __return) &&
         CharArray::full(file_name, len + 1, app(l, cons(0, nil)))
 */

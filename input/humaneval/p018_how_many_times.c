@@ -20,8 +20,12 @@ Find how many times a given substring can be found in the original string. Count
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -36,9 +40,13 @@ int p018_how_many_times(char *str, char *substring)
         problem_18_pre(l, sub) &&
         ascii_range(l) &&
         ascii_range(sub) &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, sub, 0) != 0) &&
         CharArray::full(str, n + 1, app(l, cons(0, nil))) *
         CharArray::full(substring, m + 1, app(sub, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < m) => Znth(k, sub, 0) != 0) &&
         problem_18_spec(l, sub, __return) &&
         CharArray::full(str, n + 1, app(l, cons(0, nil))) *
         CharArray::full(substring, m + 1, app(sub, cons(0, nil)))

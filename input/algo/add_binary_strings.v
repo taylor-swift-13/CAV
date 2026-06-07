@@ -4,6 +4,9 @@ Require Import Coq.Lists.List.
 Open Scope Z_scope.
 Import ListNotations.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (length l).
+
 Definition digit_to_Z (d : Z) : Z :=
   if Z.eq_dec d 49 then 1 else 0.
 
@@ -52,6 +55,28 @@ Definition normalize_bin_chars (l : list Z) : list Z :=
   | trimmed => trimmed
   end.
 
+Definition rev_bin_add_step
+  (st : (list Z * list Z) * Z * list Z) : (list Z * list Z) * Z * list Z :=
+  let '((ra, rb), carry, out) := st in
+  match ra, rb with
+  | [], [] =>
+      if Z.eq_dec carry 0
+      then (([], []), 0, out)
+      else (([], []), 0, out ++ [49])
+  | a :: ra', [] =>
+      let sum := digit_to_Z a + carry in
+      ((ra', []), Z.div sum 2, out ++ [Z_to_digit (Z.modulo sum 2)])
+  | [], b :: rb' =>
+      let sum := digit_to_Z b + carry in
+      (([], rb'), Z.div sum 2, out ++ [Z_to_digit (Z.modulo sum 2)])
+  | a :: ra', b :: rb' =>
+      let sum := digit_to_Z a + digit_to_Z b + carry in
+      ((ra', rb'), Z.div sum 2, out ++ [Z_to_digit (Z.modulo sum 2)])
+  end.
+
 Definition add_binary_strings_spec (a b : list Z) : list Z :=
-  normalize_bin_chars
-    (rev (rev_bin_add_carry_fuel (length a + length b + 1)%nat (rev a) (rev b) 0)).
+  let '(_, _, out) :=
+    Z.iter (zlength a + zlength b + 1)
+      rev_bin_add_step
+      ((rev a, rev b), 0, []) in
+  normalize_bin_chars (rev out).

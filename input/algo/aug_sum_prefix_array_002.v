@@ -4,6 +4,9 @@ Import ListNotations.
 
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Definition is_digitb (c : Z) : bool :=
   Z.leb 48 c && Z.leb c 57.
 
@@ -99,7 +102,7 @@ Definition sum_first_two (xs : list Z) : Z :=
 
 Definition aug_sum_prefix_array_002_pre (l : list Z) : Prop :=
   parser_safe l /\
-  Z.of_nat (List.length (parse_csv l)) <= 64 /\
+  zlength (parse_csv l) <= 64 /\
   -2147483648 <= sum_first_two (parse_csv l) /\
   sum_first_two (parse_csv l) <= 2147483647.
 

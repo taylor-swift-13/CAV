@@ -30,4 +30,9 @@ Fixpoint all_letters_upto (l : list Z) (fuel : nat) : bool :=
   end.
 
 Definition ex_pangram_ascii_spec (l : list Z) : Z :=
-  if all_letters_upto l 26%nat then 1 else 0.
+  let '(_, ok) := Z.iter 26
+    (fun st =>
+       let '(i, ok) := st in
+       (i + 1, andb ok (has_letter_index l i)))
+    (0, true) in
+  if ok then 1 else 0.

@@ -3,6 +3,9 @@ Require Import Coq.Lists.List.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Definition is_digitb (c : Z) : bool :=
   Z.leb 48 c && Z.leb c 57.
 
@@ -54,7 +57,7 @@ Definition ex_luhn_valid_ascii_spec (l : list Z) : Z :=
   match digits_only l with
   | None => 0
   | Some ds =>
-      if Z.leb 2 (Z.of_nat (List.length ds)) then
+      if Z.leb 2 (zlength ds) then
         if Z.eqb (Z.rem (luhn_sum_rev (rev ds) false) 10) 0 then 1 else 0
       else 0
   end.

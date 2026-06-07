@@ -35,6 +35,7 @@ char* p103_rounded_avg(int n, int m)
         n + m < INT_MAX &&
         problem_103_pre(n, m)
     Ensure exists out_l len,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
         1 <= len && len < INT_MAX &&
         Zlength(out_l) == len &&
         problem_103_spec(n, m, out_l) &&

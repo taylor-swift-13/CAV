@@ -18,7 +18,7 @@ Import ListNotations.
 Local Open Scope Z_scope.
 
 Definition problem_23_pre (input : list Z) : Prop :=
-  True.
+  forall k, 0 <= k < Zlength input -> Znth k input 0 <> 0.
 
 Definition problem_23_spec (input : list Z) (output : Z) : Prop :=
   output = Zlength input.

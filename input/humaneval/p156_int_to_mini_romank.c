@@ -120,6 +120,7 @@ char* p156_int_to_mini_romank(int number)
         1 <= number && number <= 1000 &&
         problem_156_pre(number)
     Ensure exists out_l len,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
         0 <= len && len < 64 &&
         Zlength(out_l) == len &&
         problem_156_spec(number, out_l) &&

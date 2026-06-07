@@ -34,6 +34,7 @@ char* p015_string_sequence(int n)
         problem_15_pre(n) &&
         sequence_output_bound(n)
     Ensure exists out_l len cap,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
         cap == 12 * (n + 1) + 1 &&
         len == Zlength(out_l) &&
         problem_15_spec(n, out_l) &&

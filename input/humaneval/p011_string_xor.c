@@ -10,8 +10,12 @@ char *malloc_char_array(int n)
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -20,9 +24,16 @@ char *p011_string_xor(char *a, char *b)
 /*@ With l1 l2 na nb
     Require 0 <= na && na < INT_MAX &&
         0 <= nb && nb < INT_MAX &&
+        Zlength(l1) == na &&
+        Zlength(l2) == nb &&
+        (forall (k: Z), (0 <= k && k < na) => Znth(k, l1, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < nb) => Znth(k, l2, 0) != 0) &&
         CharArray::full(a, na + 1, app(l1, cons(0, nil))) *
         CharArray::full(b, nb + 1, app(l2, cons(0, nil)))
     Ensure exists out_l n,
+        (forall (k: Z), (0 <= k && k < na) => Znth(k, l1, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < nb) => Znth(k, l2, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, out_l, 0) != 0) &&
         ((na <= nb && n == na) || (nb < na && n == nb)) &&
         CharArray::full(a, na + 1, app(l1, cons(0, nil))) *
         CharArray::full(b, nb + 1, app(l2, cons(0, nil))) *
@@ -55,4 +66,3 @@ char *p011_string_xor(char *a, char *b)
     output[n] = 0;
     return output;
 }
-

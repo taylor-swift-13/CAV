@@ -3,6 +3,9 @@ Require Import Coq.Lists.List.
 Import ListNotations.
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Definition is_digitb (c : Z) : bool :=
   if Z.leb 48 c then Z.leb c 57 else false.
 
@@ -84,7 +87,7 @@ Fixpoint count_good_pairs_vals (l : list Z) : Z :=
 
 Definition count_good_pairs_csv_pre (l : list Z) : Prop :=
   parser_safe l /\
-  Z.of_nat (List.length (parse_csv_impl l)) <= 128.
+  zlength (parse_csv_impl l) <= 128.
 
 Definition count_good_pairs_csv_spec (l : list Z) : Z :=
   count_good_pairs_vals (parse_csv_impl l).

@@ -11,4 +11,8 @@ Fixpoint ex_allergies_score_count_aux (score : Z) (fuel : nat) : Z :=
   end.
 
 Definition ex_allergies_score_count_spec (score : Z) : Z :=
-  ex_allergies_score_count_aux score 8%nat.
+  snd (Z.iter 8
+    (fun st =>
+       let '(i, count) := st in
+       (i + 1, count + Z.rem (Z.div score (2 ^ i)) 2))
+    (0, 0)).

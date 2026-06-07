@@ -19,8 +19,12 @@ Given a string, find out how many distinct characters (regardless of case) does 
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -31,8 +35,10 @@ int p016_count_distinct_characters(char *str)
             Zlength(l) == len &&
             problem_16_pre(l) &&
             ascii_range(l) &&
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
             CharArray::full(str, len + 1, app(l, cons(0, nil)))
     Ensure problem_16_spec(l, __return) &&
+           (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
            CharArray::full(str, len + 1, app(l, cons(0, nil)))
 */
 {

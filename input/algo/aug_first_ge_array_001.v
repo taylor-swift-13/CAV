@@ -4,6 +4,9 @@ Import ListNotations.
 
 Open Scope Z_scope.
 
+Definition zlength {A : Type} (l : list A) : Z :=
+  Z.of_nat (List.length l).
+
 Definition is_digitb (c : Z) : bool :=
   Z.leb 48 c && Z.leb c 57.
 
@@ -92,7 +95,7 @@ Definition parser_safe (l : list Z) : Prop :=
 
 Definition aug_first_ge_array_001_pre (l : list Z) : Prop :=
   parser_safe l /\
-  Z.of_nat (List.length (parse_csv l)) <= 64.
+  zlength (parse_csv l) <= 64.
 
 Fixpoint first_ge_neg5_aux (xs : list Z) (idx : Z) : Z :=
   match xs with

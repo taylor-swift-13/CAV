@@ -24,8 +24,12 @@ Algorithm idea is simple:
 
 int strlen(char *s)
 /*@ With l len
-    Require CharArray::full(s, len + 1, app(l, cons(0, nil)))
+    Require 0 <= len && len < INT_MAX &&
+            Zlength(l) == len &&
+            (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure __return == len &&
+           (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 ;
@@ -43,8 +47,10 @@ int is_pal_suffix(char *s, int start, int n)
         0 <= n && n < INT_MAX &&
         Zlength(l) == n &&
         ascii_range(l) &&
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
         CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
         ((__return == 1 && pal_suffix(start, l)) ||
          (__return == 0 && !(pal_suffix(start, l)))) &&
         CharArray::full(s, n + 1, app(l, cons(0, nil)))
@@ -74,8 +80,11 @@ char *p010_make_palindrome(char *str)
         Zlength(l) == len &&
         problem_10_pre(l) &&
         ascii_range(l) &&
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < Zlength(out_l)) => Znth(k, out_l, 0) != 0) &&
         problem_10_spec(l, out_l) &&
         CharArray::full(str, len + 1, app(l, cons(0, nil))) *
         CharArray::full(__return, Zlength(out_l) + 1, app(out_l, cons(0, nil)))

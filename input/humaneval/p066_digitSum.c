@@ -24,8 +24,12 @@ Examples:
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -38,8 +42,10 @@ int p066_digitSum(char *s)
         problem_66_pre(l) &&
         ascii_range(l) &&
         digit_sum_int_range(l) &&
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         problem_66_spec(l, __return) &&
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */

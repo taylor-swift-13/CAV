@@ -24,8 +24,12 @@ p144_simplify("7/10", "10/2") = false
 
 int strlen(char *s)
 /*@ With l n
-    Require CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
     Ensure __return == n &&
+           (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
            CharArray::full(s, n + 1, app(l, cons(0, nil)))
 */
 ;
@@ -43,9 +47,13 @@ int p144_simplify(char *x, char *n)
         fraction_parts(lx, sx, ax, bx) &&
         fraction_parts(ln, sn, cn, dn) &&
         fraction_values_safe(ax, bx, cn, dn) &&
+        (forall (k: Z), (0 <= k && k < lenx) => Znth(k, lx, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < lenn) => Znth(k, ln, 0) != 0) &&
         CharArray::full(x, lenx + 1, app(lx, cons(0, nil))) *
         CharArray::full(n, lenn + 1, app(ln, cons(0, nil)))
     Ensure
+        (forall (k: Z), (0 <= k && k < lenx) => Znth(k, lx, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < lenn) => Znth(k, ln, 0) != 0) &&
         problem_144_spec(lx, ln, __return) &&
         CharArray::full(x, lenx + 1, app(lx, cons(0, nil))) *
         CharArray::full(n, lenn + 1, app(ln, cons(0, nil)))

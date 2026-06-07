@@ -37,6 +37,7 @@ char* p084_solve(int N)
         0 <= N && N <= 10000 &&
         problem_84_pre(N)
     Ensure exists out_l len,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
         1 <= len && len < INT_MAX &&
         Zlength(out_l) == len &&
         problem_84_spec(N, out_l) &&

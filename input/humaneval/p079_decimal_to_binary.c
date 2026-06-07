@@ -34,6 +34,7 @@ char* p079_decimal_to_binary(int decimal)
         0 <= decimal && decimal + 5 < INT_MAX &&
         problem_79_pre(decimal)
     Ensure exists out_l len,
+        (forall (k: Z), (0 <= k && k < len) => Znth(k, out_l, 0) != 0) &&
         1 <= len && len < INT_MAX &&
         Zlength(out_l) == len &&
         problem_79_spec(decimal, out_l) &&
