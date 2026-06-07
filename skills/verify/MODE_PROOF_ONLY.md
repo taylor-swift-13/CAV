@@ -23,12 +23,14 @@
 
 普通的 `proof_manual.v` 还有 `Admitted`、`coqc` 报错、tactic 暂时失败，都不是 proof-only 退出理由。只要能继续编辑 `proof_manual.v` 或添加允许范围内的 local helper，就必须继续证明并重新编译。
 
-proof-only 模式仍必须执行主 SKILL §3 的检索（到 `QualifiedCProgramming/SeparationLogic/examples/` 找相似例子）。没有先检索就不允许因为单个 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败写 `Final Result: Fail`。
+proof-only 模式按主 SKILL §3 的错误驱动检索策略执行：应先直接补全 `proof_manual.v` 并运行 `coqc`。仅当具体 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败暴露后，才围绕该失败点到 `QualifiedCProgramming/SeparationLogic/examples/` 检索相似例子。未基于具体失败点完成相似 proof 的检索与迁移，不得写 `Final Result: Fail`。
 
 ## 工作流仍按主 SKILL
 
 - try-first / 探索预算等效率约束见 `skills/COMMON.md` §3；
-- 本模式的第一步是使用已经生成的 VC 直接尝试证明；只有证明暴露 annotation 缺口时，才回 annotation 并按主 SKILL §4 的刷新规则重跑 symexec；
+- 本模式的第一步是基于已经生成的 VC 直接构造证明并编译验证；
+- proof 工作按主 SKILL §3 的“检索相似例子/阅读必要文档 → 修改 `proof_manual.v` → 编译 → 阅读第一个失败点”循环推进；若 proof 过程中确认当前 VC 在现有 annotation 下不可证，或 `coqc`/witness 失败表明当前 VC 缺少 annotation 中间事实，则必须退出 proof 循环，回到外层“写 annotation”阶段，修改 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where`，并按主 SKILL §4 的刷新规则重跑 symexec，然后重新进入 proof 循环；
+- 若返回 annotation 修改后 symexec 无法生成完整 VC，则退出 proof-only 的直接证明路径，按主 SKILL §3 的 verify 外层主循环重新推进：检索相似例子/阅读必要文档，修正 annotation，运行 symexec，获得有效 VC 后再进入 proof 循环；
 - tactic 起手式与分离逻辑证明套路直接看 `QualifiedCProgramming/.agents/skills/vc-proving/docs/`；
 - attempt > 1 或 prompt 带 `Restart feedback` / `Audit findings:` 时，叠加主 SKILL §7.1（带反馈重跑）继续。
 

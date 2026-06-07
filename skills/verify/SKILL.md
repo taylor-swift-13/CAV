@@ -3,130 +3,169 @@ name: verify
 description: Verify skill，消费 Contract 输出完成注解、证明和编译检查。
 ---
 
-Verify 在 QCP C 程序上做 annotation + proof + compile，**不重写 contract**。
+Verify 在 QCP C 程序上完成 annotation + proof + compile，**不重写 contract**。
 
-## 职责划分（最重要，先读）
+## 0. 职责
 
-- **流程 + 一切 how-to 细节完全依照 QCP `.agents/skills/`**：阶段编排看 `verification-orchestrator`；补注解看 `annotation-filling` + `annotation-checking`；证 VC 看 `vc-proving`；编译收尾看 `final-check`。**照那边的流程和命令执行，本 skill 不复述、不自创。**
-- **本 skill 只规定 CAV 这边的工程约束**：输入输出路径、读写边界、symexec/编译的 CAV override、产物清理、退出/结果契约、issues 记录、retry mode。这些约束**叠加在 QCP 流程之上**。
-- **不写过程 reasoning 日志**（不再有 `annotation_reasoning.md` / `proof_reasoning.md`）。唯一文字产物是 `logs/issues.md`（只记真正遇到的 issue）和 `logs/metrics.md`（结果）。
+- **流程与 how-to 细节依照 QCP `.agents/skills/`**：阶段编排看 `verification-orchestrator`；补注解看 `annotation-filling` + `annotation-checking`；证明 VC 看 `vc-proving`；编译收尾看 `final-check`。本 skill 不复述 QCP 细节，不自创流程。
+- **本 skill 只规定 CAV 工程约束**：输入输出路径、读写边界、两层工作循环、symexec/编译规则、产物清理、退出条件、issues 记录和 retry mode。
+- **不写过程 reasoning 日志**：不再写 `annotation_reasoning.md` / `proof_reasoning.md`。唯一文字产物是 `logs/issues.md`（只记真正遇到的 issue）和 `logs/metrics.md`（结果）。
 
-## 1. 输入输出路径（CAV，固定）
+## 1. 路径
 
-- 输入：`input/<dataset>/<name>.c`、可选 `input/<dataset>/<name>.v`（只读，不改）
-- 工作副本：`annotated/verify_<timestamp>_<name>.c`
-- workspace：`output/verify_<timestamp>_<name>/`（含 `coq/generated/`、`logs/`、`original/`、最终 `annotated/` 快照）
+- 输入：`input/<dataset>/<name>.c`、可选 `input/<dataset>/<name>.v`（只读，不改）。
+- 工作副本：`annotated/verify_<timestamp>_<name>.c`。
+- workspace：`output/verify_<timestamp>_<name>/`，包含 `coq/generated/`、`logs/`、`original/`、最终 `annotated/` 快照。
 
-脚本调用和手动执行必须用这同一组路径，不可发明新位置。
+脚本调用和手动执行必须使用这组路径，不得发明新位置。
 
-## 2. 读写边界（CAV，硬规则）
+## 2. 读写边界
 
-**读**（除自身 I/O 外，参考只在白名单内）：
-- QCP 流程与细节：`QualifiedCProgramming/.agents/skills/`（全部子 skill 及其 `docs/`）——这是流程和细节的权威来源。
-- 背景：`QualifiedCProgramming/README.md`、`SeparationLogic/README.md`、`tutorial/`。
-- 例子：`QualifiedCProgramming/QCP_examples/` 和 `QualifiedCProgramming/SeparationLogic/examples/`。
+**允许读**：
+- QCP 流程与细节：`QualifiedCProgramming/.agents/skills/`（全部子 skill 及其 `docs/`）。
+- 背景资料：`QualifiedCProgramming/README.md`、`SeparationLogic/README.md`、`tutorial/`。
+- 参考例子：`QualifiedCProgramming/QCP_examples/`、`QualifiedCProgramming/SeparationLogic/examples/`。
 
-**不要读**：`scripts/` 编排脚本、`QualifiedCProgramming/` 下除上面白名单外的库源码、其它 workspace（包括 `output/` 下其它 stage、其它时间戳、其它题目的 workspace）、自己的 `logs/agent_stdout_*.jsonl`、`git log`/`git show` 考古、`symexec --help` 之类反推命令。
+**禁止读**：
+- `scripts/` 编排脚本。
+- `QualifiedCProgramming/` 下除上面白名单外的库源码。
+- 其它 workspace，包括 `output/` 下其它 stage、其它时间戳、其它题目的 workspace。
+- 自己的 `logs/agent_stdout_*.jsonl`、`git log` / `git show` 考古、`symexec --help` 等反推命令。
 
-**写**：当前 `annotated/...c`、当前 workspace 的 `coq/generated/<name>_proof_manual.v`（+ 必要本地 helper）、当前 workspace 的 `logs/*`。其余一律不写——包括 `input/`、`scripts/`、其它 workspace、QCP 源码。
+**允许写**：
+- 当前 `annotated/verify_<timestamp>_<name>.c`。
+- 当前 workspace 的 `coq/generated/<name>_proof_manual.v`（及必要本地 helper）。
+- 当前 workspace 的 `logs/*`。
 
-**不手改** `*_goal.v` / `*_proof_auto.v` / `*_goal_check.v`（只能通过重跑 symexec 刷新）。
+**禁止写**：
+- `input/`、`scripts/`、其它 workspace、QCP 源码。
+- `coq/generated/*_goal.v`、`*_proof_auto.v`、`*_goal_check.v`。这些文件只能通过重跑 symexec 刷新。
 
-**`scripts/` 交互限制**：不读不写 `scripts/`。需要重跑 symexec 时只使用 runner 已给出的封装/命令，不为反推参数去读脚本源码。
-
-**annotated 头文件硬规则**：公共验证头已**复制到 `annotated/` 目录下**，C 文件一律用**裸名直接 include**（不带任何路径）：
+**annotated 头文件规则**：公共验证头已复制到 `annotated/` 目录下，C 文件必须使用裸名 include，不得带路径前缀。
 
 ```c
 #include "verification_stdlib.h"
 #include "verification_list.h"
 #include "int_array_def.h"
+#include "char_array_def.h"
 ```
 
-需要字符数组时同理 `#include "char_array_def.h"`。禁止 `../`、`../../` 或其它路径前缀；发现带路径前缀必须改回裸名再跑 symexec/compile。
+发现 `../`、`../../` 或其它路径前缀时，必须改回裸名再跑 symexec/compile。
 
-## 3. 流程 = QCP `.agents`（用到就必须读，不要一次读完、也不要跳过）
+## 3. 权威资料
 
-主线先读 `QualifiedCProgramming/.agents/skills/verification-orchestrator/SKILL.md` 了解阶段编排，再按阶段去对应 skill。
+主线先读 `QualifiedCProgramming/.agents/skills/verification-orchestrator/SKILL.md` 理解阶段编排，再按阶段读对应资料。每进入一个阶段、动手之前，必须先读该阶段的权威文档；没读文档导致的失败不算已尽力，也不得据此写 `Final Result: Fail`。
 
-**硬规则(read-before-act)**：每进入一个阶段、**动手之前**(补注解 / 重跑 symexec / 写 proof / 编译),**必须先读下表里该阶段对应的权威文档**——不能凭猜先做、不能跳过。没读对应文档就硬试导致的失败(尤其 proof tactic 乱试),不算"已尽力";必须**先补读对应文档再继续**,也不允许据此写 `Final Result: Fail`。
-
-| 阶段 / 触发 | 权威来源（照搬命令与规则） | 取什么 |
+| 阶段 / 触发 | 权威来源 | 取什么 |
 |---|---|---|
-| 补 annotation（`Require`/`Ensure`/`Inv`/`Assert`/`where`） | `.agents/skills/annotation-filling/docs/`（`annotation-rules.md`、`predicate-first-annotation.md`、`builtin-array-string-support.md` 数组/字符串必读、`array-predicate-selection.md` 数组问题）+ `tutorial/`（T2 前后条件、T3 `Inv`/`Assert`、T8 调用与 call-site `where`） | 注解语法与谓词选择 |
-| spec 质量自检 | `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` | spec 是否过弱/镜像算法 |
-| 理解 symexec 生成物 / 刷新规则 | `.agents/skills/annotation-filling/docs/symexec-refresh.md` | symexec 命令语义、刷新后产物判断。CAV 重跑前先保留旧 generated 到 `coq/last`，重跑后参考旧 proof，不自动拼接 proof。 |
-| 找相似题 / witness 结构 / proof pattern | `QCP_examples/` + `SeparationLogic/examples/`（按目录名/语义找完整已解例子） | 复用 proof/annotation pattern |
+| 补 annotation（`Require`/`Ensure`/`Inv`/`Assert`/`where`） | `.agents/skills/annotation-filling/docs/`（`annotation-rules.md`、`predicate-first-annotation.md`、`builtin-array-string-support.md`、`array-predicate-selection.md`）+ `tutorial/` | 注解语法、谓词选择、循环/调用规则 |
+| spec 质量自检 | `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` | spec 是否过弱或镜像算法 |
+| symexec 生成物 / 刷新规则 | `.agents/skills/annotation-filling/docs/symexec-refresh.md` | symexec 命令语义、刷新后产物判断 |
+| 相似题 / witness / proof pattern | `QCP_examples/` + `SeparationLogic/examples/` | 复用 annotation/proof 结构 |
 | 写 proof / 证 VC | `.agents/skills/vc-proving/docs/`（`separation-logic-whole-proof-tactics`、`use-notes`、`reference-cases`、`refinement-*`） | 分离逻辑 tactic、参考案例 |
-| 编译 `goal/proof_auto/proof_manual/goal_check` | `.agents/skills/final-check/docs/coq-compilation.md` | **完整 coqc 命令 + 整套 `-R` load-path**（依赖序：lib → goal → proof_auto → proof_manual → goal_check）。**照抄整条命令**，不要删改 `-R` 项。 |
+| 编译 `goal/proof_auto/proof_manual/goal_check` | `.agents/skills/final-check/docs/coq-compilation.md` | 完整 `coqc` 命令和整套 `-R` load-path |
 
-上表是常用索引、非穷举;**整棵 `.agents/skills/` 都可按需读**,遇到具体情况去对应 skill 的 `docs/` 翻:注解报错→`annotation-filling/docs/common-annotation-errors.md`、资源/内存回收报错→`qcp-resource-reclaim-errors.md`、VC 检查→`vc-checking/docs/`、收尾清 admit/调试残留→`final-check/docs/admitted-review-and-cleanup.md`。
+上表是常用索引，不是穷举。遇到具体问题时按需读 `.agents/skills/` 下对应文档，例如 annotation 报错、资源回收报错、VC 检查、admit 清理等。
 
-**写 annotation/proof 的第一动作 = 找结构最相似的已验证例子(`QCP_examples/` + `SeparationLogic/examples/`,按语义/控制结构找),逐字照抄其 `Inv`/witness/proof 套路**——比读文档更关键,别自己发明证法;tactic 细节再看 `vc-proving/docs/`。同类错误连续失败 2 次→回去重找/重读例子,别盲改 tactic。没先吃透相似例子,不允许因证明/witness/tactic 失败写 `Final Result: Fail`。
+## 4. 工作循环
 
-**编译/symexec 报错**：load-path / 工具链由 infra 保证正确;确属本 workspace 改不了的 infra 问题,记 `logs/issues.md` 交回,不在本 workspace 硬改。
+### 4.1 verify 外层主循环
 
-## 4. CAV override（叠加在 QCP 流程上，必须遵守）
+verify 阶段按以下外层循环推进：
 
-QCP 流程怎么走照 §3，但下面几处用 CAV 的方式：
+`检索相似例子/阅读必要文档 → 修改 Inv / Assert / Inv Assert / which implies / where → 运行 symexec 生成 VC → 进入 proof 阶段主循环`
 
-- **symexec 何时跑 / 重跑后怎么复用旧 proof**（symexec 命令语义、刷新后产物判断——见 §3 的 `symexec-refresh.md`，这里不复述）：
-  - **何时**：初次生成；之后**只在 annotation（`Inv`/`Assert`/`which implies`/`where`/contract）变更后**重跑；只编辑 `proof_manual.v`、annotation 未变时**不要重跑**。
-  - **重跑前保存参考**：每次重跑 symexec 前，必须把当前 `coq/generated/` 快照到当前 workspace 的 `coq/last/`；runner 的 `run_symexec` helper 会自动做这一步。不要使用自动拼接/keep-proofs 机制。
-  - **重跑后复用 proof**：symexec 会重新生成新的 `coq/generated/<name>_proof_manual.v`，通常回到 `Admitted`。这时把 `coq/last/<name>_proof_manual.v` 当只读参考，按新 witness 目标手工迁移可复用的 proof 结构，避免从零重写；如果旧 witness statement 和新 witness statement 完全一致，对应证明可以从 `coq/last` 直接照抄。正式修改只写新的 `coq/generated/<name>_proof_manual.v`。重跑后以最新 witness 编号为准。
-- **annotated 头文件裸名 include**（见 §2）。
-- **每次 coqc 后清中间产物**：删 `coq/` 下非 `.v` 产物；并删本题 input `.v` 编译出的 `input/<dataset>/<name>.{vo,glob,vok,vos}` 和 `.<name>.aux`（只删本题的，parallel 安全）。
-- 生成的 manual VC 证不出来时，先判断是否缺少中间 annotation：只要可以通过加强或修正 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where` 推进，就必须回 annotation 修改、重跑 symexec、再证明新的 VC；不要硬写 proof，也不要直接退出。proof 里**禁止** `Admitted`/`admit`/`Abort`/新增 `Axiom`/改 VC 目标/导入 `derivable1` 绕过。
-- 怀疑 VC 对**合法输入为假**（输入/契约缺陷）→ 记 `logs/issues.md`，停止 verify 交回 Contract/用户，不要在本 workspace 硬改 contract。
+若 symexec 不能生成完整、可进入证明阶段的 VC，或生成的 VC 明确缺少 annotation 中间事实，则回到参考检索/文档阅读与 annotation 修改环节，修正后重新运行 symexec。不得在尚未获得有效 VC 时进入 proof 阶段，也不得在 symexec 失败可由 annotation 修改推进时写 `Final Result: Fail`。
 
-## 5. 退出 / 结果契约（CAV）
+### 4.2 proof 阶段主循环
 
-Verify 是长迭代任务。**不要**因为遇到一个可继续推进的 `symexec`/`coqc`/proof blocker 就结束。只要还在外层超时预算内、blocker 能在本 workspace 通过 annotation/proof edit 继续，就持续“改一处 → 跑对应 gate → 读第一个失败点 → 再改”。
+进入 proof 阶段后，按以下内层循环推进：
 
-只有以下情况才写 `Final Result: Fail` 退出：
+`检索相似例子/阅读必要文档 → 修改 proof_manual.v → 编译 → 阅读第一个失败点`
 
-- contract 或原始 C/V 规格缺失、矛盾，必须回 Contract 阶段或用户决策；
-- 当前 generated VC 已确认不能通过加强/修正 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where` 推进，且问题明确来自 contract 或原始 C/V 规格本身不可证、缺失前提或语义矛盾；
-- 需要改写边界外的文件才能继续；
-- 外部命令/agent run 已接近或触达 runner 超时；
-- 已完成全部可行修复但确定性 gate 仍失败且无法在本 workspace 内推进。
+每轮检索必须服务于当前编译或 witness 失败点，检索后必须回到证明构造与编译验证。若 proof 过程中确认当前 VC 在现有 annotation 下不可证，或编译失败表明 VC 缺少必要中间事实，且该事实可通过加强或修正 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where` 表达，则必须退出 proof 循环，回到外层“写 annotation”阶段，修改 annotation 后重跑 symexec 刷新 VC，再重新进入 proof 阶段主循环。
 
-普通的 `proof_manual_has_obligations`、单 theorem `coqc` 报错、symexec 具体 annotation 报错、tactic 失败、可修的 load-path 错误，**都不是退出理由**，是本轮继续工作的输入。
+仅在确认问题不能通过允许范围内的 annotation/proof 修改推进时，才按 §6 的失败条件处理。
+
+## 5. 规则
+
+### 5.1 必须遵守
+
+- 必须使用固定路径：输入为 `input/<dataset>/<name>.c` 和可选 `.v`，工作副本为 `annotated/verify_<timestamp>_<name>.c`，workspace 为 `output/verify_<timestamp>_<name>/`。
+- 必须先读 QCP `.agents/skills/verification-orchestrator/SKILL.md`，并在进入 annotation、symexec、proof、final compile 等阶段前读取对应权威文档。
+- 必须在 proof 中发现当前 VC 依赖缺失 annotation 中间事实时，退出 proof 循环，回到外层写 annotation 阶段，重跑 symexec 后再进入 proof。
+- 必须只在当前 workspace 写 `annotated/...c`、`coq/generated/<name>_proof_manual.v` 和 `logs/*`。
+- 必须在重跑 symexec 前保留当前 `coq/generated/` 到 `coq/last/`，并在重跑后按新 witness 手工迁移可复用 proof。
+- 必须使用裸名 include 公共验证头；发现带路径 include 必须修正。
+- 必须在每次 `coqc` 后清理 `coq/` `original/` 和本题 `input/<dataset>/<name>.v` 产生的编译中间产物。
+- 必须只在 annotation（`Inv` / `Assert` / `which implies` / `where` / contract）变更后重跑 symexec；只编辑 `proof_manual.v`、annotation 未变时不得重跑。
+- 必须将 `coq/last/<name>_proof_manual.v` 作为重跑后的只读 proof 参考，按新 witness 目标手工迁移可复用结构；旧新 witness statement 完全一致时可直接照抄对应证明。
+- 必须在满足所有成功判据后才写裸行 `Final Result: Success`；失败也必须只在满足失败条件后写裸行 `Final Result: Fail`。
+
+### 5.2 必须禁止
+
+- 禁止重写 contract、原始函数实现或原始 `input/` 文件。
+- 禁止读取或修改 `scripts/`、其它 workspace、QCP 非白名单源码、`git log` / `git show` 考古、自己的 `logs/agent_stdout_*.jsonl`，以及通过 `symexec --help` 等方式反推脚本参数。
+- 禁止手改 `coq/generated/*_goal.v`、`*_proof_auto.v`、`*_goal_check.v`；这些文件只能由 symexec 生成。
+- 禁止在 `proof_manual.v` 中保留或新增 `Admitted` / `admit` / `Abort` / `Axiom`，禁止改 VC 目标或导入 `derivable1` 等绕过方式。
+- 禁止以连续泛搜 demos、库源码或 lemma 代替 annotation/proof 构造；除非当前报错明确指向缺失 lemma，否则不得扩大检索范围。
+- 禁止在尚未获得有效 VC 时进入 proof 阶段。
+- 禁止在 symexec/proof/coqc blocker 仍可通过允许范围内的 annotation/proof 修改推进时写 `Final Result: Fail`。
+- 禁止在只编辑 `proof_manual.v` 且 annotation 未变化时重跑 symexec。
+- 禁止修改边界外文件以修复当前 workspace 的问题；确属 contract、输入规格或 infra 问题时，只记录 issue 并交回。
+- 禁止在本 workspace 硬改 contract、脚本或 QCP 源码处理 contract 缺陷或 infra 问题；此类问题只能记录 `logs/issues.md` 并交回。
+
+## 6. 退出条件
+
+Verify 是长迭代任务。遇到可继续推进的 `symexec` / `coqc` / proof blocker 时，不得结束；应持续“改一处 → 跑对应 gate → 读第一个失败点 → 再改”，直到成功、确认无法推进或外部超时。
+
+**只有以下情况才写 `Final Result: Fail`**：
+
+- contract 或原始 C/V 规格缺失、矛盾，必须回 Contract 阶段或用户决策。
+- 当前 generated VC 已确认不能通过加强/修正 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where` 推进，且问题来自 contract 或原始 C/V 规格本身不可证、缺失前提或语义矛盾。
+- 需要改写边界外文件才能继续。
+- 外部命令/agent run 已接近或触达 runner 超时。
+- 已完成全部可行修复，但确定性 gate 仍失败且无法在本 workspace 内继续推进。
+
+普通的 `proof_manual_has_obligations`、单 theorem `coqc` 报错、symexec annotation 报错、tactic 失败、可修的 load-path 错误，都不是退出理由，而是本轮继续工作的输入。
 
 **全部满足才写 `Final Result: Success`**：
 
-- symexec 基于最新 annotated 文件成功，生成最新 `goal/proof_auto/proof_manual/goal_check`
-- `proof_manual.v` 无 `Admitted`/`admit`/`Abort`/新增 `Axiom`
-- 四个 `.v` 全编译通过
-- 没改原始 contract 或函数实现；annotated C 只新增验证注解；公共验证头裸名 include
-- runner 能用当前 annotated C 重新 symexec，且 `goal/proof_auto/goal_check` 与现产物一致
-- `coq/` 与 `input/` 中间产物已清理
-- `logs/issues.md` 和 `logs/metrics.md` 已更新
+- symexec 基于最新 annotated 文件成功，生成最新 `goal/proof_auto/proof_manual/goal_check`。
+- `proof_manual.v` 无 `Admitted` / `admit` / `Abort` / 新增 `Axiom`。
+- 四个 `.v` 全部编译通过。
+- 未改原始 contract 或函数实现；annotated C 只新增验证注解；公共验证头使用裸名 include。
+- runner 能用当前 annotated C 重新 symexec，且 `goal/proof_auto/goal_check` 与现产物一致。
+- `coq/` 与 `input/` 中间产物已清理。
+- `logs/issues.md` 和 `logs/metrics.md` 已更新。
 
-满足退出条件后，写完 `logs/issues.md`（追加，详细记录踩坑）、`logs/metrics.md`（自判摘要），最后一行写**裸的** `Final Result: Success` 或 `Final Result: Fail`——整行就是这十几个字符，禁止 markdown 加粗、反引号、后缀（如 `(round N)`），否则外部判据误判。失败点仍可继续推进时不要写最终结果，继续迭代。
+满足退出条件后，写完 `logs/issues.md` 和 `logs/metrics.md`，最后一行写裸的 `Final Result: Success` 或 `Final Result: Fail`。整行不得加 markdown、反引号或后缀，否则外部判据会误判。失败点仍可继续推进时，不得写最终结果。
 
-runner 会复核：生成文件存在、`proof_manual.v` 无未解占位、重编 `goal/proof_auto/proof_manual/goal_check`、确定性检查 input C/V 未改、annotated C 的 contract 与 executable implementation 未偏离原始 input、重新 symexec 对比 `goal/proof_auto/goal_check`。runner 复核通过才算成功。
+runner 会复核：生成文件存在、`proof_manual.v` 无未解占位、四个 Coq 文件可重编、input C/V 未改、annotated C 的 contract 与 executable implementation 未偏离原始 input、重新 symexec 后 `goal/proof_auto/goal_check` 一致。runner 复核通过才算成功。
 
-## 6. issues 日志规范（CAV，唯一过程产物）
+## 7. 日志
 
-只维护 `logs/issues.md`（遇到的问题/踩坑），不写其它 reasoning 日志。`issues.md`：
+只维护 `logs/issues.md` 和 `logs/metrics.md`。
 
-- **只追加，不覆盖**
-- 只记**真正遇到的 issue**：现象、定位（文件路径 + theorem/witness/行号）、关键代码或报错片段（C annotation / Coq theorem-subgoal-tactic / `coqc`-`symexec` 报错）、最终怎么解决或为什么卡住。顺利通过的步骤不记流水账。
+`logs/issues.md`：
+- 只追加，不覆盖。
+- 只记录真正遇到的 issue：现象、定位（文件路径 + theorem/witness/行号）、关键代码或报错片段（C annotation / Coq theorem-subgoal-tactic / `coqc` / `symexec` 报错）、最终解决方式或卡住原因。
+- 顺利通过的步骤不记流水账。
+- 写 `Final Result: Fail` 时，必须包含失败 gate 名、退出码或 theorem/witness 名、关键报错、当前 `annotated/...c` 与相关 `coq/generated/*.v` 路径、下一轮需修正的具体点。
 
-写 `Final Result: Fail` 时，`issues.md` 必须含：失败 gate 名（如 symexec、manual proof obligation、`coqc goal_check.v`）、退出码或 theorem/witness 名、关键报错、当前 `annotated/...c` 与相关 `coq/generated/*.v` 路径、下一轮需修正的具体点。
+## 8. Retry 和 Mode
 
-## 7. 条件性 mode（runner 在 prompt 加标记触发，没标记就不读；可叠加）
+### 8.1 带反馈重跑
 
-### 7.1 带反馈重跑（统一 retry，内联）
+由 `Attempt: N (retry...)`（N > 1）、`Restart feedback` 块或 `Audit findings:` 块触发。带反馈重跑不从零重做。
 
-由 `Attempt: N (retry…)`（N>1）/ `Restart feedback` 块 / `Audit findings:` 块 任一触发。**带反馈的接力重跑，不从零重做**：
+- 先读 `logs/continue.md`（如有）、`logs/issues.md`、`logs/agent_stderr_*.log`、当前 `coq/generated/*.v`、当前 `annotated/verify_<timestamp>_<name>.c`，定位上轮 blocker。
+- 改文件前在 `logs/continue.md` 末尾追加新 section，记录上轮卡在哪条 witness/tactic/编译错误、当前定位、本轮改哪些行、为什么能修。
+- 逐条修复反馈。annotation 未变则不重跑 symexec；annotation 变更必须重跑时，先保存旧 `coq/generated/` 到 `coq/last/`，再参考 `coq/last/*_proof_manual.v` 迁移 proof。
+- 定位到新 blocker 不算完成，必须继续按 §4 的循环推进，直到 §6 允许退出。
+- `Audit findings:` 每条 finding 都作为 blocker 处理，并在 `logs/issues.md` 追加记录原文摘要、当前状态、修复动作和结果。禁止残留 `assume` / 新增 `axiom` / `skipesc` / `nowarn` 等绕过。
+- proof 类 blocker 必须按 §4 的错误驱动策略检索并分析最相近例子，随后立即修改 `proof_manual.v` 并重跑 gate；不得以泛搜参考代替 proof 构造。
 
-- **先读再动**：读 `logs/continue.md`（如有）、`logs/issues.md`、`logs/agent_stderr_*.log`（上轮编译错误）、当前 `coq/generated/*.v`、当前 `annotated/verify_<timestamp>_<name>.c`，定位上轮 blocker。
-- **改文件前在 `logs/continue.md` 末尾追加新 section**（禁覆盖/合并旧 section）：上轮卡在哪条 wit / tactic / 编译错误（文件路径 + theorem/witness 名 + 报错片段）、当前精确定位、本轮改哪几行、为什么这样改能修。
-- **逐条修、复用已通过工作**（annotation 未变则 symexec 不重跑；annotation 变更必须重跑时，先把旧 `coq/generated/` 保存在 `coq/last/`，再参考 `coq/last/*_proof_manual.v` 迁移 proof，不整段从零重写）；定位到新 blocker 不算完成，必须立刻修它并重跑对应 gate，直到 §5 允许退出。
-- `Restart feedback`：逐条修机器 gate 失败原因。`Audit findings:`：每条 finding 当 blocker 逐条对照修，在 `logs/issues.md` 追加逐条记录（finding 原文 1–2 行 + 当前状态 + 修复动作 + 结果），**禁止**残留 `assume` / 新增 `axiom` / `skipesc` / `nowarn` 等绕过。
-- proof 类 blocker 改 proof 前必须按 §3 先**找/吃透最相似的已验证例子**(再看 vc-proving 文档),不要盲改 tactic。可继续推进的 retry blocker 不能以 `Final Result: Fail` 收尾。
+### 8.2 proof-only
 
-### 7.2 proof-only 场景
-
-`Mode: proof-only` 标记 → 读 `MODE_PROOF_ONLY.md`（loop-free + symexec 已跑过、仅补 `proof_manual.v` 的子场景）。
+`Mode: proof-only` 标记触发时，读取 `MODE_PROOF_ONLY.md`。该模式适用于 symexec 已跑过、仅补 `proof_manual.v` 的子场景；若 proof 暴露 annotation 缺口，按本文 §4 回到外层 annotation/symexec 循环。
