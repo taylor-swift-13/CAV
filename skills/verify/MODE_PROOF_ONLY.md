@@ -1,25 +1,25 @@
 # Mode: Proof-only
 
-本附录只在 runner 在 prompt 顶部标 `Mode: proof-only` 时生效，是主 `SKILL.md` 的延伸约束，不替代主流程。
+本附录只在 runner / 外层确定性路由已经选择 proof-only 并在 prompt 顶部标 `Mode: proof-only` 时生效。
 
 ## 触发条件
 
-`run_verify.py` 在以下三件事同时成立时进入本模式：
+满足以下确定性路由条件时，runner 才应进入本模式：
 
-- 输入只有 `input/<name>.c`、无 `.v`；
-- 函数是 loop-free（无 `for`/`while`/`do-while`/`switch`/`goto`）；
-- 当前 workspace 的 `coq/generated/<name>_goal.v` 已经由确定性 fast path 跑过 symexec 生成。
+- verify 开始的第一次 symexec 生成正确完整的 VC 产物：`coq/generated/<name>_goal.v`、`proof_auto.v`、`proof_manual.v`、`goal_check.v`；
+- runner 在 prompt 顶部显式标记 `Mode: proof-only`。
 
-进入本模式说明：symexec 已经成功、`proof_auto.v` 也已就位，但 `proof_manual.v` 还存在 `Admitted`，需要 agent 来写。
+进入本模式说明：symexec 已经成功、`proof_auto.v` 也已就位，但 `proof_manual.v` 还存在 `Admitted`，需要 agent 优先写 proof。
 
-## 硬约束（覆盖主 SKILL 的写边界）
+## 写边界
 
-- **不改** `input/`、`raw/`、`annotated/`、`workspace/original/`；
-- **不改** contract、loop invariant、annotation、`.c` 文件；
+- **不改** `input/`、`raw/`、`workspace/original/`；
 - **不改** `coq/generated/*_goal.v`、`*_proof_auto.v`、`*_goal_check.v`；
-- 可写面**只剩**：`coq/generated/<name>_proof_manual.v` 和 `logs/*`。
+- **不改 contract**：函数 `Require` / `Ensure` 中承载题意的规格不能在 verify/proof-only 阶段改弱、改题意或新增输入假设；
+- 允许按主 SKILL 修改当前工作副本中的 verification annotation，包括 `Inv`、`Assert`、`Inv Assert`、`which implies`、`where`，但不能改 executable implementation；
+- 可写面仍按主 SKILL：当前 `annotated/...c`、当前 workspace 的 `coq/generated/<name>_proof_manual.v`（及允许的本地 helper）和 `logs/*`。
 
-如果 generated VC 在当前 contract/annotation 下确实不可证，写阻塞到 `logs/issues.md` 然后以 `Final Result: Fail` 收尾——**不要**改 contract 或 annotation 绕过。那是 Contract 阶段的义务。
+如果 generated VC 在当前 annotation 下缺少中间事实，先回 annotation 修正或加强 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where`，再重跑 symexec 刷新 VC，然后证明新的 `proof_manual.v`。如果必须修改 contract 才能成立，写阻塞到 `logs/issues.md` 并退回 Contract/用户决策，不要在 proof-only 中硬改 contract。
 
 普通的 `proof_manual.v` 还有 `Admitted`、`coqc` 报错、tactic 暂时失败，都不是 proof-only 退出理由。只要能继续编辑 `proof_manual.v` 或添加允许范围内的 local helper，就必须继续证明并重新编译。
 
@@ -28,6 +28,7 @@ proof-only 模式仍必须执行主 SKILL §3 的检索（到 `QualifiedCProgram
 ## 工作流仍按主 SKILL
 
 - try-first / 探索预算等效率约束见 `skills/COMMON.md` §3；
+- 本模式的第一步是使用已经生成的 VC 直接尝试证明；只有证明暴露 annotation 缺口时，才回 annotation 并按主 SKILL §4 的刷新规则重跑 symexec；
 - tactic 起手式与分离逻辑证明套路直接看 `QualifiedCProgramming/.agents/skills/vc-proving/docs/`；
 - attempt > 1 或 prompt 带 `Restart feedback` / `Audit findings:` 时，叠加主 SKILL §7.1（带反馈重跑）继续。
 

@@ -411,6 +411,7 @@ def write_metrics(
     input_c: Path,
     input_v: Path | None,
     annotated_snapshot: Path | None = None,
+    annotated_cleanup: str = "not attempted",
 ) -> None:
     lines = [
         "# Verify Metrics",
@@ -428,6 +429,7 @@ def write_metrics(
         f"- Input C: `{input_c}`",
         f"- Input V: `{input_v if input_v else '<not provided>'}`",
         f"- Annotated C snapshot: `{annotated_snapshot if annotated_snapshot else '<not saved>'}`",
+        f"- Annotated C global cleanup: `{annotated_cleanup}`",
         f"- Prompt file: `{prompt_path}`",
         f"- Agent stdout: `{stdout_jsonl}`",
         f"- Agent stdout timeline: `{stdout_timeline if stdout_timeline else '<not recorded>'}`",
@@ -448,6 +450,19 @@ def save_annotated_snapshot(workspace_path: Path, annotated_c_path: Path) -> Pat
     snapshot.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(annotated_c_path, snapshot)
     return snapshot
+
+
+def cleanup_global_annotated_after_snapshot(annotated_c_path: Path, annotated_snapshot: Path | None) -> str:
+    """Remove the repo-level annotated file after preserving it in the workspace."""
+    if annotated_snapshot is None or not annotated_snapshot.exists():
+        return "skipped: snapshot missing"
+    if not annotated_c_path.exists():
+        return "already absent"
+    try:
+        annotated_c_path.unlink()
+    except OSError as exc:
+        return f"failed: {exc}"
+    return f"deleted {annotated_c_path}"
 
 
 def update_issues_on_failure(issues_path: Path, stage: str, exit_code: int, stderr_log: Path) -> None:
@@ -992,6 +1007,7 @@ def try_trivial_fast_path(
         encoding="utf-8",
     )
     annotated_snapshot = save_annotated_snapshot(workspace_path, annotated_c_path)
+    annotated_cleanup = cleanup_global_annotated_after_snapshot(annotated_c_path, annotated_snapshot)
     write_metrics(
         metrics_path(workspace_path),
         status="Success",
@@ -1012,6 +1028,7 @@ def try_trivial_fast_path(
         input_c=input_path,
         input_v=input_v_path,
         annotated_snapshot=annotated_snapshot,
+        annotated_cleanup=annotated_cleanup,
     )
     emit_log("trivial_fast_path_success")
     return True, 0
@@ -1161,6 +1178,7 @@ def main() -> int:
         ensure_parent(prompt_path)
         prompt_path.write_text(prompt, encoding="utf-8")
         annotated_snapshot = save_annotated_snapshot(workspace_path, annotated_c_path)
+        annotated_cleanup = cleanup_global_annotated_after_snapshot(annotated_c_path, annotated_snapshot)
         write_metrics(
             metrics_path(workspace_path),
             status="Success",
@@ -1181,6 +1199,7 @@ def main() -> int:
             input_c=input_path,
             input_v=input_v_path,
             annotated_snapshot=annotated_snapshot,
+            annotated_cleanup=annotated_cleanup,
         )
         emit_log("dry_run=true")
         print(str(workspace_path))
@@ -1386,12 +1405,15 @@ def main() -> int:
         end_wall = time.time()
         filter_stderr_in_place(stderr_log)
         if agent == "kimicode":
-            agent_metrics.capture_kimicode_context_usage(
-                logs_dir=workspace_path / "logs",
-                started_at=start_wall,
-                ended_at=end_wall,
-                needles=[str(workspace_path), workspace_name],
-            )
+            try:
+                agent_metrics.capture_kimicode_context_usage(
+                    logs_dir=workspace_path / "logs",
+                    started_at=start_wall,
+                    ended_at=end_wall,
+                    needles=[str(workspace_path), workspace_stem],
+                )
+            except Exception as exc:
+                emit_log(f"kimicode_usage_capture_error={exc}")
 
         usage_total = agent_metrics.add_usage(usage_total, agent_metrics.parse_usage(agent, stdout_jsonl))
 
@@ -1455,6 +1477,7 @@ def main() -> int:
 
     overall_end_iso = iso_now()
     annotated_snapshot = save_annotated_snapshot(workspace_path, annotated_c_path)
+    annotated_cleanup = cleanup_global_annotated_after_snapshot(annotated_c_path, annotated_snapshot)
     write_metrics(
         metrics_path(workspace_path),
         status="Success" if proc_returncode == 0 else "Fail",
@@ -1475,6 +1498,7 @@ def main() -> int:
         input_c=input_path,
         input_v=input_v_path,
         annotated_snapshot=annotated_snapshot,
+        annotated_cleanup=annotated_cleanup,
     )
 
     emit_log(f"stdout_jsonl={stdout_jsonl}")

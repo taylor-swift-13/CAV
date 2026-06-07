@@ -160,7 +160,8 @@ def main() -> int:
             contract_ws = OUTPUT_ROOT / f"contract_{ts}_{name}"
             cmd = [sys.executable, str(SCRIPTS / "run_contract.py"), str(target),
                    "--function-name", name, "--timestamp", ts, "--workspace-name", name,
-                   "--timeout-seconds", str(args.contract_timeout), "--dataset", ds, *cf]
+                   "--timeout-seconds", str(args.contract_timeout), "--dataset", ds,
+                   "--keep-mid-output", *cf]
             if restart_file:
                 cmd += ["--restart-context-file", str(restart_file)]
             contract_rc = run_stage(cmd)
@@ -259,9 +260,32 @@ def _finish(workspaces, pipeline_dir, args, name, *, status, generated_input: Pa
     if generated_input is not None:
         summary["generated_input"] = str(generated_input)
         summary["generated_input_dir"] = str(generated_input.parent)
+        summary["generated_input_cleanup"] = cleanup_generated_input(generated_input)
     (pipeline_dir / "pipeline_summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     emit(f"status={status} workspaces={len(workspaces)} summary={pipeline_dir / 'pipeline_summary.json'}")
+
+
+def cleanup_generated_input(input_c: Path) -> str:
+    input_v = input_c.with_suffix(".v")
+    removed: list[str] = []
+    failed: list[str] = []
+    candidates = [input_c, input_v]
+    for base in (input_c, input_v):
+        for suffix in (".vo", ".glob", ".vok", ".vos"):
+            candidates.append(base.with_suffix(suffix))
+        candidates.append(base.parent / f".{base.stem}.aux")
+    for path in candidates:
+        if not path.exists():
+            continue
+        try:
+            path.unlink()
+            removed.append(str(path))
+        except OSError as exc:
+            failed.append(f"{path}: {exc}")
+    if failed:
+        return "failed: " + "; ".join(failed)
+    return "deleted " + ", ".join(removed) if removed else "nothing to delete"
 
 
 if __name__ == "__main__":

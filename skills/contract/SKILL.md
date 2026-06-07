@@ -25,6 +25,7 @@ Contract 把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<na
 - 公共验证头一律**裸名 include**（头文件已复制到该 dataset 目录）：`#include "verification_stdlib.h"`、`"verification_list.h"`、`"int_array_def.h"`，字符数组用 `"char_array_def.h"`；禁 `../` 等路径前缀。
 - 保持原程序语义；必须改接口时只做 verification-friendly 改写。
 - **spec 质量与谓词选择直接照「职责划分」里的 `.agents` 文档**；最终写入 `Require` / `Ensure` 的谓词必须落脚在 `Z` 语义上。
+- **C 字符串必须显式排除内部 NUL**：凡是用 `CharArray::full(p, n + 1, app(l, cons(0, nil)))` 表示 null-terminated 字符串，`Require` 和 `Ensure` 中都必须同时保留长度事实与中间非零事实，例如 `Zlength(l) == n` 和 `(forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0)`；这条适用于输入字符串、保留到后置条件的输入字符串、返回字符串 `out_l`，以及 `strlen` / `strchr` 等 helper stub。不能只写末尾 `cons(0, nil)`，因为它不排除 `l` 内部提前出现 `0`。
 - **RTE/UB 安全（contract 的核心义务）**：前条件必须排除空指针解引用、数组越界、除零、非法移位、有符号整数加减乘 / 取负 / `abs` / 累加 / 循环变元更新等所有可能溢出与 C UB/RTE（用 `Require` / 前条件，`INT_MIN <= ... <= INT_MAX` 风格界）。逐项审计结论写进 `logs/issues.md`，不依赖「运行时自然不会发生」。后条件优先写蕴含，避免顶层析取。
 
 ## 3. 宏观流程（极简 + 错误迭代）
@@ -39,6 +40,7 @@ Contract 把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<na
 `Final Result: Success` 仅当：
 
 - `mid/.c` 前后条件完整、无 verify 阶段注释、root 头裸名 include
+- 所有 `CharArray::full(_, _ + 1, app(_, cons(0, nil)))` 字符串在 `Require` / `Ensure` 都有显式 `Zlength` 与中间 no-zero 约束
 - 通过 QCP well-formedness：`check_spec_wellformed == well_formed`
 - 前条件排除所有 RTE/UB（审计写入 `issues.md`）
 - `.v`（如有）definition-only 且 `coqc` 通过

@@ -186,6 +186,7 @@ def write_metrics(
     dry_run: bool,
     wellformed: str = "not_run",
     wellformed_exit: int | None = None,
+    mid_cleanup: str = "not attempted",
 ) -> None:
     lines = [
         "# Contract Metrics",
@@ -202,6 +203,7 @@ def write_metrics(
         f"- Reasoning effort: `{reasoning_effort or 'n/a'}`",
         f"- Output C: `{target_c}`",
         f"- Output V: `{target_v if target_v.exists() else '<not created>'}`",
+        f"- Mid output cleanup: `{mid_cleanup}`",
         f"- Contract syntax check wellformed gate: `{wellformed}` (symexec exit `{wellformed_exit if wellformed_exit is not None else 'n/a'}`)",
         f"- Prompt file: `{prompt_path}`",
         f"- Agent stdout: `{stdout_jsonl}`",
@@ -464,6 +466,27 @@ def snapshot_generated_inputs(workspace_path: Path, input_c: Path, input_v: Path
         shutil.copy2(input_v, generated_input_dir / input_v.name)
 
 
+def cleanup_mid_outputs(target_c: Path, target_v: Path) -> str:
+    removed: list[str] = []
+    failed: list[str] = []
+    candidates = [target_c, target_v]
+    for base in (target_c, target_v):
+        for suffix in (".vo", ".glob", ".vok", ".vos"):
+            candidates.append(base.with_suffix(suffix))
+        candidates.append(base.parent / f".{base.stem}.aux")
+    for path in candidates:
+        if not path.exists():
+            continue
+        try:
+            path.unlink()
+            removed.append(str(path))
+        except OSError as exc:
+            failed.append(f"{path}: {exc}")
+    if failed:
+        return "failed: " + "; ".join(failed)
+    return "deleted " + ", ".join(removed) if removed else "nothing to delete"
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run an agent to produce contract-stage inputs from raw markdown.")
     parser.add_argument("input_md", help="Path to raw markdown input, relative to repo root or absolute.")
@@ -483,6 +506,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--kimicode-bin", default=None, help="Kimi Code CLI binary.")
     parser.add_argument("--timeout-seconds", type=int, default=300, help="Kill the external agent run if it exceeds this wall-clock timeout.")
     parser.add_argument("--restart-context-file", default=None, help="File whose content (e.g. eval critic findings) is injected into the prompt on a re-run.")
+    parser.add_argument("--keep-mid-output", action="store_true", help=argparse.SUPPRESS)
     return parser
 
 
@@ -583,6 +607,7 @@ def main() -> int:
         )
         ensure_parent(prompt_path)
         prompt_path.write_text(prompt, encoding="utf-8")
+        mid_cleanup = "kept for pipeline" if args.keep_mid_output else cleanup_mid_outputs(target_c_path, target_v_path)
         write_metrics(
             metrics_path(workspace_path),
             status="Success",
@@ -601,6 +626,7 @@ def main() -> int:
             target_v=target_v_path,
             usage=None,
             dry_run=True,
+            mid_cleanup=mid_cleanup,
         )
         emit_log("dry_run=true")
         print(str(workspace_path))
@@ -756,12 +782,15 @@ def main() -> int:
         end_wall = time.time()
         filter_stderr_in_place(stderr_log)
         if agent == "kimicode":
-            agent_metrics.capture_kimicode_context_usage(
-                logs_dir=workspace_path / "logs",
-                started_at=start_wall,
-                ended_at=end_wall,
-                needles=[str(workspace_path), workspace_name],
-            )
+            try:
+                agent_metrics.capture_kimicode_context_usage(
+                    logs_dir=workspace_path / "logs",
+                    started_at=start_wall,
+                    ended_at=end_wall,
+                    needles=[str(workspace_path), workspace_stem],
+                )
+            except Exception as exc:
+                emit_log(f"kimicode_usage_capture_error={exc}")
 
         snapshot_generated_inputs(workspace_path, target_c_path, target_v_path)
         usage_total = agent_metrics.add_usage(usage_total, agent_metrics.parse_usage(agent, stdout_jsonl))
@@ -828,6 +857,7 @@ def main() -> int:
 
     end_iso = iso_now()
 
+    mid_cleanup = "kept for pipeline" if args.keep_mid_output else cleanup_mid_outputs(target_c_path, target_v_path)
     write_metrics(
         metrics_path(workspace_path),
         status=status,
@@ -848,6 +878,7 @@ def main() -> int:
         dry_run=False,
         wellformed=wellformed,
         wellformed_exit=wellformed_exit,
+        mid_cleanup=mid_cleanup,
     )
 
     if proc_returncode != 0:

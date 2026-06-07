@@ -75,7 +75,7 @@ QCP 流程怎么走照 §3，但下面几处用 CAV 的方式：
   - **重跑后复用 proof**：symexec 会重新生成新的 `coq/generated/<name>_proof_manual.v`，通常回到 `Admitted`。这时把 `coq/last/<name>_proof_manual.v` 当只读参考，按新 witness 目标手工迁移可复用的 proof 结构，避免从零重写；如果旧 witness statement 和新 witness statement 完全一致，对应证明可以从 `coq/last` 直接照抄。正式修改只写新的 `coq/generated/<name>_proof_manual.v`。重跑后以最新 witness 编号为准。
 - **annotated 头文件裸名 include**（见 §2）。
 - **每次 coqc 后清中间产物**：删 `coq/` 下非 `.v` 产物；并删本题 input `.v` 编译出的 `input/<dataset>/<name>.{vo,glob,vok,vos}` 和 `.<name>.aux`（只删本题的，parallel 安全）。
-- 生成的 manual VC 语义不可证时**回 annotation**，不要硬写 proof；proof 里**禁止** `Admitted`/`admit`/`Abort`/新增 `Axiom`/改 VC 目标/导入 `derivable1` 绕过。
+- 生成的 manual VC 证不出来时，先判断是否缺少中间 annotation：只要可以通过加强或修正 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where` 推进，就必须回 annotation 修改、重跑 symexec、再证明新的 VC；不要硬写 proof，也不要直接退出。proof 里**禁止** `Admitted`/`admit`/`Abort`/新增 `Axiom`/改 VC 目标/导入 `derivable1` 绕过。
 - 怀疑 VC 对**合法输入为假**（输入/契约缺陷）→ 记 `logs/issues.md`，停止 verify 交回 Contract/用户，不要在本 workspace 硬改 contract。
 
 ## 5. 退出 / 结果契约（CAV）
@@ -85,7 +85,7 @@ Verify 是长迭代任务。**不要**因为遇到一个可继续推进的 `syme
 只有以下情况才写 `Final Result: Fail` 退出：
 
 - contract 或原始 C/V 规格缺失、矛盾，必须回 Contract 阶段或用户决策；
-- 当前 generated VC 在现有 contract/annotation 下确实不可证，且已定位缺失前提或语义矛盾；
+- 当前 generated VC 已确认不能通过加强/修正 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where` 推进，且问题明确来自 contract 或原始 C/V 规格本身不可证、缺失前提或语义矛盾；
 - 需要改写边界外的文件才能继续；
 - 外部命令/agent run 已接近或触达 runner 超时；
 - 已完成全部可行修复但确定性 gate 仍失败且无法在本 workspace 内推进。

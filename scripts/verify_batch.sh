@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-# Parallel batch verify (input -> verify entry) with codex/gpt-5.4.
+# Parallel batch verify (input -> verify entry) with configurable agent/model.
 #
 # Usage:
 #   scripts/verify_batch.sh                                  # all of input/humaneval, jobs=4
 #   scripts/verify_batch.sh --dataset humaneval --jobs 4
 #   scripts/verify_batch.sh --dataset algo --jobs 8 below_zero_3 is_prime_31
-#   scripts/verify_batch.sh --timeout 2400                  # override per-task budget (default 7200s)
+#   scripts/verify_batch.sh --timeout 2400                  # override per-task budget (default 3600s)
+#   scripts/verify_batch.sh --agent claude --model sonnet
 #
 # Each problem runs:
 #   run_verify.py input/<dataset>/<name>.c --function-name <name> --workspace-name <name>
-#       --agent codex --model gpt-5.4 --reasoning-effort medium
+#       --agent <agent> --model <model> --reasoning-effort medium
 set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
@@ -17,13 +18,15 @@ cd "$ROOT"
 DATASET="humaneval"
 JOBS=4
 MODEL="gpt-5.4"
+AGENT="codex"
 EFFORT="medium"
-TIMEOUT=7200
+TIMEOUT=3600
 NAMES=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dataset) DATASET="$2"; shift 2 ;;
     --jobs|-j) JOBS="$2"; shift 2 ;;
+    --agent) AGENT="$2"; shift 2 ;;
     --model) MODEL="$2"; shift 2 ;;
     --reasoning-effort) EFFORT="$2"; shift 2 ;;
     --timeout) TIMEOUT="$2"; shift 2 ;;
@@ -43,7 +46,7 @@ fi
 RUNID="$(date +%Y%m%d_%H%M%S)"
 RUNDIR="output/verify_batch_${RUNID}"
 mkdir -p "$RUNDIR"
-echo "verify batch [$DATASET]  model=$MODEL effort=$EFFORT jobs=$JOBS  count=${#NAMES[@]}  logs=$RUNDIR"
+echo "verify batch [$DATASET]  agent=$AGENT model=$MODEL effort=$EFFORT jobs=$JOBS  count=${#NAMES[@]}  logs=$RUNDIR"
 
 run_one() {
   local name="$1"
@@ -51,14 +54,14 @@ run_one() {
   [[ -f "$c" ]] || { echo "MISS $name (no $c)"; return 0; }
   python3 scripts/run_verify.py "$c" \
     --function-name "$name" --workspace-name "$name" \
-    --agent codex --model "$MODEL" --reasoning-effort "$EFFORT" \
+    --agent "$AGENT" --model "$MODEL" --reasoning-effort "$EFFORT" \
     --timeout-seconds "$TIMEOUT" \
     > "$RUNDIR/$name.log" 2>&1
   local rc=$?
   echo "[rc=$rc] $name"
 }
 export -f run_one
-export DATASET MODEL EFFORT TIMEOUT RUNDIR
+export DATASET AGENT MODEL EFFORT TIMEOUT RUNDIR
 
 printf '%s\n' "${NAMES[@]}" | xargs -P "$JOBS" -I{} bash -c 'run_one "$@"' _ {}
 
