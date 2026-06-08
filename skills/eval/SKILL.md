@@ -3,48 +3,62 @@ name: c-qcp-eval
 description: Evaluate an existing C/QCP implementation by judging whether the contract fully characterizes the target behavior.
 ---
 
-Eval 做整体 judge：contract 是否真正、完整刻画目标程序的输入输出关系（sound + complete）。
+Eval 判断 C/QCP contract 是否真正、完整刻画目标程序行为。
 
-## 职责划分（先读）
+## 0. 职责
 
-- **spec 质量判据的细则完全依照 QCP `.agents/skills/annotation-checking/docs/spec-quality-checklist.md`**（前条件强度/安全、后条件强度、soundness、coverage、completeness 的判定口径）。照那边判，本 skill 不复述。**read-before-act：judge 之前必须先读这份 checklist 再下判定,不能凭印象。**
-- **本 skill 只管 CAV 这边**：输入输出、judge/verdict 产物格式、issues。
-- **唯一文字产物 = `logs/issues.md` + `logs/metrics.md` + `logs/final_result.md`（verdict）**；不写过程 reasoning 日志。
-- eval 是**纯 LLM judge**：不生成测试用例、不写 `cases/`、不把成功条件建立在用例覆盖上。
-- 跨阶段共用读写边界/效率/`Final Result` 格式见 `skills/COMMON.md`。
+- spec 质量判据依照 QCP `.agents/skills/annotation-checking/docs/spec-quality-checklist.md`。judge 前必须先读。
+- Eval 是纯 LLM judge：不生成测试用例，不写 `cases/`，不以测试覆盖作为成功条件。
+- 唯一文字产物：`logs/issues.md`、`logs/metrics.md`、`logs/final_result.md`。
 
-## 1. 输入输出（CAV）
+## 1. 输入输出
 
-- 输入：实现/规格 C + 可选 companion `.v`（只读语义目标）、target function、workspace。
-- 输出：`output/eval_<ts>_<name>/` 下 `original/<name>.c`(+`.v`)、`logs/{issues,metrics,final_result}.md`。
+- 输入：实现/规格 C、可选 companion `.v`、target function、workspace。
+- 输出：`output/eval_<ts>_<name>/` 下：
+  - `original/<name>.c` 和可选 `.v`
+  - `logs/issues.md`
+  - `logs/metrics.md`
+  - `logs/final_result.md`
 
-## 2. LLM Judge（写 `logs/final_result.md`）
+## 2. Judge 项
 
-逐项写 `Pass`/`Fail`/`Inconclusive` + 一句依据（判据口径见职责划分的 spec-quality-checklist）：
+在 `logs/final_result.md` 中逐项写 `Pass` / `Fail` / `Inconclusive` 和一句依据：
 
-- `Precondition strength`（最强错误：`requires false`）
-- `Precondition safety`（前条件排除除零/空指针/越界/UB 溢出/非法移位）
-- `Postcondition strength`（最弱错误：`ensures true`）
-- `Soundness`（正确程序的所有输入输出都满足 spec）
-- `Parameter coverage`（约束所有输入/输出/必要后状态）
-- `Path coverage`（覆盖所有路径/分支）
-- `Completeness`（任意满足 spec 的程序都应是该问题的正确程序）
+- `Precondition strength`
+- `Precondition safety`
+- `Postcondition strength`
+- `Soundness`
+- `Parameter coverage`
+- `Path coverage`
+- `Completeness`
 
-全 `Pass` → `Judge verdict: Pass`；任一失败 → `Judge verdict: Fail`；无法判断 → `Judge verdict: Inconclusive`。
+判定口径：
 
-## 3. Aggregate verdict（写 `logs/final_result.md`，两行都要）
+- `Correct`：sound + complete，所有 judge 项为 `Pass`。
+- `Buggy`：过强、过弱、unsound、incomplete，或漏关键输入/路径/后状态约束。
+- `Inconclusive`：证据不足。
+
+## 3. Verdict 格式
+
+退出和成功的 judge 口径以 QCP `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` 为准；CAV 只规定 verdict 文件和 `Final Result` 映射。
+
+`logs/final_result.md` 必须包含这两行：
 
 ```text
 Spec verdict: Correct|Buggy|Inconclusive
 Judge verdict: Pass|Fail|Inconclusive
 ```
 
-- `Correct` = sound + complete
-- `Buggy` = 过强 / 过弱 / unsound / incomplete / 漏关键输入·路径·后状态约束
-- `Inconclusive` = 证据不足以判定
+`Final Result: Success` 仅当：
 
-## 4. 宏观流程 + 完成判据
+- `Spec verdict: Correct`
+- `Judge verdict: Pass`
+- `logs/issues.md` 和 `logs/metrics.md` 已更新
 
-读实现/contract → 按 §2 逐项 judge → 写 `final_result.md` 两行 verdict + `issues.md` / `metrics.md`。
+其余情况一律 `Final Result: Fail`。
 
-`Final Result: Success` 仅当 `Spec verdict: Correct` 且 `Judge verdict: Pass`；`Buggy` / `Inconclusive` / `Judge verdict: Fail` / `Judge verdict: Inconclusive` 一律 `Final Result: Fail`。
+## 4. 日志
+
+`logs/issues.md` 退出前必须存在。若 verdict 不是 `Correct/Pass`，必须记录具体失败项、对应 contract 位置和原因；若没有 issue，写 `No issues encountered.`。
+
+`logs/metrics.md` 记录最终 verdict、耗时、输入/输出路径、agent/model。

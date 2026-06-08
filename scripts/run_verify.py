@@ -21,6 +21,13 @@ import check_qcp_cheating
 REPO_ROOT = Path(__file__).resolve().parents[1]
 import coq_runner
 
+QCP_ROOT = REPO_ROOT / "QualifiedCProgramming"
+QCP_SL_DIR = QCP_ROOT / "SeparationLogic"
+QCP_CAV_INPUT_ROOT = QCP_ROOT / "QCP_examples" / "CAV"
+QCP_CAV_EXAMPLES_ROOT = QCP_SL_DIR / "examples" / "CAV"
+QCP_CAV_ORIGINAL_ROOT = QCP_SL_DIR / "_cav_original"
+QCP_CAV_LOCK_ROOT = QCP_SL_DIR / "_cav_locks"
+
 DEFAULT_SKILL = REPO_ROOT / "skills" / "verify" / "SKILL.md"
 OUTPUT_ROOT = REPO_ROOT / "output"
 DEFAULT_MODEL = "gpt-5.4"
@@ -258,15 +265,17 @@ def build_prompt(
         "",
         "Persistence requirement: do not finish this agent run merely because a repairable gate failed. If symexec/coqc/proof/manual-obligation feedback points to a concrete annotation or proof edit inside this workspace, keep editing and rerunning the relevant gate until success, a genuinely unrepairable contract/input blocker is found, or the external timeout stops you. A single new blocker is work to continue, not a reason to write Final Result: Fail.",
         "",
-        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit skills/, scripts/, QualifiedCProgramming/, or unrelated inputs.",
+        "Compile boundary: follow QCP's official .agents final-check instructions for symexec/coqc/coqtop. The CAV path adaptation is only that the current case is staged in the current workspace's QCP mirror under QualifiedCProgramming, and output/ remains the workspace/artifact directory. Do not invent a separate output/coq/generated compile method, do not parallelize a dependency-ordered QCP final-check sequence, and never copy .vo/.glob/.aux files back to output. The runner repeats the same QCP final-check audit and collects only final .v artifacts at the end.",
+        "",
+        "Repository write boundary: edit only this verify workspace, the active annotated C file, generated proof_manual.v for this target, and the current workspace's QCP mirror directories for compilation. Do not edit skills/, scripts/, QCP source files, unrelated QCP examples, or unrelated inputs.",
+        "",
+        "Read boundary: do not read any other output workspace or any other QCP mirror workspace under QualifiedCProgramming/QCP_examples/CAV, QualifiedCProgramming/SeparationLogic/examples/CAV, or QualifiedCProgramming/SeparationLogic/_cav_original. Only the current workspace and the current workspace's mirror are in scope.",
         "",
         "Symexec rerun rule: before any symexec rerun, the previous coq/generated files must be preserved under coq/last for reference. The runner's run_symexec helper does this automatically. After symexec regenerates proof_manual.v, consult coq/last/*_proof_manual.v and reuse the prior proof structure manually; if an old witness statement and the new witness statement are exactly identical, copy that proof verbatim from coq/last. Do not expect proofs to be spliced automatically and do not rewrite from scratch when coq/last has useful proof text.",
         "",
         "Inputs:",
         _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
     ]
-    if attempt > 1:
-        lines += ["", f"Attempt: {attempt} (retry — also follow MODE_RETRY.md per SKILL.md §4.5c)."]
     if restart_context:
         lines += ["", "Restart feedback:", restart_context.rstrip()]
     return "\n".join(lines) + "\n"
@@ -285,9 +294,13 @@ def build_proof_only_prompt(
     lines = [
         f"Follow this skill as the complete workflow: {skill_path}",
         "",
-        "Persistence requirement: proof-only mode must keep proving while proof_manual.v can still be edited. Do not exit just because proof_manual_has_obligations remains, one theorem fails under coqc, or a tactic needs adjustment; continue the edit/compile loop until proof_manual.v has no placeholders and goal_check.v compiles, or until you identify a genuinely unprovable VC under the current contract.",
+        "Persistence requirement: proof-only mode must keep proving while proof_manual.v can still be edited. Do not exit just because proof_manual_has_obligations remains, one theorem fails under QCP-mirror coqc, or a tactic needs adjustment; continue the edit/QCP-compile loop until proof_manual.v has no placeholders and QCP-mirror goal_check.v compiles, or until you identify a genuinely unprovable VC under the current contract.",
         "",
-        "Repository write boundary: edit only this verify workspace, the active annotated C file, and generated proof_manual.v for this target. Do not edit skills/, scripts/, QualifiedCProgramming/, or unrelated inputs.",
+        "Compile boundary: follow QCP's official .agents final-check instructions for symexec/coqc/coqtop. The CAV path adaptation is only that the current case is staged in the current workspace's QCP mirror under QualifiedCProgramming, and output/ remains the workspace/artifact directory. Do not invent a separate output/coq/generated compile method, do not parallelize a dependency-ordered QCP final-check sequence, and never copy .vo/.glob/.aux files back to output. The runner repeats the same QCP final-check audit and collects only final .v artifacts at the end.",
+        "",
+        "Repository write boundary: edit only this verify workspace, the active annotated C file, generated proof_manual.v for this target, and the current workspace's QCP mirror directories for compilation. Do not edit skills/, scripts/, QCP source files, unrelated QCP examples, or unrelated inputs.",
+        "",
+        "Read boundary: do not read any other output workspace or any other QCP mirror workspace under QualifiedCProgramming/QCP_examples/CAV, QualifiedCProgramming/SeparationLogic/examples/CAV, or QualifiedCProgramming/SeparationLogic/_cav_original. Only the current workspace and the current workspace's mirror are in scope.",
         "",
         "Do not rerun symexec in proof-only mode. If a prior generated snapshot exists under coq/last, it is read-only reference material for proof structure.",
         "",
@@ -296,8 +309,6 @@ def build_proof_only_prompt(
         "Inputs:",
         _input_lines(input_path, input_v_path, function_name, workspace_path, annotated_c_path).rstrip(),
     ]
-    if attempt > 1:
-        lines += ["", f"Attempt: {attempt} (retry — also follow MODE_RETRY.md per SKILL.md §4.5c)."]
     if restart_context:
         lines += ["", "Restart feedback (must be addressed before finishing this verify run):", restart_context.rstrip()]
     return "\n".join(lines) + "\n"
@@ -480,34 +491,6 @@ def update_issues_on_failure(issues_path: Path, stage: str, exit_code: int, stde
     issues_path.write_text(existing + block, encoding="utf-8")
 
 
-def append_continue(logs_dir: Path, kind: str, text: str) -> Path:
-    logs_dir.mkdir(parents=True, exist_ok=True)
-    path = logs_dir / "continue.md"
-    header = "# Continue Log\n\n" if not path.exists() else ""
-    stamp = iso_now()
-    section = f"## {kind} @ {stamp}\n\n{text.rstrip()}\n\n"
-    with path.open("a", encoding="utf-8") as f:
-        if header:
-            f.write(header)
-        f.write(section)
-    return path
-
-
-def verify_retry_feedback(attempt: int, detail: str, workspace_path: Path, function_name: str) -> str:
-    generated_dir = workspace_path / "coq" / "generated"
-    return "\n".join([
-        f"Verify attempt {attempt} failed the runner audit check.",
-        "",
-        f"- Detail: `{detail}`",
-        f"- Generated dir: `{generated_dir}`",
-        f"- Proof manual: `{generated_dir / f'{function_name}_proof_manual.v'}`",
-        f"- Previous generated snapshot for reference: `{workspace_path / 'coq' / 'last'}`",
-        f"- Goal check: `{generated_dir / f'{function_name}_goal_check.v'}`",
-        "",
-        "Required next action: continue inside this same workspace until the concrete blocker is fixed. Do not stop at the next single coqc/symexec/proof error if it is repairable; fix it, rerun the relevant gate, and repeat until proof_manual has no admitted/axiom/abort placeholder, all generated Coq files compile, and annotated C preserves the original contract and executable implementation. If symexec regenerated proof_manual.v, use coq/last/*_proof_manual.v as the reference for prior proof structure; if an old witness statement and the new witness statement are exactly identical, copy that proof verbatim from coq/last. Do not rewrite from scratch when a previous proof shape is available. Only write Final Result: Fail for a genuinely unrepairable contract/input/write-boundary blocker or when the external timeout prevents further meaningful work.",
-    ])
-
-
 def verify_workspace_completed(workspace_path: Path) -> tuple[bool, str]:
     metrics_md = metrics_path(workspace_path)
     if not metrics_md.exists():
@@ -533,17 +516,38 @@ def verify_workspace_completed(workspace_path: Path) -> tuple[bool, str]:
     return False, "metrics_missing_final_result"
 
 
-def verify_proof_artifact_check(workspace_path: Path, function_name: str, input_v_path: Path | None) -> tuple[bool, str]:
+def verify_workspace_final_result(workspace_path: Path) -> str:
+    """Return the agent-declared final result state from metrics.md."""
+    _, detail = verify_workspace_completed(workspace_path)
+    return detail
+
+
+def verify_proof_artifact_check(
+    workspace_path: Path,
+    function_name: str,
+    input_v_path: Path | None,
+    annotated_c_path: Path,
+    input_path: Path,
+) -> tuple[bool, str]:
     generated_dir = workspace_path / "coq" / "generated"
-    required = [generated_dir / f"{function_name}_{suffix}.v" for suffix in ("goal", "proof_auto", "proof_manual", "goal_check")]
-    missing = [str(path) for path in required if not path.exists()]
+    manual_path = generated_dir / f"{function_name}_proof_manual.v"
+    if not manual_path.exists():
+        missing = [str(manual_path)]
+    else:
+        missing = []
     if missing:
         return False, "missing_generated_files:" + ",".join(missing)
 
     if proof_manual_has_obligations(generated_dir, function_name):
-        return False, f"proof_manual_has_obligations:{generated_dir / f'{function_name}_proof_manual.v'}"
+        return False, f"proof_manual_has_obligations:{manual_path}"
 
-    ok, compile_logs = compile_generated(workspace_path, function_name, input_v_path)
+    ok, compile_logs = compile_generated_via_qcp_mirror(
+        workspace_path,
+        function_name,
+        input_path,
+        input_v_path,
+        annotated_c_path,
+    )
     log_path = workspace_path / "logs" / "audit_check_coqc.log"
     log_path.write_text("\n\n".join(compile_logs) + "\n", encoding="utf-8")
     if not ok:
@@ -609,97 +613,6 @@ def source_integrity_gate(
     return True, f"source_integrity_success:{log_path}"
 
 
-def symexec_freshness_gate(
-    *,
-    workspace_path: Path,
-    annotated_c_path: Path,
-    function_name: str,
-    timeout_seconds: int = 120,
-) -> tuple[bool, str]:
-    """Regenerate deterministic symexec artifacts from current annotated C and compare."""
-    logs_dir = workspace_path / "logs"
-    log_path = logs_dir / "symexec_freshness_gate.json"
-    annotated_abs = annotated_c_path.resolve()
-    annotated_hash = file_sha256(annotated_abs) if annotated_abs.exists() else ""
-    current_dir = workspace_path / "coq" / "generated"
-    fresh_root = logs_dir / "fresh_symexec"
-    fresh_dir = fresh_root / "generated"
-    if fresh_root.exists():
-        shutil.rmtree(fresh_root)
-    fresh_dir.mkdir(parents=True, exist_ok=True)
-
-    logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
-    cmd = [
-        str(REPO_ROOT / "QualifiedCProgramming" / "linux-binary" / "symexec"),
-        f"--goal-file={(fresh_dir / f'{function_name}_goal.v').resolve()}",
-        f"--proof-auto-file={(fresh_dir / f'{function_name}_proof_auto.v').resolve()}",
-        f"--proof-manual-file={(fresh_dir / f'{function_name}_proof_manual.v').resolve()}",
-        f"--coq-logic-path={logic_path}",
-        # Strategy lib path = canonical QCP_demos_LLM strategies, qualified to
-        # SimpleC.EE.QCP_demos_LLM so generated goal.v emits prefixed requires
-        # (`From SimpleC.EE.QCP_demos_LLM Require Import int_array_strategy_goal`),
-        # which resolve uniquely even with duplicate demo dirs on the load-path.
-        # humaneval cases reuse the generic, pre-built int/char-array strategies.
-        "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "QCP_demos_LLM") + "/", "SimpleC.EE.QCP_demos_LLM",
-        f"--input-file={annotated_abs}",
-        "--no-exec-info",
-    ]
-    try:
-        proc = subprocess.run(
-            cmd,
-            cwd=REPO_ROOT / "QualifiedCProgramming",
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout_seconds,
-        )
-        rc, out, err = proc.returncode, proc.stdout, proc.stderr
-    except subprocess.TimeoutExpired:
-        rc, out, err = 124, "", f"symexec freshness check timed out after {timeout_seconds}s"
-    except OSError as exc:
-        rc, out, err = 127, "", f"symexec not runnable: {exc}"
-
-    compared: list[dict[str, str | bool]] = []
-    details: list[str] = []
-    if rc != 0:
-        details.append(f"fresh symexec failed with exit {rc}")
-    else:
-        for suffix in ("goal", "proof_auto", "goal_check"):
-            current = current_dir / f"{function_name}_{suffix}.v"
-            fresh = fresh_dir / f"{function_name}_{suffix}.v"
-            if not current.exists() or not fresh.exists():
-                details.append(f"missing {suffix} artifact for freshness comparison")
-                compared.append({"suffix": suffix, "match": False, "current": str(current), "fresh": str(fresh)})
-                continue
-            current_hash = file_sha256(current)
-            fresh_hash = file_sha256(fresh)
-            match = current_hash == fresh_hash
-            compared.append({
-                "suffix": suffix,
-                "match": match,
-                "current": str(current),
-                "fresh": str(fresh),
-                "current_sha256": current_hash,
-                "fresh_sha256": fresh_hash,
-            })
-            if not match:
-                details.append(f"{suffix} artifact does not match fresh symexec output for current annotated C")
-
-    doc = {
-        "annotated_c": str(annotated_abs),
-        "annotated_sha256": annotated_hash,
-        "symexec_exit": rc,
-        "stdout": out,
-        "stderr": err,
-        "compared": compared,
-        "ok": not details,
-    }
-    log_path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    if details:
-        return False, f"symexec_freshness_failed:{log_path}"
-    return True, f"symexec_freshness_success:{log_path}"
-
-
 def verify_audit_check(
     *,
     workspace_path: Path,
@@ -709,18 +622,13 @@ def verify_audit_check(
     annotated_c_path: Path,
 ) -> tuple[bool, str]:
     checks = [
-        verify_proof_artifact_check(workspace_path, function_name, input_v_path),
         source_integrity_gate(
             workspace_path=workspace_path,
             input_path=input_path,
             input_v_path=input_v_path,
             annotated_c_path=annotated_c_path,
         ),
-        symexec_freshness_gate(
-            workspace_path=workspace_path,
-            annotated_c_path=annotated_c_path,
-            function_name=function_name,
-        ),
+        verify_proof_artifact_check(workspace_path, function_name, input_v_path, annotated_c_path, input_path),
     ]
     failures = [detail for ok, detail in checks if not ok]
     if failures:
@@ -756,15 +664,25 @@ def snapshot_generated_for_reference(workspace_path: Path, function_name: str) -
     return last_dir
 
 
-def run_symexec(workspace_path: Path, annotated_c_path: Path, function_name: str, timeout_seconds: int = 120) -> tuple[int, str, str]:
+def run_symexec(
+    workspace_path: Path,
+    annotated_c_path: Path,
+    function_name: str,
+    timeout_seconds: int = 120,
+    *,
+    preserve_manual: bool = False,
+) -> tuple[int, str, str]:
     generated_dir = workspace_path / "coq" / "generated"
     generated_dir.mkdir(parents=True, exist_ok=True)
     _phase_log(workspace_path, "symexec_init_start")
     last_dir = snapshot_generated_for_reference(workspace_path, function_name)
     if last_dir is not None:
         _phase_log(workspace_path, "symexec_previous_generated_snapshot", str(last_dir))
-    for old in generated_dir.glob(f"{function_name}_*.v"):
-        old.unlink()
+    suffixes_to_refresh = ("goal", "proof_auto", "goal_check") if preserve_manual else ("goal", "proof_auto", "proof_manual", "goal_check")
+    for suffix in suffixes_to_refresh:
+        old = generated_dir / f"{function_name}_{suffix}.v"
+        if old.exists():
+            old.unlink()
     logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
     cmd = [
         str(REPO_ROOT / "QualifiedCProgramming" / "linux-binary" / "symexec"),
@@ -815,120 +733,206 @@ def proof_manual_has_obligations(generated_dir: Path, function_name: str) -> boo
     return proof_file_has_obligations(generated_dir / f"{function_name}_proof_manual.v")
 
 
-STRATEGY_IMPORT_RE = re.compile(r"^\s*Require\s+Import\s+([A-Za-z0-9_]+_strategy_(?:goal|proof))\s*\.", re.M)
-QCP_STRATEGY_SOURCE = coq_runner.QCP_SL_DIR / "examples" / "QCP_demos_LLM"
+BARE_REQUIRE_IMPORT_RE = re.compile(r"^\s*Require\s+Import\s+([A-Za-z0-9_]+)\s*\.", re.M)
+FROM_BARE_REQUIRE_IMPORT_RE = re.compile(r"^\s*From\s+([A-Za-z0-9_]+)\s+Require\s+Import\s+([A-Za-z0-9_ ]+)\s*\.", re.M)
 
 
-def clean_generated_non_v_entries(generated_dir: Path) -> list[str]:
-    removed: list[str] = []
-    if not generated_dir.exists():
-        return removed
-    for path in generated_dir.iterdir():
-        if path.is_file() and path.suffix == ".v" and not path.is_symlink():
-            continue
-        try:
-            if path.is_symlink() or path.is_file():
-                target = path.resolve(strict=False)
-                path.unlink()
-                removed.append(f"{path} -> {target}")
-            elif path.is_dir():
-                shutil.rmtree(path)
-                removed.append(str(path))
-        except OSError:
-            pass
-    return removed
+def _copy_tree_v_files(source_dir: Path, target_dir: Path) -> list[str]:
+    target_dir.mkdir(parents=True, exist_ok=True)
+    copied: list[str] = []
+    for source in sorted(source_dir.glob("*.v")):
+        target = target_dir / source.name
+        shutil.copy2(source, target)
+        copied.append(f"staged original v dep: {target} <- {source}")
+    return copied
 
 
-def rewrite_strategy_source(text: str) -> str:
-    return re.sub(
-        r"From\s+SimpleC\.EE\.QCP_demos_LLM\s+Require\s+Import\s+([A-Za-z0-9_]+)\.",
-        r"Require Import \1.",
-        text,
+def _copy_header_deps(source_dir: Path, target_dir: Path) -> list[str]:
+    target_dir.mkdir(parents=True, exist_ok=True)
+    copied: list[str] = []
+    for header in ("verification_stdlib.h", "verification_list.h", "int_array_def.h", "long_array_def.h", "char_array_def.h"):
+        source = REPO_ROOT / header
+        if source.exists():
+            shutil.copy2(source, target_dir / header)
+            copied.append(f"staged root header: {target_dir / header} <- {source}")
+    for source in sorted(source_dir.glob("*.h")):
+        target = target_dir / source.name
+        shutil.copy2(source, target)
+        copied.append(f"staged input header: {target} <- {source}")
+    return copied
+
+
+def local_coq_dependency_order(root_v: Path, staged_dir: Path) -> list[Path]:
+    """Return local staged Coq files needed for root_v, deps before users."""
+    order: list[Path] = []
+    visiting: set[str] = set()
+    done: set[str] = set()
+
+    def visit(module: str) -> None:
+        if module in done or module in visiting:
+            return
+        path = staged_dir / f"{module}.v"
+        if not path.exists():
+            return
+        visiting.add(module)
+        text = path.read_text(encoding="utf-8", errors="replace")
+        for dep in BARE_REQUIRE_IMPORT_RE.findall(text):
+            if (staged_dir / f"{dep}.v").exists():
+                visit(dep)
+        for prefix, imports in FROM_BARE_REQUIRE_IMPORT_RE.findall(text):
+            if prefix == "Coq":
+                continue
+            for dep in imports.split():
+                candidate = f"{prefix}_{dep}"
+                if (staged_dir / f"{candidate}.v").exists():
+                    visit(candidate)
+        visiting.remove(module)
+        done.add(module)
+        order.append(path)
+
+    visit(root_v.stem)
+    return order
+
+
+def canonicalize_manual_goal_import(manual_path: Path, function_name: str, logic_path: str) -> None:
+    text = manual_path.read_text(encoding="utf-8", errors="replace")
+    pattern = re.compile(
+        rf"^\s*From\s+SimpleC\.EE(?:\.[A-Za-z0-9_]+)*\s+Require\s+Import\s+{re.escape(function_name)}_goal\s*\.",
+        re.M,
     )
+    replacement = f"From {logic_path} Require Import {function_name}_goal."
+    new_text, count = pattern.subn(replacement, text)
+    if count == 0:
+        bare_pattern = re.compile(rf"^\s*Require\s+Import\s+{re.escape(function_name)}_goal\s*\.", re.M)
+        new_text = bare_pattern.sub(replacement, text)
+    if new_text != text:
+        manual_path.write_text(new_text, encoding="utf-8")
 
 
-def prepare_strategy_deps(generated_dir: Path) -> tuple[Path | None, list[str]]:
-    """Stage unqualified strategy imports for deterministic audit replay.
-
-    Generated QCP files import strategy modules as bare names such as
-    ``int_array_strategy_goal``. The shared ``examples/`` tree can contain
-    multiple same-named strategy libraries under different demos, so replay uses
-    workspace-local deps with imports rewritten to the same bare-name namespace.
-    """
-    needed: set[str] = set()
-    for v_file in generated_dir.glob("*.v"):
+def acquire_qcp_mirror_lock(workspace_name: str, timeout_seconds: int) -> Path:
+    QCP_CAV_LOCK_ROOT.mkdir(parents=True, exist_ok=True)
+    lock_dir = QCP_CAV_LOCK_ROOT / workspace_name
+    deadline = time.time() + max(1, timeout_seconds)
+    while True:
         try:
-            text = v_file.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            continue
-        needed.update(STRATEGY_IMPORT_RE.findall(text))
-    if not needed:
-        return None, []
-
-    deps_dir = generated_dir.parent / "deps"
-    deps_dir.mkdir(parents=True, exist_ok=True)
-    logs: list[str] = []
-    for module in sorted(needed):
-        source = QCP_STRATEGY_SOURCE / f"{module}.v"
-        target = deps_dir / f"{module}.v"
-        if not source.exists():
-            logs.append(f"missing strategy source: {source}")
-            continue
-        rewritten = rewrite_strategy_source(source.read_text(encoding="utf-8", errors="replace"))
-        if not target.exists() or target.read_text(encoding="utf-8", errors="replace") != rewritten:
-            target.write_text(rewritten, encoding="utf-8")
-            logs.append(f"staged strategy dep: {target}")
-    return deps_dir, logs
+            lock_dir.mkdir()
+            (lock_dir / "pid").write_text(str(os.getpid()) + "\n", encoding="utf-8")
+            return lock_dir
+        except FileExistsError:
+            if time.time() >= deadline:
+                raise TimeoutError(f"timed out waiting for QCP mirror lock: {lock_dir}")
+            time.sleep(0.2)
 
 
-def compile_strategy_deps(deps_dir: Path, timeout_seconds: int) -> tuple[bool, list[str]]:
-    logs: list[str] = []
-    for path in sorted(deps_dir.glob("*_strategy_goal.v")) + sorted(deps_dir.glob("*_strategy_proof.v")):
-        rc, out, err = coq_runner.run_coqc(path, extra_q=[(str(deps_dir), "")], timeout_seconds=timeout_seconds)
-        logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
-        if rc != 0:
-            return False, logs
-    return True, logs
+def compile_generated_via_qcp_mirror(
+    workspace_path: Path,
+    function_name: str,
+    input_path: Path,
+    input_v_path: Path | None,
+    annotated_c_path: Path,
+    timeout_seconds: int = 120,
+) -> tuple[bool, list[str]]:
+    """Run the official Coq chain from a QCP examples mirror.
 
-
-def compile_generated(workspace_path: Path, function_name: str, input_v_path: Path | None, timeout_seconds: int = 120) -> tuple[bool, list[str]]:
+    The generated Coq files are placed under
+    ``SeparationLogic/examples/CAV/<workspace>`` and compiled with QCP's normal
+    ``-R examples SimpleC.EE`` load-path. Original problem specs and sibling
+    HumanEval support files are staged under a separate bare namespace via
+    ``-Q _cav_original/<workspace> ""`` because many input specs use bare
+    imports such as ``Require Import string_bridge``.
+    """
+    workspace_name = workspace_path.name
+    qcp_input_dir = QCP_CAV_INPUT_ROOT / workspace_name
+    qcp_examples_dir = QCP_CAV_EXAMPLES_ROOT / workspace_name
+    qcp_original_dir = QCP_CAV_ORIGINAL_ROOT / workspace_name
     generated_dir = workspace_path / "coq" / "generated"
-    original_dir = workspace_path / "original"
-    logic_path = f"SimpleC.EE.CAV.{workspace_path.name}"
-    removed_generated_junk = clean_generated_non_v_entries(generated_dir)
-    deps_dir, dep_logs = prepare_strategy_deps(generated_dir)
-    extra_q = []
-    if deps_dir is not None:
-        extra_q.append((str(deps_dir), ""))
-    extra_q.append((str(original_dir), ""))
-    extra_r = [(str(generated_dir), logic_path)]
+    manual_path = generated_dir / f"{function_name}_proof_manual.v"
     logs: list[str] = []
-    logs.extend(f"removed generated non-v entry: {entry}" for entry in removed_generated_junk)
-    logs.extend(dep_logs)
+    lock_dir: Path | None = None
 
     try:
-        if deps_dir is not None:
-            ok, dep_compile_logs = compile_strategy_deps(deps_dir, timeout_seconds)
-            logs.extend(dep_compile_logs)
-            if not ok:
-                return False, logs
+        try:
+            lock_dir = acquire_qcp_mirror_lock(workspace_name, timeout_seconds)
+            logs.append(f"acquired QCP mirror lock: {lock_dir}")
+        except TimeoutError as exc:
+            logs.append(str(exc))
+            return False, logs
 
-        for original_v in sorted(original_dir.glob("*.v")):
-            rc, out, err = coq_runner.run_coqc(original_v, extra_q=extra_q, timeout_seconds=timeout_seconds)
-            logs.append(f"$ coqc {original_v}\nrc={rc}\n{out}{err}")
-            if rc != 0:
-                return False, logs
+        for directory in (qcp_input_dir, qcp_examples_dir, qcp_original_dir):
+            if directory.exists():
+                shutil.rmtree(directory)
+            directory.mkdir(parents=True, exist_ok=True)
 
-        for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"):
-            path = generated_dir / f"{function_name}_{suffix}.v"
-            rc, out, err = coq_runner.run_coqc(path, extra_q=extra_q, extra_r=extra_r, timeout_seconds=timeout_seconds)
+        qcp_annotated = qcp_input_dir / annotated_c_path.name
+        shutil.copy2(annotated_c_path, qcp_annotated)
+        logs.append(f"staged annotated C: {qcp_annotated} <- {annotated_c_path}")
+        logs.extend(_copy_header_deps(input_path.parent, qcp_input_dir))
+        if input_v_path is not None:
+            logs.extend(_copy_tree_v_files(input_v_path.parent, qcp_original_dir))
+        logic_path = f"SimpleC.EE.CAV.{workspace_name}"
+        qcp_manual_path = qcp_examples_dir / manual_path.name
+        shutil.copy2(manual_path, qcp_manual_path)
+        canonicalize_manual_goal_import(qcp_manual_path, function_name, logic_path)
+        logs.append(f"staged proof_manual: {qcp_manual_path} <- {manual_path}")
+
+        sym_cmd = [
+            str(QCP_ROOT / "linux-binary" / "symexec"),
+            f"--goal-file=SeparationLogic/examples/CAV/{workspace_name}/{function_name}_goal.v",
+            f"--proof-auto-file=SeparationLogic/examples/CAV/{workspace_name}/{function_name}_proof_auto.v",
+            f"--proof-manual-file=SeparationLogic/examples/CAV/{workspace_name}/{function_name}_proof_manual.v",
+            f"--coq-logic-path={logic_path}",
+            "-slp", "QCP_examples/QCP_demos_LLM/", "SimpleC.EE.QCP_demos_LLM",
+            f"--input-file=QCP_examples/CAV/{workspace_name}/{qcp_annotated.name}",
+            "--no-exec-info",
+        ]
+        try:
+            proc = subprocess.run(
+                sym_cmd,
+                cwd=QCP_ROOT,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout_seconds,
+            )
+            logs.append("$ " + " ".join(sym_cmd) + f"\nrc={proc.returncode}\n{proc.stdout}{proc.stderr}")
+        except subprocess.TimeoutExpired:
+            logs.append("$ " + " ".join(sym_cmd) + f"\nrc=124\nsymexec timed out after {timeout_seconds}s")
+            return False, logs
+        except OSError as exc:
+            logs.append("$ " + " ".join(sym_cmd) + f"\nrc=127\nsymexec not runnable: {exc}")
+            return False, logs
+        if proc.returncode != 0:
+            return False, logs
+
+        extra_q = [(str(qcp_original_dir), "")]
+        coq_files: list[Path] = []
+        if input_v_path is not None:
+            coq_files.extend(local_coq_dependency_order(qcp_original_dir / input_v_path.name, qcp_original_dir))
+        coq_files.extend(qcp_examples_dir / f"{function_name}_{suffix}.v" for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"))
+        for path in coq_files:
+            rc, out, err = coq_runner.run_coqc(path, extra_q=extra_q, timeout_seconds=timeout_seconds)
             logs.append(f"$ coqc {path}\nrc={rc}\n{out}{err}")
             if rc != 0:
                 return False, logs
+
+        generated_dir.mkdir(parents=True, exist_ok=True)
+        for suffix in ("goal", "proof_auto", "proof_manual", "goal_check"):
+            source = qcp_examples_dir / f"{function_name}_{suffix}.v"
+            target = generated_dir / source.name
+            shutil.copy2(source, target)
+            logs.append(f"collected final QCP artifact: {target} <- {source}")
         return True, logs
     finally:
-        coq_runner.clean_compile_artifacts(original_dir, recursive=False)
-        coq_runner.clean_compile_artifacts(generated_dir, recursive=False)
+        coq_runner.clean_compile_artifacts(qcp_examples_dir, recursive=False)
+        coq_runner.clean_compile_artifacts(qcp_original_dir, recursive=False)
+        if qcp_input_dir.exists():
+            shutil.rmtree(qcp_input_dir)
+        if qcp_examples_dir.exists():
+            shutil.rmtree(qcp_examples_dir)
+        if qcp_original_dir.exists():
+            shutil.rmtree(qcp_original_dir)
+        if lock_dir is not None and lock_dir.exists():
+            shutil.rmtree(lock_dir)
 
 
 def try_trivial_fast_path(
@@ -1093,7 +1097,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--codex-bin", default=None, help="Codex CLI binary.")
     parser.add_argument("--claude-bin", default=None, help="Claude CLI binary.")
     parser.add_argument("--kimicode-bin", default=None, help="Kimi Code CLI binary.")
-    parser.add_argument("--timeout-seconds", type=int, default=3600, help="Kill the external agent run if it exceeds this wall-clock timeout.")
+    parser.add_argument("--timeout-seconds", type=int, default=5400, help="Kill the external agent run if it exceeds this wall-clock timeout.")
     parser.add_argument("--restart-context-file", default=None, help="File whose content (e.g. audit check feedback) is injected into the round-1 prompt on a re-run.")
     return parser
 
@@ -1221,6 +1225,7 @@ def main() -> int:
     if fast_completed:
         print(str(workspace_path))
         return fast_rc
+
     proof_only_mode = (
         input_v_path is None
         and is_loop_free_candidate(input_path)[0]
@@ -1240,10 +1245,8 @@ def main() -> int:
         rc_path = Path(args.restart_context_file)
         if rc_path.exists():
             verify_restart_context = rc_path.read_text(encoding="utf-8", errors="replace")
-    if verify_restart_context:
-        append_continue(logs_dir, "overturn", verify_restart_context)
 
-    while True:
+    while attempt < 1:
         attempt += 1
         elapsed_before = time.time() - overall_start_wall
         remaining_budget = total_budget_seconds - elapsed_before
@@ -1258,10 +1261,6 @@ def main() -> int:
         stdout_timeline = logs_dir / f"agent_stdout_{run_label}.jsonl.timeline.tsv"
         stderr_log = logs_dir / f"agent_stderr_{run_label}.log"
         last_message_path = logs_dir / f"agent_last_message_{run_label}.txt"
-        retry_context = verify_restart_context
-        continue_path = logs_dir / "continue.md"
-        if continue_path.exists():
-            retry_context = continue_path.read_text(encoding="utf-8", errors="replace")
         if proof_only_mode:
             prompt = build_proof_only_prompt(
                 skill_path,
@@ -1271,7 +1270,7 @@ def main() -> int:
                 workspace_path,
                 annotated_c_path,
                 attempt,
-                retry_context,
+                verify_restart_context,
             )
         else:
             prompt = build_prompt(
@@ -1282,7 +1281,7 @@ def main() -> int:
                 workspace_path,
                 annotated_c_path,
                 attempt,
-                retry_context,
+                verify_restart_context,
             )
         ensure_parent(prompt_path)
         prompt_path.write_text(prompt, encoding="utf-8")
@@ -1439,9 +1438,16 @@ def main() -> int:
             input_v_path=input_v_path,
             annotated_c_path=annotated_c_path,
         )
+        final_result_detail = verify_workspace_final_result(workspace_path)
         if completed:
             emit_log(f"verify_completed={detail}")
             proc_returncode = 0
+            break
+
+        if final_result_detail == "metrics_contains_final_result_fail":
+            emit_log(f"verify_agent_declared_fail detail={detail}")
+            if proc_returncode == 0:
+                proc_returncode = 1
             break
 
         elapsed_total = time.time() - overall_start_wall
@@ -1451,14 +1457,18 @@ def main() -> int:
                 proc_returncode = 124
             break
 
-        emit_log(
-            f"verify_incomplete_retrying attempt={attempt} detail={detail} remaining_seconds={max(0, int(total_budget_seconds - elapsed_total))}"
-        )
-        append_continue(
-            logs_dir,
-            f"retry-after-attempt-{attempt}",
-            verify_retry_feedback(attempt, detail, workspace_path, function_name),
-        )
+        if final_result_detail != "metrics_contains_final_result_success":
+            emit_log(
+                f"verify_incomplete attempt={attempt} final_result={final_result_detail} detail={detail}"
+            )
+            if proc_returncode == 0:
+                proc_returncode = 1
+            break
+
+        emit_log(f"verify_success_claim_rejected attempt={attempt} detail={detail}")
+        if proc_returncode == 0:
+            proc_returncode = 1
+        break
 
     # Drop coqc intermediates (.vo/.glob/.aux).
     # from workspace dirs, keeping .v/.c sources. Never touches the shared QCP tree.

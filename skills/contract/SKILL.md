@@ -1,59 +1,74 @@
 ---
 name: contract
-description: Contract skill，把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<name>.c` / `.v`(raw→pipeline 的产物;`input/` 是只读 curated 数据,contract 不写)。
+description: Contract skill，把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<name>.c` / `.v`。
 ---
 
-Contract 把原始题意 + C 实现整理成 verify 友好的 `mid/<dataset>/<name>.c`(+ 可选 `.v`)。
+Contract 把原始题意 + C 实现整理成 verify 友好的入口/出口 contract，不写 verify 阶段 annotation。
 
-## 职责划分（先读）
+## 0. 职责
 
-- **写 spec 的 how-to（注解语法、谓词选择、spec 质量）完全依照 QCP `.agents/skills/`**：`annotation-filling/docs/`（`annotation-rules.md`、`predicate-first-annotation.md`、`builtin-array-string-support.md`、`array-predicate-selection.md`）、`annotation-checking/docs/spec-quality-checklist.md`。照那边写，本 skill 不复述。**read-before-act：用到这些规则时必须先读对应文档再动手,不能凭猜。**
-- **本 skill 只管 CAV 工程约束**：输入输出路径、读写边界、contract 专有硬规则、well-formed/编译 gate、宏观错误迭代、issues。
-- **唯一文字产物 = `logs/issues.md`（含 RTE/UB 审计结论、每条 gate 失败 / critic finding 的对照修复）+ `logs/metrics.md`**；不写过程 reasoning 日志。
-- 跨阶段共用读写边界/效率/`Final Result` 格式见 `skills/COMMON.md`。
+- spec 写法、谓词选择、spec 质量判定依照 QCP `.agents/skills/annotation-filling/docs/` 和 `.agents/skills/annotation-checking/docs/spec-quality-checklist.md`。用到前必须先读。
+- 本 skill 只规定 CAV 工程约束、产物、gate、退出和日志。
+- 唯一文字产物是 `logs/issues.md` 和 `logs/metrics.md`。
 
-## 1. 输入输出（CAV）
+## 1. 路径和边界
 
 - 输入：原始 C 实现 + 题意 / 约束 / 边界 / 示例。
-- 输出：`mid/<dataset>/<name>.c`（目标函数 + 完整 contract，**不含**任何 verify 阶段注释）；仅在确需额外 Coq 定义时写 `mid/<dataset>/<name>.v`。
-- `input/` 是只读 curated 数据，contract **不写**。
+- 输出：`mid/<dataset>/<name>.c`；仅在确需额外 Coq 定义时写 `mid/<dataset>/<name>.v`。
+- `input/` 只读，contract 阶段不写。
+- Contract 不创建、不写 verify QCP mirror：
+  - `QualifiedCProgramming/QCP_examples/CAV/`
+  - `QualifiedCProgramming/SeparationLogic/examples/CAV/`
+  - `QualifiedCProgramming/SeparationLogic/_cav_original/`
 
-## 2. CAV 硬规则
+公共验证头必须裸名 include 且保持原名：
 
-- `mid/.c` 只含目标函数 + 完整 contract；**不要**提前写 `Inv` / `Assert` / `which implies` / bridge / loop-exit（那是 verify 阶段）。
-- `mid/.v` 只放题目专用 Coq 定义，definition-only（无 `Axiom`/`Hypothesis`/`Parameter`/`Conjecture`/`Variable`/`Admitted`/`admit`/`Abort`），且能被 `coqc` 编译。
-- 公共验证头一律**裸名 include**（头文件已复制到该 dataset 目录）：`#include "verification_stdlib.h"`、`"verification_list.h"`、`"int_array_def.h"`，字符数组用 `"char_array_def.h"`；禁 `../` 等路径前缀。
-- 保持原程序语义；必须改接口时只做 verification-friendly 改写。
-- **spec 质量与谓词选择直接照「职责划分」里的 `.agents` 文档**；最终写入 `Require` / `Ensure` 的谓词必须落脚在 `Z` 语义上。
-- **C 字符串必须显式排除内部 NUL**：凡是用 `CharArray::full(p, n + 1, app(l, cons(0, nil)))` 表示 null-terminated 字符串，`Require` 和 `Ensure` 中都必须同时保留长度事实与中间非零事实，例如 `Zlength(l) == n` 和 `(forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0)`；这条适用于输入字符串、保留到后置条件的输入字符串、返回字符串 `out_l`，以及 `strlen` / `strchr` 等 helper stub。不能只写末尾 `cons(0, nil)`，因为它不排除 `l` 内部提前出现 `0`。
-- **RTE/UB 安全（contract 的核心义务）**：前条件必须排除空指针解引用、数组越界、除零、非法移位、有符号整数加减乘 / 取负 / `abs` / 累加 / 循环变元更新等所有可能溢出与 C UB/RTE（用 `Require` / 前条件，`INT_MIN <= ... <= INT_MAX` 风格界）。逐项审计结论写进 `logs/issues.md`，不依赖「运行时自然不会发生」。后条件优先写蕴含，避免顶层析取。
+```c
+#include "verification_stdlib.h"
+#include "verification_list.h"
+#include "int_array_def.h"
+#include "char_array_def.h"
+```
 
-## 3. 宏观流程（极简 + 错误迭代）
+禁止 `../` 等路径前缀，禁止改成 `p008_verification_stdlib.h`、`p008_int_array_def.h` 等题目私有名。
 
-1. 读题意和代码；按需读「职责划分」的 `.agents` 文档与 `QualifiedCProgramming/SeparationLogic/examples/`，不预读。
-2. 生成 `mid/<dataset>/<name>.c`（+ 必要的 `.v`）。
-3. 跑 gate（`check_spec_wellformed` / 可选 `coqc .v`）；失败就读**第一个**报错 → 改 → 重跑，**循环到通过或确认不可修**。
-4. gate 全过 → 写 metrics + `Final Result: Success`；确属不可修（题意矛盾、需越界改动）→ `issues.md` 记录 + `Final Result: Fail`。
+## 2. Contract 规则
 
-## 4. 完成判据（CAV gate）
+- `mid/.c` 只含目标函数 + 完整 `Require` / `Ensure`；不得提前写 `Inv` / `Assert` / `which implies` / proof bridge。
+- 不得修改原程序语义；verification-friendly 改写必须保持题意等价并写入 `logs/issues.md`。
+- `Require` / `Ensure` 只表达函数入口/出口语义，不塞循环不变式、中间断言或未来 witness 事实。
+- `mid/.v` 只放题目专用定义，必须 definition-only：无 `Axiom` / `Hypothesis` / `Parameter` / `Conjecture` / `Variable` / `Admitted` / `admit` / `Abort`。
+- `mid/.v` 必须自包含或只依赖同一 `mid/<dataset>/` 下可由 runner gate 编译的共享 `.v`，不得依赖 verify workspace、`output/` 或 QCP mirror。
+- C 字符串用 `CharArray::full(p, n + 1, app(l, cons(0, nil)))` 时，`Require` / `Ensure` 必须同时保留 `Zlength(l) == n` 和中间非零约束：
+  `(forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0)`。
+- 前条件必须排除所有 RTE/UB：空指针、数组越界、除零、非法移位、有符号整数溢出、`abs`/取负/累加/循环变元更新溢出等。审计结论写入 `logs/issues.md`。
 
-`Final Result: Success` 仅当：
+## 3. 工作循环
 
-- `mid/.c` 前后条件完整、无 verify 阶段注释、root 头裸名 include
-- 所有 `CharArray::full(_, _ + 1, app(_, cons(0, nil)))` 字符串在 `Require` / `Ensure` 都有显式 `Zlength` 与中间 no-zero 约束
-- 通过 QCP well-formedness：`check_spec_wellformed == well_formed`
-- 前条件排除所有 RTE/UB（审计写入 `issues.md`）
-- `.v`（如有）definition-only 且 `coqc` 通过
-- `issues.md` / `metrics.md` 写完
+1. 读题意和代码，按需读 QCP `.agents` 文档和参考例子。
+2. 生成 `mid/<dataset>/<name>.c` 和必要的 `.v`。
+3. 跑 runner gate：`check_spec_wellformed` / `.v` definition-only / `coqc mid/.v`。
+4. gate 失败则读第一个报错，修改，重跑；不得通过改脚本、QCP 源码或 verify mirror 绕过。
 
-任一 gate 失败且不能在本阶段修复 → `Final Result: Fail`，并在 `logs/issues.md` 记：失败 gate 名（verify-stage annotation scan / input V definition-only scan / `check_spec_wellformed` / `coqc mid/.v`）、退出码、关键报错、本轮 `mid/.c`/`.v` 路径、下一轮修正点。runner 会用同组 contract syntax check 复核后才放行 eval/verify。
+## 4. 退出条件
 
-## 5. 带反馈重跑（统一 retry 机制）
+退出和成功的 spec 判定以 QCP `.agents/skills/annotation-filling/` 与 `.agents/skills/annotation-checking/` 为准；CAV 只增加下面的产物、RTE/UB 和 runner gate 要求。
 
-由 `Critic findings:` 块（被 eval critic 拒）或 `Restart feedback` 块（被 runner syntax check 拒）任一触发。**这是带反馈的接力重跑，不是从零重做**：
+全部满足才写 `Final Result: Success`：
 
-- **先读再动**：读上一轮的 `logs/issues.md`、`logs/continue.md`（如有）、上一轮生成的 `mid/<dataset>/<name>.{c,v}`，定位到底哪条 finding / gate 失败。
-- **continue.md 追加 section**（改文件之前）：在 `logs/continue.md` 末尾追加一段（**只追加不覆盖**）——上轮被拒的 finding / gate 原文、当前精确定位、本轮准备改哪几行、为什么这样改能修。
-- **逐条修，保留已通过工作**：把每条 finding / gate 失败原因当 blocker 逐条修；只改与之相关处，**不扩散**到无关改动；保留上一轮已通过的 contract 部分。
-- 在 `logs/issues.md` 追加逐条对照（finding/失败原文 1–2 行 + 当前状态 + 修复动作 + 结果）。
-- 修完重新输出 `mid/<dataset>/<name>.{c,v}`，重跑对应 gate（§3/§4），直到通过或确认不可修。可继续推进的反馈 blocker 不能以 `Final Result: Fail` 收尾。
+- QCP annotation/spec-quality 检查口径判定 contract 合格。
+- `mid/.c` 有完整入口/出口 contract，且无 verify 阶段 annotation。
+- 公共头裸名 include 且保持原名。
+- 字符串 contract 保留长度和中间 no-zero 约束。
+- 前条件排除 RTE/UB，审计写入 `logs/issues.md`。
+- `check_spec_wellformed == well_formed`。
+- `.v` 如存在，definition-only 且 runner `coqc` gate 通过。
+- `logs/issues.md` 和 `logs/metrics.md` 已更新。
+
+只有按 QCP annotation/spec-quality 检查口径确认题意、原始实现或所需 contract 本身矛盾，必须用户/上游决策时，才写 `Final Result: Fail`。可通过修改 `mid/.c` / `.v` 修复的 gate 失败必须继续推进。
+
+## 5. 日志
+
+`logs/issues.md` 退出前必须存在。若没有真正 issue，写 `No issues encountered.`；否则记录 RTE/UB 审计、gate 失败、修复动作和结果。
+
+`logs/metrics.md` 记录最终结果、耗时、输入/输出路径、agent/model 和 gate 结果。
