@@ -24,9 +24,27 @@ Note:
     Operand is a vector of of non-negative integers.
     Operator vector has at least one operator, && operand vector has at least two operands.
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `he_external_pow`
+
+Coq model: define the mathematical power needed by the task. For integer exponents use repeated multiplication; for exponent `0.5`, use the square-root relation.
+
+Contract shape:
+
+```c
+double he_external_pow(double x, double y)
+/*@ Require emp
+    Ensure he_pow_spec(x, y, __return)
+*/;
+```
+
 ## Reference Implementation
 
 ```c
+double he_external_pow(double x, double y);
 static int is_in(const char* op, const char* a, const char* b) {
     return strcmp(op, a) == 0 || strcmp(op, b) == 0;
 }
@@ -67,7 +85,7 @@ int p160_do_algebra(const char** operato, int operato_size, const int* operand, 
             if (match) {
                 int left = new_nums[new_nums_n - 1];
                 int right = nums[i + 1];
-                if (strcmp(ops[i], "**") == 0) new_nums[new_nums_n - 1] = (int)pow(left, right);
+                if (strcmp(ops[i], "**") == 0) new_nums[new_nums_n - 1] = (int)he_external_pow(left, right);
                 else if (strcmp(ops[i], "*") == 0) new_nums[new_nums_n - 1] = left * right;
                 else if (strcmp(ops[i], "//") == 0) new_nums[new_nums_n - 1] = left / right;
                 else if (strcmp(ops[i], "+") == 0) new_nums[new_nums_n - 1] = left + right;

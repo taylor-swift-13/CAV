@@ -23,6 +23,38 @@ Note:
     1. 1 <= n <= 10^3
     2. returned vector has the number of even && odd integer palindromes respectively.
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `malloc_int_array_struct`
+
+Allocates a fresh `IntArray` header object.
+
+Contract shape:
+
+```c
+IntArray *malloc_int_array_struct()
+/*@ Require emp
+    Ensure __return != 0 &&
+           undef_data_at(&(__return -> data)) *
+           undef_data_at(&(__return -> size))
+*/;
+```
+
+### `malloc_int_array`
+
+Allocates a fresh writable integer array with unspecified contents.
+
+Contract shape:
+
+```c
+int *malloc_int_array(int size)
+/*@ Require size >= 0 && size < INT_MAX
+    Ensure __return != 0 && IntArray::undef_full(__return, size)
+*/;
+```
+
 ## Reference Implementation
 
 ```c

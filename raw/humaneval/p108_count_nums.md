@@ -10,6 +10,28 @@ e.g. -123 has signed digits -1, 2, && 3.
 >>> p108_count_nums({-1, 11, -11}) == 1
 >>> p108_count_nums({1, 1, 2}) == 3
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `abs`
+
+Coq model:
+
+```coq
+Definition he_abs_spec (x r : Z) : Prop :=
+  r = Z.abs x.
+```
+
+Contract shape:
+
+```c
+int abs(int x)
+/*@ Require INT_MIN < x && x <= INT_MAX
+    Ensure he_abs_spec(x, __return)
+*/;
+```
+
 ## Reference Implementation
 
 ```c

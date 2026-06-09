@@ -11,6 +11,27 @@ p090_next_smallest({5, 1, 4, 3, 2}) == 2
 p090_next_smallest({}) == None
 p090_next_smallest({1, 1}) == None
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `sort_int_array`
+
+Coq model: define a relation stating that the output list is sorted in the requested direction and is a permutation of the input list.
+
+Contract shape:
+
+```c
+void sort_int_array(int *array, int init_size, int size, int ascending)
+/*@ With l
+    Require 0 <= size && size <= init_size && Zlength(l) == init_size &&
+            IntArray::full(array, init_size, l)
+    Ensure exists out_l,
+           sort_int_array_spec(l, size, ascending, out_l) &&
+           IntArray::full(array, init_size, out_l)
+*/;
+```
+
 ## Reference Implementation
 
 ```c

@@ -10,6 +10,45 @@ p125_split_words("Hello world!") ➞ {"Hello", "world!"}
 p125_split_words("Hello,world!") ➞ {"Hello", "world!"}
 p125_split_words("abcdef") == {"3"}
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `strlen`
+
+Coq model: represent strings as a list `l : list Z` of nonzero byte values followed by a zero terminator in memory.
+
+Contract shape:
+
+```c
+int strlen(char *s)
+/*@ With l n
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Ensure __return == n &&
+           CharArray::full(s, n + 1, app(l, cons(0, nil)))
+*/;
+```
+
+### `strchr`
+
+Coq model: define a relation over the input character list, searched byte `c`, and result pointer. The result is `0` iff `c` does not occur before the terminator; otherwise it points to an occurrence of `c` inside the owned string.
+
+Contract shape:
+
+```c
+char *strchr(char *s, int c)
+/*@ With l n
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Ensure CharArray::full(s, n + 1, app(l, cons(0, nil))) &&
+           strchr_spec(s, l, c, __return)
+*/;
+```
+
 ## Reference Implementation
 
 ```c

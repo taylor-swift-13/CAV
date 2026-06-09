@@ -2,11 +2,41 @@
 
 ## Problem (HumanEval 32)
 
+## Stub Function Specifications
 
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `he_external_pow`
+
+Coq model: define the mathematical power needed by the task. For integer exponents use repeated multiplication; for exponent `0.5`, use the square-root relation.
+
+Contract shape:
+
+```c
+double he_external_pow(double x, double y)
+/*@ Require emp
+    Ensure he_pow_spec(x, y, __return)
+*/;
+```
+
+### `he_external_fabs`
+
+Coq model: define nonnegative absolute value over the chosen real-number model.
+
+Contract shape:
+
+```c
+double he_external_fabs(double x)
+/*@ Require emp
+    Ensure he_fabs_spec(x, __return)
+*/;
+```
 
 ## Reference Implementation
 
 ```c
+double he_external_pow(double x, double y);
+double he_external_fabs(double x);
 double poly(double* xs, int xs_size, double x){
     /*
     Evaluates polynomial with coefficients xs at point x. return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n
@@ -15,7 +45,7 @@ double poly(double* xs, int xs_size, double x){
     int i;
     for (i=0;i<xs_size;i++)
     {
-        sum+=xs[i]*pow(x,i);
+        sum+=xs[i]*he_external_pow(x,i);
     }
     return sum;
 }
@@ -32,12 +62,12 @@ double p032_find_zero(double* xs, int xs_size){
     double ans=0;
     double value;
     value=poly(xs,xs_size,ans);
-    while (fabs(value)>1e-6)
+    while (he_external_fabs(value)>1e-6)
     {
         double driv=0;
         for (int i=1;i<xs_size;i++)
         {
-            driv+=xs[i]*pow(ans,i-1)*i;
+            driv+=xs[i]*he_external_pow(ans,i-1)*i;
         }
         ans=ans-value/driv;
         value=poly(xs,xs_size,ans);

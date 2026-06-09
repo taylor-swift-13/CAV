@@ -7,6 +7,28 @@ If 'text" is an empty string, return None.
 
 >>> p162_string_to_md5("Hello world") == "3e25960a79dbc69b674cd4ec67a72c62"
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `strlen`
+
+Coq model: represent strings as a list `l : list Z` of nonzero byte values followed by a zero terminator in memory.
+
+Contract shape:
+
+```c
+int strlen(char *s)
+/*@ With l n
+    Require 0 <= n && n < INT_MAX &&
+            Zlength(l) == n &&
+            (forall (k: Z), (0 <= k && k < n) => Znth(k, l, 0) != 0) &&
+            CharArray::full(s, n + 1, app(l, cons(0, nil)))
+    Ensure __return == n &&
+           CharArray::full(s, n + 1, app(l, cons(0, nil)))
+*/;
+```
+
 ## Reference Implementation
 
 ```c

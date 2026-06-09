@@ -13,6 +13,23 @@ Examples:
 p079_decimal_to_binary(15)   // returns "db1111db"
 p079_decimal_to_binary(32)   // returns "db100000db"
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `malloc_char_array`
+
+Allocates a fresh writable character array with unspecified contents.
+
+Contract shape:
+
+```c
+char *malloc_char_array(int n)
+/*@ Require n > 0 && n < INT_MAX
+    Ensure __return != 0 && CharArray::undef_full(__return, n)
+*/;
+```
+
 ## Reference Implementation
 
 ```c

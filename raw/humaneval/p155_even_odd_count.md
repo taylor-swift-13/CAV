@@ -8,6 +8,56 @@ Given an integer. return a vector that has the number of even && odd digits resp
     p155_even_odd_count(-12) ==> {1, 1}
     p155_even_odd_count(123) ==> {1, 2}
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `malloc_int_array_struct`
+
+Allocates a fresh `IntArray` header object.
+
+Contract shape:
+
+```c
+IntArray *malloc_int_array_struct()
+/*@ Require emp
+    Ensure __return != 0 &&
+           undef_data_at(&(__return -> data)) *
+           undef_data_at(&(__return -> size))
+*/;
+```
+
+### `malloc_int_array`
+
+Allocates a fresh writable integer array with unspecified contents.
+
+Contract shape:
+
+```c
+int *malloc_int_array(int size)
+/*@ Require size >= 0 && size < INT_MAX
+    Ensure __return != 0 && IntArray::undef_full(__return, size)
+*/;
+```
+
+### `abs`
+
+Coq model:
+
+```coq
+Definition he_abs_spec (x r : Z) : Prop :=
+  r = Z.abs x.
+```
+
+Contract shape:
+
+```c
+int abs(int x)
+/*@ Require INT_MIN < x && x <= INT_MAX
+    Ensure he_abs_spec(x, __return)
+*/;
+```
+
 ## Reference Implementation
 
 ```c

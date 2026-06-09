@@ -1,0 +1,323 @@
+# MBPP Import Report
+
+- Imported: 102
+- Skipped: 298
+
+## Skipped Reason Counts
+
+- `unsupported parameter type`: 181
+- `unsupported return type`: 53
+- `unsupported call`: 34
+- `unsupported expression`: 14
+- `C syntax check failed`: 3
+- `unsupported statement`: 2
+- `unsupported len argument`: 2
+- `max arity`: 2
+- `round arity`: 1
+- `unsupported callee`: 1
+- `keyword call arguments`: 1
+- `unsupported comparison operator`: 1
+- `min arity`: 1
+- `unsupported assignment target`: 1
+- `len of non-array value`: 1
+
+## Skipped Problems
+
+- `mbpp_100_next_smallest_palindrome`: unsupported call: str
+- `mbpp_101_kth_element`: unsupported statement: Expr
+- `mbpp_102_snake_to_camel`: unsupported parameter type: str
+- `mbpp_104_sort_sublists`: unsupported parameter type: List[List[str]]
+- `mbpp_105_count`: unsupported parameter type: List[bool]
+- `mbpp_106_add_lists`: unsupported parameter type: Tuple[int, int]
+- `mbpp_108_merge_sorted_list`: unsupported return type: List[int]
+- `mbpp_109_odd_Equivalent`: unsupported parameter type: str
+- `mbpp_113_check_integer`: unsupported parameter type: str
+- `mbpp_115_empty_dit`: unsupported parameter type: Any
+- `mbpp_116_tuple_to_int`: unsupported parameter type: Tuple[int, int, int]
+- `mbpp_117_list_to_float`: unsupported parameter type: List[Tuple[str, str]]
+- `mbpp_118_string_to_list`: unsupported parameter type: str
+- `mbpp_11_remove_Occ`: unsupported parameter type: str
+- `mbpp_120_max_product_tuple`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_123_amicable_numbers_sum`: unsupported call: isinstance
+- `mbpp_125_find_length`: unsupported parameter type: str
+- `mbpp_128_long_words`: unsupported parameter type: str
+- `mbpp_129_magic_square_test`: unsupported parameter type: List[List[int]]
+- `mbpp_12_sort_matrix`: unsupported parameter type: List[List[int]]
+- `mbpp_130_max_occurrences`: unsupported call: defaultdict
+- `mbpp_131_reverse_vowels`: unsupported parameter type: str
+- `mbpp_132_tup_string`: unsupported parameter type: List[str]
+- `mbpp_133_sum_negativenum`: unsupported call: list
+- `mbpp_141_pancake_sort`: unsupported return type: List[int]
+- `mbpp_142_count_samepair`: unsupported call: sum
+- `mbpp_143_find_lists`: unsupported parameter type: List[Any]
+- `mbpp_160_find_solution`: unsupported return type: Optional[Tuple[int, int]]
+- `mbpp_161_remove_elements`: unsupported return type: List[int]
+- `mbpp_165_count_char_position`: unsupported parameter type: str
+- `mbpp_16_text_lowercase_underscore`: unsupported parameter type: str
+- `mbpp_172_count_occurance`: unsupported parameter type: str
+- `mbpp_18_remove_dirty_chars`: unsupported parameter type: str
+- `mbpp_19_test_duplicate`: unsupported call: set
+- `mbpp_222_check_type`: unsupported parameter type: Tuple[Any, ...]
+- `mbpp_223_is_majority`: C syntax check failed: /tmp/tmpit1v158g/mbpp_check.c: In function ‘mbpp_223_is_majority’: /tmp/tmpit1v158g/mbpp_check.c:2:13: warning: implicit declaration of function ‘binary_search’ [-Wimplicit-function-declaration]     2 |     int i = binary_search(arr, 0, (n - 1), x);       |             ^~~~~~~~~~~~~ /tmp/tmpit1v158g/mbpp_check.c: In function ‘binary_search’: /tmp/tmpit1v158g/mbpp_check.c:16:37: error: subscripted value is neither array nor pointer nor vector
+- `mbpp_226_odd_values_string`: unsupported parameter type: str
+- `mbpp_227_min_of_three`: C syntax check failed: /tmp/tmp8eh0dq4e/mbpp_check.c: In function ‘mbpp_227_min_of_three’: /tmp/tmp8eh0dq4e/mbpp_check.c:3:13: warning: unused variable ‘smallest’ [-Wunused-variable]     3 |         int smallest = a;       |             ^~~~~~~~ /tmp/tmp8eh0dq4e/mbpp_check.c:6:13: error: ‘smallest’ undeclared (first use in this function)     6 |             smallest = b;
+- `mbpp_229_re_arrange_array`: unsupported return type: List[int]
+- `mbpp_230_replace_blank`: unsupported parameter type: str
+- `mbpp_237_check_occurences`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_238_number_of_substrings`: unsupported parameter type: str
+- `mbpp_239_get_total_number_of_sequences`: unsupported expression: ListComp
+- `mbpp_240_replace_list`: unsupported parameter type: List[Any]
+- `mbpp_242_count_charac`: unsupported parameter type: str
+- `mbpp_245_max_sum`: unsupported expression: Slice
+- `mbpp_247_lps`: unsupported parameter type: str
+- `mbpp_249_intersection_array`: unsupported return type: List[int]
+- `mbpp_251_insert_element`: unsupported parameter type: List[str]
+- `mbpp_252_convert`: unsupported return type: Tuple[float, float]
+- `mbpp_253_count_integer`: unsupported parameter type: List[Union[int, str, float]]
+- `mbpp_255_combinations_colors`: unsupported parameter type: List[str]
+- `mbpp_257_swap_numbers`: unsupported return type: List[int]
+- `mbpp_259_maximize_elements`: unsupported parameter type: List[List[int]]
+- `mbpp_261_division_elements`: unsupported parameter type: Tuple[int, int, int, int]
+- `mbpp_262_split_two_parts`: unsupported parameter type: List[Any]
+- `mbpp_264_dog_age`: unsupported call: exit
+- `mbpp_265_list_split`: unsupported parameter type: List[Any]
+- `mbpp_269_ascii_value`: unsupported parameter type: str
+- `mbpp_272_rear_extract`: unsupported parameter type: List[Tuple[int, str, int]]
+- `mbpp_273_substract_elements`: unsupported parameter type: Tuple[int, int, int]
+- `mbpp_277_dict_filter`: unsupported parameter type: Dict[str, int]
+- `mbpp_278_count_first_elements`: unsupported parameter type: List[Union[int, Tuple[int, int]]]
+- `mbpp_280_sequential_search`: unsupported return type: Tuple[bool, int]
+- `mbpp_281_all_unique`: unsupported len argument
+- `mbpp_282_sub_list`: unsupported return type: List[int]
+- `mbpp_284_check_element`: unsupported parameter type: List[Any]
+- `mbpp_285_text_match_two_three`: unsupported parameter type: str
+- `mbpp_290_max_length`: unsupported parameter type: List[List[int]]
+- `mbpp_291_count_no_of_ways`: unsupported expression: List
+- `mbpp_294_max_val`: unsupported parameter type: List[Union[str, int]]
+- `mbpp_295_sum_div`: unsupported expression: List
+- `mbpp_297_flatten_list`: unsupported parameter type: List[Union[int, List[int]]]
+- `mbpp_299_max_aggregate`: unsupported parameter type: List[Tuple[str, int]]
+- `mbpp_304_find_Element`: unsupported parameter type: List[List[int]]
+- `mbpp_305_start_withp`: unsupported parameter type: List[str]
+- `mbpp_306_max_sum_increasing_subseq`: unsupported expression: ListComp
+- `mbpp_308_large_product`: unsupported return type: List[int]
+- `mbpp_310_string_to_tuple`: unsupported parameter type: str
+- `mbpp_390_add_string`: unsupported parameter type: List[Any]
+- `mbpp_391_convert_list_dictionary`: unsupported parameter type: List[str]
+- `mbpp_392_get_max_sum`: unsupported call: list
+- `mbpp_393_max_length_list`: unsupported parameter type: List[List[int]]
+- `mbpp_394_check_distinct`: unsupported call: set
+- `mbpp_395_first_non_repeating_character`: unsupported parameter type: str
+- `mbpp_396_check_char`: unsupported parameter type: str
+- `mbpp_397_median_numbers`: C syntax check failed: /tmp/tmp2pal665t/mbpp_check.c: In function ‘mbpp_397_median_numbers’: /tmp/tmp2pal665t/mbpp_check.c:4:17: warning: unused variable ‘median’ [-Wunused-variable]     4 |             int median = a;       |                 ^~~~~~ /tmp/tmp2pal665t/mbpp_check.c:7:17: error: ‘median’ undeclared (first use in this function)     7 |                 median = b;
+- `mbpp_398_sum_of_digits`: unsupported parameter type: List[Any]
+- `mbpp_399_bitwise_xor`: unsupported parameter type: Tuple[int, int, int, int]
+- `mbpp_400_extract_freq`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_401_add_nested_tuples`: unsupported parameter type: List[List[int]]
+- `mbpp_405_check_tuplex`: unsupported parameter type: List[Union[str, int]]
+- `mbpp_407_rearrange_bigger`: unsupported return type: Union[int, bool]
+- `mbpp_408_k_smallest_pairs`: unsupported return type: List[List[int]]
+- `mbpp_409_min_product_tuple`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_410_min_val`: unsupported parameter type: List[Union[str, int]]
+- `mbpp_411_snake_to_camel`: unsupported parameter type: str
+- `mbpp_412_remove_odd`: unsupported return type: List[int]
+- `mbpp_413_extract_nth_element`: unsupported parameter type: List[Tuple[str, int, int]]
+- `mbpp_415_max_Product`: unsupported return type: Tuple[int, int]
+- `mbpp_417_group_tuples`: unsupported parameter type: List[List[str]]
+- `mbpp_418_Find_Max`: unsupported parameter type: List[List[Any]]
+- `mbpp_419_round_and_sum`: unsupported parameter type: List[Union[float, int]]
+- `mbpp_421_concatenate_tuple`: unsupported parameter type: Tuple[str, str, int, str]
+- `mbpp_422_find_Average_Of_Cube`: round arity
+- `mbpp_424_extract_rear`: unsupported parameter type: Tuple[str, str, str]
+- `mbpp_425_count_element_in_list`: unsupported parameter type: List[List[Any]]
+- `mbpp_426_filter_oddnumbers`: unsupported return type: List[int]
+- `mbpp_427_change_date_format`: unsupported parameter type: str
+- `mbpp_428_shell_sort`: unsupported return type: List[int]
+- `mbpp_429_and_tuples`: unsupported parameter type: Tuple[int, int, int, int]
+- `mbpp_431_common_element`: unsupported parameter type: List[Any]
+- `mbpp_433_check_greater`: unsupported call: arr.sort
+- `mbpp_434_text_match_one`: unsupported parameter type: str
+- `mbpp_436_neg_nos`: unsupported return type: List[int]
+- `mbpp_437_remove_odd`: unsupported parameter type: str
+- `mbpp_438_count_bidirectional`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_439_multiple_to_single`: unsupported callee
+- `mbpp_440_find_adverb_position`: unsupported parameter type: str
+- `mbpp_442_positive_count`: unsupported statement: Expr
+- `mbpp_444_trim_tuple`: unsupported parameter type: List[List[int]]
+- `mbpp_445_index_multiplication`: unsupported parameter type: List[List[int]]
+- `mbpp_446_count_Occurrence`: unsupported parameter type: Tuple[Any, ...]
+- `mbpp_447_cube_nums`: unsupported return type: List[int]
+- `mbpp_450_extract_string`: unsupported parameter type: List[str]
+- `mbpp_451_remove_whitespaces`: unsupported parameter type: str
+- `mbpp_454_text_match_wordz`: unsupported parameter type: str
+- `mbpp_456_reverse_string_list`: unsupported parameter type: List[str]
+- `mbpp_457_Find_Min`: unsupported parameter type: List[List[Any]]
+- `mbpp_459_remove_uppercase`: unsupported parameter type: str
+- `mbpp_460_Extract`: unsupported parameter type: List[List[int]]
+- `mbpp_461_upper_ctr`: unsupported parameter type: str
+- `mbpp_462_combinations_list`: unsupported parameter type: List[str]
+- `mbpp_464_check_value`: unsupported parameter type: Dict[str, int]
+- `mbpp_465_drop_empty`: unsupported parameter type: Dict[str, Optional[str]]
+- `mbpp_468_max_product`: unsupported expression: Slice
+- `mbpp_470_add_pairwise`: unsupported parameter type: Tuple[int, int, int, int, int]
+- `mbpp_472_check_Consecutive`: unsupported call: sorted
+- `mbpp_473_tuple_intersection`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_474_replace_char`: unsupported parameter type: str
+- `mbpp_475_sort_counter`: unsupported parameter type: Dict[str, int]
+- `mbpp_476_big_sum`: max arity
+- `mbpp_477_is_lower`: unsupported parameter type: str
+- `mbpp_478_remove_lowercase`: unsupported parameter type: str
+- `mbpp_4_heap_queue_largest`: unsupported return type: List[int]
+- `mbpp_554_Split`: unsupported return type: List[int]
+- `mbpp_557_toggle_string`: unsupported parameter type: str
+- `mbpp_558_digit_distance_nums`: unsupported call: sum
+- `mbpp_560_union_elements`: unsupported return type: List[int]
+- `mbpp_562_Find_Max_Length`: unsupported parameter type: List[List[int]]
+- `mbpp_563_extract_values`: unsupported parameter type: str
+- `mbpp_565_split`: unsupported parameter type: str
+- `mbpp_567_issort_list`: unsupported call: all
+- `mbpp_568_empty_list`: unsupported return type: List[Dict[None, None]]
+- `mbpp_569_sort_sublists`: unsupported parameter type: List[List[str]]
+- `mbpp_572_two_unique_nums`: unsupported return type: List[int]
+- `mbpp_573_unique_product`: unsupported call: list
+- `mbpp_578_interleave_lists`: unsupported return type: List[int]
+- `mbpp_579_find_dissimilar`: unsupported parameter type: Tuple[int, int, int, int]
+- `mbpp_57_find_Max_Num`: keyword call arguments
+- `mbpp_580_extract_even`: unsupported parameter type: Tuple[int, int, Tuple[int, int, Tuple[int, int]], int, int]
+- `mbpp_581_surface_Area`: unsupported call: pow
+- `mbpp_582_my_dict`: unsupported parameter type: Set[int]
+- `mbpp_584_find_adverbs`: unsupported parameter type: str
+- `mbpp_585_expensive_items`: unsupported parameter type: List[Dict[str, Union[str, float]]]
+- `mbpp_586_split_Arr`: unsupported return type: List[int]
+- `mbpp_587_list_tuple`: unsupported return type: Tuple[int, ...]
+- `mbpp_588_big_diff`: max arity
+- `mbpp_589_perfect_squares`: unsupported return type: List[int]
+- `mbpp_591_swap_List`: unsupported return type: List[int]
+- `mbpp_592_sum_Of_product`: unsupported expression: List
+- `mbpp_593_removezero_ip`: unsupported parameter type: str
+- `mbpp_594_diff_even_odd`: unsupported call: next
+- `mbpp_595_min_Swaps`: unsupported parameter type: str
+- `mbpp_597_find_kth`: unsupported expression: List
+- `mbpp_599_sum_average`: unsupported return type: Tuple[int, float]
+- `mbpp_602_first_repeated_char`: unsupported parameter type: str
+- `mbpp_603_get_ludic`: unsupported return type: List[int]
+- `mbpp_604_reverse_words`: unsupported parameter type: str
+- `mbpp_606_radian_degree`: unsupported expression: Attribute
+- `mbpp_607_find_literals`: unsupported parameter type: str
+- `mbpp_608_bell_Number`: unsupported expression: ListComp
+- `mbpp_610_remove_kth_element`: unsupported return type: List[int]
+- `mbpp_611_max_of_nth`: unsupported parameter type: List[List[int]]
+- `mbpp_612_merge`: unsupported parameter type: List[List[Any]]
+- `mbpp_614_cummulative_sum`: unsupported parameter type: List[List[int]]
+- `mbpp_615_average_tuple`: unsupported parameter type: List[List[int]]
+- `mbpp_616_tuple_modulo`: unsupported parameter type: Tuple[int, int, int, int]
+- `mbpp_617_min_Jumps`: unsupported parameter type: Tuple[int, int]
+- `mbpp_618_div_list`: unsupported return type: List[float]
+- `mbpp_619_move_num`: unsupported parameter type: str
+- `mbpp_61_count_Substrings`: unsupported parameter type: str
+- `mbpp_623_nth_nums`: unsupported return type: List[int]
+- `mbpp_624_is_upper`: unsupported parameter type: str
+- `mbpp_625_swap_List`: unsupported return type: List[int]
+- `mbpp_626_triangle_area`: unsupported return type: Optional[int]
+- `mbpp_627_find_First_Missing`: unsupported comparison operator: Is
+- `mbpp_628_replace_spaces`: unsupported parameter type: str
+- `mbpp_629_Split`: unsupported return type: List[int]
+- `mbpp_62_smallest_num`: min arity
+- `mbpp_630_get_coordinates`: unsupported parameter type: Tuple[int, int]
+- `mbpp_631_replace_spaces`: unsupported parameter type: str
+- `mbpp_632_move_zero`: unsupported return type: List[int]
+- `mbpp_635_heap_sort`: unsupported return type: List[int]
+- `mbpp_638_wind_chill`: unsupported call: math.pow
+- `mbpp_639_sample_nam`: unsupported parameter type: List[str]
+- `mbpp_63_max_difference`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_640_remove_parenthesis`: unsupported parameter type: List[str]
+- `mbpp_643_text_match_wordz_middle`: unsupported parameter type: str
+- `mbpp_644_reverse_Array_Upto_K`: unsupported return type: List[int]
+- `mbpp_64_subject_marks`: unsupported parameter type: List[Tuple[str, int]]
+- `mbpp_65_recursive_list_sum`: unsupported parameter type: List[Union[int, List[int]]]
+- `mbpp_67_bell_number`: unsupported expression: ListComp
+- `mbpp_68_is_Monotonic`: unsupported call: all
+- `mbpp_69_is_sublist`: unsupported expression: List
+- `mbpp_70_get_equal`: unsupported parameter type: List[List[int]]
+- `mbpp_71_comb_sort`: unsupported return type: List[int]
+- `mbpp_720_add_dict_to_tuple`: unsupported parameter type: Tuple[int, int, int]
+- `mbpp_721_maxAverageOfPath`: unsupported parameter type: List[List[int]]
+- `mbpp_722_filter_data`: unsupported parameter type: Dict[str, Tuple[float, int]]
+- `mbpp_723_count_same_pair`: unsupported call: sum
+- `mbpp_724_power_base_sum`: unsupported call: sum
+- `mbpp_725_extract_quotation`: unsupported parameter type: str
+- `mbpp_726_multiply_elements`: unsupported return type: List[int]
+- `mbpp_728_sum_list`: unsupported return type: List[int]
+- `mbpp_730_consecutive_duplicates`: unsupported parameter type: List[Any]
+- `mbpp_731_lateralsurface_cone`: unsupported expression: Attribute
+- `mbpp_732_replace_specialchar`: unsupported parameter type: str
+- `mbpp_733_find_first_occurrence`: unsupported assignment target: Tuple
+- `mbpp_736_left_insertion`: unsupported call: bisect.bisect_left
+- `mbpp_737_check_str`: unsupported parameter type: str
+- `mbpp_738_geometric_sum`: unsupported call: pow
+- `mbpp_739_find_Index`: unsupported call: math.pow
+- `mbpp_740_tuple_to_dict`: unsupported parameter type: Tuple[int, int, int, int, int, int]
+- `mbpp_741_all_Characters_Same`: unsupported parameter type: str
+- `mbpp_743_rotate_right`: unsupported return type: List[int]
+- `mbpp_744_check_none`: unsupported parameter type: Tuple[Any, ...]
+- `mbpp_745_divisible_by_digits`: unsupported return type: List[int]
+- `mbpp_746_sector_area`: unsupported return type: Optional[float]
+- `mbpp_747_lcs_of_three`: unsupported parameter type: str
+- `mbpp_748_capital_words_spaces`: unsupported parameter type: str
+- `mbpp_749_sort_numeric_strings`: unsupported parameter type: List[str]
+- `mbpp_74_is_samepatterns`: unsupported parameter type: List[str]
+- `mbpp_750_add_tuple`: unsupported parameter type: Tuple[int, int]
+- `mbpp_751_check_min_heap`: len of non-array value
+- `mbpp_752_jacobsthal_num`: unsupported expression: List
+- `mbpp_753_min_k`: unsupported parameter type: List[Tuple[str, int]]
+- `mbpp_754_extract_index_list`: unsupported return type: List[int]
+- `mbpp_755_second_smallest`: unsupported parameter type: List[Union[int, float]]
+- `mbpp_756_text_match_zero_one`: unsupported parameter type: str
+- `mbpp_757_count_reverse_pairs`: unsupported parameter type: List[str]
+- `mbpp_759_is_decimal`: unsupported parameter type: str
+- `mbpp_75_find_tuples`: unsupported parameter type: List[Tuple[int, int, int]]
+- `mbpp_760_unique_Element`: unsupported call: set
+- `mbpp_763_find_min_diff`: unsupported call: sorted
+- `mbpp_764_number_ctr`: unsupported parameter type: str
+- `mbpp_765_is_polite`: unsupported call: math.log
+- `mbpp_766_pair_wise`: unsupported return type: List[Tuple[int, int]]
+- `mbpp_769_Diff`: unsupported return type: List[int]
+- `mbpp_771_check_expression`: unsupported parameter type: str
+- `mbpp_772_remove_length`: unsupported parameter type: str
+- `mbpp_773_occurance_substring`: unsupported parameter type: str
+- `mbpp_775_odd_position`: unsupported call: all
+- `mbpp_776_count_vowels`: unsupported parameter type: str
+- `mbpp_777_find_sum`: unsupported call: arr.sort
+- `mbpp_778_pack_consecutive_duplicates`: unsupported parameter type: List[Any]
+- `mbpp_780_find_combinations`: unsupported parameter type: List[Tuple[int, int]]
+- `mbpp_783_rgb_to_hsv`: unsupported return type: List[float]
+- `mbpp_784_mul_even_odd`: unsupported call: next
+- `mbpp_785_tuple_str_int`: unsupported parameter type: str
+- `mbpp_786_right_insertion`: unsupported call: bisect.bisect_right
+- `mbpp_787_text_match_three`: unsupported parameter type: str
+- `mbpp_788_new_tuple`: unsupported parameter type: List[str]
+- `mbpp_790_even_position`: unsupported call: all
+- `mbpp_791_remove_nested`: unsupported parameter type: Any
+- `mbpp_792_count_list`: unsupported parameter type: List[List[int]]
+- `mbpp_794_text_starta_endb`: unsupported parameter type: str
+- `mbpp_796_return_sum`: unsupported parameter type: Dict[str, int]
+- `mbpp_79_word_len`: unsupported parameter type: str
+- `mbpp_800_remove_all_spaces`: unsupported parameter type: str
+- `mbpp_801_test_three_equal`: unsupported call: set
+- `mbpp_805_max_sum_list`: unsupported parameter type: List[List[int]]
+- `mbpp_806_max_run_uppercase`: unsupported parameter type: str
+- `mbpp_807_first_odd`: unsupported call: next
+- `mbpp_809_check_smaller`: unsupported parameter type: Tuple[int, int, int]
+- `mbpp_83_get_Char`: unsupported parameter type: str
+- `mbpp_87_merge_dictionaries_three`: unsupported parameter type: Dict[str, str]
+- `mbpp_88_freq_count`: unsupported return type: Dict[int, int]
+- `mbpp_8_square_nums`: unsupported return type: List[int]
+- `mbpp_90_len_log`: unsupported parameter type: List[str]
+- `mbpp_91_find_substring`: unsupported parameter type: List[str]
+- `mbpp_92_is_undulating`: unsupported call: str
+- `mbpp_94_index_minimum`: unsupported parameter type: List[Tuple[str, int]]
+- `mbpp_95_Find_Min_Length`: unsupported parameter type: List[List[int]]
+- `mbpp_96_divisor`: unsupported len argument
+- `mbpp_97_frequency_lists`: unsupported parameter type: List[List[int]]
+- `mbpp_99_decimal_to_binary`: unsupported return type: str
+- `mbpp_9_find_Rotations`: unsupported parameter type: str

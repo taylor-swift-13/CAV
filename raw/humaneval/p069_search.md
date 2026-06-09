@@ -11,6 +11,38 @@ Examples:
     p069_search({1, 2, 2, 3, 3, 3, 4, 4, 4}) == 3
     p069_search({5, 5, 4, 4, 4}) == -1
 
+## Stub Function Specifications
+
+Contract stage must preserve these helper/external functions as explicit stubs, give each one a function contract, and implement any logical meaning with definition-only Coq in the companion `.v`. Do not use `Axiom`, `Parameter`, `Hypothesis`, `Admitted`, or proof-only assumptions for stub semantics.
+
+### `malloc_int_array`
+
+Allocates a fresh writable integer array with unspecified contents.
+
+Contract shape:
+
+```c
+int *malloc_int_array(int size)
+/*@ Require size >= 0 && size < INT_MAX
+    Ensure __return != 0 && IntArray::undef_full(__return, size)
+*/;
+```
+
+### `free_int_array`
+
+Consumes ownership of a previously allocated integer array.
+
+Contract shape:
+
+```c
+void free_int_array(int *array, int size)
+/*@ With l
+    Require size >= 0 && Zlength(l) == size &&
+            IntArray::full(array, size, l)
+    Ensure emp
+*/;
+```
+
 ## Reference Implementation
 
 ```c
