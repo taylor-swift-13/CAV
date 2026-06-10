@@ -15,23 +15,23 @@
 
 - **不改** `input/`、`raw/`、`workspace/original/`；
 - **不改** `coq/generated/*_goal.v`、`*_proof_auto.v`、`*_goal_check.v`；
-- **不改 contract**：函数 `Require` / `Ensure` 中承载题意的规格不能在 verify/proof-only 阶段改弱、改题意或新增输入假设；
+- **不改 function contract**：这里的 contract 只指函数 `Require` / `Ensure` 前后条件，其中承载题意的规格不能在 verify/proof-only 阶段改弱、改题意或新增输入假设；
 - 允许按主 SKILL 修改当前工作副本中的 verification annotation，包括 `Inv`、`Assert`、`Inv Assert`、`which implies`、`where`，但不能改 executable implementation；
 - 可写面仍按主 SKILL：当前 `annotated/...c`、当前 workspace 的 `coq/generated/<name>_proof_manual.v`（及允许的本地 helper）和 `logs/*`。
 
-如果 generated VC 在当前 annotation 下缺少中间事实，先回 annotation 修正或加强 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where`，再重跑 symexec 刷新 VC，然后证明新的 `proof_manual.v`。如果必须修改 contract 才能成立，写阻塞到 `logs/issues.md` 并退回 Contract/用户决策，不要在 proof-only 中硬改 contract。
+如果 generated VC 在当前 annotation 下缺少中间事实，先回 annotation 修正或加强 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where`，再重跑 symexec 刷新 VC，然后证明新的 `proof_manual.v`。如果必须修改 function contract（函数 `Require` / `Ensure`）才能成立，写阻塞到 `logs/issues.md` 并退回 Contract/用户决策，不要在 proof-only 中硬改 function contract。
 
 普通的 `proof_manual.v` 还有 `Admitted`、`coqc` 报错、tactic 暂时失败，都不是 proof-only 退出理由。只要能继续编辑 `proof_manual.v` 或添加允许范围内的 local helper，就必须继续证明并重新编译。
 
-proof-only 模式按主 SKILL §3 的错误驱动检索策略执行：应先直接补全 `proof_manual.v` 并运行 `coqc`。仅当具体 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败暴露后，才围绕该失败点到 `QualifiedCProgramming/SeparationLogic/examples/` 检索相似例子。未基于具体失败点完成相似 proof 的检索与迁移，不得写 `Final Result: Fail`。
+proof-only 模式也必须遵守 `../skills/verify/SKILL.md` 的相关示例检索规则。应先读取同型 QCP C/annotation 示例和对应证明示例，再补全 `proof_manual.v` 并运行 `coqc`。当具体 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败暴露后，必须围绕该失败点到 `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` 和 `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` 检索并读取相似例子；CAV 历史 workspace 只能作为补充。未基于具体失败点完成相似 proof 的检索与迁移，不得写 `Final Result: Fail`。
 
 ## 工作流仍按主 SKILL
 
-- try-first / 探索预算等效率约束见 `skills/COMMON.md` §3；
-- 本模式的第一步是基于已经生成的 VC 直接构造证明并编译验证；
+- 探索预算等效率约束见 `../skills/verify/SKILL.md`；
+- 本模式的第一步是读取同型具体示例和必要文档，然后基于已经生成的 VC 构造证明并编译验证；
 - proof 工作按主 SKILL §3 的“检索相似例子/阅读必要文档 → 修改 `proof_manual.v` → 编译 → 阅读第一个失败点”循环推进；若 proof 过程中确认当前 VC 在现有 annotation 下不可证，或 `coqc`/witness 失败表明当前 VC 缺少 annotation 中间事实，则必须退出 proof 循环，回到外层“写 annotation”阶段，修改 `Inv` / `Assert` / `Inv Assert` / `which implies` / `where`，并按主 SKILL §4 的刷新规则重跑 symexec，然后重新进入 proof 循环；
 - 若返回 annotation 修改后 symexec 无法生成完整 VC，则退出 proof-only 的直接证明路径，按主 SKILL §3 的 verify 外层主循环重新推进：检索相似例子/阅读必要文档，修正 annotation，运行 symexec，获得有效 VC 后再进入 proof 循环；
-- tactic 起手式与分离逻辑证明套路直接看 `QualifiedCProgramming/.agents/skills/vc-proving/docs/`；
+- tactic 起手式与分离逻辑证明套路必须先读取 `.agents/skills/vc-proving/docs/`；
 - attempt > 1 或 prompt 带 `Restart feedback` / `Audit findings:` 时，叠加主 SKILL §7.1（带反馈重跑）继续。
 
 ## 完成判据
