@@ -1820,8 +1820,9 @@ def main() -> int:
                     "--bare",
                     "--no-session-persistence",
                     "--permission-mode",
-                    "acceptEdits",
+                    "bypassPermissions",
                     "--add-dir",
+                    str(REPO_ROOT),
                     str(QCP_ROOT),
                     "--output-format",
                     "stream-json",
@@ -1829,7 +1830,7 @@ def main() -> int:
                 ]
                 if model:
                     cmd.extend(["--model", model])
-                if reasoning_effort and claude_effort_supported:
+                if reasoning_effort and reasoning_effort not in {"api", "none", "default"} and claude_effort_supported:
                     cmd.extend(["--effort", reasoning_effort])
                 proc_returncode = run_agent_with_timeline(
                     cmd,
@@ -1843,8 +1844,10 @@ def main() -> int:
                 )
                 last_message = agent_metrics.extract_claude_last_message(stdout_jsonl)
                 if last_message is not None:
+                    ensure_parent(qcp_last_message_path)
                     qcp_last_message_path.write_text(last_message, encoding="utf-8")
                 elif stdout_jsonl.exists():
+                    ensure_parent(qcp_last_message_path)
                     qcp_last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
             elif agent == "kimicode":
                 cmd = [
@@ -1871,6 +1874,7 @@ def main() -> int:
                     env=agent_env,
                 )
                 if stdout_jsonl.exists():
+                    ensure_parent(qcp_last_message_path)
                     qcp_last_message_path.write_text(stdout_jsonl.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
             else:
                 cmd = [

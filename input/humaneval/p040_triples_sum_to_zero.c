@@ -42,8 +42,9 @@ int p040_triples_sum_to_zero(int *l, int l_size)
 
         for (j = i + 1; j < l_size; j++) {
 
-            for (k = j + 1; k < l_size; k++)
+            for (k = j + 1; k < l_size; k++) {
                 if (l[i] + l[j] + l[k] == 0) return 1;
+            }
         }
     }
     return 0;

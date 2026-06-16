@@ -1,0 +1,13 @@
+{
+  "agent": "claude",
+  "reasoning_effort": "api",
+  "bins": {
+    "claude": "/home/yangfp/CAV/C/CAV/scripts/claude_ark_wrapper.sh"
+  },
+  "models": {
+    "claude": "ark-code-latest"
+  },
+  "model_display": {
+    "claude": "ark-code-latest"
+  }
+}

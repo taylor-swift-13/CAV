@@ -8,6 +8,7 @@ annotated/
 *.tmp
 __pycache__/
 mid/
+config/ark_api/ark.config.toml
 *.vo
 *.vok
 *.vos

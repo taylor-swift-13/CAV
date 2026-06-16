@@ -77,14 +77,18 @@ int signed_digit_score(int x)
     int msd = 0;
     int sum = 0;
 
-    while (t >= 10) t /= 10;
+    while (t >= 10) {
+        t /= 10;
+    }
     msd = t;
     sum += (x >= 0) ? msd : -msd;
     t = abs(x);
     if (t >= 10) {
         int p = 1;
 
-        while (p * 10 <= t) p *= 10;
+        while (p * 10 <= t) {
+            p *= 10;
+        }
         t %= p;
     } else t = 0;
 
@@ -137,11 +141,12 @@ IntArray *p145_order_by_points(int* nums, int nums_size)
     for (i=0;i<nums_size;i++) {
         int j;
 
-        for (j=1;j<nums_size;j++)
-        if (score[j-1]>score[j])
-        {
-            int m=score[j];score[j]=score[j-1];score[j-1]=m;
-            m=data[j];data[j]=data[j-1];data[j-1]=m;
+        for (j=1;j<nums_size;j++) {
+            if (score[j-1]>score[j])
+            {
+                int m=score[j];score[j]=score[j-1];score[j-1]=m;
+                m=data[j];data[j]=data[j-1];data[j-1]=m;
+            }
         }
 
     }

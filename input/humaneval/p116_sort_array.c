@@ -131,11 +131,12 @@ IntArray *p116_sort_array(int* arr, int arr_size)
     {
         int j;
 
-        for (j=1;j<arr_size;j++)
-        if (bin[j]<bin[j-1] || (bin[j]==bin[j-1] && data[j]<data[j-1]))
-        {
-            m=out->data[j];out->data[j]=out->data[j-1];out->data[j-1]=m;
-            m=bin[j];bin[j]=bin[j-1];bin[j-1]=m;
+        for (j=1;j<arr_size;j++) {
+            if (bin[j]<bin[j-1] || (bin[j]==bin[j-1] && data[j]<data[j-1]))
+            {
+                m=out->data[j];out->data[j]=out->data[j-1];out->data[j-1]=m;
+                m=bin[j];bin[j]=bin[j-1];bin[j-1]=m;
+            }
         }
 
     }

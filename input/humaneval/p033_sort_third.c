@@ -97,8 +97,9 @@ IntArray *p033_sort_third(int *l, int l_size)
     int i;
     int j;
 
-    for (i = 0; i * 3 < l_size; i++)
+    for (i = 0; i * 3 < l_size; i++) {
         third[i] = l[i * 3];
+    }
 
     sort_int_array(third, third_size, l_size, 1);
 

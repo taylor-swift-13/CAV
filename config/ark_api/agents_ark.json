@@ -1,0 +1,13 @@
+{
+  "agent": "codex",
+  "reasoning_effort": "api",
+  "bins": {
+    "codex": "/home/yangfp/CAV/C/CAV/output/codex_ark_wrapper.sh"
+  },
+  "models": {
+    "codex": "ark-code-latest"
+  },
+  "model_display": {
+    "codex": "ark-code-latest"
+  }
+}

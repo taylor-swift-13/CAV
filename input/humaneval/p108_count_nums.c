@@ -46,7 +46,7 @@ int p108_count_nums(int* n, int n_size)
     int num=0;
     int i;
 
-    for (i=0;i<n_size;i++)
+    for (i=0;i<n_size;i++) {
         if (n[i]>0) num+=1;
         else
         {
@@ -62,5 +62,6 @@ int p108_count_nums(int* n, int n_size)
             sum-=w;
             if (sum>0) num+=1;
         }
+    }
     return num;
 }

@@ -6,7 +6,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-RESULTS_ROOT="/home/yangfp/CAV/results"
+RESULTS_ROOT="/home/yangfp/CAV/C/CAV/results"
 DATASET="humaneval"
 TIMEOUT="${TIMEOUT:-5400}"
 JOBS="${JOBS:-1}"
@@ -21,7 +21,7 @@ RUN_CONFIGS=(
   "claude-sonnet-high|claude|sonnet|high|$RESULTS_ROOT/claude-sonnet-high|output/verify_batch_claude_sonnet_high.out|$CLAUDE_JOBS"
   "claude-sonnet-low|claude|sonnet|low|$RESULTS_ROOT/claude-sonnet-low|output/verify_batch_claude_sonnet_low.out|$CLAUDE_JOBS"
   "claude-sonnet-medium|claude|sonnet|medium|$RESULTS_ROOT/claude-sonnet-medium|output/verify_batch_he_simple_claude_1.out|$CLAUDE_JOBS"
-  "codex-53-spark-medium|codex|gpt-5.3-spark|medium|$RESULTS_ROOT/codex-53-spark-medium|$RESULTS_ROOT/codex-53-spark-medium/verify_batch.out|$CODEX_JOBS"
+  "codex-54-mini-medium|codex|gpt-5.4-mini|medium|$RESULTS_ROOT/codex-54-mini-medium|$RESULTS_ROOT/codex-54-mini-medium/verify_batch.out|$CODEX_JOBS"
   "codex-54-high|codex|gpt-5.4|high|$RESULTS_ROOT/codex-54-high|output/verify_batch_codex_54_high.out|$CODEX_JOBS"
   "codex-54-low|codex|gpt-5.4|low|$RESULTS_ROOT/codex-54-low|$RESULTS_ROOT/codex-54-low/verify_batch.out|$CODEX_JOBS"
   "codex-54-medium|codex|gpt-5.4|medium|$RESULTS_ROOT/codex-54-medium|output/verify_batch_codex_54_medium.out|$CODEX_JOBS"
@@ -33,6 +33,10 @@ metric_value() {
   local metrics="$1"
   local key="$2"
   sed -n "s/^- ${key}: \`\([^\`]*\)\`$/\1/p" "$metrics" | tail -n 1
+}
+
+workspace_problem_name() {
+  basename "$1" | sed -E 's/^verify_[0-9]{8}_[0-9]{6}[0-9]*_//'
 }
 
 existing_names() {
@@ -49,7 +53,7 @@ existing_names() {
     got_model="$(metric_value "$metrics" "Model")"
     got_effort="$(metric_value "$metrics" "Reasoning effort")"
     if [[ "$got_agent" == "$agent" && "$got_model" == "$model" && "$got_effort" == "$effort" ]]; then
-      basename "$workspace" | sed -E 's/^verify_[0-9]{8}_[0-9]{6}[A-Za-z0-9]*_//'
+      workspace_problem_name "$workspace"
     fi
   done | sort -u
   shopt -u nullglob
@@ -60,7 +64,7 @@ successful_names_global() {
   find "$RESULTS_ROOT" output -path '*/logs/metrics.md' -type f 2>/dev/null | while read -r metrics; do
     if grep -Eq '^(Final Result: Success|- Status: `Success`)' "$metrics"; then
       workspace="$(dirname "$(dirname "$metrics")")"
-      basename "$workspace" | sed -E 's/^verify_[0-9]{8}_[0-9]{6}[A-Za-z0-9]*_//'
+      workspace_problem_name "$workspace"
     fi
   done | sort -u
 }
@@ -74,6 +78,12 @@ filter_existing() {
       printf '%s\n' "$name"
     fi
   done
+}
+
+humaneval_names() {
+  find "input/$DATASET" -maxdepth 1 -type f -name '*.c' -printf '%f\n' \
+    | sed 's/\.c$//' \
+    | sort
 }
 
 start_batch() {
@@ -153,52 +163,12 @@ config_for() {
 requested="${1:-all}"
 
 case "$requested" in
-  all|codex)
-    config="$(config_for codex-54-low)"
+  all|codex|codex-54-mini-medium|mini)
+    config="$(config_for codex-54-mini-medium)"
+    mapfile -t names < <(humaneval_names)
     start_batch \
       "$config" \
-      p150_x_or_y p131_digits p121_solutions \
-      p073_smallest_change p109_move_one_ball p114_minSubArraySum \
-      p043_pairs_sum_to_zero p009_rolling_max p089_encrypt \
-      p146_specialFilter p098_count_upper p128_prod_signs \
-      p110_exchange p094_skjkasdkd p046_fib4 \
-      p100_make_a_pile p066_digitSum p064_vowels_count \
-      p048_is_palindrome p027_filp_case
-      # p122_add_elements p138_is_equal_to_sum_even p146_specialFilter \
-      # p150_x_or_y p155_even_odd_count p159_eat \
-      # p003_below_zero p005_intersperse p008_sum_product \
-      # p010_make_palindrome p011_string_xor p015_string_sequence \
-      # p016_count_distinct_characters p017_parse_music p018_how_many_times \
-      # p023_strlen p026_remove_duplicates p027_filp_case \
-      # p033_sort_third p034_unique p038_decode_cyclic \
-      # p040_triples_sum_to_zero p042_incr_list p043_pairs_sum_to_zero \
-      # p044_change_base p046_fib4 p048_is_palindrome \
-      # p050_decode_shift p051_remove_vowels p052_below_threshold \
-      # p054_same_chars p055_fib p056_correct_bracketing \
-      # p058_common p061_correct_bracketing p063_fibfib \
-      # p064_vowels_count p065_circular_shift p066_digitSum \
-      # p067_fruit_distribution p068_pluck p069_search \
-      # p072_will_it_fly p073_smallest_change p076_is_simple_power \
-      # p078_hex_key p079_decimal_to_binary p080_is_happy \
-      # p082_prime_length p085_add p089_encrypt \
-      # p098_count_upper p100_make_a_pile p102_choose_num \
-      # p103_rounded_avg p104_unique_digits p107_even_odd_palindrome \
-      # p163_generate_integers
-    ;;&
-esac
-
-case "$requested" in
-  all|codex)
-    config="$(config_for codex-53-spark-medium)"
-    start_batch \
-      "$config" \
-      p027_filp_case p048_is_palindrome p064_vowels_count \
-      p066_digitSum p100_make_a_pile p046_fib4 \
-      p094_skjkasdkd p110_exchange p128_prod_signs \
-      p098_count_upper p146_specialFilter p089_encrypt \
-      p009_rolling_max p043_pairs_sum_to_zero p114_minSubArraySum \
-      p109_move_one_ball p073_smallest_change p121_solutions \
-      p131_digits p150_x_or_y
+      "${names[@]}"
     ;;&
 esac
 
@@ -233,9 +203,9 @@ esac
 # esac
 
 case "$requested" in
-  all|codex|claude|kimi|kimicode) ;;
+  all|codex|codex-54-mini-medium|mini|claude|kimi|kimicode) ;;
   *)
-    echo "usage: $0 [all|codex|claude|kimi]" >&2
+    echo "usage: $0 [all|codex|codex-54-mini-medium|mini|claude|kimi]" >&2
     exit 2
     ;;
 esac
