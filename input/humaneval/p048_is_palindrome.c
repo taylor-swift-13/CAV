@@ -16,6 +16,7 @@ false
 /*@ Extern Coq (problem_48_pre: list Z -> Prop)
                (problem_48_spec: list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p048_is_palindrome */
 
 int strlen(char *s)

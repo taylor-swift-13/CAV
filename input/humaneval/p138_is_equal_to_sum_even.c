@@ -16,6 +16,8 @@ int p138_is_equal_to_sum_even(int n)
         problem_138_spec(n@pre, __return) && emp
 */
 {
-    if (n%2==0 && n>=8) return 1;
+    if (n%2==0 && n>=8) {
+        return 1;
+    }
     return 0;
 }

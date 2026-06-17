@@ -56,6 +56,8 @@ int p110_exchange(int* lst1, int lst1_size, int* lst2, int lst2_size)
         }
     }
 
-    if (num >= lst1_size) return 1;
+    if (num >= lst1_size) {
+        return 1;
+    }
     return 0;
 }

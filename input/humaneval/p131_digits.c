@@ -22,7 +22,9 @@ int p131_digits(int n)
 */
 {
     int prod=1,has=0;
-    if (n == 0) return 0;
+    if (n == 0) {
+        return 0;
+    }
 
     while (n > 0) {
         int d = n % 10;
@@ -32,6 +34,8 @@ int p131_digits(int n)
         }
         n /= 10;
     }
-    if (has==0) return 0;
+    if (has==0) {
+        return 0;
+    }
     return prod;
 }

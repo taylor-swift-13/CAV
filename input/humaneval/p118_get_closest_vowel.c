@@ -54,16 +54,36 @@ int is_vowel_code(int ch)
            emp
 */
 {
-    if (ch == 65) return 1;
-    if (ch == 69) return 1;
-    if (ch == 73) return 1;
-    if (ch == 79) return 1;
-    if (ch == 85) return 1;
-    if (ch == 97) return 1;
-    if (ch == 101) return 1;
-    if (ch == 105) return 1;
-    if (ch == 111) return 1;
-    if (ch == 117) return 1;
+    if (ch == 65) {
+        return 1;
+    }
+    if (ch == 69) {
+        return 1;
+    }
+    if (ch == 73) {
+        return 1;
+    }
+    if (ch == 79) {
+        return 1;
+    }
+    if (ch == 85) {
+        return 1;
+    }
+    if (ch == 97) {
+        return 1;
+    }
+    if (ch == 101) {
+        return 1;
+    }
+    if (ch == 105) {
+        return 1;
+    }
+    if (ch == 111) {
+        return 1;
+    }
+    if (ch == 117) {
+        return 1;
+    }
     return 0;
 }
 

@@ -91,8 +91,12 @@ IntArray *p107_even_odd_palindrome(int n)
 
     for (i=1;i<=n;i++)
     {
-        if (is_pal(i) && i%2==1) num1+=1;
-        if (is_pal(i) && i%2==0) num2+=1;
+        if (is_pal(i) && i%2==1) {
+            num1+=1;
+        }
+        if (is_pal(i) && i%2==0) {
+            num2+=1;
+        }
     }
     out->data = malloc_int_array(2);
     out->size = 2;

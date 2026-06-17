@@ -20,6 +20,7 @@ false
                (angle_level_upto: Z -> list Z -> Z)
                (angle_nonnegative_prefix: Z -> list Z -> Prop)
                (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p056_correct_bracketing */
 
 int strlen(char *s)

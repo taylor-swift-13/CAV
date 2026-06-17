@@ -59,8 +59,12 @@ int abs(int x)
         __return == Zabs(x) && emp
 */
 {
-    if (x < 0) return -x;
-    else return x;
+    if (x < 0) {
+        return -x;
+    }
+    else {
+        return x;
+    }
 }
 
 IntArray *p116_sort_array(int* arr, int arr_size)

@@ -37,6 +37,7 @@ Definition problem_54_pre (s0 s1 : list Z) : Prop :=
   True.
 
 Definition no_zero (s : list Z) : Prop :=
+  0 < Zlength s /\
   forall i, 0 <= i < Zlength s -> Znth i s 0 <> 0.
 
 Definition char_in (c : Z) (s : list Z) : Prop :=

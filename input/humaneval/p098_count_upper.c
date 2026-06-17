@@ -14,6 +14,7 @@ p098_count_upper("dBBE") returns 0
                (problem_98_spec: list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop)
                (count_upper_even_upto: Z -> list Z -> Z) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p098_count_upper */
 
 int strlen(char *s)

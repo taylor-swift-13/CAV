@@ -41,7 +41,9 @@ int *p009_rolling_max(int *numbers, int numbers_size, int *out, int out_size)
     int max = -2147483648;
 
     for (i = 0; i < numbers_size; ++i) {
-        if (numbers[i] > max) max = numbers[i];
+        if (numbers[i] > max) {
+            max = numbers[i];
+        }
         out[i] = max;
     }
 

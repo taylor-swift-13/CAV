@@ -36,9 +36,15 @@ int p142_sum_squares(int* lst, int lst_size)
     int i;
 
     for (i = 0; i < lst_size; i++) {
-        if (i % 3 == 0) sum += lst[i] * lst[i];
-        else if (i % 4 == 0) sum += lst[i] * lst[i] * lst[i];
-        else sum += lst[i];
+        if (i % 3 == 0) {
+            sum += lst[i] * lst[i];
+        }
+        else if (i % 4 == 0) {
+            sum += lst[i] * lst[i] * lst[i];
+        }
+        else {
+            sum += lst[i];
+        }
     }
     return sum;
 }

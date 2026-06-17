@@ -18,6 +18,7 @@ Require Import Coq.Lists.List.
 Require Import Coq.Bool.Bool.
 Require Import Lia.
 From AUXLib Require Import ListLib.
+Require Import string_bridge.
 Import ListNotations.
 
 Local Open Scope Z_scope.

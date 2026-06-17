@@ -31,7 +31,9 @@ int p085_add(int *lst, int lst_size)
     int i;
 
     for (i = 0; i * 2 + 1 < lst_size; i++) {
-        if (lst[i * 2 + 1] % 2 == 0) s += lst[i * 2 + 1];
+        if (lst[i * 2 + 1] % 2 == 0) {
+            s += lst[i * 2 + 1];
+        }
     }
     return s;
 }

@@ -9,4 +9,4 @@
                (zeros: Z -> list Z)
 */
 
-/*@ include strategies "int_array.strategies" */
+/*@ include strategies "long_array.strategies" */

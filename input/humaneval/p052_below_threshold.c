@@ -29,7 +29,9 @@ int p052_below_threshold(int *l, int l_size, int t)
     int i;
 
     for (i = 0; i < l_size; i++) {
-        if (l[i] >= t) return 0;
+        if (l[i] >= t) {
+            return 0;
+        }
     }
     return 1;
 }

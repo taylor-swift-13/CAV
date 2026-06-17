@@ -78,7 +78,9 @@ int p069_search(int* lst, int lst_size)
             {
                 cnts[j]+=1;
                 has=1;
-                if (cnts[j]>=vals[j] && vals[j]>max) max=vals[j];
+                if (cnts[j]>=vals[j] && vals[j]>max) {
+                    max=vals[j];
+                }
                 break;
             }
         }
@@ -90,7 +92,9 @@ int p069_search(int* lst, int lst_size)
 
             cnts[freq_size]=1;
             freq_size += 1;
-            if (max==-1 && current==1) max=1;
+            if (max==-1 && current==1) {
+                max=1;
+            }
 
         }
 

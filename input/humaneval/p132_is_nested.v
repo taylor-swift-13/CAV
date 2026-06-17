@@ -19,6 +19,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Lia.
 From AUXLib Require Import ListLib.
+Require Import string_bridge.
 
 Local Open Scope Z_scope.
 

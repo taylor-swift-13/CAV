@@ -63,8 +63,12 @@ IntArray *p106_f(int n)
     for (i = 0; i < n; i++) {
         s += (i + 1);
         p *= (i + 1);
-        if ((i + 1) % 2 == 0) data[i] = p;
-        else data[i] = s;
+        if ((i + 1) % 2 == 0) {
+            data[i] = p;
+        }
+        else {
+            data[i] = s;
+        }
     }
     return out;
 }

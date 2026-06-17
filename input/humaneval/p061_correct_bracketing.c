@@ -20,6 +20,7 @@ false
                (paren_level_upto: Z -> list Z -> Z)
                (paren_nonnegative_prefix: Z -> list Z -> Prop)
                (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p061_correct_bracketing */
 
 int strlen(char *s)

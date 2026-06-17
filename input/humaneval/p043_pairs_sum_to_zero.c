@@ -38,7 +38,9 @@ int p043_pairs_sum_to_zero(int *l, int l_size)
     for (i = 0; i < l_size; i++) {
 
         for (j = i + 1; j < l_size; j++) {
-            if (l[i] + l[j] == 0) return 1;
+            if (l[i] + l[j] == 0) {
+                return 1;
+            }
         }
     }
     return 0;

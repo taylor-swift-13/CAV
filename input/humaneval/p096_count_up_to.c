@@ -75,9 +75,15 @@ IntArray *p096_count_up_to(int n)
                 j = 0;
                 while (j < output_size) {
                     d = data[j];
-                    if (d <= 0) break;
-                    if (d > i / d) break;
-                    if (i % d == 0) isp=0;
+                    if (d <= 0) {
+                        break;
+                    }
+                    if (d > i / d) {
+                        break;
+                    }
+                    if (i % d == 0) {
+                        isp=0;
+                    }
                     j = j + 1;
                 }
                 if (isp) {data[output_size] = i; output_size = output_size + 1;}

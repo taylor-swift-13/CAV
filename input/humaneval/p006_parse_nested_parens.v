@@ -135,8 +135,6 @@ Fixpoint ForallChars (P : ascii -> Prop) (s : string) : Prop :=
 
 
 Require Import Coq.ZArith.ZArith.
-Require Import Coq.Bool.Bool.
-Require Import Coq.micromega.Lia.
 From AUXLib Require Import ListLib.
 Require Import string_bridge.
 
@@ -216,9 +214,3 @@ Definition paren_output (input : list Z) : list Z :=
 
 Definition problem_6_spec (input output : list Z) : Prop :=
   output = paren_output input.
-
-Fixpoint chars_are_paren_space (l : list Z) : Prop :=
-  match l with
-  | [] => True
-  | x :: xs => (x = 40 \/ x = 41 \/ x = 32) /\ chars_are_paren_space xs
-  end.

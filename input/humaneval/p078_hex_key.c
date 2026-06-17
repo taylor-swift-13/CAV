@@ -24,6 +24,7 @@ For num = "2020" the output should be 2.
                (problem_78_spec: list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop)
                (count_prime_hex_upto: Z -> list Z -> Z) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p078_hex_key */
 
 int strlen(char *s)

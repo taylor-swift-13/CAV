@@ -19,6 +19,7 @@ Require Import Lia.
 From AUXLib Require Import ListLib.
 From SimpleC.SL Require Import Mem SeparationLogic.
 Require Import Logic.LogicGenerator.demo932.Interface.
+Require Import string_bridge.
 Import ListNotations.
 
 Local Open Scope Z_scope.

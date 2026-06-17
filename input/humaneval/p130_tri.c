@@ -67,14 +67,20 @@ IntArray *p130_tri(int n)
     out->data = malloc_int_array(n + 1);
     int *data = out->data;
     data[0] = 1;
-    if (n == 0) return out;
+    if (n == 0) {
+        return out;
+    }
     data[1] = 3;
     int i;
 
     for (i = 2; i <= n; i++)
     {
-        if (i % 2 == 0) data[i] = 1 + i / 2;
-        else data[i] = data[i - 1] + data[i - 2] + 1 + (i + 1) / 2;
+        if (i % 2 == 0) {
+            data[i] = 1 + i / 2;
+        }
+        else {
+            data[i] = data[i - 1] + data[i - 2] + 1 + (i + 1) / 2;
+        }
     }
     return out;
 }

@@ -5,35 +5,33 @@ in the sequence.
 [1, 2, 3, 3, 3, 4, 4]
 """ *)
 
-(* Spec(input, output) :=
+(* prefix_max_at(input, i, m) :=
+     m is the maximum value of input[0..i].
 
-length(output) == length(input) ∧
+   Spec(input, output) :=
+     length(output) = length(input) /\
+     forall i, 0 <= i < length(output) ->
+       prefix_max_at(input, i, output[i]). *)
 
-∀i. 0 ≤ i < length(output) ∧
-        (∀j. 0 ≤ j ≤ i → input[j] ≤ output[i]) ∧
-        (∃j. 0 ≤ j ≤ i ∧ input[j] = output[i]) *)
-
-Require Import List ZArith.
+Require Import Coq.Lists.List Coq.ZArith.ZArith Lia.
 From AUXLib Require Import ListLib.
-Import ListNotations.
-Open Scope Z_scope.
-
-Definition problem_9_pre : Prop := True.
-
-Definition problem_9_spec (input output : list Z) :=
-  Zlength output = Zlength input /\
-  forall i,
-    0 <= i < Zlength output ->
-    (forall j, 0 <= j <= i -> Znth j input 0 <= Znth i output 0) /\
-    (exists j, 0 <= j <= i /\ Znth j input 0 = Znth i output 0).
-
-Require Import Coq.ZArith.ZArith.
-Require Import Coq.Lists.List.
-Require Import Lia.
 From SimpleC.SL Require Import Mem SeparationLogic.
 Require Import Logic.LogicGenerator.demo932.Interface.
 
+Import ListNotations.
 Local Open Scope Z_scope.
+
+Definition problem_9_pre : Prop := True.
+
+Definition prefix_max_at (input : list Z) (i m : Z) : Prop :=
+  (forall j, 0 <= j <= i -> Znth j input 0 <= m) /\
+  (exists j, 0 <= j <= i /\ Znth j input 0 = m).
+
+Definition problem_9_spec (input output : list Z) : Prop :=
+  Zlength output = Zlength input /\
+  forall i,
+    0 <= i < Zlength output ->
+    prefix_max_at input i (Znth i output 0).
 
 Definition list_int_range (l : list Z) : Prop :=
   forall i, (i < length l)%nat -> INT_MIN <= nth i l 0 <= INT_MAX.

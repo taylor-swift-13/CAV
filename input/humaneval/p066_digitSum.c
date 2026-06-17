@@ -20,6 +20,7 @@ Examples:
                (ascii_range: list Z -> Prop)
                (sum_upper_upto: Z -> list Z -> Z)
                (digit_sum_int_range: list Z -> Prop) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p066_digitSum */
 
 int strlen(char *s)

@@ -59,8 +59,12 @@ int abs(int x)
         __return == Zabs(x) && emp
 */
 {
-    if (x < 0) return -x;
-    else return x;
+    if (x < 0) {
+        return -x;
+    }
+    else {
+        return x;
+    }
 }
 
 int signed_digit_score(int x)
@@ -81,7 +85,11 @@ int signed_digit_score(int x)
         t /= 10;
     }
     msd = t;
-    sum += (x >= 0) ? msd : -msd;
+    if (x >= 0) {
+        sum += msd;
+    } else {
+        sum += -msd;
+    }
     t = abs(x);
     if (t >= 10) {
         int p = 1;
@@ -90,7 +98,9 @@ int signed_digit_score(int x)
             p *= 10;
         }
         t %= p;
-    } else t = 0;
+    } else {
+        t = 0;
+    }
 
     while (t > 0) {
         sum += t % 10;

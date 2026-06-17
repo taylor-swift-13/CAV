@@ -20,8 +20,14 @@ int p102_choose_num(int x, int y)
         problem_102_spec(x@pre, y@pre, __return) && emp
 */
 {
-    if (y<x) return -1;
-    if (y==x && y%2==1) return -1;
-    if (y%2==1) return y-1;
+    if (y<x) {
+        return -1;
+    }
+    if (y==x && y%2==1) {
+        return -1;
+    }
+    if (y%2==1) {
+        return y-1;
+    }
     return y;
 }

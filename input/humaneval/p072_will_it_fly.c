@@ -29,9 +29,13 @@ int p072_will_it_fly(int *q, int q_size, int w)
     int i;
 
     for (i = 0; i < q_size; i++) {
-        if (q[i] != q[q_size - 1 - i]) return 0;
+        if (q[i] != q[q_size - 1 - i]) {
+            return 0;
+        }
         s += q[i];
     }
-    if (s > w) return 0;
+    if (s > w) {
+        return 0;
+    }
     return 1;
 }

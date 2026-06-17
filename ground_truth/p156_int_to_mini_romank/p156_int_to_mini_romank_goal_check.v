@@ -1,0 +1,7 @@
+From SimpleC.EE.CAV.ground_truth_p156_int_to_mini_romank Require Import p156_int_to_mini_romank_goal p156_int_to_mini_romank_proof_auto p156_int_to_mini_romank_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include char_array_strategy_proof.
+  Include p156_int_to_mini_romank_proof_auto.
+  Include p156_int_to_mini_romank_proof_manual.
+End VC_Correctness.

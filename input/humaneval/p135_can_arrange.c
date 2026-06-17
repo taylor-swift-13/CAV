@@ -33,7 +33,9 @@ int p135_can_arrange(int* arr, int arr_size)
     int i;
 
     for (i = 0; i < arr_size; i++) {
-        if (arr[i] <= i) max = i;
+        if (arr[i] <= i) {
+            max = i;
+        }
     }
     return max;
 }

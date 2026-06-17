@@ -16,6 +16,7 @@ Example:
                (ascii_range: list Z -> Prop)
                (count_regular_vowels_upto: Z -> list Z -> Z)
                (last_y_add: list Z -> Z) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p064_vowels_count */
 
 int strlen(char *s)

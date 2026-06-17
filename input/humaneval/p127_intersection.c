@@ -65,12 +65,16 @@ int p127_intersection(int* interval1, int interval1_size, int* interval2, int in
     }
     int l = inter2 - inter1;
 
-    if (l < 2) return 0;
+    if (l < 2) {
+        return 0;
+    }
 
     int i;
 
     for (i = 2; i * i <= l; i++) {
-        if (l % i == 0) return 0;
+        if (l % i == 0) {
+            return 0;
+        }
     }
     return 1;
 }

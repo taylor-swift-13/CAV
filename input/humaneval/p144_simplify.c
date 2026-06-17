@@ -67,7 +67,8 @@ int p144_simplify(char *x, char *n)
 
     int x_len = strlen(x);
 
-    for (i = 0; x[i] != 47; i++) {
+    i = 0;
+    for (; x[i] != 47; i++) {
         a = a * 10 + (x[i] - 48);
     }
 
@@ -79,8 +80,8 @@ int p144_simplify(char *x, char *n)
 
     int n_len = strlen(n);
 
-
-    for (i = 0; n[i] != 47; i++) {
+    i = 0;
+    for (; n[i] != 47; i++) {
         c = c * 10 + (n[i] - 48);
     }
 
@@ -92,6 +93,8 @@ int p144_simplify(char *x, char *n)
 
     int product_num = a * c;
     int product_den = b * d;
-    if (product_num % product_den == 0) return 1;
+    if (product_num % product_den == 0) {
+        return 1;
+    }
     return 0;
 }

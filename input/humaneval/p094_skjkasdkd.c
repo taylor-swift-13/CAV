@@ -47,9 +47,13 @@ int p094_skjkasdkd(int* lst, int lst_size)
             int j;
 
             for (j=2;j<=x/j;j++) {
-                if (x%j==0) prime=0;
+                if (x%j==0) {
+                    prime=0;
+                }
             }
-            if (prime) largest=x;
+            if (prime) {
+                largest=x;
+            }
         }
     }
     int sum=0;

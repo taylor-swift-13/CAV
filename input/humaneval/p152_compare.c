@@ -39,8 +39,12 @@ int abs(int x)
         __return == Zabs(x) && emp
 */
 {
-    if (x < 0) return -x;
-    else return x;
+    if (x < 0) {
+        return -x;
+    }
+    else {
+        return x;
+    }
 }
 
 IntArray *p152_compare(int* game, int game_size, int* guess, int guess_size)
@@ -70,7 +74,12 @@ IntArray *p152_compare(int* game, int game_size, int* guess, int guess_size)
 */
 {
     IntArray *out = malloc_int_array_struct();
-    int n = game_size < guess_size ? game_size : guess_size;
+    int n;
+    if (game_size < guess_size) {
+        n = game_size;
+    } else {
+        n = guess_size;
+    }
     out->size = n;
     out->data = malloc_int_array(n);
     int *data = out->data;
