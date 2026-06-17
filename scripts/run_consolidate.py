@@ -25,9 +25,7 @@ DEFAULT_CLAUDE_MODEL = "sonnet"
 
 # Which workspace prefixes feed each scope.
 SCOPE_PREFIXES: dict[str, tuple[str, ...]] = {
-    "contract": ("contract_", "eval_"),
     "verify": ("verify_",),
-    "all": ("contract_", "eval_", "verify_"),
 }
 
 
@@ -46,7 +44,7 @@ def latest_workspaces(prefixes: tuple[str, ...], name: str | None) -> list[Path]
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Consolidate run logs into experiences/general.")
     p.add_argument("workspaces", nargs="*", help="Stage workspace dirs to read.")
-    p.add_argument("--scope", choices=["contract", "verify", "all"], default="all")
+    p.add_argument("--scope", choices=["verify"], default="verify")
     p.add_argument("--auto", action="store_true",
                    help="Discover the latest workspace per stage for --scope.")
     p.add_argument("--name", help="With --auto, only consider workspaces ending in _<name>.")

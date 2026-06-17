@@ -1,18 +1,8 @@
 {
-  "workspace": "verify_20260603_175006v_xizi_avl_balance_factor",
-  "stage": "verify",
-  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_avl_balance_factor.c",
-  "input_v": "",
-  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260603_175006v_xizi_avl_balance_factor/original/xizi_avl_balance_factor.c",
-  "original_v": "",
-  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260603_175006v_xizi_avl_balance_factor.c",
-  "function_name": "xizi_avl_balance_factor",
   "semantic_description": "Loop-free function `xizi_avl_balance_factor` returning `left_height - right_height`.",
   "keywords": {
     "problem_kind": "math",
     "data": "scalar",
     "pattern": "straight_line"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+  }
 }

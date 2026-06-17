@@ -1,19 +1,8 @@
 {
-  "workspace": "verify_20260603_190108v_xizi_id_first_nonfull_byte",
-  "stage": "verify",
-  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_id_first_nonfull_byte.c",
-  "input_v": "",
-  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260603_190108v_xizi_id_first_nonfull_byte/original/xizi_id_first_nonfull_byte.c",
-  "original_v": "",
-  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260603_190108v_xizi_id_first_nonfull_byte.c",
-  "function_name": "xizi_id_first_nonfull_byte",
   "semantic_description": "Scans an integer array from left to right and returns the first index whose low byte is not 255; if every element has low byte 255, returns -1. The array is read-only, memory contents are preserved, and the control flow is a single for-loop with early return.",
   "keywords": {
     "problem_kind": "search",
     "data": "array",
     "pattern": "single_loop"
-  },
-  "verification_status": "goal_check_passed",
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+  }
 }

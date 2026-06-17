@@ -1,7 +1,7 @@
 {
-  "semantic_description": "Loop-free function `xizi_stack_range_check` returning `1`, `0`.",
+  "semantic_description": "Checks whether a stack pointer integer lies outside the valid interval (stack_start, stack_start + stack_depth]. The function has one branch, returns 1 for out-of-range pointers and 0 for in-range pointers, and mutates no memory.",
   "keywords": {
-    "problem_kind": "math",
+    "problem_kind": "compare",
     "data": "scalar",
     "pattern": "branch"
   }

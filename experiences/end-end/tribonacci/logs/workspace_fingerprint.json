@@ -1,8 +1,0 @@
-{
-  "semantic_description": "The target function computes the n-th Tribonacci number for an integer input n with 0 <= n <= 37. It returns immediately for n == 0 and n == 1, otherwise it uses a scalar for-loop recurrence with registers a, b, and c holding consecutive Tribonacci values and returns c after the loop. The function does not read or modify heap memory; all state is scalar local variables. The loop may be skipped for n == 2, in which case the initialized c already represents tribonacci_z(2).",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "scalar",
-    "pattern": "single_loop"
-  }
-}

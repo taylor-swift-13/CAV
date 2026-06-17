@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generic budget-driven agent loop for solver stages.
 
-A "solver" stage (contract, verify) drives a Codex agent toward a concrete
+A solver stage drives a Codex agent toward a concrete
 success gate. This module owns the loop policy shared by those stages:
 
   * Budget: ``budget_seconds`` is the total wall-clock budget for this
@@ -18,7 +18,7 @@ success gate. This module owns the loop policy shared by those stages:
 
 The stage-specific work (build the prompt, run Codex, run the gate) lives in an
 ``attempt_fn`` callable supplied by each runner. This module stays free of any
-contract/verify detail.
+verify detail.
 """
 from __future__ import annotations
 

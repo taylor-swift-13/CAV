@@ -7,11 +7,10 @@ stable compile template in ``experiences/general/COMPILE/README.md`` §5: coqc r
 ``QualifiedCProgramming/SeparationLogic`` as its working directory and the base
 ``-R`` set below resolves every QCP library a generated ``.v`` may ``Require``.
 
-Primary use: ``run_eval`` discharges *computable* ``needs_judge`` clauses by
-generating a tiny ``.v`` with ``Eval vm_compute in <closed_term>.`` and reading
-the reduced normal form off stdout — Coq reduction of a closed term, not C
-execution and not a proof. The same helper can later back audit's compile
-replay cross-check.
+Primary use: runner-side checks can compile generated proof files or reduce
+closed Coq terms by generating a tiny ``.v`` with ``Eval vm_compute in
+<closed_term>.`` and reading the reduced normal form off stdout — Coq reduction
+of a closed term, not C execution and not a proof.
 """
 from __future__ import annotations
 
@@ -53,7 +52,7 @@ def coqc_bin() -> str:
 def clean_compile_artifacts(directory: Path, *, recursive: bool = True) -> list[str]:
     """Delete Coq compile intermediates under ``directory``; keep ``.v``/``.c``.
 
-    Use only on workspace dirs (``coq/generated``, ``evaluation/compute``, an
+    Use only on workspace dirs (``coq/generated``, temporary compute dirs, an
     audit ``verified/`` copy) — never on the shared QCP tree, whose prebuilt
     ``examples/*.vo`` must survive. Returns the paths removed.
     """
@@ -132,7 +131,7 @@ def run_coqc(
     return proc.returncode, proc.stdout, proc.stderr
 
 
-def parse_eval_normal_form(stdout: str) -> str | None:
+def parse_vm_compute_normal_form(stdout: str) -> str | None:
     """Extract the reduced term printed by ``Eval vm_compute in ...``.
 
     Coq prints ``     = <value>`` then ``     : <type>``. Returns ``<value>``

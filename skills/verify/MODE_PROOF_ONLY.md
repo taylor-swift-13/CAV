@@ -4,33 +4,29 @@
 
 ## 触发条件
 
-`run_verify.py` 在以下三件事同时成立时进入本模式：
+runner 只在 symexec 已经生成当前 case 的 QCP mirror VC，且还需要补 `proof_manual.v` 时进入本模式。所有路径以 prompt 中的 QCP mirror 为准：
 
-- 输入只有 `input/<name>.c`、无 `.v`；
-- 函数是 loop-free（无 `for`/`while`/`do-while`/`switch`/`goto`）；
-- 当前 workspace 的 `coq/generated/<name>_goal.v` 已经由确定性 fast path 跑过 symexec 生成。
+- C mirror: `QCP_examples/CAV/<workspace>/`
+- Coq mirror: `SeparationLogic/examples/CAV/<workspace>/`
+- Logs: `SeparationLogic/examples/CAV/<workspace>/logs/`
+- Audit: `SeparationLogic/examples/CAV/<workspace>/run_audit.sh`
 
-进入本模式说明：symexec 已经成功、`proof_auto.v` 也已就位，但 `proof_manual.v` 还存在 `Admitted`，需要 agent 来写。
+## 写边界
 
-## 硬约束（覆盖主 SKILL 的写边界）
+- 不改 `../input/`、`../raw/`、`../output/`、`../annotated/`；
+- 不改 `deps/` staged 原始 `.v` spec；
+- 不改 function contract、原始 C implementation；
+- 不手改 `*_goal.v`、`*_proof_auto.v`、`*_goal_check.v`；
+- 优先只改当前 QCP Coq mirror 的 `<name>_proof_manual.v` 和必要 local helper，以及 active QCP logs。
 
-- **不改** `input/`、`raw/`、`annotated/`、`workspace/original/`；
-- **不改** contract、loop invariant、annotation、`.c` 文件；
-- **不改** `coq/generated/*_goal.v`、`*_proof_auto.v`、`*_goal_check.v`；
-- 可写面**只剩**：`coq/generated/<name>_proof_manual.v` 和 `logs/*`。
+如果 proof 暴露 annotation 缺口，可以按主 SKILL 回 annotation，并在 QCP mirror 中重跑 symexec；但仍不能改 function `Require` / `Ensure` 或 executable C。
 
-如果发现 generated VC 在当前 contract/VC 下确实不可证（典型表现：`entailer!` 剩 `(p <> NULL)` 这种 LHS 不带的纯条件），写阻塞到 `logs/issues.md` 然后以 `Final Result: Fail` 收尾——**不要**改 contract 或 annotation 绕过。那是 Contract 阶段的义务（见 `experiences/general/CONTRACT/README.md §15`）。
+## 检索和证明
 
-普通的 `proof_manual.v` 还有 `Admitted`、某个 theorem 的 `coqc` 报错、`entailer!` / `lia` / witness tactic 暂时失败，都不是 proof-only 退出理由。只要能继续编辑 `proof_manual.v` 或添加允许范围内的 local helper，就必须继续证明并重新编译。
+proof-only 模式仍必须执行主 SKILL 的 fingerprint 检索。没有检索记录时，不允许因为单个 proof theorem、`Cannot find witness`、rewrite/unification、`entailer!` / `lia` 失败写 `Final Result: Fail`。
 
-proof-only 模式仍必须执行主 SKILL §0.1 的 fingerprint 检索。没有检索记录时，不允许因为单个 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败写 `Final Result: Fail`。
-
-## 工作流仍按主 SKILL
-
-- §4.5a（10 次探索预算 try-first）继续生效；
-- §4.5b 的 tactic 起手式直接套用；
-- attempt > 1 或 prompt 带 `Restart feedback` 时按 `MODE_RETRY.md` 继续。
+proof tactic、witness、分离逻辑套路优先从当前 VC、已有 proof、CAV experience 检索和同型 QCP 示例中迁移。只有具体 proof blocker 需要额外规则时，才按主 SKILL §0 打开 QCP `vc-proving` 的对应文件；不要预读整个 `.agents/skills/vc-proving/` 目录。
 
 ## 完成判据
 
-和主 SKILL §6 一致：`goal_check.v` 编译通过 + `proof_manual.v` 无 `Admitted`/`admit`/`Abort`。
+只以 QCP mirror 的 `run_audit.sh` 返回 0 为成功。`proof_manual.v` 必须无 `Admitted` / `admit` / `Abort` / 新增 `Axiom`。

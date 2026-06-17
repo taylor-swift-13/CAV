@@ -5,8 +5,8 @@ Two layouts are supported, both using exactly the same JSON schema:
 ``semantic_description`` plus controlled-vocab ``keywords``.
 
 - **end-end** (``experiences/end-end/<case>/logs/workspace_fingerprint.json``):
-  per-workspace retrieval fingerprint; related artifacts are inferred from the
-  case directory.
+  per-workspace retrieval fingerprint; related artifacts use the flat public
+  layout ``c/*``, ``coq/*``, and ``logs/*``.
 - **general** (``experiences/general/<NAME>/<N>/<slug>.fingerprint``):
   per-experience retrieval fingerprint, sibling to ``<slug>.md``.
 
@@ -121,7 +121,16 @@ def artifact_paths(fp_path: Path, layout: str, function_name: str) -> dict[str, 
     """Per-layout artifact paths for the result entry."""
     if layout == "end-end":
         case_dir = fp_path.parents[1]
-        generated = case_dir / "coq" / "generated"
+        c_dir = case_dir / "c"
+        coq_dir = case_dir / "coq"
+        primary_c = c_dir / f"{function_name}.c"
+        if not primary_c.exists():
+            c_matches = sorted(c_dir.glob(f"*{function_name}*.c"))
+            primary_c = c_matches[0] if c_matches else primary_c
+        proof_manual = coq_dir / f"{function_name}_proof_manual.v"
+        if not proof_manual.exists():
+            proof_matches = sorted(coq_dir.glob(f"*{function_name}*proof_manual.v"))
+            proof_manual = proof_matches[0] if proof_matches else proof_manual
         return {
             "layout": "end-end",
             "case_dir": str(case_dir),
@@ -129,10 +138,9 @@ def artifact_paths(fp_path: Path, layout: str, function_name: str) -> dict[str, 
             "annotation_reasoning": str(case_dir / "logs" / "annotation_reasoning.md"),
             "proof_reasoning": str(case_dir / "logs" / "proof_reasoning.md"),
             "issues": str(case_dir / "logs" / "issues.md"),
-            "original_c": str(case_dir / "original" / f"{function_name}.c"),
-            "annotated_c": str(case_dir / "annotated" / f"{function_name}.c"),
-            "proof_manual": str(generated / f"{function_name}_proof_manual.v"),
-            "generated_dir": str(generated),
+            "c": str(primary_c),
+            "proof_manual": str(proof_manual),
+            "coq_dir": str(coq_dir),
         }
     if layout == "general":
         # fp_path: .../general/<NAME>/<N>/<slug>.fingerprint

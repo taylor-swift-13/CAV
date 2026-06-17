@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Initializes a XiZi singly linked list head by setting its node_next field to null. The function mutates only the head node and has straight-line control flow.",
+  "keywords": {
+    "problem_kind": "transform",
+    "data": "linked_list",
+    "pattern": "straight_line"
+  }
+}

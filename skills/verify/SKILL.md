@@ -3,130 +3,133 @@ name: verify
 description: Verify skill，消费 Contract 输出完成注解、证明和编译检查。
 ---
 
-Verify 消费 Contract 已经准备好的输入做 annotation + proof + compile，**不重写 contract**。所有 reasoning / issues 日志必须独立可读：现象 + 定位（文件/theorem/witness） + 修复动作 + 关键 C/Coq/报错片段 + 为什么这样改。
+Verify 在 QCP mirror 中完成 annotation + proof + compile，**不重写 function contract**。本 skill 自包含 CAV 工程边界、经验检索、重启纪律和 runner audit 成功判定；QCP `.agents/skills/` 只作为按需补充资料，不要全量预读。
 
-## 0. 退出纪律
+这里的 function contract 只指函数级 `Require` / `Ensure` 前后条件；loop invariant、`Assert`、`Inv Assert`、`which implies` 和 `where` 属于 verification annotation。
 
-Verify 是长迭代任务。**不要**因为遇到一个可继续推进的 `symexec` / `coqc` / proof blocker 就结束当前 agent run。只要还在当前外层超时预算内，并且 blocker 可以通过本 workspace 的 annotation / proof edit 继续尝试，就必须继续执行“改一处 -> 跑对应 gate -> 读第一个失败点 -> 再改”的循环。
+## 0. 必读顺序
 
-只有以下情况才能写 `Final Result: Fail` 并退出：
+先读 repo-level CAV skill，再按 prompt 标记读 mode addendum：
 
-- contract 或原始 C/V 规格缺失、矛盾，必须回到 Contract 阶段或用户决策；
-- 当前 generated VC 在现有 contract/annotation 下确实不可证，且已经定位到缺失的前提或语义矛盾；
-- 需要修改写边界外的文件才能继续；
-- 外部命令或 agent run 已经接近/触达 runner 超时，无法再完成一次有意义的编辑和 gate；
-- 已经完成全部可行修复但确定性 runner gate 仍失败，且失败原因不再能在当前 workspace 内推进。
+- `../skills/verify/SKILL.md`
+- `../skills/verify/MODE_PROOF_ONLY.md`（仅 prompt 标 `Mode: proof-only` 时）
+- `../skills/verify/MODE_RETRY.md`（仅 retry / restart feedback 时）
+- `../skills/verify/MODE_RERUN_AUDIT.md`（仅 prompt 有 audit feedback 时）
 
-普通的 `proof_manual_has_obligations`、单个 theorem 的 `coqc` 报错、`symexec` 的具体 annotation 报错、tactic 失败、load-path 可修复错误，都不是退出理由；这些是本轮继续工作的输入。
+QCP `.agents` 的使用原则：
 
-## 0.1 检索纪律
+- 默认使用 runner prompt 中的 exact commands、当前 QCP mirror、CAV `../experiences` 检索结果推进。
+- 只有 prompt 和当前错误不足以决定下一步时，才读 `.agents/skills/verification-orchestrator/SKILL.md`。
+- 只有遇到具体 annotation、symexec、VC diagnosis、proof 或 final-check blocker 时，才打开对应 phase 的 `.agents/skills/<phase>/SKILL.md` 或相关 `docs/`；禁止一次性读取 `.agents/skills/*` 或整个 docs 目录。
 
-Verify 不能只靠局部猜 tactic 硬顶。进入 manual proof 后，必须先执行一次 fingerprint 检索，并把结果写入 `logs/proof_reasoning.md`：
+遇到具体 annotation/proof blocker 时，优先检索并阅读同型 QCP 官方示例：
+
+- `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/`
+- `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/`
+- `tutorial/`
+
+CAV `../doc` 和 `../experiences` 是保留的经验系统，用于 targeted retrieval / restart memory；不要用泛读 `.agents` 替代这些检索。
+
+## 1. 路径和边界
+
+runner 已经把当前 case staged 到 QCP mirror。以 prompt 中列出的路径为准：
+
+- Active C mirror: `QCP_examples/CAV/<workspace>/`
+- Active Coq mirror: `SeparationLogic/examples/CAV/<workspace>/`
+- Read-only spec deps: `SeparationLogic/examples/CAV/<workspace>/deps/`
+- Active logs: `SeparationLogic/examples/CAV/<workspace>/logs/`
+- Required audit: `SeparationLogic/examples/CAV/<workspace>/run_audit.sh`
+
+只写：
+
+- 当前 QCP C mirror 中的 annotated C/header；
+- 当前 QCP Coq mirror 中除 `deps/` 外的本 case `.v` 文件；
+- 当前 QCP logs 中的 `issues.md`、`metrics.md`、`annotation_reasoning.md`、`proof_reasoning.md`、`continue.md`、`workspace_fingerprint.json`。
+
+只读：
+
+- 当前 QCP mirror；
+- QCP `.agents/skills/` 中当前 blocker 对应的少量文件、`tutorial/` 和上述官方示例目录；
+- `../skills/verify/*`；
+- `../doc`、`../experiences` 和 `../scripts/search_fingerprint.py`，仅用于经验检索。
+
+禁止：
+
+- 读写 `../output/`、`../annotated/`、`../input/`、`../scripts/` 中除 `search_fingerprint.py` 外的文件；
+- 读自己的 `agent_stdout_*.jsonl`、`git log` / `git show`；
+- 读其它 CAV/QCP mirror workspace；
+- 修改 `deps/` 中 staged 原始 `.v` spec；
+- 修改原始 C implementation 或 function `Require` / `Ensure`。
+
+## 2. 经验检索
+
+进入 manual proof 前，必须先确保 active QCP `logs/workspace_fingerprint.json` 非空，字段合法：
+
+```json
+{
+  "semantic_description": "...",
+  "keywords": {
+    "problem_kind": "...",
+    "data": "...",
+    "pattern": "..."
+  }
+}
+```
+
+然后运行 prompt 给出的命令，形如：
 
 ```bash
-python3 scripts/search_fingerprint.py --fingerprint output/verify_<timestamp>_<name>/logs/workspace_fingerprint.json --scope all --min-keyword-matches 1 --prefer-stage PROOF --top 5 --format markdown
+python3 ../scripts/search_fingerprint.py --fingerprint SeparationLogic/examples/CAV/<workspace>/logs/workspace_fingerprint.json --scope all --min-keyword-matches 1 --prefer-stage PROOF --top 5 --format markdown
 ```
 
-同一个 theorem 或同一类 `coqc` 错误连续失败 2 次后，必须再次检索。检索记录至少包含：
+把查询命令、前 1-3 个候选、实际展开阅读的候选、复用/拒绝的 pattern 追加到 active QCP `logs/proof_reasoning.md`。同一 theorem 或同类 `coqc` 错误连续失败 2 次后，必须再次检索。
 
-- 使用的查询命令；
-- 返回的前 1-3 个候选路径；
-- 实际展开阅读的候选；
-- 复用到的 proof / annotation pattern，或说明为什么候选不适用。
+没有检索记录时，不允许因为 `proof_manual_has_obligations`、`Cannot find witness`、rewrite/unification、`entailer!`、`lia` 失败写 `Final Result: Fail`。
 
-没有检索记录时，不允许因为 `proof_manual_has_obligations`、`Cannot find witness`、rewrite/unification 失败、`entailer!`/`lia` 失败写 `Final Result: Fail`。这些错误必须先走检索，再继续证明。
+## 3. 工作循环
 
-## 1. 路径约定
+按 runner prompt 的 exact commands 和当前 QCP mirror 推进：
 
-- 输入：`input/<name>.c`、可选 `input/<name>.v`
-- 工作副本：`annotated/verify_<timestamp>_<name>.c`
-- workspace：`output/verify_<timestamp>_<name>/`（含 `coq/generated/`、`logs/`、`original/`）
+1. 读当前 QCP mirror 的 staged C、Coq deps 和与当前失败点相关的示例。
+2. 如需 annotation，先写 `logs/annotation_reasoning.md`，再只修改 verification annotation。
+3. 每次 annotation 变化后，在 QCP mirror 中重跑 symexec；重跑前把旧 generated `.v` 备份到当前 Coq mirror 的 `.tmp/` 或 runner 已准备的 reference 目录，便于迁移旧 proof 结构。
+4. proof 阶段只补 `<name>_proof_manual.v` 和必要 local helper；不要证明或编辑 `proof_auto.v`。
+5. 若 proof 暴露 annotation 缺口，回到 annotation 并重跑 symexec。
+6. 每轮用 `bash SeparationLogic/examples/CAV/<workspace>/run_audit.sh` 作为最终 gate。
 
-脚本调用和手动执行必须用这同一组路径，不可发明新位置。
+若某一步缺少操作细节，再按 §0 打开对应的单个 QCP `.agents` phase 文件或 doc。
 
-## 2. 读写边界
+禁止在 `proof_manual.v` 中保留或新增 `Admitted` / `admit` / `Abort` / `Axiom`。禁止改 VC 目标、改 generated goal/proof_auto/goal_check，或导入绕过性 lemma。
 
-**读**（除自身 I/O 外，参考只能在白名单内）：`doc/`、`experiences/`、`QualifiedCProgramming/QCP_examples/`。权威细节见 `doc/PERMISSIONS.md §3 / §3.1`。
+## 4. 退出纪律
 
-**不要**：`symexec --help` 之类的命令反推、读 `scripts/` 编排脚本、读 `QualifiedCProgramming/` 下除 `QCP_examples/` 外的库源码、读自己的 `logs/agent_stdout_*.jsonl`、`git log` / `git show` 考古。
+`run_audit.sh` 返回非零时不要退出；继续按第一个失败点修改 annotation/proof 并再次运行 audit。写 `issues.md` 或 `metrics.md` 不是退出理由。
 
-**写**：当前 `annotated/...c`、当前 workspace 的 `coq/generated/<name>_proof_manual.v` + 必要本地 helper、当前 workspace 的 `logs/*`。其余一律不写——包括 `input/`、`scripts/`、其它 workspace、QCP 源码、`experiences/`（只读，沉淀由末尾 consolidate 负责）。
+只有两种最终结果：
 
-**不手改** `*_goal.v` / `*_proof_auto.v` / `*_goal_check.v`。
+- `Final Result: Success`：`run_audit.sh` 返回 0，`proof_manual.v` 无未解占位，source integrity 保持，logs/metrics 已更新。
+- `Final Result: Fail`：只允许 confirmed `contract_program_mismatch_blocker` 或 `contract_or_original_spec_blocker`，即 function contract / 原始 spec 与程序语义冲突，必须回用户或上游 spec 决策，无法通过当前 annotation/proof 修复。
 
-**annotated 头文件硬规则**：`/home/yangfp/CAV/C/CAV/annotated/` 下的 C 文件引用公共验证头时，必须使用 repo-root 相对的单层 `../` 格式：
+普通 symexec、coqc、proof obligation、tactic、load-path、witness 失败都不是 Fail 理由。
 
-```c
-#include "../verification_stdlib.h"
-#include "../verification_list.h"
-#include "../int_array_def.h"
-```
+## 5. 日志
 
-需要字符数组时同理使用 `#include "../char_array_def.h"`。禁止写 `../../...`、bare header（如 `#include "verification_stdlib.h"`）或其它层级；发现后必须先改回上述格式再跑 symexec/compile，避免 include 路径导致 infra 误判。
+所有 reasoning 日志只追加，不覆盖。每段必须独立可读：现象、定位（文件/theorem/witness/行号）、修复动作、关键 C/Coq/报错片段、为什么这样改。
 
-## 3. 分步读经验（按需读，不要一次读完）
+- `logs/annotation_reasoning.md`：annotation 变更前写。
+- `logs/proof_reasoning.md`：proof 变更前写，并记录经验检索。
+- `logs/issues.md`：记录真正遇到的 issue、audit 非零原因、最终解决方式或合法 blocker。
+- `logs/continue.md`：retry/restart 接力，每轮追加新 section。
+- `logs/metrics.md`：记录自判摘要，最后一行必须是裸的 `Final Result: Success` 或 `Final Result: Fail`。
 
-- 任务开始：`doc/SCOPE.md`、`doc/PERMISSIONS.md`、`experiences/general/README/README.md`
-- 改 annotation 前：`experiences/general/INV/README.md`、`experiences/general/ASSERTION/README.md`
-- 跑 symexec 前：`experiences/general/SYMEXEC/README.md`（命令在 §0；cwd = `QualifiedCProgramming/`）
-- 写 `proof_manual.v` 前：`experiences/general/PROOF/README.md`（tactic 起手式在 §3）
-- 编译前：`experiences/general/COMPILE/README.md` §5（cwd = `QualifiedCProgramming/SeparationLogic`；默认复用 `examples/*.vo`，缺失才回 `coq/deps/`）
-- 卡住才查 `doc/retrieval/INDEX.md`、`doc/predict/`、`experiences/end-end/`、`QCP_examples/`
+写 `Final Result: Fail` 时，`issues.md` 必须包含 blocker 名称、失败 gate、退出码或 theorem/witness 名、关键报错、相关路径、function contract / spec 与程序语义冲突点、为什么当前 verify 无法修复。
 
-## 4. 主流程
+## 6. Mode Addendum
 
-1. 读 `input/<name>.{c,v}`，确认有基本规格。规格缺失或必须改 contract / 原始 C 时，**停止 verify**，记 `logs/issues.md`，找用户。
-2. 读 `doc/retrieval/INDEX.md`，按受控词表回填 `logs/workspace_fingerprint.json` 的 `semantic_description` 和 `keywords`（不能留空）。
-3. 需要补 `Inv` / `Assert` 时：读 INV/ASSERTION，先 append `logs/annotation_reasoning.md`，再改 annotated 工作副本。loop invariant 写完整 `Inv Assert`；中间断言优先写完整 `Assert`，`which implies` 只做局部 bridge。生成的 manual VC 语义不可证时**回 annotation**，不要硬写 proof。无需注释就跳过这一步。
-4. 跑 `symexec`（每改 annotation 必须重跑）。以最新 witness 编号为准，不要盲用旧 proof。
-5. 看 `proof_manual.v`：
-   - 若**没有需要手工证明的 theorem**（所有 witness 都在 `proof_auto.v` 的 `Admitted` 占位里）= trivial case，**直接跳 6**，不读 `experiences/general/PROOF/README.md`、不检索 retrieval/end-end/QCP_examples。
-   - 否则读 `experiences/general/PROOF/README.md`，先按 §0.1 执行 fingerprint 检索，再按 §3 tactic 起手式套，编译失败迭代；每轮先 append `logs/proof_reasoning.md` 再改 proof。手工 witness 逐个证、当前没证完不跳下一个。可补 helper lemma；**不准** `Admitted` / `admit` / `Abort` / 新增 `Axiom` / 改 VC 目标 / 导入 `derivable1` 绕过。
-6. 按 `experiences/general/COMPILE/README.md` §5 编译 `goal` / `proof_auto` / `proof_manual` / `goal_check`。
-7. 自检 source integrity / freshness：确认 `input/<name>.c` / 可选 `input/<name>.v` 没被改；确认 `annotated/verify_<timestamp>_<name>.c` 里的函数 contract 和 executable C implementation 与原始 input 一致，只新增验证注解；确认当前 Coq 产物来自最新 annotated C。
-8. 清理 `coq/` 下非 `.v` 中间产物和 `input/` 下非 `.v`/`.c` 产物。
-9. 只有满足 §0 的退出条件后，才写完 `logs/issues.md`（追加，详细记录所有踩坑）、`logs/metrics.md`（自判摘要即可），最后一行写裸的 `Final Result: Success` 或 `Final Result: Fail`——**整行就是这十几个字符**，禁止 markdown 加粗、反引号、后缀（如 `(round N)`），否则外部判据会误判未完成。若当前失败点仍可通过继续改 annotation/proof 推进，不要写最终结果，继续迭代。
-
-## 5. 完成条件
-
-`logs/metrics.md` 写自判摘要即可；runner 会复核并覆盖最终 metrics。
-
-全部满足才能写 `Final Result: Success`：
-
-- symexec 基于最新 annotated 文件成功，生成最新 `goal/proof_auto/proof_manual/goal_check`
-- `proof_manual.v` 无 `Admitted` / `admit` / `Abort` / 新增 `Axiom`
-- 四个 `.v` 文件全编译通过
-- 没有修改原始 contract 或函数实现；annotated C 只新增验证注解
-- `annotated/...c` 中公共验证头 include 必须是 `#include "../verification_stdlib.h"`、`#include "../verification_list.h"`、`#include "../int_array_def.h"` / 必要时 `../char_array_def.h`，不得出现 `../../...` 或 bare header
-- `logs/workspace_fingerprint.json` 非空且字段合法
-- runner 能用当前 annotated C 重新 symexec，并确认 `goal/proof_auto/goal_check` 与当前产物一致
-- `coq/` 与 `input/` 中间产物已清理
-- `logs/issues.md` 和 `logs/metrics.md` 已完整更新
-
-如果任一机器 gate 失败，先按 §0 判断能否继续推进。能继续推进时，记录到对应 reasoning 日志并继续迭代，**不要**写 `Final Result: Fail`。只有满足 §0 的退出条件时，才写 `Final Result: Fail`，并在 `logs/issues.md` 中记录：
-
-- 失败的 gate 名称（如 symexec、manual proof obligation、`coqc goal_check.v`）
-- 退出码或 theorem/witness 名称
-- 关键报错
-- 当前 `annotated/...c` 和相关 `coq/generated/*.v` 路径
-- 下一轮 verify 需要修正的具体点
-
-Agent 自判成功后，runner 还会复核：检查生成文件存在、`proof_manual.v` 无未解占位、重新编译 `goal/proof_auto/proof_manual/goal_check`，确定性检查 input C/V 未被修改、annotated C 的 contract 和 executable implementation 未偏离原始 input，检查 fingerprint 非空合法，并记录当前 annotated C hash 后重新 symexec 对比 `goal/proof_auto/goal_check`。只有 runner 复核通过，verify 阶段才算成功。
-
-## 6. Reasoning 日志规范（共用）
-
-`annotation_reasoning.md` / `proof_reasoning.md` / `issues.md` / `continue.md` 共同遵守：
-
-- **只追加，不覆盖**
-- 每段独立可读：现象、定位（文件路径 + theorem / witness / 行号）、修复动作、关键代码或日志片段（C annotation / Coq theorem-subgoal-tactic / `coqc`-`symexec` 报错）、**为什么这样改**。不准只写「尝试证明失败」「修改了 invariant」这类笼统话。
-- 每轮迭代前贴出新一轮的片段，不只贴最后一版
-
-## 7. 条件性 mode addendum
-
-runner 在 prompt 加标记触发以下附录，**没标记就不读**。多个标记可叠加。
+prompt 标记触发附录：
 
 | Prompt 标记 | 附录文件 | 含义 |
-|------------|---------|------|
-| `Attempt: N (retry — ...)` 且 N > 1 | `MODE_RETRY.md` | 接力上一轮工作，必须追加 `logs/continue.md` 新 section |
-| `Restart feedback` 块 | `MODE_RETRY.md` | runner audit check 反馈后的内部重试，逐条修复 feedback |
-| `Mode: proof-only` | `MODE_PROOF_ONLY.md` | loop-free + symexec 已跑过、仅补 `proof_manual.v` 的子场景 |
+|---|---|---|
+| `Attempt: N (retry — ...)` 且 N > 1 | `MODE_RETRY.md` | 接力上一轮 QCP mirror 工作，追加 `continue.md` |
+| `Restart feedback` / audit feedback | `MODE_RETRY.md`、必要时 `MODE_RERUN_AUDIT.md` | 逐条修复 runner/audit feedback |
+| `Mode: proof-only` | `MODE_PROOF_ONLY.md` | symexec 已就位，优先补 proof_manual |

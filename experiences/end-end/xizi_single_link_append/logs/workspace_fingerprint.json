@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Appends a node to the tail of an intrusive XiZi singly linked list by traversing node_next until the final node, then linking the new node and setting its next field to null. The function mutates the list structure and has no return value.",
+  "keywords": {
+    "problem_kind": "transform",
+    "data": "linked_list",
+    "pattern": "single_loop"
+  }
+}

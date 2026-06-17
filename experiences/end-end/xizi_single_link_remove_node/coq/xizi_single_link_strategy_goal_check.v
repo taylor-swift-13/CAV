@@ -1,0 +1,5 @@
+From SimpleC.EE.CAV.verify_20260615_hil_xizi_single_link_remove_node Require Import xizi_single_link_strategy_goal xizi_single_link_strategy_proof.
+
+Module xizi_single_link_Strategy_Correctness : xizi_single_link_Strategy_Correct.
+  Include xizi_single_link_strategy_proof.
+End xizi_single_link_Strategy_Correctness.

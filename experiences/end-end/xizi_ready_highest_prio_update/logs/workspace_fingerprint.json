@@ -1,18 +1,8 @@
 {
-  "workspace": "verify_20260603_180338v_xizi_ready_highest_prio_update",
-  "stage": "verify",
-  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_ready_highest_prio_update.c",
-  "input_v": "",
-  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260603_180338v_xizi_ready_highest_prio_update/original/xizi_ready_highest_prio_update.c",
-  "original_v": "",
-  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260603_180338v_xizi_ready_highest_prio_update.c",
-  "function_name": "xizi_ready_highest_prio_update",
   "semantic_description": "Loop-free function `xizi_ready_highest_prio_update` returning `current_highest`.",
   "keywords": {
     "problem_kind": "math",
     "data": "scalar",
     "pattern": "branch"
-  },
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+  }
 }

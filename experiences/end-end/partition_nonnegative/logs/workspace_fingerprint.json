@@ -1,8 +1,0 @@
-{
-  "semantic_description": "In-place two-pointer partition over an integer array of length n. The loop maintains a left index i and right index j, advances i past negative elements, swaps nonnegative elements at i with the current right element, and decrements j until i passes j. The return value is the partition boundary: all elements before it are negative, all elements from it to n are nonnegative, the final array is a permutation of the input list, and the same memory block is updated in place. The empty array case is allowed because n may be zero, producing i = 0 and j = -1 so the loop is skipped.",
-  "keywords": {
-    "problem_kind": "partition",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

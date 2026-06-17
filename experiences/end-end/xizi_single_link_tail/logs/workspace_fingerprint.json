@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Finds the tail node of a nonempty XiZi singly linked list by traversing node_next until the current node has null successor. The list is read-only and the loop returns the final node pointer.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "linked_list",
+    "pattern": "single_loop"
+  }
+}

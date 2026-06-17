@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Checks whether a headed XiZi singly linked list is empty by reading the head node_next field and returning 1 exactly when it is null, otherwise 0. The list is read-only and the function has straight-line control flow.",
+  "keywords": {
+    "problem_kind": "compare",
+    "data": "linked_list",
+    "pattern": "straight_line"
+  }
+}

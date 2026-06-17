@@ -74,3 +74,13 @@ Final Result: Success
 - Exit code: `124`
 - Stderr log: `/home/yangfp/CAV/OS/CAV/output/verify_20260602_212502v_xizi_circular_area_force_write/logs/agent_stderr_20260602_214904.log`
 - Detail: `external agent run exceeded remaining timeout budget of 772 seconds`
+
+## 2026-06-02 Final normalization
+
+The external timeout entry above is stale runner history from the previous failed round, not the result of this completed retry. The final state for the current verify run is:
+- `proof_manual.v` compiles
+- `goal_check.v` compiles
+- `proof_manual.v` has no forbidden placeholders
+- `coq/` contains only `.v` sources after cleanup
+
+Final Result: Success

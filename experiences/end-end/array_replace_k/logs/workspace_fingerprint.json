@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Verifies array_replace_k, which iterates through an integer array of length n and updates the array in place so every element equal to old_k is replaced by new_k while every other element keeps its original value. The control structure is a single for loop over indices 0 <= i < n with an if branch on a[i] == old_k. For n = 0 the loop is skipped and the empty array predicate is preserved. The function returns void and modifies only the caller-provided array memory described by IntArray::full.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

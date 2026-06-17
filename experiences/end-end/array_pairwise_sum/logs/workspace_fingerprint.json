@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_pairwise_sum iterates from i = 0 to n - 1 over three integer arrays. It reads a[i] and b[i], writes out[i] = a[i] + b[i], preserves the full contents of input arrays a and b, and leaves out containing a pointwise sum list of length n. The loop may execute zero times when n = 0. Memory is modified only through the caller-provided output array out; the contract includes a per-element signed-int overflow guard for every computed sum.",
-  "keywords": {
-    "problem_kind": "sum",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

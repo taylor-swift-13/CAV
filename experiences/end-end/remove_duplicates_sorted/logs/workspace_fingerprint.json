@@ -1,8 +1,0 @@
-{
-  "semantic_description": "The function removes duplicate values from an already sorted integer array in place. For n = 0 it returns 0 without changing memory. Otherwise it scans the array once with index i and maintains write index j for the length of the deduplicated prefix; when a[i] differs from the last retained value a[j - 1], it writes a[i] to a[j] and increments j. The returned value is the length of remove_duplicates_sorted_spec(l), and the first returned elements of the final array must equal that specification while the full array resource remains owned.",
-  "keywords": {
-    "problem_kind": "sort",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

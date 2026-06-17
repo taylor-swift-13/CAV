@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Handles the target-absent no-op case for XiZi singly linked-list removal by traversing node_next links until null without finding the target. The function returns the original list head and preserves the list structure.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "linked_list",
+    "pattern": "single_loop"
+  }
+}

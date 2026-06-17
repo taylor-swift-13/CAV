@@ -1,8 +1,0 @@
-{
-  "semantic_description": "The function array_swap_ends performs an in-place update on an integer array. It requires n to be nonnegative, l to have length n, and a to own the full IntArray contents l. If n < 2 the function returns without changing memory. If n >= 2 it stores a[0] in a temporary, writes the original last element a[n - 1] into a[0], then writes the temporary original first element into a[n - 1], preserving every interior element.",
-  "keywords": {
-    "problem_kind": "search",
-    "data": "array",
-    "pattern": "branch"
-  }
-}

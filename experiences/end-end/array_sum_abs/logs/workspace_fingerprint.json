@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Scans a read-only integer array with a single accumulator loop, adds the absolute value of each element into a running sum, returns 0 on the empty array, and leaves the input array unchanged.",
-  "keywords": {
-    "problem_kind": "sum",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

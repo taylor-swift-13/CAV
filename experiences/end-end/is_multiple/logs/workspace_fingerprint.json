@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Pure scalar arithmetic predicate over two integer inputs. Under the precondition 0 < b, the function tests whether a is divisible by b using the C remainder operator, returns 1 on the divisible branch, and returns 0 otherwise. It has straight-line control with one if branch, performs no memory mutation, and the postcondition relates the return value to an existential or universal integer multiple relation over the pre-state inputs.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "scalar",
-    "pattern": "branch"
-  }
-}

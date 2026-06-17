@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Counts the intersection size of two sorted integer arrays using a two-pointer while loop. The function preserves both input arrays, advances i and j according to the order of a[i] and b[j], increments count only when equal elements are matched, returns zero when either input list is empty, and does not modify memory.",
-  "keywords": {
-    "problem_kind": "sort",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

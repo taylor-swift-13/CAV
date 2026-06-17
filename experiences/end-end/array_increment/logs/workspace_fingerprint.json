@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_increment takes a nonnegative length n and an owned IntArray::full(a, n, l), then iterates once from i = 0 to i < n and updates the array in place so every element becomes the corresponding original value plus 1. The contract requires each l[i] + 1 to be within the signed 32-bit integer range, the loop may be empty when n is 0, and the function does not return a value or allocate memory.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

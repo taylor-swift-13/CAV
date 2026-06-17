@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Scans an input integer array from left to right, preserving the array memory, and returns the last index whose value equals k. The loop maintains ans as either -1 when no matching element has appeared in the scanned prefix, or a valid index in the scanned prefix holding k with no later match before the current loop index. If n is zero, the loop is skipped and the function returns -1 with the universal no-match condition over the empty range.",
-  "keywords": {
-    "problem_kind": "prefix",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

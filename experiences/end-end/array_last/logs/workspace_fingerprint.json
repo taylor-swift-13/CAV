@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_last returns the final element of an input integer array. The contract requires n >= 1, Zlength(l) == n, and full ownership of IntArray::full(a, n, l). The implementation is straight-line code with no branches or loops: it reads a[n - 1] and returns that value. It does not modify memory, so the postcondition preserves the same full array predicate and relates the return value to l[n@pre - 1].",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "array",
-    "pattern": "straight_line"
-  }
-}

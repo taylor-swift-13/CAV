@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Computes the absolute value of scalar integer x using a single if/else branch. The contract excludes INT_MIN so the negation branch cannot overflow, and the result must be nonnegative and equal either to the original input or to its negation. The function does not modify memory.",
-  "keywords": {
-    "problem_kind": "min_max",
-    "data": "scalar",
-    "pattern": "branch"
-  }
-}

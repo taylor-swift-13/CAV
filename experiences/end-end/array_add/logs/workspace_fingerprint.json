@@ -1,8 +1,0 @@
-{
-  "semantic_description": "The function array_add takes length n and three integer arrays a, b, and out. It runs one for_loop from i = 0 to i < n, reads a[i] and b[i], and writes out[i] = a[i] + b[i]. The contract requires n >= 0, all three logical lists have length n, and each elementwise sum fits in signed int range. On return, a and b are unchanged, while out contains a length-n list whose every index equals the corresponding sum. If n is 0, the loop body is skipped and the postcondition is satisfied by the original empty out list.",
-  "keywords": {
-    "problem_kind": "sum",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

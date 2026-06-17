@@ -1,6 +1,6 @@
 ---
 name: c-qcp-consolidate
-description: Consolidate reusable experience from completed C/QCP contract, verify, eval, or end-to-end workspaces into experiences/general.
+description: Consolidate reusable experience from completed C/QCP verify or end-to-end workspaces into experiences/general.
 ---
 
 # C/QCP Consolidation
@@ -16,9 +16,19 @@ For each workspace, inspect:
 
 - `logs/metrics.md`, `logs/issues.md`, `logs/final_result.md`;
 - reasoning logs such as `reasoning.md`, `annotation_reasoning.md`,
-  `proof_reasoning.md`, `test_reasoning.md`, and `continue.md`;
+  `proof_reasoning.md`, and `continue.md`;
 - compile, replay, syntax-check, audit-check, symexec, and Coq logs when
   present.
+
+For `experiences/end-end/<case>/`, assume the public format is flat:
+`c/*`, `coq/*`, and `logs/*` only. Do not expect `coq/generated/`,
+`coq/deps/`, nested stage workspaces, or `logs/logs/`. Keep one public file
+per logical leaf name, keep exactly one main C file as `c/<case>.c`, and keep
+C/Coq artifacts out of `logs/`.
+Files from old internal dependency paths should use their leaf names without a
+leading `deps` prefix. Public `logs/` should contain only the fixed retrieval
+and review files: `workspace_fingerprint.json`, `annotation_reasoning.md`,
+`proof_reasoning.md`, `issues.md`, and `metrics.md`.
 
 For efficiency lessons, inspect upstream `logs/agent_stdout_*.jsonl` with
 targeted searches only. Count tool calls, group repeated searches, compare

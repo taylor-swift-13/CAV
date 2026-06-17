@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Counts asterisks in a read-only null-terminated string, but only while the scan state is inside a pair-delimited region toggled by the character 124. The function performs one left-to-right loop, updates a boolean-like inside state on each bar, increments the count only for 42 while inside is 1, stops at the first terminator, and does not modify memory.",
-  "keywords": {
-    "problem_kind": "count",
-    "data": "string",
-    "pattern": "state_machine"
-  }
-}

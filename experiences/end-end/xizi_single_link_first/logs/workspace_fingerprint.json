@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Returns the first data node of a headed XiZi singly linked list by reading the head node_next field. The function is a read-only accessor with straight-line control flow and preserves the list.",
+  "keywords": {
+    "problem_kind": "search",
+    "data": "linked_list",
+    "pattern": "straight_line"
+  }
+}

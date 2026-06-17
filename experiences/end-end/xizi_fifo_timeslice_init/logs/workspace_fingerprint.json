@@ -1,19 +1,8 @@
 {
-  "workspace": "verify_20260603_181352v_xizi_fifo_timeslice_init",
-  "stage": "verify",
-  "input_c": "/home/yangfp/CAV/OS/CAV/input/xizi_fifo_timeslice_init.c",
-  "input_v": "",
-  "original_c": "/home/yangfp/CAV/OS/CAV/output/verify_20260603_181352v_xizi_fifo_timeslice_init/original/xizi_fifo_timeslice_init.c",
-  "original_v": "",
-  "annotated_c": "/home/yangfp/CAV/OS/CAV/annotated/verify_20260603_181352v_xizi_fifo_timeslice_init.c",
-  "function_name": "xizi_fifo_timeslice_init",
   "semantic_description": "Straight-line array update function that writes zeros into both cells of a length-2 integer state array in place. The input contents are overwritten; after return the same memory block stores [0, 0].",
   "keywords": {
     "problem_kind": "transform",
     "data": "array",
     "pattern": "straight_line"
-  },
-  "verification_status": "goal_check_passed",
-  "assume_contract_is_correct": true,
-  "contract_source": "contract_input_c"
+  }
 }

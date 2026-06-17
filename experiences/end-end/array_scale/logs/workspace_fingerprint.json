@@ -1,8 +1,0 @@
-{
-  "semantic_description": "array_scale verifies a single for-loop that preserves the input integer array a and writes every output element out[i] to la[i] * k. The contract requires n >= 0, matching input/output list lengths, and an overflow guard for every product. The loop may execute zero times when n == 0; otherwise it updates the output array prefix while leaving the suffix from the original output list until later iterations.",
-  "keywords": {
-    "problem_kind": "prefix",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

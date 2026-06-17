@@ -11,7 +11,7 @@ is ``<repo>/config/agents.json``; override with ``--config <path>`` or the
 falls back to built-in defaults.
 
 Put infrequently-changed things here — model names, agent backend, CLI binary
-names, reasoning effort, eval case counts. Keep frequently-changed things
+names, and reasoning effort. Keep frequently-changed things
 (target file, ``--only``, budgets, ``--dry-run``) as CLI flags.
 """
 from __future__ import annotations
@@ -64,7 +64,7 @@ class Config:
         return self.data.get("reasoning_effort") or builtin
 
     def solver_model(self, agent: str, builtin: str) -> str:
-        """Model for the contract/verify solver, per agent backend."""
+        """Model for the verify solver, per agent backend."""
         return self._section("models").get(agent) or builtin
 
     def consolidate_model(self, builtin: str) -> str:
@@ -72,10 +72,6 @@ class Config:
 
     def bin(self, agent: str, builtin: str) -> str:
         return self._section("bins").get(agent) or builtin
-
-    def eval_num(self, key: str, builtin: int) -> int:
-        v = self._section("eval").get(key)
-        return v if isinstance(v, int) else builtin
 
     def default_model(self, agent: str, builtin: str) -> str:
         """Default model for non-solver single-stage runs, per agent backend."""

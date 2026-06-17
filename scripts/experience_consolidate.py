@@ -18,18 +18,7 @@ GENERAL_DIR = REPO_ROOT / "experiences" / "general"
 DEFAULT_SKILL = REPO_ROOT / "skills" / "consolidate" / "SKILL.md"
 
 SCOPE_FILES: dict[str, list[str]] = {
-    "contract": ["CONTRACT/README.md", "EVAL/README.md", "AUDIT/README.md"],
     "verify": [
-        "SYMEXEC/README.md",
-        "ASSERTION/README.md",
-        "INV/README.md",
-        "PROOF/README.md",
-        "COMPILE/README.md",
-        "AUDIT/README.md",
-    ],
-    "all": [
-        "CONTRACT/README.md",
-        "EVAL/README.md",
         "SYMEXEC/README.md",
         "ASSERTION/README.md",
         "INV/README.md",

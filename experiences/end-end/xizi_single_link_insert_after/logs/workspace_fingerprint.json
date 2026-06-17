@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Inserts one XiZi singly linked-list node immediately after a given predecessor by rewriting two node_next fields: the inserted node points to the old successor, and the predecessor points to the inserted node. The operation is a local splice with straight-line control flow.",
+  "keywords": {
+    "problem_kind": "transform",
+    "data": "linked_list",
+    "pattern": "straight_line"
+  }
+}

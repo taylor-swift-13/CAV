@@ -1,8 +1,0 @@
-{
-  "semantic_description": "copy_array copies n integer elements from src to dst using a single for loop. The contract preserves the full source array ls and requires the destination array to contain exactly ls after the loop. The loop may execute zero times when n is zero, and the function mutates only the caller-provided destination array while keeping source memory unchanged.",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "The function scans an integer array in place with a single for loop over indices 0 <= i < n. For each element, negative input values are replaced by 0 and nonnegative input values are preserved. The empty array case is possible when n = 0, and the function modifies the caller-provided array memory but returns no scalar value.",
-  "keywords": {
-    "problem_kind": "compare",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

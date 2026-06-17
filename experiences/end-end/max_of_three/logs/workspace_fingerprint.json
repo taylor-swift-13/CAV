@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Computes and returns the maximum of three scalar integer inputs using straight-line initialization followed by two conditional branches. The result must be one of the original inputs and must be greater than or equal to all three original inputs. The function performs no heap or pointer memory updates.",
-  "keywords": {
-    "problem_kind": "min_max",
-    "data": "scalar",
-    "pattern": "branch"
-  }
-}

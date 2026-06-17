@@ -1,0 +1,83 @@
+#include "xizi_single_link_def.h"
+
+id : 301
+priority : core(0)
+left : xizi_sll(?p, nil{Z}) at 0
+action : left_erase(0);
+         left_add(p == NULL);
+
+id : 302
+priority : core(0)
+right : xizi_sll(?p, nil{Z}) at 0
+action : right_erase(0);
+         right_add(p == NULL);
+
+id : 303
+priority : core(0)
+right : xizi_sll(NULL, ?l) at 0
+action : right_erase(0);
+         right_add(l == nil{Z});
+
+id : 304
+priority : core(4)
+left : (?p != NULL || NULL != ?p) at 0
+       xizi_sll(p, ?l) at 1
+action : left_erase(1);
+         left_exist_add(d);
+         left_exist_add(q);
+         left_exist_add(l0);
+         left_add(store(field_addr(p, SingleLinklistNode, node_next), PTR(struct SingleLinklistNode), q));
+         left_add(xizi_sll(q, l0));
+         left_add(l == cons{Z}(d, l0));
+
+id : 305
+priority : core(3)
+left : xizi_sll_head(?p, ?l) at 0
+action : left_erase(0);
+         left_exist_add(q);
+         left_add(store(field_addr(p, SingleLinklistNode, node_next), PTR(struct SingleLinklistNode), q));
+         left_add(xizi_sll(q, l));
+
+id : 306
+priority : core(3)
+right : xizi_sll_head(?p, ?l) at 0
+action : right_erase(0);
+         right_exist_add(q);
+         right_add(store(field_addr(p, SingleLinklistNode, node_next), PTR(struct SingleLinklistNode), q));
+         right_add(xizi_sll(q, l));
+
+id : 307
+priority : core(1)
+right : xizi_sllseg(?p, p, ?l) at 0
+action : right_erase(0);
+         right_add(l == nil{Z});
+
+id : 308
+priority : core(4)
+left : (?p != ?q || ?q != ?p) at 0
+       xizi_sllseg(p, q, ?l) at 1
+action : left_erase(1);
+         left_exist_add(d);
+         left_exist_add(r);
+         left_exist_add(l0);
+         left_add(store(field_addr(p, SingleLinklistNode, node_next), PTR(struct SingleLinklistNode), r));
+         left_add(xizi_sllseg(r, q, l0));
+         left_add(l == cons{Z}(d, l0));
+
+id : 309
+priority : core(4)
+left : (?p != ?q || ?q != ?p) at 0
+       xizi_sll_to_target(p, q, ?l) at 1
+action : left_erase(1);
+         left_exist_add(d);
+         left_exist_add(r);
+         left_exist_add(l0);
+         left_add(store(field_addr(p, SingleLinklistNode, node_next), PTR(struct SingleLinklistNode), r));
+         left_add(xizi_sll_to_target(r, q, l0));
+         left_add(l == cons{Z}(d, l0));
+
+id : 310
+priority : core(1)
+right : xizi_sll_to_target(?p, p, ?l) at 0
+action : right_erase(0);
+         right_add(l == nil{Z});

@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Computes the number of grains on a given chessboard square by doubling an accumulator in a single for-loop. The input is a scalar `square` with lower bound 1, the function does not modify memory, and when the loop exits it returns 2^(square-1).",
-  "keywords": {
-    "problem_kind": "math",
-    "data": "scalar",
-    "pattern": "single_loop"
-  }
-}

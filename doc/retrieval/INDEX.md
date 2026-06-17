@@ -25,7 +25,7 @@
 1. 先看 `keywords`
 2. 再看 `semantic_description`
 3. 命中 general：直接读对应 `<N>/<slug>.md`（短）
-4. 命中 end-end：再展开 `annotation_reasoning.md`、`proof_reasoning.md`、`issues.md` 和相关 `.v`
+4. 命中 end-end：按扁平公开格式展开 `logs/annotation_reasoning.md`、`logs/proof_reasoning.md`、`logs/issues.md` 和 `coq/*.v`；不要找 `coq/generated/` 或 `coq/deps/`
 
 大模型查找相关端到端样例时，只使用四字段 fingerprint：
 

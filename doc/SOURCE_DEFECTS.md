@@ -11,7 +11,7 @@
 | 情况 | VC 真假 | 表现 | 正确处理 |
 | --- | --- | --- | --- |
 | C 实现 bug | **假**（对合法输入） | 能算出具体反例；UBSan 也会报同一行 | 改 C 源码 |
-| 契约太弱 | VC 真但缺前提 | `entailer!` 后残留 LHS 不带的纯条件（如 `p <> NULL`） | 回 Contract 加前置（见 `experiences/general/CONTRACT/README.md §15`） |
+| 契约太弱 | VC 真但缺前提 | `entailer!` 后残留 LHS 不带的纯条件（如 `p <> NULL`） | 回用户或上游 spec 决策补前置（见 `experiences/general/CONTRACT/README.md §15`） |
 | 证明难但可证 | **真** | 反复 `coqc` 失败但找不到反例 | 继续证 / 优化 tactic（见 PROOF §3、§35） |
 
 关键区别：**能不能对一个满足前置的合法输入，把 witness 的结论算成 `false`**。能 → C bug 或契约缺陷（改输入）；不能 → 继续证。

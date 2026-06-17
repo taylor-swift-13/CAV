@@ -1,8 +1,0 @@
-{
-  "semantic_description": "Sums the positive elements of a read-only integer array using one forward loop with an accumulator. The function does not modify the array; for each processed prefix, the accumulator equals the specification on that prefix, and the empty array returns 0.",
-  "keywords": {
-    "problem_kind": "sum",
-    "data": "array",
-    "pattern": "single_loop"
-  }
-}

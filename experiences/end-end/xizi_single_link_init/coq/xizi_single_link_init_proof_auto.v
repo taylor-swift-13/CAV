@@ -1,0 +1,2 @@
+From SimpleC.EE.CAV.verify_20260614_hil_xizi_single_link_init Require Import xizi_single_link_init_goal.
+

@@ -1,0 +1,8 @@
+{
+  "semantic_description": "Removes a target node from a XiZi singly linked list when the target is present after the head by traversing predecessor node_next links until the predecessor points to the target, then bypassing the target. The function mutates the list structure with one search loop.",
+  "keywords": {
+    "problem_kind": "transform",
+    "data": "linked_list",
+    "pattern": "single_loop"
+  }
+}
