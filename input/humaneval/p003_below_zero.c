@@ -20,7 +20,6 @@ int p003_below_zero(int *operations, int operations_size)
 {
     int num = 0;
     int i;
-
     for (i = 0; i < operations_size; i++) {
         num += operations[i];
         if (num < 0) {

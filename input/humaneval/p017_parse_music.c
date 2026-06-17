@@ -80,7 +80,7 @@ IntArray *p017_parse_music(char *music_string)
 */
 {
     IntArray *out = malloc_int_array_struct();
-    int n = strlen(music_string);
+    int n = strlen(music_string) /*@ where l = l, n = len */;
     out->size = 0;
     out->data = malloc_int_array(n + 1);
     int *data = out->data;
@@ -113,8 +113,7 @@ IntArray *p017_parse_music(char *music_string)
                 state = 5;
             }
         }
-
-    }
+        }
 
     if (state == 1) {
         data[out->size] = 4;

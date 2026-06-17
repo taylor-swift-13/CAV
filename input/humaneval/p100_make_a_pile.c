@@ -57,8 +57,7 @@ IntArray *p100_make_a_pile(int n)
     int *data = out->data;
     int i;
 
-    for (i = 0; i < n; i++){
+    for (i = 0; i < n; i++)
         data[i] = n + 2 * i;
-    }
     return out;
 }

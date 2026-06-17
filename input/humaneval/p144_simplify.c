@@ -39,8 +39,12 @@ int p144_simplify(char *x, char *n)
     Require
         0 <= lenx && lenx < INT_MAX &&
         0 <= lenn && lenn < INT_MAX &&
+        0 <= lenx && lenx < INT_MAX &&
+        0 <= lenn && lenn < INT_MAX &&
         Zlength(lx) == lenx &&
         Zlength(ln) == lenn &&
+        (forall (k: Z), (0 <= k && k < lenx) => Znth(k, lx, 0) != 0) &&
+        (forall (k: Z), (0 <= k && k < lenn) => Znth(k, ln, 0) != 0) &&
         problem_144_pre(lx, ln) &&
         ascii_range(lx) &&
         ascii_range(ln) &&
@@ -65,10 +69,9 @@ int p144_simplify(char *x, char *n)
     int d = 0;
     int i;
 
-    int x_len = strlen(x);
+    int x_len = strlen(x) /*@ where l = lx, n = lenx */;
 
-    i = 0;
-    for (; x[i] != 47; i++) {
+    for (i = 0; x[i] != 47; i++) {
         a = a * 10 + (x[i] - 48);
     }
 
@@ -78,10 +81,9 @@ int p144_simplify(char *x, char *n)
         b = b * 10 + (x[i] - 48);
     }
 
-    int n_len = strlen(n);
+    int n_len = strlen(n) /*@ where l = ln, n = lenn */;
 
-    i = 0;
-    for (; n[i] != 47; i++) {
+    for (i = 0; n[i] != 47; i++) {
         c = c * 10 + (n[i] - 48);
     }
 
@@ -93,8 +95,6 @@ int p144_simplify(char *x, char *n)
 
     int product_num = a * c;
     int product_den = b * d;
-    if (product_num % product_den == 0) {
-        return 1;
-    }
+    if (product_num % product_den == 0) return 1;
     return 0;
 }

@@ -57,15 +57,10 @@ IntArray *p136_largest_smallest_integers(int* lst, int lst_size)
 {
     int maxneg = 0, minpos = 0;
     int i;
-
     for (i = 0; i < lst_size; i++)
     {
-        if (lst[i] < 0 && (maxneg == 0 || lst[i] > maxneg)) {
-            maxneg = lst[i];
-        }
-        if (lst[i] > 0 && (minpos == 0 || lst[i] < minpos)) {
-            minpos = lst[i];
-        }
+        if (lst[i] < 0 && (maxneg == 0 || lst[i] > maxneg)) maxneg = lst[i];
+        if (lst[i] > 0 && (minpos == 0 || lst[i] < minpos)) minpos = lst[i];
     }
     IntArray *out = malloc_int_array_struct();
     out->data = malloc_int_array(2);

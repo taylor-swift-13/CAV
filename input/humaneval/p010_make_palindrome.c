@@ -90,13 +90,13 @@ char *p010_make_palindrome(char *str)
         CharArray::full(__return, Zlength(out_l) + 1, app(out_l, cons(0, nil)))
 */
 {
-    int n = strlen(str);
+    int n = strlen(str) /*@ where l = l, len = len */;
     int best = n;
     int i;
 
     for (i = 0; i < n; i++) {
         if (best == n) {
-            int ok = is_pal_suffix(str, i, n);
+            int ok = is_pal_suffix(str, i, n) /*@ where l = l */;
             if (ok == 1) {
                 best = i;
             }
@@ -115,12 +115,10 @@ char *p010_make_palindrome(char *str)
     }
 
     int k;
-
     for (k = 0; k < best; k++) {
         out[n + k] = str[best - 1 - k];
     }
 
     out[out_len] = 0;
-
     return out;
 }

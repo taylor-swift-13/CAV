@@ -52,7 +52,7 @@ char *p161_solve(char *s)
 */
 {
     int i;
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     int has_letter = 0;
     char *out = malloc_char_array(n + 1);
 
@@ -64,7 +64,6 @@ char *p161_solve(char *s)
     }
 
     if (has_letter == 1) {
-
         for (i = 0; i < n; i++) {
             int w = s[i];
             if (w >= 65 && w <= 90) {
@@ -75,7 +74,6 @@ char *p161_solve(char *s)
             out[i] = w;
         }
     } else {
-
         for (i = 0; i < n; i++) {
             out[i] = s[n - 1 - i];
         }

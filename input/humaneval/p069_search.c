@@ -67,38 +67,26 @@ int p069_search(int* lst, int lst_size)
     int current = 0;
     int has = 0;
     int j = 0;
-
     for (i=0; i<lst_size; i++)
     {
         current = lst[i];
         has = 0;
-
-        for (j=0; j<freq_size; j++) {
+        for (j=0; j<freq_size; j++)
             if (current==vals[j])
             {
                 cnts[j]+=1;
                 has=1;
-                if (cnts[j]>=vals[j] && vals[j]>max) {
-                    max=vals[j];
-                }
+                if (cnts[j]>=vals[j] && vals[j]>max) max=vals[j];
                 break;
             }
-        }
-
         if (has == 0)
         {
-
             vals[freq_size]=current;
-
             cnts[freq_size]=1;
             freq_size += 1;
-            if (max==-1 && current==1) {
-                max=1;
+            if (max==-1 && current==1) max=1;
             }
-
         }
-
-    }
     free_int_array(vals, freq_size, lst_size);
     free_int_array(cnts, freq_size, lst_size);
     return max;

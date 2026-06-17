@@ -48,7 +48,7 @@ int p080_is_happy(char *s)
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     int i;
     if (n < 3) {
         return 0;
@@ -56,7 +56,6 @@ int p080_is_happy(char *s)
     if (s[0] == s[1]) {
         return 0;
     }
-
     for (i = 2; i < n; i++) {
         if (s[i] == s[i - 1]) {
             return 0;

@@ -51,7 +51,7 @@ char *p038_decode_cyclic(char *s)
         CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
     int full = (n / 3) * 3;
     int i;
@@ -59,14 +59,11 @@ char *p038_decode_cyclic(char *s)
     for (i = 0; i < n; i++) {
         if (i < full) {
             if ((i + 1) % 3 == 1) {
-
                 out[i] = s[i + 2];
             } else {
-
                 out[i] = s[i - 1];
             }
         } else {
-
             out[i] = s[i];
         }
     }

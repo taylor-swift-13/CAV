@@ -1,10 +1,10 @@
 /*
-Write a function p064_vowels_count which takes a string representing a word as input && returns the number of vowels in the string. Vowels in this case are 'a', 'e', 'i', 'o', 'u'.
+Write a function p064_vowels_count which takes a string representing a word as input && returns the number of vowels in the string. Vowels in this case are 'a', 'e', 'i', 'o', 'u'. 
 Here, 'y' is also a vowel, but only when it is at the end of the given word.
-Example:
->>> p064_vowels_count("abcde")
-2
->>> p064_vowels_count("ACEDY")
+Example: 
+>>> p064_vowels_count("abcde") 
+2 
+>>> p064_vowels_count("ACEDY") 
 3
 */
 #include "verification_stdlib.h"
@@ -46,10 +46,9 @@ int p064_vowels_count(char *s)
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     int count = 0;
     int i;
-
     for (i = 0; i < n; i++) {
         if (s[i] == 97 || s[i] == 101 || s[i] == 105 ||
             s[i] == 111 || s[i] == 117 ||

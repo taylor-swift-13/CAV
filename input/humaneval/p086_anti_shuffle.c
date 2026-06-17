@@ -100,7 +100,7 @@ char* p086_anti_shuffle(char *s)
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, len = len */;
     int cap = n + 1;
     char *out = malloc_char_array(cap);
     char *cur = malloc_char_array(cap);
@@ -113,8 +113,10 @@ char* p086_anti_shuffle(char *s)
             cur[cur_len] = s[i];
             cur_len = cur_len + 1;
         } else {
-            sort_char_array(cur, cur_len);
-            copy_char_array(out, out_len, cur, cur_len, cap);
+            sort_char_array(cur, cur_len) /*@ where l = anti_cur_prefix(i, l) */;
+            copy_char_array(out, out_len, cur, cur_len, cap)
+                /*@ where dst_l = anti_out_prefix(i, l),
+                          src_l = sort_chars(anti_cur_prefix(i, l)) */;
             out_len = out_len + cur_len;
             cur_len = 0;
             out[out_len] = 32;
@@ -122,13 +124,15 @@ char* p086_anti_shuffle(char *s)
         }
     }
 
-    sort_char_array(cur, cur_len);
-    copy_char_array(out, out_len, cur, cur_len, cap);
+    sort_char_array(cur, cur_len) /*@ where l = anti_cur_prefix(n, l) */;
+    copy_char_array(out, out_len, cur, cur_len, cap)
+        /*@ where dst_l = anti_out_prefix(n, l),
+                  src_l = sort_chars(anti_cur_prefix(n, l)) */;
     out_len = out_len + cur_len;
-    free_char_array(cur, cur_len, cap);
+    free_char_array(cur, cur_len, cap)
+        /*@ where l = sort_chars(anti_cur_prefix(n, l)) */;
     cur_len = 0;
 
     out[out_len] = 0;
-
     return out;
 }

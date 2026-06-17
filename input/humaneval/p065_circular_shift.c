@@ -20,7 +20,7 @@ If shift > number of digits, return digits reversed.
                (base_count_state: Z -> Z -> Z -> Z -> Prop)
                (base_fill_full_state: Z -> Z -> Z -> Z -> list Z -> Prop)
                (repeat_Z: {A} -> A -> Z -> list A) */
-/*@ Import Coq Require Import p065_circular_shift */
+/*@ Import Coq Require Import base_conversion_lib */
 /*@ Import Coq Require Import p065_circular_shift */
 
 char *malloc_char_array(int n)
@@ -57,15 +57,12 @@ char* p065_circular_shift(int x, int shift)
         buf[0] = 48;
         buf[1] = 0;
         n = 1;
-
-    } else {
+        } else {
         tmp = x;
-
         while (tmp > 0) {
             n = n + 1;
             tmp = tmp / 10;
         }
-
 
         for (i = 0; i <= n; i++) {
             buf[i] = 0;
@@ -76,28 +73,24 @@ char* p065_circular_shift(int x, int shift)
 
         while (tmp > 0) {
             fill = fill - 1;
-
             buf[fill] = 48 + (tmp % 10);
             tmp = tmp / 10;
         }
 
-    }
+        }
 
     char *out = malloc_char_array(n + 1);
 
     if (n < shift) {
-
         for (i = 0; i < n; i++) {
             out[i] = buf[n - 1 - i];
         }
     } else {
-
         for (i = 0; i < n; i++) {
             int src = n - shift + i;
             if (src >= n) {
                 src = src - n;
             }
-
             out[i] = buf[src];
         }
     }

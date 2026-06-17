@@ -58,33 +58,18 @@ IntArray *p096_count_up_to(int n)
     int output_size = 0;
     out->size = 0;
     int i;
-    int d;
 
     if (n > 2) {
-
         for (i=2;i<n;i++)
         {
             if (output_size == 0) {
-
                 data[output_size] = i;
                 output_size = output_size + 1;
             } else {
                 int j;
                 int isp=1;
-
-                j = 0;
-                while (j < output_size) {
-                    d = data[j];
-                    if (d <= 0) {
-                        break;
-                    }
-                    if (d > i / d) {
-                        break;
-                    }
-                    if (i % d == 0) {
-                        isp=0;
-                    }
-                    j = j + 1;
+                for (j=0;j<output_size && data[j] <= i/data[j];j++) {
+                    if (i%data[j]==0) isp=0;
                 }
                 if (isp) {data[output_size] = i; output_size = output_size + 1;}
             }

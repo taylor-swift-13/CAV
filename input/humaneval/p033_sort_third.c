@@ -97,23 +97,16 @@ IntArray *p033_sort_third(int *l, int l_size)
     int i;
     int j;
 
-    for (i = 0; i * 3 < l_size; i++) {
+    for (i = 0; i * 3 < l_size; i++)
         third[i] = l[i * 3];
-    }
 
     sort_int_array(third, third_size, l_size, 1);
 
     j = 0;
-
     for (i = 0; i < l_size; i++)
     {
-        if (i % 3 == 0) { 
-            data[i] = third[j];
-            j = j + 1; 
-        }
-        else {
-            data[i] = l[i];
-        }
+        if (i % 3 == 0) { data[i] = third[j]; j = j + 1; }
+        else data[i] = l[i];
     }
 
     free_int_array(third, l_size);

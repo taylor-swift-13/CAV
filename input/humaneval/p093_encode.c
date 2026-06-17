@@ -56,7 +56,7 @@ char *p093_encode(char *message)
             CharArray::full(__return, len + 1, app(out_l, cons(0, nil)))
 */
 {
-    int n = strlen(message);
+    int n = strlen(message) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
     int i;
 

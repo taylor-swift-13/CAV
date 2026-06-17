@@ -34,11 +34,8 @@ int p073_smallest_change(int *arr, int arr_size)
     int out = 0;
     int i;
 
-    for (i = 0; i < arr_size - 1 - i; i++) {
+    for (i = 0; i < arr_size - 1 - i; i++)
         if (arr[i] != arr[arr_size - 1 - i])
-        {
             out += 1;
-        }
-    }
     return out;
 }

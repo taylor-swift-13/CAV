@@ -59,12 +59,8 @@ int abs(int x)
         __return == Zabs(x) && emp
 */
 {
-    if (x < 0) {
-        return -x;
-    }
-    else {
-        return x;
-    }
+    if (x < 0) return -x;
+    else return x;
 }
 
 IntArray *p116_sort_array(int* arr, int arr_size)
@@ -100,12 +96,9 @@ IntArray *p116_sort_array(int* arr, int arr_size)
         return out;
     }
     int i;
-
     for (i = 0; i < arr_size; i++) {
         data[i] = arr[i];
-
-    }
-
+        }
     bin = malloc_int_array(arr_size);
     if (bin == 0) {
         free_int_array(data, arr_size);
@@ -113,38 +106,29 @@ IntArray *p116_sort_array(int* arr, int arr_size)
         out->size = 0;
         return out;
     }
-
     for (i=0;i<arr_size;i++)
     {
         int b = 0;
         int n = 0;
-
         n = out->data[i];
         n = abs(n);
         b = 0;
-
         while (n>0)
         {
             b+=n%2;n=n/2;
         }
         bin[i] = b;
-
-    }
-
+        }
     for (i=0;i<arr_size;i++)
     {
         int j;
-
-        for (j=1;j<arr_size;j++) {
-            if (bin[j]<bin[j-1] || (bin[j]==bin[j-1] && data[j]<data[j-1]))
-            {
-                m=out->data[j];out->data[j]=out->data[j-1];out->data[j-1]=m;
-                m=bin[j];bin[j]=bin[j-1];bin[j-1]=m;
-            }
+        for (j=1;j<arr_size;j++)
+        if (bin[j]<bin[j-1] || (bin[j]==bin[j-1] && data[j]<data[j-1]))
+        {
+            m=out->data[j];out->data[j]=out->data[j-1];out->data[j-1]=m;
+            m=bin[j];bin[j]=bin[j-1];bin[j-1]=m;
         }
-
-    }
-
+        }
     free_int_array(bin, arr_size);
     return out;
 }

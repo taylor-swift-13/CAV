@@ -44,10 +44,9 @@ int p098_count_upper(char *s)
         CharArray::full(s, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     int count = 0;
     int i;
-
     for (i = 0; i < n; i++) {
         if (i % 2 == 0) {
             if (s[i] == 65 || s[i] == 69 || s[i] == 73 ||

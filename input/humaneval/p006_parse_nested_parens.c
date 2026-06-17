@@ -79,7 +79,7 @@ IntArray *p006_parse_nested_parens(char *paren_string)
 */
 {
     IntArray *out = malloc_int_array_struct();
-    int n = strlen(paren_string);
+    int n = strlen(paren_string) /*@ where l = l, n = len */;
     out->size = 0;
     out->data = malloc_int_array(n);
     int *data = out->data;
@@ -110,8 +110,7 @@ IntArray *p006_parse_nested_parens(char *paren_string)
                 }
             }
         }
-
-    }
+        }
 
     if (in_group) {
         data[out->size] = max_level;

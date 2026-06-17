@@ -56,7 +56,7 @@ int p067_fruit_distribution(char *s, int total)
     int num2 = -1;
     int cur = -1;
     int i;
-    int slen = strlen(s);
+    int slen = strlen(s) /*@ where l = l, n = len */;
 
     for (i = 0; i < slen; i++) {
         int chr = s[i];

@@ -90,12 +90,9 @@ IntArray *p123_get_odd_collatz(int n)
     output_size = output_size + 1;
 
     while (n != 1) {
-
         if (n % 2 == 1) {
-
             data[output_size] = n;
             output_size++;
-
             n = n * 3 + 1;
         } else {
             n = n / 2;

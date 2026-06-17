@@ -24,6 +24,7 @@ false
                (char_in: Z -> list Z -> Prop)
                (same_chars_prefix: Z -> list Z -> list Z -> Prop)
                (same_chars_all: list Z -> list Z -> Prop) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p054_same_chars */
 
 int strlen(char *s)
@@ -71,14 +72,14 @@ int p054_same_chars(char *s0, char *s1)
            CharArray::full(s1, n1 + 1, app(l1, cons(0, nil)))
 */
 {
-    int len0 = strlen(s0);
-    int len1 = strlen(s1);
+    int len0 = strlen(s0) /*@ where l = l0, n = n0 */;
+    int len1 = strlen(s1) /*@ where l = l1, n = n1 */;
     int i;
 
     for (i = 0; i < len0; i++)
     {
         int chr = s0[i];
-        char *found = strchr(s1, chr);
+        char *found = strchr(s1, chr) /*@ where l = l1, n = n1 */;
         if (found == 0) {
             return 0;
         }
@@ -87,7 +88,7 @@ int p054_same_chars(char *s0, char *s1)
     for (i = 0; i < len1; i++)
     {
         int chr = s1[i];
-        char *found = strchr(s0, chr);
+        char *found = strchr(s0, chr) /*@ where l = l0, n = n0 */;
         if (found == 0) {
             return 0;
         }

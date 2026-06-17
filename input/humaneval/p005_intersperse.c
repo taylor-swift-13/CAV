@@ -2,6 +2,9 @@
 #include "verification_list.h"
 #include "int_array_def.h"
 
+/*@ Extern Coq (intersperse_list: list Z -> Z -> list Z) */
+/*@ Import Coq Require Import p005_intersperse */
+
 void p005_intersperse(const int *numbers, int numbers_size, int delimeter,
          int *out)
 /*@ With l
@@ -24,7 +27,6 @@ void p005_intersperse(const int *numbers, int numbers_size, int delimeter,
     k = k + 1;
 
     int i;
-
     for (i = 1; i < numbers_size; i++) {
         out[k] = delimeter;
         k = k + 1;

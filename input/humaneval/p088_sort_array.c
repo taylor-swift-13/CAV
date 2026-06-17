@@ -102,7 +102,6 @@ IntArray *p088_sort_array(int *array, int array_size)
 
     if ((array[0] + array[array_size - 1]) % 2 == 0)
     {
-
         for (i = 0; i < array_size / 2; i++) {
             t = data[i];
             data[i] = data[array_size - 1 - i];

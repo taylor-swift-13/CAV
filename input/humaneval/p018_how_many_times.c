@@ -56,8 +56,8 @@ int p018_how_many_times(char *str, char *substring)
     int i = 0;
     int j = 0;
     int ok = 0;
-    int n0 = strlen(str);
-    int m0 = strlen(substring);
+    int n0 = strlen(str) /*@ where l = l, n = n */;
+    int m0 = strlen(substring) /*@ where l = sub, n = m */;
 
     if (n0 == 0) {
         return 0;

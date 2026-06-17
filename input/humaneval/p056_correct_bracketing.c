@@ -51,9 +51,8 @@ int p056_correct_bracketing(char *brackets)
 */
 {
     int level = 0;
-    int n = strlen(brackets);
+    int n = strlen(brackets) /*@ where l = l, n = len */;
     int i;
-
     for (i = 0; i < n; i++) {
         if (brackets[i] == 60) {
             level = level + 1;

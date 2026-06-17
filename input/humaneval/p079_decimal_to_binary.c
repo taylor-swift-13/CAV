@@ -86,7 +86,6 @@ char* p079_decimal_to_binary(int decimal)
 
         while (num > 0) {
             bits = bits - 1;
-
             out[bits + 2] = 48 + (num % 2);
             num = num / 2;
         }

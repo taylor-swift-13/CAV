@@ -33,16 +33,9 @@ int p109_move_one_ball(int *arr, int arr_size)
     int num = 0;
     int i;
 
-    for (i = 1; i < arr_size; i++) {
-        if (arr[i] < arr[i - 1]) {
-            num += 1;
-        }
-    }
-    if (arr[arr_size - 1] > arr[0]) {
-        num += 1;
-    }
-    if (num < 2) {
-        return 1;
-    }
+    for (i = 1; i < arr_size; i++)
+        if (arr[i] < arr[i - 1]) num += 1;
+    if (arr[arr_size - 1] > arr[0]) num += 1;
+    if (num < 2) return 1;
     return 0;
 }

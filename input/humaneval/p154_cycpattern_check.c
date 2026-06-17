@@ -45,10 +45,10 @@ int rotation_match_at(char *a, char *b, int pos, int shift, int n, int m)
         Zlength(b_l) == m &&
         ascii_range(a_l) &&
         ascii_range(b_l) &&
-        0 <= pos && pos + m <= n &&
-        0 <= shift && shift < m &&
         (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
         (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
+        0 <= pos && pos + m <= n &&
+        0 <= shift && shift < m &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
         CharArray::full(b, m + 1, app(b_l, cons(0, nil)))
     Ensure
@@ -68,7 +68,6 @@ int rotation_match_at(char *a, char *b, int pos, int shift, int n, int m)
         if (idx >= m) {
             idx = idx - m;
         }
-
         if (a[pos + j] != b[idx]) {
             ok = 0;
         }
@@ -85,9 +84,9 @@ int rotation_occurs_at_shift(char *a, char *b, int shift, int n, int m)
         Zlength(b_l) == m &&
         ascii_range(a_l) &&
         ascii_range(b_l) &&
-        0 <= shift && shift < m &&
         (forall (k: Z), (0 <= k && k < n) => Znth(k, a_l, 0) != 0) &&
         (forall (k: Z), (0 <= k && k < m) => Znth(k, b_l, 0) != 0) &&
+        0 <= shift && shift < m &&
         CharArray::full(a, n + 1, app(a_l, cons(0, nil))) *
         CharArray::full(b, m + 1, app(b_l, cons(0, nil)))
     Ensure
@@ -103,7 +102,7 @@ int rotation_occurs_at_shift(char *a, char *b, int shift, int n, int m)
     int pos;
 
     for (pos = 0; pos <= n - m; pos++) {
-        int ok = rotation_match_at(a, b, pos, shift, n, m);
+        int ok = rotation_match_at(a, b, pos, shift, n, m) /*@ where a_l = a_l, b_l = b_l */;
         if (ok == 1) {
             found = 1;
         }
@@ -133,8 +132,8 @@ int p154_cycpattern_check(char *a, char *b)
         CharArray::full(b, m + 1, app(b_l, cons(0, nil)))
 */
 {
-    int n0 = strlen(a);
-    int m0 = strlen(b);
+    int n0 = strlen(a) /*@ where l = a_l, n = n */;
+    int m0 = strlen(b) /*@ where l = b_l, n = m */;
 
     if (m0 == 0) {
         return 1;
@@ -147,7 +146,7 @@ int p154_cycpattern_check(char *a, char *b)
     int shift;
 
     for (shift = 0; shift < m0; shift++) {
-        int ok = rotation_occurs_at_shift(a, b, shift, n0, m0);
+        int ok = rotation_occurs_at_shift(a, b, shift, n0, m0) /*@ where a_l = a_l, b_l = b_l */;
         if (ok == 1) {
             found = 1;
         }

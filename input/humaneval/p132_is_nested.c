@@ -18,7 +18,6 @@ p132_is_nested("[[]][[") -> true
                (problem_132_spec: list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop)
                (subseq_state_prefix: Z -> list Z -> Z) */
-/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p132_is_nested */
 
 int strlen(char *s)
@@ -50,7 +49,7 @@ int p132_is_nested(char *str)
 {
     int state = 0;
     int i;
-    int n = strlen(str);
+    int n = strlen(str) /*@ where l = l, n = len */;
 
     for (i = 0; i < n; i++) {
         int chr = str[i];

@@ -26,12 +26,8 @@ int abs(int x)
         __return == Zabs(x) && emp
 */
 {
-    if (x < 0) {
-        return -x;
-    }
-    else {
-        return x;
-    }
+    if (x < 0) return -x;
+    else return x;
 }
 
 int p108_count_nums(int* n, int n_size)
@@ -50,10 +46,8 @@ int p108_count_nums(int* n, int n_size)
     int num=0;
     int i;
 
-    for (i=0;i<n_size;i++) {
-        if (n[i]>0) {
-            num+=1;
-        }
+    for (i=0;i<n_size;i++)
+        if (n[i]>0) num+=1;
         else
         {
             int sum=0;
@@ -66,10 +60,7 @@ int p108_count_nums(int* n, int n_size)
                 w=w/10;
             }
             sum-=w;
-            if (sum>0) {
-                num+=1;
-            }
+            if (sum>0) num+=1;
         }
-    }
     return num;
 }

@@ -49,7 +49,7 @@ char *p027_filp_case(char *str)
 */
 {
     int i;
-    int n = strlen(str);
+    int n = strlen(str) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
 
     for (i = 0; i < n; i++) {

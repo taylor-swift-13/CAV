@@ -32,11 +32,7 @@ int p121_solutions(int *lst, int lst_size)
 {
     int s = 0;
     int i;
-
-    for (i = 0; i * 2 < lst_size; i++) {
-        if (lst[i * 2] % 2 == 1) {
-            s += lst[i * 2];
-        }
-    }
+    for (i = 0; i * 2 < lst_size; i++)
+        if (lst[i * 2] % 2 == 1) s += lst[i * 2];
     return s;
 }

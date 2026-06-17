@@ -15,6 +15,7 @@ Given a string, find out how many distinct characters (regardless of case) does 
                (lower: Z -> Z)
                (lower_seen_state: Z -> Z -> list Z -> Z -> Z -> Prop)
                (count_distinct_lower_upto: Z -> list Z -> Z) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p016_count_distinct_characters */
 
 int strlen(char *s)
@@ -42,7 +43,7 @@ int p016_count_distinct_characters(char *str)
            CharArray::full(str, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(str);
+    int n = strlen(str) /*@ where l = l, n = len */;
     int count = 0;
     int i;
 

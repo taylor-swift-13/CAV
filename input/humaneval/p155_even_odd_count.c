@@ -39,12 +39,8 @@ int abs(int x)
         __return == Zabs(x) && emp
 */
 {
-    if (x < 0) {
-        return -x;
-    }
-    else {
-        return x;
-    }
+    if (x < 0) return -x;
+    else return x;
 }
 
 IntArray *p155_even_odd_count(int num)
@@ -67,19 +63,14 @@ IntArray *p155_even_odd_count(int num)
     int w = abs(num);
     int n1=0,n2=0;
     int d=0;
-    if (w == 0) {
-        n2 = 1;
-    }
-
+    if (w == 0) n2 = 1;
     while (w > 0) {
         d = w % 10;
         if (d % 2 == 1) {
             n1 += 1;
-
-        } else {
+            } else {
             n2 += 1;
-
-        }
+            }
         w /= 10;
     }
     IntArray *out = malloc_int_array_struct();

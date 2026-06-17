@@ -66,10 +66,8 @@ char* p044_change_base(int x, int base)
             out[i] = 0;
         }
 
-
         while (x > 0) {
             digits = digits - 1;
-
             out[digits] = 48 + (x % base);
             x = x / base;
         }

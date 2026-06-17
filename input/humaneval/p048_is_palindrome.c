@@ -47,14 +47,13 @@ int p048_is_palindrome(char *text)
 */
 {
     int i = 0;
-    int j = strlen(text);
+    int j = strlen(text) /*@ where l = l, n = n */;
 
     if (j == 0) {
         return 1;
     }
 
     j = j - 1;
-
     while (i < j) {
         if (text[i] != text[j]) {
             return 0;

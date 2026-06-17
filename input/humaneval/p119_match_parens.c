@@ -61,8 +61,8 @@ int p119_match_parens(char *s1, char *s2)
     int i;
     int count = 0;
     int can = 1;
-    int n1 = strlen(s1);
-    int n2 = strlen(s2);
+    int n1 = strlen(s1) /*@ where l = l1, n = len1 */;
+    int n2 = strlen(s2) /*@ where l = l2, n = len2 */;
 
     for (i = 0; i < n1; i++) {
         if (s1[i] == 40) {
@@ -70,9 +70,7 @@ int p119_match_parens(char *s1, char *s2)
         } else if (s1[i] == 41) {
             count -= 1;
         }
-        if (count < 0) {
-            can = 0;
-        }
+        if (count < 0) can = 0;
     }
 
     for (i = 0; i < n2; i++) {
@@ -81,17 +79,11 @@ int p119_match_parens(char *s1, char *s2)
         } else if (s2[i] == 41) {
             count -= 1;
         }
-        if (count < 0) {
-            can = 0;
-        }
+        if (count < 0) can = 0;
     }
 
-    if (count != 0) {
-        return 0;
-    }
-    if (can == 1) {
-        return 1;
-    }
+    if (count != 0) return 0;
+    if (can == 1) return 1;
 
     count = 0;
     can = 1;
@@ -102,9 +94,7 @@ int p119_match_parens(char *s1, char *s2)
         } else if (s2[i] == 41) {
             count -= 1;
         }
-        if (count < 0) {
-            can = 0;
-        }
+        if (count < 0) can = 0;
     }
 
     for (i = 0; i < n1; i++) {
@@ -113,13 +103,9 @@ int p119_match_parens(char *s1, char *s2)
         } else if (s1[i] == 41) {
             count -= 1;
         }
-        if (count < 0) {
-            can = 0;
-        }
+        if (count < 0) can = 0;
     }
 
-    if (can == 1) {
-        return 1;
-    }
+    if (can == 1) return 1;
     return 0;
 }

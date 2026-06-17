@@ -12,6 +12,7 @@ If the length of the p127_intersection is a prime number, return "YES",
 otherwise, return "NO".
 If the two intervals don't intersect, return "NO".
 
+
 {input/output} samples:
 p127_intersection({1, 2}, {2, 3}) ==> "NO"
 p127_intersection({-1, 1}, {0, 4}) ==> "NO"
@@ -65,16 +66,11 @@ int p127_intersection(int* interval1, int interval1_size, int* interval2, int in
     }
     int l = inter2 - inter1;
 
-    if (l < 2) {
-        return 0;
-    }
+    if (l < 2) return 0;
 
     int i;
-
     for (i = 2; i * i <= l; i++) {
-        if (l % i == 0) {
-            return 0;
-        }
+        if (l % i == 0) return 0;
     }
     return 1;
 }

@@ -42,13 +42,11 @@ int p110_exchange(int* lst1, int lst1_size, int* lst2, int lst2_size)
 */
 {
     int num = 0;
-
     for (int i = 0; i < lst1_size; i++) {
         if (lst1[i] % 2 == 0) {
             num += 1;
         }
     }
-
 
     for (int i = 0; i < lst2_size; i++) {
         if (lst2[i] % 2 == 0) {
@@ -56,8 +54,6 @@ int p110_exchange(int* lst1, int lst1_size, int* lst2, int lst2_size)
         }
     }
 
-    if (num >= lst1_size) {
-        return 1;
-    }
+    if (num >= lst1_size) return 1;
     return 0;
 }

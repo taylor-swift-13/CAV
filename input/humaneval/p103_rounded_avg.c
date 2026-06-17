@@ -69,10 +69,8 @@ char* p103_rounded_avg(int n, int m)
             out[i] = 0;
         }
 
-
         while (num > 0) {
             digits = digits - 1;
-
             out[digits] = 48 + (num % 2);
             num = num / 2;
         }

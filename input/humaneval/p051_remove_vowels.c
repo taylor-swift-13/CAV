@@ -62,7 +62,7 @@ char *p051_remove_vowels(char *text)
 {
     int i;
     int j = 0;
-    int n = strlen(text);
+    int n = strlen(text) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
 
     for (i = 0; i < n; i++) {

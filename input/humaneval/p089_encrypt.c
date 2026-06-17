@@ -44,7 +44,7 @@ char *p089_encrypt(char *s)
 */
 {
     int i;
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
 
     for (i = 0; i < n; i++) {

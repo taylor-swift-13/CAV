@@ -52,9 +52,8 @@ int p066_digitSum(char *s)
 */
 {
     int sum = 0;
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     int i;
-
     for (i = 0; i < n; i++) {
         if (s[i] >= 65 && s[i] <= 90) {
             sum = sum + s[i];

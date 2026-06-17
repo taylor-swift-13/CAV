@@ -58,8 +58,7 @@ IntArray *p025_factorize(int n)
     out->size = 0;
     out->data = malloc_int_array(n);
     int *data = out->data;
-
-    for (int i=2;i<=n/i;i++) {
+    for (int i=2;i<=n/i;i++)
         if (n%i==0)
         {
             n=n/i;
@@ -67,7 +66,6 @@ IntArray *p025_factorize(int n)
             out->size = out->size + 1;
             i-=1;
         }
-    }
     data[out->size] = n;
     out->size = out->size + 1;
     return out;

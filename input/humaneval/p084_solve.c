@@ -89,10 +89,8 @@ char* p084_solve(int N)
             out[i] = 0;
         }
 
-
         while (num > 0) {
             bits = bits - 1;
-
             out[bits] = 48 + (num % 2);
             num = num / 2;
         }

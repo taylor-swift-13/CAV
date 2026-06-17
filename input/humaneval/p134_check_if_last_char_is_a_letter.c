@@ -47,29 +47,17 @@ int p134_check_if_last_char_is_a_letter(char *txt)
         CharArray::full(txt, len + 1, app(l, cons(0, nil)))
 */
 {
-    int n = strlen(txt);
-    if (n == 0) {
-        return 0;
-    }
+    int n = strlen(txt) /*@ where l = l, n = len */;
+    if (n == 0) return 0;
 
     int chr = txt[n - 1];
-    if (chr < 65) {
-        return 0;
-    }
-    if (chr > 90 && chr < 97) {
-        return 0;
-    }
-    if (chr > 122) {
-        return 0;
-    }
+    if (chr < 65) return 0;
+    if (chr > 90 && chr < 97) return 0;
+    if (chr > 122) return 0;
 
-    if (n == 1) {
-        return 1;
-    }
+    if (n == 1) return 1;
 
     chr = txt[n - 2];
-    if (chr == 32) {
-        return 1;
-    }
+    if (chr == 32) return 1;
     return 0;
 }

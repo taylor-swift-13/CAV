@@ -58,9 +58,7 @@ IntArray *p042_incr_list(int *l, int l_size)
     out->size = l_size;
     out->data = malloc_int_array(l_size);
     int *data = out->data;
-
-    for (i = 0; i < l_size; ++i) {
+    for (i = 0; i < l_size; ++i)
         data[i] = l[i] + 1;
-    }
     return out;
 }

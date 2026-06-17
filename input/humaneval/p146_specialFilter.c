@@ -34,7 +34,6 @@ int p146_specialFilter(int* nums, int nums_size)
 {
     int num=0;
     int i;
-
     for (i=0;i<nums_size;i++) {
         if (nums[i]>10)
         {
@@ -42,17 +41,13 @@ int p146_specialFilter(int* nums, int nums_size)
             int last;
             first = nums[i];
             last = nums[i] % 10;
-
             while (first >= 10) {
                 first /= 10;
             }
             if (first % 2 == 1 && last % 2 == 1) {
-
                 num+=1;
             }
-
+            }
         }
-
-    }
     return num;
 }

@@ -36,15 +36,10 @@ int p126_is_sorted(int* lst, int lst_size)
         IntArray::full(lst, lst_size, lv)
 */
 {
-
     for (int i=1;i<lst_size;i++)
     {
-        if (lst[i]<lst[i-1]) {
-            return 0;
-        }
-        if (i>=2 && lst[i]==lst[i-1] && lst[i]==lst[i-2]) {
-            return 0;
-        }
+        if (lst[i]<lst[i-1]) return 0;
+        if (i>=2 && lst[i]==lst[i-1] && lst[i]==lst[i-2]) return 0;
     }
     return 1;
 }

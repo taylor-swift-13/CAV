@@ -86,8 +86,6 @@ char *p143_words_in_sentence(char *sentence)
         (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
         CharArray::full(sentence, len + 1, app(l, cons(0, nil)))
     Ensure exists out_l out_len,
-        (forall (k: Z), (0 <= k && k < len) => Znth(k, l, 0) != 0) &&
-        (forall (k: Z), (0 <= k && k < out_len) => Znth(k, out_l, 0) != 0) &&
         0 <= out_len && out_len <= len + 1 &&
         Zlength(out_l) == out_len &&
         out_l == words_in_sentence_output(l) &&
@@ -97,13 +95,12 @@ char *p143_words_in_sentence(char *sentence)
         CharArray::undef_seg(__return, out_len + 1, len + 2)
 */
 {
-    int n = strlen(sentence);
+    int n = strlen(sentence) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 2);
     int out_len = 0;
     int i = 0;
 
     while (i < n) {
-
         while (i < n && sentence[i] == 32) {
             i = i + 1;
         }

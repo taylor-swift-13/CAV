@@ -59,7 +59,7 @@ int p141_file_name_check(char *file_name)
     int i = 0;
     int alpha = 0;
     int suffix = 0;
-    int n = strlen(file_name);
+    int n = strlen(file_name) /*@ where l = l, n = len */;
 
     if (n < 5) {
         return 0;
@@ -77,7 +77,6 @@ int p141_file_name_check(char *file_name)
             }
         }
     }
-
     if (alpha == 0) {
         return 0;
     }
@@ -109,11 +108,9 @@ int p141_file_name_check(char *file_name)
             }
         }
     }
-
     if (suffix == 0) {
         return 0;
     }
-
 
     while (i < n) {
         if (file_name[i] >= 48 && file_name[i] <= 57) {

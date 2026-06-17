@@ -20,6 +20,7 @@ Return a string containing space-delimited numbers starting from 0 upto n inclus
                (repeat_Z: {A} -> A -> Z -> list A) */
 /*@ Import Coq Require Import p015_string_sequence */
 /*@ Import Coq Require Import p015_string_sequence */
+/*@ Import Coq Require Import base_conversion_lib */
 
 char *malloc_char_array(int n)
 /*@ Require n > 0 && emp

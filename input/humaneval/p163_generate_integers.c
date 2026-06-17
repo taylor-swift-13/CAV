@@ -74,17 +74,12 @@ IntArray *p163_generate_integers(int a,int b)
     }
     int output_size = out->size;
     int i;
-
     for (i=a;i<=b;i++) {
         if (i<10 && i%2==0) {
-
             data[output_size] = i;
             output_size++;
-
+            }
         }
-
-    }
     out->size = output_size;
-
     return out;
 }

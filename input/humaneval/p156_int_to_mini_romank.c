@@ -93,28 +93,6 @@ int append_roman_digit(char *out, int pos, int one, int ten, int five, int digit
     }
 }
 
-int append_roman_thousand(char *out, int number)
-/*@ With cap
-    Require
-        1 <= number && number <= 1000 &&
-        1 < cap && cap <= INT_MAX &&
-        CharArray::undef_full(out, cap)
-    Ensure exists prefix,
-        roman_thousand(number, prefix) &&
-        0 <= __return && __return < cap &&
-        __return == Zlength(prefix) &&
-        CharArray::full(out, __return, prefix) *
-        CharArray::undef_seg(out, __return, cap)
-*/
-{
-    if (number == 1000) {
-        out[0] = 109;
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
 char* p156_int_to_mini_romank(int number)
 /*@ Require
         1 <= number && number <= 1000 &&
@@ -135,19 +113,19 @@ char* p156_int_to_mini_romank(int number)
     int o = 0;
     char *out = malloc_char_array(64);
 
-    k = append_roman_thousand(out, number) /*@ where cap = 64 */;
+    if (number == 1000) {
+        out[0] = 109;
+        k = 1;
+    }
 
     h = (number / 100) % 10;
-    k = append_roman_digit(out, k, 99, 109, 100, h)
-        /*@ where prefix = roman_thousand_list(number), cap = 64 */;
+    k = append_roman_digit(out, k, 99, 109, 100, h) /*@ where prefix = roman_thousand_list(original), cap = 64 */;
 
     t = (number / 10) % 10;
-    k = append_roman_digit(out, k, 120, 99, 108, t)
-        /*@ where prefix = roman_prefix1_list(number), cap = 64 */;
+    k = append_roman_digit(out, k, 120, 99, 108, t) /*@ where prefix = roman_prefix1_list(original), cap = 64 */;
 
     o = number % 10;
-    k = append_roman_digit(out, k, 105, 120, 118, o)
-        /*@ where prefix = roman_prefix2_list(number), cap = 64 */;
+    k = append_roman_digit(out, k, 105, 120, 118, o) /*@ where prefix = roman_prefix2_list(original), cap = 64 */;
 
     out[k] = 0;
     return out;

@@ -27,12 +27,8 @@ int abs(int x)
         __return == Zabs(x) && emp
 */
 {
-    if (x < 0) {
-        return -x;
-    }
-    else {
-        return x;
-    }
+    if (x < 0) return -x;
+    else return x;
 }
 
 int p128_prod_signs(int* arr, int arr_size)
@@ -48,23 +44,15 @@ int p128_prod_signs(int* arr, int arr_size)
         IntArray::full(arr, arr_size, input_l)
 */
 {
-    if (arr_size == 0) {
-        return -32768;
-    }
+    if (arr_size == 0) return -32768;
     int i, sum = 0, prods = 1;
-
     for (i = 0; i < arr_size; i++)
     {
         int current = arr[i];
         int mag = abs(current);
-
         sum += mag;
-        if (current == 0) {
-            prods = 0;
-        }
-        if (current < 0) {
-            prods = -prods;
-        }
+        if (current == 0) prods = 0;
+        if (current < 0) prods = -prods;
    }
    return sum * prods;
 }

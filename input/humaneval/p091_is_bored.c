@@ -52,7 +52,7 @@ int p091_is_bored(char *S)
     int isstart = 1;
     int isi = 0;
     int sum = 0;
-    int n = strlen(S);
+    int n = strlen(S) /*@ where l = l, n = len */;
 
     for (i = 0; i < n; i++) {
         int chr = S[i];

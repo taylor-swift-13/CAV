@@ -57,11 +57,10 @@ int p124_valid_date(char *date)
 */
 {
     int i;
-    int n = strlen(date);
+    int n = strlen(date) /*@ where l = l, n = len */;
     if (n != 10) {
         return 0;
     }
-
     for (i = 0; i < 10; i++) {
         if (i == 2 || i == 5) {
             if (date[i] != 45) {

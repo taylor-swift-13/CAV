@@ -27,7 +27,6 @@ int p055_fib(int n)
     int i;
     a = 0;
     b = 1;
-
     for (i = 2; i <= n; i++) {
         c = a + b;
         a = b;

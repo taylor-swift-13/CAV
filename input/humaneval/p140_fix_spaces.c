@@ -57,7 +57,7 @@ char *p140_fix_spaces(char *text)
             CharArray::undef_seg(__return, out_len + 1, len + 1)
 */
 {
-    int n = strlen(text);
+    int n = strlen(text) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
     int k = 0;
     int spacelen = 0;

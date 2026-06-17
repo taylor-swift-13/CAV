@@ -1,9 +1,9 @@
 /*
-You are given a word. Your task is to find the closest vowel that stands between
+You are given a word. Your task is to find the closest vowel that stands between 
 two consonants from the right side of the word (case sensitive).
 
 Vowels in the beginning && ending doesn't count. Return empty string if you didn't
-find any vowel met the above condition.
+find any vowel met the above condition. 
 
 You may assume that the given string contains English letter only.
 
@@ -54,36 +54,16 @@ int is_vowel_code(int ch)
            emp
 */
 {
-    if (ch == 65) {
-        return 1;
-    }
-    if (ch == 69) {
-        return 1;
-    }
-    if (ch == 73) {
-        return 1;
-    }
-    if (ch == 79) {
-        return 1;
-    }
-    if (ch == 85) {
-        return 1;
-    }
-    if (ch == 97) {
-        return 1;
-    }
-    if (ch == 101) {
-        return 1;
-    }
-    if (ch == 105) {
-        return 1;
-    }
-    if (ch == 111) {
-        return 1;
-    }
-    if (ch == 117) {
-        return 1;
-    }
+    if (ch == 65) return 1;
+    if (ch == 69) return 1;
+    if (ch == 73) return 1;
+    if (ch == 79) return 1;
+    if (ch == 85) return 1;
+    if (ch == 97) return 1;
+    if (ch == 101) return 1;
+    if (ch == 105) return 1;
+    if (ch == 111) return 1;
+    if (ch == 117) return 1;
     return 0;
 }
 
@@ -114,7 +94,7 @@ char *p118_get_closest_vowel(char *word)
     int cur_vowel;
     int right_vowel;
     int left_vowel;
-    int n = strlen(word);
+    int n = strlen(word) /*@ where l = l, n = len */;
     cur = 0;
     right = 0;
     left = 0;
@@ -129,7 +109,6 @@ char *p118_get_closest_vowel(char *word)
     }
 
     i = n - 2;
-
     while (i >= 1) {
         cur = word[i];
         right = word[i + 1];
@@ -140,7 +119,6 @@ char *p118_get_closest_vowel(char *word)
             if (right_vowel == 0) {
                 left_vowel = is_vowel_code(left);
                 if (left_vowel == 0) {
-
                     char *out = malloc_char_array(2);
                     out[0] = cur;
                     out[1] = 0;
@@ -148,7 +126,6 @@ char *p118_get_closest_vowel(char *word)
                 }
             }
         }
-
         i -= 1;
     }
 

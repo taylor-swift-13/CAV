@@ -9,6 +9,7 @@
                (encode_shift_char: Z -> Z)
                (decode_shift_char: Z -> Z)
                (ascii_range: list Z -> Prop) */
+/*@ Import Coq Require Import string_bridge */
 /*@ Import Coq Require Import p050_decode_shift */
 
 char *malloc_char_array(int n)
@@ -47,7 +48,7 @@ char *encode_shift(char *s)
 */
 {
     int i;
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
 
     for (i = 0; i < n; i++) {
@@ -76,7 +77,7 @@ char *p050_decode_shift(char *s)
 */
 {
     int i;
-    int n = strlen(s);
+    int n = strlen(s) /*@ where l = l, n = len */;
     char *out = malloc_char_array(n + 1);
 
     for (i = 0; i < n; i++) {

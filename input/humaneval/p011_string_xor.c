@@ -44,17 +44,19 @@ char *p011_string_xor(char *a, char *b)
 */
 {
     int i;
-    int n1 = strlen(a);
-    int n2 = strlen(b);
+    int n1 = strlen(a) /*@ where l = l1, n = na */;
+    int n2 = strlen(b) /*@ where l = l2, n = nb */;
     int n;
+    char *output;
+
     if (n1 < n2) {
         n = n1;
     } else {
         n = n2;
     }
 
-
-    char *output = malloc_char_array(n + 1);
+    /*@ 0 <= n && n <= n1 && n <= n2 */
+    output = malloc_char_array(n + 1);
 
     for (i = 0; i < n; i++) {
         if (a[i] == b[i]) {

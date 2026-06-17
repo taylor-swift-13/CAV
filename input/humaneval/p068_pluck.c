@@ -15,7 +15,7 @@ Example 1:
 Example 2:
     Input: {1,2,3}
     Output: {2, 1}
-    Explanation: 2 has the smallest even value, && 2 has the smallest index.
+    Explanation: 2 has the smallest even value, && 2 has the smallest index. 
 
 Example 3:
     Input: {}
