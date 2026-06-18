@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
-"""Scan agent transcripts for reading answer or cross-run workspaces.
+"""Standalone transcript audit for answer/workspace leakage.
 
-This is intentionally separate from ``check_qcp_cheating.py``:
-
-* ``check_qcp_cheating.py`` checks finished artifacts for proof bypasses.
-* this script checks ``agent_stdout_*.jsonl`` for suspicious tool use.
-
-The scanner is conservative and transcript-based. It flags actual tool calls
-that read or enumerate forbidden locations such as ground-truth mirrors,
-archived results, output workspaces, or other QCP CAV workspaces. Prompt text
-and runner-written metrics are ignored unless the agent explicitly reads them
-through a tool.
+This is the single leakage scanner. It checks ``agent_stdout_*.jsonl`` for
+tool calls that read answer-bearing or cross-run paths. It is intentionally
+separate from ``check_verify_audit.py`` and is not called by ``run_verify.py``
+or ``run_proof.py`` because leakage is a process-compliance issue; it does not
+by itself prove that the final Coq artifact is invalid.
 """
 from __future__ import annotations
 
@@ -286,15 +281,14 @@ def scan_transcript(transcript: Path, *, strict_current_output: bool = False) ->
                 message="Agent scanned the QCP CAV parent directory instead of the current workspace.",
             )
 
-    # Deduplicate overlapping findings from the same tool call/category/message.
     deduped: list[Finding] = []
     seen: set[tuple[str, int, str, str]] = set()
-    for finding in findings:
-        key = (finding.transcript, finding.line, finding.category, finding.message)
+    for item in findings:
+        key = (item.transcript, item.line, item.category, item.message)
         if key in seen:
             continue
         seen.add(key)
-        deduped.append(finding)
+        deduped.append(item)
     return deduped
 
 
@@ -306,12 +300,12 @@ def scan_paths(paths: Iterable[Path], *, strict_current_output: bool = False) ->
 
 
 def summarize(findings: list[Finding], transcript_count: int) -> dict[str, Any]:
-    errors = [f for f in findings if f.severity == "error"]
+    errors = [finding for finding in findings if finding.severity == "error"]
     return {
         "transcripts": transcript_count,
         "findings": len(findings),
         "errors": len(errors),
-        "categories": sorted({f.category for f in findings}),
+        "categories": sorted({finding.category for finding in findings}),
         "clean": len(errors) == 0,
     }
 
@@ -343,7 +337,7 @@ def build_parser() -> argparse.ArgumentParser:
 def print_text(findings: list[Finding], transcript_count: int) -> None:
     summary = summarize(findings, transcript_count)
     print(
-        "Transcript cheating scan: "
+        "Transcript leakage scan: "
         f"transcripts={summary['transcripts']} findings={summary['findings']} "
         f"errors={summary['errors']} clean={summary['clean']}"
     )
@@ -365,7 +359,7 @@ def print_text(findings: list[Finding], transcript_count: int) -> None:
 
 def main() -> int:
     args = build_parser().parse_args()
-    paths = [Path(p) for p in args.paths]
+    paths = [Path(path) for path in args.paths]
     transcripts = discover_transcripts(paths)
     findings = scan_paths(paths, strict_current_output=args.strict_current_output)
     summary = summarize(findings, len(transcripts))

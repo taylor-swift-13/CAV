@@ -144,7 +144,7 @@ def write_qcp_proof_audit_script(
     original_c = workspace_path / "original" / input_path.name
     original_text = original_c.read_text(encoding="utf-8", errors="replace")
     expected_executable = rv.normalize_c_without_annotations(original_text)
-    expected_contracts = rv.check_qcp_cheating.extract_contract_specs(original_text)
+    expected_contracts = rv.check_verify_audit.extract_contract_specs(original_text)
 
     coq_args = [
         "-Q", deps_rel, "",
@@ -309,14 +309,14 @@ def build_run_proof_prompt(
 
 
 def proof_audit_check(workspace_path: Path, function_name: str, input_path: Path, input_v_path: Path | None, annotated_c_path: Path) -> tuple[bool, str]:
-    source_ok, source_detail = rv.source_integrity_gate(
+    unified_ok, unified_detail = rv.verify_unified_cheating_audit_check(
         workspace_path=workspace_path,
         input_path=input_path,
         input_v_path=input_v_path,
         annotated_c_path=annotated_c_path,
     )
-    if not source_ok:
-        return False, source_detail
+    if not unified_ok:
+        return False, unified_detail
     audit = rv.qcp_case_coq_dir(workspace_path) / "run_audit.sh"
     if not audit.exists():
         return False, f"missing_audit_script:{audit}"
@@ -337,7 +337,12 @@ def proof_audit_check(workspace_path: Path, function_name: str, input_path: Path
     if proc.returncode != 0:
         return False, f"proof_audit_failed:{out_log}"
     rv.collect_qcp_mirror_artifacts(workspace_path, function_name)
-    unified_ok, unified_detail = rv.verify_unified_cheating_audit_check(workspace_path)
+    unified_ok, unified_detail = rv.verify_unified_cheating_audit_check(
+        workspace_path,
+        input_path=input_path,
+        input_v_path=input_v_path,
+        annotated_c_path=annotated_c_path,
+    )
     if not unified_ok:
         return False, f"proof_audit_failed:{out_log};{unified_detail}"
     artifact_ok, artifact_detail = rv.verify_proof_artifact_check(

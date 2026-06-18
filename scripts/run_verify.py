@@ -16,7 +16,6 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agent_config
 import agent_metrics
-import check_qcp_cheating
 import check_verify_audit
 
 
@@ -667,7 +666,7 @@ def write_qcp_agent_audit_script(
     original_c = workspace_path / "original" / input_path.name
     original_text = original_c.read_text(encoding="utf-8", errors="replace") if original_c.exists() else input_path.read_text(encoding="utf-8", errors="replace")
     expected_executable = normalize_c_without_annotations(original_text)
-    expected_contracts = check_qcp_cheating.extract_contract_specs(original_text)
+    expected_contracts = check_verify_audit.extract_contract_specs(original_text)
 
     coq_args = [
         "-Q", deps_rel, "",
@@ -879,9 +878,6 @@ def verify_proof_artifact_check(
 
     if proof_manual_has_obligations(generated_dir, function_name):
         return False, f"proof_manual_has_obligations:{manual_path}"
-    helper_with_obligations = generated_helper_with_obligations(generated_dir, function_name)
-    if helper_with_obligations is not None:
-        return False, f"generated_helper_has_obligations:{helper_with_obligations}"
 
     ok, compile_logs = compile_generated_via_qcp_mirror(
         workspace_path,
@@ -898,13 +894,24 @@ def verify_proof_artifact_check(
     return True, f"audit_check_success:{log_path}"
 
 
-def verify_unified_cheating_audit_check(workspace_path: Path) -> tuple[bool, str]:
-    """Run the runner-side unified audit that is not exposed in the prompt."""
-    result = check_verify_audit.scan_workspace(workspace_path)
+def verify_unified_cheating_audit_check(
+    workspace_path: Path,
+    *,
+    input_path: Path | None = None,
+    input_v_path: Path | None = None,
+    annotated_c_path: Path | None = None,
+) -> tuple[bool, str]:
+    """Run the single runner-side artifact audit."""
+    result = check_verify_audit.scan_workspace(
+        workspace_path,
+        input_path=input_path,
+        input_v_path=input_v_path,
+        annotated_c_path=annotated_c_path,
+    )
     log_path = workspace_path / "logs" / "verify_audit.json"
     log_path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     summary = result["summary"]
-    if summary["errors"]:
+    if not result["ok"]:
         categories = ",".join(summary["categories"].keys())
         return False, f"verify_audit_failed:{log_path}:categories={categories}"
     return True, f"verify_audit_success:{log_path}"
@@ -921,52 +928,6 @@ def normalize_c_without_annotations(text: str) -> str:
     return re.sub(r"\s+", "", text)
 
 
-def source_integrity_gate(
-    *,
-    workspace_path: Path,
-    input_path: Path,
-    input_v_path: Path | None,
-    annotated_c_path: Path,
-) -> tuple[bool, str]:
-    """Deterministically reject verify runs that modify contract or implementation."""
-    logs_dir = workspace_path / "logs"
-    log_path = logs_dir / "source_integrity_gate.log"
-    original_c = workspace_path / "original" / input_path.name
-    details: list[str] = []
-
-    if not original_c.exists():
-        details.append(f"missing original C copy: {original_c}")
-    elif file_sha256(original_c) != file_sha256(input_path):
-        details.append(f"input C changed after verify bootstrap: {input_path}")
-
-    if input_v_path is not None:
-        original_v = workspace_path / "original" / input_v_path.name
-        if not original_v.exists():
-            details.append(f"missing original V copy: {original_v}")
-        elif file_sha256(original_v) != file_sha256(input_v_path):
-            details.append(f"input V changed after verify bootstrap: {input_v_path}")
-
-    if not annotated_c_path.exists():
-        details.append(f"missing annotated C: {annotated_c_path}")
-    elif original_c.exists():
-        original_text = original_c.read_text(encoding="utf-8", errors="replace")
-        annotated_text = annotated_c_path.read_text(encoding="utf-8", errors="replace")
-
-        findings = check_qcp_cheating.scan_contract_weakening(original_text, annotated_text)
-        for finding in findings:
-            details.append(f"{finding['category']}: {finding['message']}")
-
-        if normalize_c_without_annotations(original_text) != normalize_c_without_annotations(annotated_text):
-            details.append("annotated C changes executable implementation after removing comments/QCP annotations")
-
-    if details:
-        log_path.write_text("Source integrity gate failed:\n- " + "\n- ".join(details) + "\n", encoding="utf-8")
-        return False, f"source_integrity_failed:{log_path}"
-
-    log_path.write_text("Source integrity gate passed.\n", encoding="utf-8")
-    return True, f"source_integrity_success:{log_path}"
-
-
 def verify_audit_check(
     *,
     workspace_path: Path,
@@ -977,16 +938,12 @@ def verify_audit_check(
 ) -> tuple[bool, str]:
     checks: list[tuple[bool, str]] = []
 
-    checks.append(source_integrity_gate(
+    checks.append(verify_unified_cheating_audit_check(
         workspace_path=workspace_path,
         input_path=input_path,
         input_v_path=input_v_path,
         annotated_c_path=annotated_c_path,
     ))
-    if not checks[-1][0]:
-        return False, ";".join(detail for _, detail in checks)
-
-    checks.append(verify_unified_cheating_audit_check(workspace_path))
     if not checks[-1][0]:
         return False, ";".join(detail for _, detail in checks)
 
@@ -1098,16 +1055,6 @@ def proof_manual_has_obligations(generated_dir: Path, function_name: str) -> boo
     work, while the final goal-check confirms the combined artifacts.
     """
     return proof_file_has_obligations(generated_dir / f"{function_name}_proof_manual.v")
-
-
-def generated_helper_with_obligations(generated_dir: Path, function_name: str) -> Path | None:
-    standard_names = standard_generated_v_names(function_name)
-    for path in sorted(generated_dir.glob("*.v")):
-        if path.name in standard_names:
-            continue
-        if proof_file_has_obligations(path):
-            return path
-    return None
 
 
 def collect_qcp_mirror_artifacts(workspace_path: Path, function_name: str) -> list[str]:

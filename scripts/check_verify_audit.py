@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Unified verify artifact audit for source integrity and proof bypasses.
 
-This checker is intended to run outside the agent-visible prompt. It combines:
-
-* proof/source artifact checks from ``check_qcp_cheating.py``;
-* basic artifact shape and executable-source integrity checks.
+This checker is intended to run outside the agent-visible prompt. It is the
+single automatic runner-side artifact audit used by ``run_verify.py`` and
+``run_proof.py``.
 
 It accepts one or more verify workspace/result directories and returns findings
 grouped by audit class. A nonzero exit code means at least one error finding was
@@ -13,19 +12,144 @@ found, unless ``--no-fail`` is used.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
 import sys
 from typing import Any, Iterable
 
-import check_qcp_cheating
-
 
 WORKSPACE_RE = re.compile(r"^verify_\d{8}_\d+_(?P<name>[A-Za-z0-9_]+)$")
 STANDARD_GENERATED_RE = re.compile(r".*_(goal|proof_auto|proof_manual|goal_check)\.v$")
 TARGET_GENERATED_SUFFIXES = ("goal", "proof_auto", "proof_manual", "goal_check")
 SYEXEC_OWNED_SUFFIXES = ("goal", "proof_auto", "goal_check")
+
+# Logical-path prefixes that legitimately appear in QCP manual proofs.
+ALLOWED_IMPORT_PREFIXES: tuple[str, ...] = (
+    "Coq.",
+    "AUXLib",
+    "SimpleC.",
+    "compcert.lib",
+    "SetsClass",
+    "Logic",
+    "FP",
+    "MonadLib",
+    "ListLib",
+    "MaxMinLib",
+    "GraphLib",
+    "Permutation",
+)
+
+_BLOCK_RE = re.compile(r"/\*@(.*?)\*/", re.DOTALL)
+_WS_RE = re.compile(r"\s+")
+_IMPORT_RE = re.compile(r"^\s*(?:From\s+(\S+)\s+)?Require\s+(?:Import|Export)\s+(.+?)\.", re.MULTILINE)
+_PROOF_STUB_RE = re.compile(r"(?<![A-Za-z_])(Admitted|Abort|admit|give_up)(?![A-Za-z_])")
+_AXIOM_RE = re.compile(
+    r"^\s*(Axiom|Hypothesis|Parameter|Parameters|Conjecture|Variable|Variables|Declare)\b",
+    re.MULTILINE,
+)
+
+
+def _normalize(text: str) -> str:
+    return _WS_RE.sub(" ", text).strip()
+
+
+def extract_contract_specs(c_text: str) -> list[str]:
+    """Normalized ``/*@ ... */`` contract blocks from a C source file."""
+    specs: list[str] = []
+    for body in _BLOCK_RE.findall(c_text):
+        if re.search(r"\bEnsure\b", body):
+            specs.append(_normalize(body))
+    return specs
+
+
+def scan_contract_weakening(original_c: str, verified_c: str) -> list[dict[str, Any]]:
+    """Flag changes to the function contract between original and annotated C."""
+    orig = extract_contract_specs(original_c)
+    ver = extract_contract_specs(verified_c)
+    if orig == ver:
+        return []
+    return [{
+        "category": "contract_weakening",
+        "severity": "error",
+        "file": "verified",
+        "line": 0,
+        "snippet": (ver[0] if ver else "<no contract block in verified>")[:400],
+        "message": (
+            "Verified file's contract (With/Require/Ensure) differs from the "
+            "original. Annotations may add Inv/Assert/which-implies but must not "
+            "alter the contract. original_specs={} verified_specs={}".format(
+                len(orig), len(ver))
+        ),
+    }]
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _scan_lines(
+    text: str,
+    file_label: str,
+    pattern: re.Pattern[str],
+    category: str,
+    severity: str,
+    message: str,
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    for i, line in enumerate(text.splitlines(), start=1):
+        if pattern.search(line):
+            findings.append({
+                "category": category,
+                "severity": severity,
+                "file": file_label,
+                "line": i,
+                "snippet": line.strip()[:400],
+                "message": message,
+            })
+    return findings
+
+
+def scan_proof_file(text: str, file_label: str, *, flag_stubs: bool = True) -> list[dict[str, Any]]:
+    """Scan a manual proof file for stubs, axioms, and unusual imports."""
+    findings: list[dict[str, Any]] = []
+    if flag_stubs:
+        findings += _scan_lines(
+            text, file_label, _PROOF_STUB_RE, "proof_stub", "error",
+            "proof_manual.v contains an admit/Admitted/Abort stub; a manual "
+            "obligation was not actually discharged.",
+        )
+    for i, line in enumerate(text.splitlines(), start=1):
+        if _AXIOM_RE.match(line):
+            findings.append({
+                "category": "manual_axiom",
+                "severity": "error",
+                "file": file_label,
+                "line": i,
+                "snippet": line.strip()[:400],
+                "message": "Hand-written proof assumption assumes the goal instead of proving it.",
+            })
+    for match in _IMPORT_RE.finditer(text):
+        origin = match.group(1)
+        names = match.group(2)
+        targets = [origin] if origin else names.split()
+        for target in targets:
+            if not any(target.startswith(prefix) or target == prefix.rstrip(".")
+                       for prefix in ALLOWED_IMPORT_PREFIXES):
+                line = text[: match.start()].count("\n") + 1
+                findings.append({
+                    "category": "forbidden_import",
+                    "severity": "warning",
+                    "file": file_label,
+                    "line": line,
+                    "snippet": match.group(0).strip()[:400],
+                    "message": f"Import `{target}` is outside the known QCP/Coq "
+                               "library set; confirm it is not used to smuggle in "
+                               "an assumption.",
+                })
+                break
+    return findings
 
 
 def normalize_c_without_annotations(text: str) -> str:
@@ -104,32 +228,17 @@ def normalized_generated_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace").replace("\r\n", "\n")
 
 
-def generated_proof_files(workspace: Path) -> list[tuple[Path, bool]]:
-    """Return ``(path, flag_stubs)`` proof-like files to audit.
+def generated_manual_proof_files(workspace: Path) -> list[Path]:
+    """Return only target ``proof_manual.v`` files to audit for proof bypasses.
 
-    ``proof_auto.v`` stubs are normal QCP output, so only assumptions/imports are
-    flagged there. ``goal.v`` is excluded because QCP emits witness axioms in it
-    by convention; ``proof_manual.v``, ``goal_check.v``, and nonstandard helper
-    files carry no such exemption.
+    The other target artifacts are owned by symexec/final-check freshness gates,
+    not by proof-bypass text scanning.
     """
     gendir = generated_dir(workspace)
     if not gendir.exists():
         return []
 
-    proof_files: list[tuple[Path, bool]] = []
-    for path in sorted(gendir.glob("*.v")):
-        name = path.name
-        if name.endswith("_goal.v"):
-            continue
-        if name.endswith("_proof_auto.v"):
-            proof_files.append((path, False))
-            continue
-        if name.endswith("_proof_manual.v") or name.endswith("_goal_check.v"):
-            proof_files.append((path, True))
-            continue
-        if not STANDARD_GENERATED_RE.match(name):
-            proof_files.append((path, True))
-    return proof_files
+    return sorted(gendir.glob("*_proof_manual.v"))
 
 
 def normalize_qcp_finding(raw: dict[str, Any], *, case: str) -> dict[str, Any]:
@@ -154,10 +263,66 @@ def normalize_qcp_finding(raw: dict[str, Any], *, case: str) -> dict[str, Any]:
     )
 
 
-def scan_source_artifacts(workspace: Path, case: str) -> list[dict[str, Any]]:
+def scan_runner_inputs(
+    workspace: Path,
+    case: str,
+    *,
+    input_path: Path | None = None,
+    input_v_path: Path | None = None,
+) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    if input_path is not None:
+        original = workspace / "original" / input_path.name
+        if not original.exists():
+            findings.append(finding(
+                case=case,
+                group="artifact_shape",
+                category="missing_bootstrap_original_c",
+                severity="error",
+                file=str(original),
+                message="Runner input C was not preserved in workspace/original.",
+            ))
+        elif input_path.exists() and file_sha256(original) != file_sha256(input_path):
+            findings.append(finding(
+                case=case,
+                group="source_integrity",
+                category="input_c_changed_after_bootstrap",
+                severity="error",
+                file=str(input_path),
+                message="Runner input C differs from the workspace bootstrap copy.",
+            ))
+    if input_v_path is not None:
+        original_v = workspace / "original" / input_v_path.name
+        if not original_v.exists():
+            findings.append(finding(
+                case=case,
+                group="artifact_shape",
+                category="missing_bootstrap_original_v",
+                severity="error",
+                file=str(original_v),
+                message="Runner input V was not preserved in workspace/original.",
+            ))
+        elif input_v_path.exists() and file_sha256(original_v) != file_sha256(input_v_path):
+            findings.append(finding(
+                case=case,
+                group="source_integrity",
+                category="input_v_changed_after_bootstrap",
+                severity="error",
+                file=str(input_v_path),
+                message="Runner input V differs from the workspace bootstrap copy.",
+            ))
+    return findings
+
+
+def scan_source_artifacts(
+    workspace: Path,
+    case: str,
+    *,
+    annotated_c_path: Path | None = None,
+) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
     original = original_c_path(workspace, case)
-    verified = verified_c_path(workspace)
+    verified = annotated_c_path if annotated_c_path is not None else verified_c_path(workspace)
 
     if original is None:
         findings.append(finding(
@@ -168,22 +333,22 @@ def scan_source_artifacts(workspace: Path, case: str) -> list[dict[str, Any]]:
             file=str(workspace / "original"),
             message="Missing unique original C artifact.",
         ))
-    if verified is None:
+    if verified is None or not verified.exists():
         findings.append(finding(
             case=case,
             group="artifact_shape",
             category="missing_verified_c",
             severity="error",
-            file=str(workspace / "annotated"),
+            file=str(verified if verified is not None else workspace / "annotated"),
             message="Missing unique verified/annotated C artifact.",
         ))
 
-    if original is None or verified is None:
+    if original is None or verified is None or not verified.exists():
         return findings
 
     original_text = original.read_text(encoding="utf-8", errors="replace")
     verified_text = verified.read_text(encoding="utf-8", errors="replace")
-    for raw in check_qcp_cheating.scan_contract_weakening(original_text, verified_text):
+    for raw in scan_contract_weakening(original_text, verified_text):
         findings.append(normalize_qcp_finding(raw, case=case))
 
     if normalize_c_without_annotations(original_text) != normalize_c_without_annotations(verified_text):
@@ -225,9 +390,9 @@ def scan_proof_artifacts(workspace: Path, case: str) -> list[dict[str, Any]]:
             message=f"Missing unique target generated artifact for suffix {suffix}.",
         ))
 
-    for path, flag_stubs in generated_proof_files(workspace):
+    for path in generated_manual_proof_files(workspace):
         text = path.read_text(encoding="utf-8", errors="replace")
-        for raw in check_qcp_cheating.scan_proof_file(text, path.name, flag_stubs=flag_stubs):
+        for raw in scan_proof_file(text, path.name, flag_stubs=True):
             normalized = normalize_qcp_finding(raw, case=case)
             normalized["file"] = str(path)
             findings.append(normalized)
@@ -288,17 +453,49 @@ def scan_generated_freshness(
     return findings
 
 
-def scan_workspace(workspace: Path) -> dict[str, Any]:
+def audit_inputs(
+    *,
+    input_path: Path | None = None,
+    input_v_path: Path | None = None,
+    annotated_c_path: Path | None = None,
+) -> dict[str, str | None]:
+    return {
+        "input_c": str(input_path.resolve()) if input_path is not None else None,
+        "input_v": str(input_v_path.resolve()) if input_v_path is not None else None,
+        "annotated_c": str(annotated_c_path.resolve()) if annotated_c_path is not None else None,
+    }
+
+
+def scan_workspace(
+    workspace: Path,
+    *,
+    input_path: Path | None = None,
+    input_v_path: Path | None = None,
+    annotated_c_path: Path | None = None,
+) -> dict[str, Any]:
     workspace = workspace.resolve()
     case = infer_case_name(workspace)
     findings: list[dict[str, Any]] = []
-    findings.extend(scan_source_artifacts(workspace, case))
+    findings.extend(scan_runner_inputs(
+        workspace,
+        case,
+        input_path=input_path,
+        input_v_path=input_v_path,
+    ))
+    findings.extend(scan_source_artifacts(workspace, case, annotated_c_path=annotated_c_path))
     findings.extend(scan_proof_artifacts(workspace, case))
+    summary = summarize(findings)
     return {
+        "ok": summary["errors"] == 0,
         "workspace": str(workspace),
         "case": case,
+        "inputs": audit_inputs(
+            input_path=input_path,
+            input_v_path=input_v_path,
+            annotated_c_path=annotated_c_path,
+        ),
+        "summary": summary,
         "findings": findings,
-        "summary": summarize(findings),
     }
 
 
@@ -327,12 +524,12 @@ def summarize(findings: list[dict[str, Any]]) -> dict[str, Any]:
         by_group[str(item.get("group", "?"))] = by_group.get(str(item.get("group", "?")), 0) + 1
         by_category[str(item.get("category", "?"))] = by_category.get(str(item.get("category", "?")), 0) + 1
     return {
-        "total": len(findings),
+        "findings": len(findings),
         "errors": len(errors),
         "warnings": len(warnings),
         "groups": dict(sorted(by_group.items())),
         "categories": dict(sorted(by_category.items())),
-        "clean": len(errors) == 0,
+        "ok": len(errors) == 0,
     }
 
 
@@ -340,7 +537,7 @@ def aggregate(results: list[dict[str, Any]]) -> dict[str, Any]:
     findings = [finding for result in results for finding in result["findings"]]
     summary = summarize(findings)
     summary["workspaces"] = len(results)
-    summary["clean_workspaces"] = sum(1 for result in results if result["summary"]["clean"])
+    summary["ok_workspaces"] = sum(1 for result in results if result["summary"]["ok"])
     return summary
 
 
@@ -348,7 +545,7 @@ def print_text(results: list[dict[str, Any]]) -> None:
     summary = aggregate(results)
     print(
         "Unified verify audit: "
-        f"workspaces={summary['workspaces']} findings={summary['total']} "
+        f"workspaces={summary['workspaces']} findings={summary['findings']} "
         f"errors={summary['errors']} warnings={summary['warnings']} "
         f"clean={summary['errors'] == 0}"
     )
@@ -399,6 +596,7 @@ def main() -> int:
         )
         result["findings"].extend(fresh_findings)
         result["summary"] = summarize(result["findings"])
+        result["ok"] = result["summary"]["ok"]
     summary = aggregate(results)
     if args.json:
         json.dump({"summary": summary, "results": results}, sys.stdout, indent=2, ensure_ascii=False)
