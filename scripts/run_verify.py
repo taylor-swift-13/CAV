@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agent_config
 import agent_metrics
 import check_qcp_cheating
+import check_verify_audit
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -277,7 +278,7 @@ def _qcp_skill_list() -> str:
         "- `.agents/skills/annotation-filling/docs/common-annotation-errors.md` — common symexec/annotation failure patterns.",
         "- `.agents/skills/vc-proving/docs/` — proof tactics and separation-logic proof patterns.",
         "- `.agents/skills/final-check/` — final compile/check workflow.",
-        "Use `verification-orchestrator` as the orchestration entry point. Use `annotation-filling` and `annotation-checking` for annotation/symexec. Use `vc-checking` and `vc-proving` for manual VC diagnosis/proofs. Use `final-check` plus the required case audit script for completion.",
+        "Use `verification-orchestrator` as the orchestration entry point. Use `annotation-filling` and `annotation-checking` for annotation/symexec. Use `vc-checking` and `vc-proving` for manual VC diagnosis/proofs. Use `final-check` to validate the current case before completion.",
     ]
     return "\n".join(lines)
 
@@ -300,7 +301,6 @@ def _input_lines(input_path: Path, input_v_path: Path | None, function_name: str
     qcp_coq = qcp_case_coq_dir(workspace_path)
     qcp_deps = qcp_case_deps_dir(workspace_path)
     qcp_logs = qcp_coq / "logs"
-    qcp_audit = qcp_coq / "run_audit.sh"
     return (
         f"- Input C name: `{input_path.name}` (already staged by runner; do not open original input path)\n"
         f"- Optional input V name: {input_v} (already staged by runner when present)\n"
@@ -310,7 +310,6 @@ def _input_lines(input_path: Path, input_v_path: Path | None, function_name: str
         f"- Active QCP Coq directory to edit/compile: `{qcp_rel(qcp_coq)}`\n"
         f"- Active QCP deps directory: `{qcp_rel(qcp_deps)}` (read-only staged bare `.v` specs for Require Import)\n"
         f"- Active QCP logs directory: `{qcp_rel(qcp_logs)}`\n"
-        f"- Required audit script: `{qcp_rel(qcp_audit)}`\n"
     )
 
 
@@ -359,9 +358,10 @@ def _qcp_final_check_commands(
             *commands,
             "```",
             "Do not search for symexec, Makefiles, dune files, QCP docs, scripts, or external parser directories. Use only the commands above.",
-            f"Required audit script: `{coq_dir_rel}/run_audit.sh`. Run it from QualifiedCProgramming as `bash {coq_dir_rel}/run_audit.sh`. If this script returns nonzero, do not exit; keep editing annotation/proof and rerun it. Only write Final Result: Success when it returns 0. Only write Final Result: Fail when you have confirmed a contract_program_mismatch_blocker: the Contract and original program semantics conflict and the case must return to Contract/user decision.",
-            "Do not prove or edit proof_auto.v. `Admitted` in proof_auto.v is normal QCP auto-proof output. Completion is judged by proof_manual.v having no Admitted/admit/Abort/Axiom and goal_check.v compiling.",
-            "If proof_manual.v is empty or has no manual obligations and the required audit script succeeds, immediately write QCP logs/issues.md, QCP logs/metrics.md, and finish with Final Result: Success.",
+            "Runner-side final acceptance will re-check the same QCP mirror after you exit. If any annotation, symexec, proof, or final-check step fails while you are working, do not exit; keep editing annotation/proof and rerun the relevant QCP check. Only write Final Result: Success when the mirror is ready for runner acceptance. Only write Final Result: Fail when you have confirmed a contract_program_mismatch_blocker: the Contract and original program semantics conflict and the case must return to Contract/user decision.",
+            "Runner acceptance expects the original executable program and contract to be preserved, and every manual proof obligation to be justified by real proof work from the available case facts. Separately, you must keep all work inside the active case workspace and must not use prior answers or unrelated runs.",
+            "Do not prove or edit proof_auto.v. It is normal QCP-generated output; the real manual burden is proof_manual.v. Completion is judged by all manual proof obligations being genuinely discharged and goal_check.v compiling.",
+            "Do not add anything whose purpose is to make the files accepted without proving the stated obligations, and do not use external answer artifacts. If proof_manual.v is empty or has no manual obligations and the QCP final-check sequence succeeds, immediately write QCP logs/issues.md, QCP logs/metrics.md, and finish with Final Result: Success.",
         ]
     )
 
@@ -383,7 +383,7 @@ def build_prompt(
         "",
         _qcp_skill_list(),
         "",
-        "Persistence requirement: default the contract to correct. If the required audit script returns nonzero, do not exit; keep editing annotation/proof and rerun the audit. Writing issues.md or metrics.md is not permission to stop. The only exception is a confirmed contract_program_mismatch_blocker: the Contract and original program semantics conflict and the case must return to Contract/user decision.",
+        "Persistence requirement: default the contract to correct. If annotation, symexec, proof, or final-check fails while you are working, do not exit; keep editing annotation/proof and rerun the relevant QCP check. Writing issues.md or metrics.md is not permission to stop. The only exception is a confirmed contract_program_mismatch_blocker: the Contract and original program semantics conflict and the case must return to Contract/user decision.",
         "",
         "Compile boundary: use the QCP final-check sequence summarized here and cross-check it against read-only QCP `.agents/skills/` docs: symexec, then dependency-ordered coqc for original deps, goal, proof_auto, proof_manual, and goal_check. The current case is already staged in the current workspace's QCP mirror under QualifiedCProgramming. Do all annotation, symexec, proof, and coqc work there. Do not compile under output/coq/generated, do not parallelize a dependency-ordered QCP final-check sequence, and never copy .vo/.glob/.aux files back to output.",
         "Runner artifact boundary: do not write output/, annotated/, repo-level logs, or staged bare spec deps yourself. Write only issues.md and metrics.md under the active QCP logs directory; do not put probe files, proof backups, or temporary Coq files under logs. Use a `.tmp/` directory inside the active QCP Coq directory for temporary probes/backups. The runner collects the current QCP annotated C, QCP logs, and final target .v artifacts from the QCP mirror after the agent exits.",
@@ -421,7 +421,7 @@ def build_proof_only_prompt(
         "",
         _qcp_skill_list(),
         "",
-        "Persistence requirement: proof-only mode must keep proving while proof_manual.v can still be edited. If the required audit script returns nonzero, do not exit; keep editing proof_manual.v and rerun the audit. Writing issues.md or metrics.md is not permission to stop. The only exception is a confirmed contract_program_mismatch_blocker: the Contract and original program semantics conflict and the case must return to Contract/user decision.",
+        "Persistence requirement: proof-only mode must keep proving while proof_manual.v can still be edited. If proof or final-check fails while you are working, do not exit; keep editing proof_manual.v and rerun the relevant QCP check. Writing issues.md or metrics.md is not permission to stop. The only exception is a confirmed contract_program_mismatch_blocker: the Contract and original program semantics conflict and the case must return to Contract/user decision.",
         "",
         "Compile boundary: use the QCP final-check sequence summarized here and cross-check it against read-only QCP `.agents/skills/` docs: dependency-ordered coqc for original deps, goal, proof_auto, proof_manual, and goal_check. The current case is already staged in the current workspace's QCP mirror under QualifiedCProgramming. Do all proof and coqc work there. Do not compile under output/coq/generated, do not parallelize a dependency-ordered QCP final-check sequence, and never copy .vo/.glob/.aux files back to output.",
         "Runner artifact boundary: do not write output/, annotated/, repo-level logs, or staged bare spec deps yourself. Write only issues.md and metrics.md under the active QCP logs directory; do not put probe files, proof backups, or temporary Coq files under logs. Use a `.tmp/` directory inside the active QCP Coq directory for temporary probes/backups. The runner collects the current QCP annotated C, QCP logs, and final target .v artifacts from the QCP mirror after the agent exits.",
@@ -655,7 +655,7 @@ def write_qcp_agent_audit_script(
     annotated_c_path: Path,
     function_name: str,
 ) -> Path:
-    """Write the per-case audit script the agent must run before Success."""
+    """Write the per-case QCP mirror final-check helper script."""
     workspace = workspace_path.name
 
     qcp_c_rel = f"QCP_examples/CAV/{workspace}/{annotated_c_path.name}"
@@ -755,18 +755,6 @@ esac
 """
     for command in commands:
         script += f"run {_shell_join(command)}\n"
-    script += f"""
-python3 - <<'PY' >>"$LOG" 2>&1 || fail "proof_manual still has obligations"
-import re
-from pathlib import Path
-
-manual = Path({f"{coq_dir_rel}/{function_name}_proof_manual.v"!r})
-text = manual.read_text(encoding="utf-8", errors="replace")
-match = re.search(r"\\b(Admitted|admit|Abort|Axiom)\\b", text)
-if match:
-    raise SystemExit(f"proof manual obligation marker: {{match.group(1)}}")
-PY
-"""
     script += 'echo "[audit] SUCCESS" | tee -a "$LOG"\n'
 
     audit_path = qcp_case_coq_dir(workspace_path) / "run_audit.sh"
@@ -910,6 +898,18 @@ def verify_proof_artifact_check(
     return True, f"audit_check_success:{log_path}"
 
 
+def verify_unified_cheating_audit_check(workspace_path: Path) -> tuple[bool, str]:
+    """Run the runner-side unified audit that is not exposed in the prompt."""
+    result = check_verify_audit.scan_workspace(workspace_path)
+    log_path = workspace_path / "logs" / "verify_audit.json"
+    log_path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    summary = result["summary"]
+    if summary["errors"]:
+        categories = ",".join(summary["categories"].keys())
+        return False, f"verify_audit_failed:{log_path}:categories={categories}"
+    return True, f"verify_audit_success:{log_path}"
+
+
 def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -975,18 +975,25 @@ def verify_audit_check(
     input_v_path: Path | None,
     annotated_c_path: Path,
 ) -> tuple[bool, str]:
-    checks = [
-        source_integrity_gate(
-            workspace_path=workspace_path,
-            input_path=input_path,
-            input_v_path=input_v_path,
-            annotated_c_path=annotated_c_path,
-        ),
-        verify_proof_artifact_check(workspace_path, function_name, input_v_path, annotated_c_path, input_path),
-    ]
-    failures = [detail for ok, detail in checks if not ok]
-    if failures:
-        return False, ";".join(failures)
+    checks: list[tuple[bool, str]] = []
+
+    checks.append(source_integrity_gate(
+        workspace_path=workspace_path,
+        input_path=input_path,
+        input_v_path=input_v_path,
+        annotated_c_path=annotated_c_path,
+    ))
+    if not checks[-1][0]:
+        return False, ";".join(detail for _, detail in checks)
+
+    checks.append(verify_unified_cheating_audit_check(workspace_path))
+    if not checks[-1][0]:
+        return False, ";".join(detail for _, detail in checks)
+
+    checks.append(verify_proof_artifact_check(workspace_path, function_name, input_v_path, annotated_c_path, input_path))
+    if not checks[-1][0]:
+        return False, ";".join(detail for _, detail in checks)
+
     return True, ";".join(detail for _, detail in checks)
 
 
@@ -1069,20 +1076,26 @@ def run_symexec(
     return proc.returncode, proc.stdout, proc.stderr
 
 
+PROOF_BYPASS_RE = re.compile(
+    r"(?<![A-Za-z_])(Admitted|Abort|admit|give_up)(?![A-Za-z_])"
+    r"|^\s*(Axiom|Hypothesis|Parameter|Parameters|Conjecture|Variable|Variables|Declare)\b",
+    re.MULTILINE,
+)
+
+
 def proof_file_has_obligations(proof_file: Path) -> bool:
     if not proof_file.exists():
         return True
     text = proof_file.read_text(encoding="utf-8", errors="replace")
-    return bool(re.search(r"\b(Admitted|admit|Abort|Axiom)\b", text))
+    return bool(PROOF_BYPASS_RE.search(text))
 
 
 def proof_manual_has_obligations(generated_dir: Path, function_name: str) -> bool:
-    """Verify completion judge: only `proof_manual.v` Admitteds count.
+    """Verify completion judge: unfinished manual proof work lives in this file.
 
-    `proof_auto.v` Admitteds are symexec's normal auto-discharge stubs and are
-    accepted by `goal_check.v` as axioms. The agreed completion criterion (memory
-    ``proof-auto-admitted-is-normal``): `goal_check.v` compiles and
-    `proof_manual.v` contains no `Admitted`/`admit`/`Abort`.
+    QCP's generated auto-proof file has its own generated shape and is accepted
+    through the final goal-check. The manual file must contain completed proof
+    work, while the final goal-check confirms the combined artifacts.
     """
     return proof_file_has_obligations(generated_dir / f"{function_name}_proof_manual.v")
 
@@ -1382,6 +1395,20 @@ def compile_generated_via_qcp_mirror(
             return False, logs
         if proc.returncode != 0:
             return False, logs
+
+        freshness_findings = check_verify_audit.scan_generated_freshness(
+            generated_dir,
+            qcp_examples_dir,
+            case=function_name,
+            function_name=function_name,
+        )
+        if freshness_findings:
+            logs.append(
+                "[artifact_audit] generated_freshness_failed\n"
+                + json.dumps({"findings": freshness_findings}, indent=2, ensure_ascii=False)
+            )
+            return False, logs
+        logs.append("[artifact_audit] generated_freshness_passed")
 
         extra_q = [(str(qcp_deps_dir), "")]
         coq_files: list[Path] = []

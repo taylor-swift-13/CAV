@@ -11,7 +11,8 @@ Categories:
                             symexec-generated and is ``Admitted.`` by QCP
                             convention (the real proof burden lives in
                             ``proof_manual.v``), so its stubs are NOT flagged.
-  * ``manual_axiom``      — hand-written ``Axiom`` / ``Hypothesis``
+  * ``manual_axiom``      — hand-written proof assumptions such as
+                            ``Axiom`` / ``Hypothesis`` / ``Parameter``
   * ``forbidden_import``  — ``Require Import`` outside the known QCP/Coq set
   * ``contract_weakening``— the verified file's ``Require``/``Ensure`` differs
                             from the original contract
@@ -106,7 +107,10 @@ def _scan_lines(text: str, file_label: str, pattern: re.Pattern, category: str,
 # trailing period is how Coq terminates them but we match the keyword to be
 # robust to spacing.
 _PROOF_STUB_RE = re.compile(r"(?<![A-Za-z_])(Admitted|Abort|admit|give_up)(?![A-Za-z_])")
-_AXIOM_RE = re.compile(r"^\s*(Axiom|Hypothesis|Parameter|Conjecture)\s", re.MULTILINE)
+_AXIOM_RE = re.compile(
+    r"^\s*(Axiom|Hypothesis|Parameter|Parameters|Conjecture|Variable|Variables|Declare)\b",
+    re.MULTILINE,
+)
 
 
 def scan_proof_file(text: str, file_label: str, *, flag_stubs: bool = True) -> list[dict]:
@@ -131,8 +135,7 @@ def scan_proof_file(text: str, file_label: str, *, flag_stubs: bool = True) -> l
                 "file": file_label,
                 "line": i,
                 "snippet": line.strip()[:400],
-                "message": "Hand-written Axiom/Hypothesis/Parameter assumes the "
-                           "goal instead of proving it.",
+                "message": "Hand-written proof assumption assumes the goal instead of proving it.",
             })
     for m in _IMPORT_RE.finditer(text):
         origin = m.group(1)  # the `From <origin>` part, if any
