@@ -276,7 +276,7 @@ start_batch() {
       fi
     fi
     printf '%s\n' "$$" > "$lock_dir/pid"
-    trap 'rm -rf "$lock_dir"' EXIT
+    trap 'rm -rf "$lock_dir"' RETURN
     problem_lock_root="$lock_dir/problems"
     mkdir -p "$problem_lock_root"
 
@@ -285,6 +285,7 @@ start_batch() {
     export -f cleanup_workspace_after_result_copy
     export -f copy_workspace_to_result_dir
 
+    local batch_rc
     printf '%s\n' "${names[@]}" | xargs -P "$jobs" -I{} bash -c '
       set +e
       name="$1"
@@ -345,6 +346,10 @@ start_batch() {
       fi
       exit "$rc"
     ' _ {}
+    batch_rc=$?
+    trap - RETURN
+    rm -rf "$lock_dir"
+    return "$batch_rc"
   }
 
   finalize_batch_log() {
