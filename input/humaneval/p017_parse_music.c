@@ -16,6 +16,7 @@ Here is a legend:
 #include "char_array_def.h"
 #include "int_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_17_pre: list Z -> Prop)
                (problem_17_spec: list Z -> list Z -> Prop)
                (ascii_range: list Z -> Prop)

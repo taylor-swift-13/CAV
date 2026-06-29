@@ -39,8 +39,10 @@ Definition nat_of_digit (c : ascii) : nat :=
 
 
 Require Import Coq.ZArith.ZArith.
+Require Import Coq.ZArith.Wf_Z.
 Require Import Coq.micromega.Lia.
 Require Import Recdef.
+From compcert.lib Require Import Coqlib.
 From AUXLib Require Import Axioms ListLib.
 From SimpleC.SL Require Import IntLib.
 Require Import string_bridge.

@@ -107,7 +107,7 @@ Require Import Coq.micromega.Lia.
 From AUXLib Require Import Axioms ListLib.
 From SimpleC.SL Require Import IntLib.
 Require Import string_bridge.
-Require Import base_conversion_lib binary_digits_lib.
+Require Export base_conversion_lib binary_digits_lib.
 
 Local Open Scope Z_scope.
 Local Open Scope string_scope.
@@ -129,3 +129,10 @@ Definition decimal_binary_full_state
     out_l = [100; 98] ++ payload ++ [100; 98].
 
 Local Open Scope nat_scope.
+Local Open Scope Z_scope.
+
+
+(* Ground-truth proof helpers from the current list-Z base-conversion proof. *)
+
+
+(* Binary-state wrappers for base 2. *)

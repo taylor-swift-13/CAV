@@ -55,6 +55,9 @@ Local Open Scope string_scope.
 Definition problem_18_pre (input substring : list Z) : Prop :=
   True.
 
+Definition ascii_range (l : list Z) : Prop :=
+  forall i, 0 <= i < Zlength l -> 0 <= Znth i l 0 <= 127.
+
 Definition match_prefix (i j : Z) (input substring : list Z) : Prop :=
   forall k, 0 <= k < j ->
     Znth (i + k) input 0 = Znth k substring 0.

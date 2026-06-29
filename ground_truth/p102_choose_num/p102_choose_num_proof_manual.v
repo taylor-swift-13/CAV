@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.

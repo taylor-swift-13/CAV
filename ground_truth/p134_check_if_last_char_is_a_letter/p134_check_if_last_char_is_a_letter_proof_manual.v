@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -16,9 +17,83 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+From AUXLib Require Import ListLib.
+
 Import naive_C_Rules.
 Require Import p134_check_if_last_char_is_a_letter.
 Local Open Scope sac.
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p134_check_if_last_char_is_a_letter.v so public contract files expose definitions only. *)
+
+Lemma problem_134_spec_true : forall s,
+  ends_with_single_letter s ->
+  problem_134_spec s 1.
+Proof.
+  intros s H.
+  unfold problem_134_spec, bool_of.
+  simpl.
+  split; auto.
+Qed.
+Lemma problem_134_spec_false : forall s,
+  ~ ends_with_single_letter s ->
+  problem_134_spec s 0.
+Proof.
+  intros s H.
+  unfold problem_134_spec, bool_of.
+  simpl.
+  split; intro Hfalse; try discriminate.
+  contradiction.
+Qed.
+Lemma ends_with_single_letter_intro_single : forall s,
+  Zlength s = 1 ->
+  is_alpha (Znth (Zlength s - 1) s 0) ->
+  ends_with_single_letter s.
+Proof.
+  intros s Hlen Halpha.
+  unfold ends_with_single_letter.
+  repeat split; try assumption; lia.
+Qed.
+Lemma ends_with_single_letter_intro_space : forall s,
+  1 < Zlength s ->
+  is_alpha (Znth (Zlength s - 1) s 0) ->
+  Znth (Zlength s - 2) s 0 = 32 ->
+  ends_with_single_letter s.
+Proof.
+  intros s Hlen Halpha Hspace.
+  unfold ends_with_single_letter.
+  repeat split; try assumption; lia.
+Qed.
+Lemma not_ends_with_single_letter_empty : forall s,
+  Zlength s = 0 ->
+  ~ ends_with_single_letter s.
+Proof.
+  unfold ends_with_single_letter.
+  intros s Hlen H.
+  lia.
+Qed.
+Lemma not_ends_with_single_letter_not_alpha : forall s,
+  1 <= Zlength s ->
+  ~ is_alpha (Znth (Zlength s - 1) s 0) ->
+  ~ ends_with_single_letter s.
+Proof.
+  unfold ends_with_single_letter.
+  intros s Hlen Hnot H.
+  tauto.
+Qed.
+Lemma not_ends_with_single_letter_prev_not_space : forall s,
+  1 < Zlength s ->
+  is_alpha (Znth (Zlength s - 1) s 0) ->
+  Znth (Zlength s - 2) s 0 <> 32 ->
+  ~ ends_with_single_letter s.
+Proof.
+  unfold ends_with_single_letter.
+  intros s Hlen _ Hnot H.
+  destruct H as [_ [_ [Hsingle | Hspace]]].
+  - lia.
+  - contradiction.
+Qed.
+
 
 Ltac c134_pre :=
   pre_process;

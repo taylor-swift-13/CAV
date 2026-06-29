@@ -14,6 +14,7 @@ p144_simplify("7/10", "10/2") = false
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_144_pre: list Z -> list Z -> Prop)
                (problem_144_spec: list Z -> list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop)

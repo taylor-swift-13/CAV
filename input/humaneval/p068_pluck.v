@@ -97,3 +97,6 @@ Definition pluck_best_spec (base : Z) (processed best : list Z) : Prop :=
 Definition problem_68_spec (arr output : list Z) : Prop :=
   list_nonnegative arr /\
   pluck_best_spec 0 arr output.
+
+
+(* Ground-truth proof helpers. *)

@@ -14,6 +14,7 @@ p086_anti_shuffle("Hello World!!!") returns "Hello !!!Wdlor"
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_86_pre: list Z -> Prop)
                (problem_86_spec: list Z -> list Z -> Prop)
                (ascii_range: list Z -> Prop)

@@ -16,6 +16,7 @@ p141_file_name_check("1example.dll")  => "No" // (the name should start with a l
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_141_pre: list Z -> Prop)
                (problem_141_spec: list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop)

@@ -101,3 +101,6 @@ Definition fix_spaces_output (s : list Z) : list Z :=
 
 Definition problem_140_spec (input output : list Z) : Prop :=
   string_of_list output = fix_spaces (string_of_list input).
+
+Definition list_nonzero (l : list Z) : Prop :=
+  forall k, 0 <= k < Zlength l -> Znth k l 0 <> 0.

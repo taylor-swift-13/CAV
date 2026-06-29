@@ -25,17 +25,27 @@ int best_stock_profit_csv(const char *prices)
     int i = 0;
 
     while (1) {
-        if (prices[i] == 0) break;
+        if (prices[i] == 0) {
+            break;
+        }
         int v = 0;
         while (1) {
-            if (prices[i] < 48 || prices[i] > 57) break;
+            if (prices[i] < 48 || prices[i] > 57) {
+                break;
+            }
             v = v * 10 + (prices[i] - 48);
             i++;
         }
-        if (!seen || v < minp) minp = v;
-        if (v - minp > best) best = v - minp;
+        if (!seen || v < minp) {
+            minp = v;
+        }
+        if (v - minp > best) {
+            best = v - minp;
+        }
         seen = 1;
-        if (prices[i] == 44) i++;
+        if (prices[i] == 44) {
+            i++;
+        }
     }
 
     return best;

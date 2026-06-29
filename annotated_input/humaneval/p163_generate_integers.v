@@ -67,3 +67,5 @@ Definition problem_163_spec (a b : Z) (output : list Z) : Prop :=
       Z.min a b <= d <= Z.max a b /\ d < 10 /\ d mod 2 = 0) /\
   Sorted Z.le output /\
   NoDup output.
+
+(* Helper lemmas migrated from the old proof, with names aligned to the input spec. *)

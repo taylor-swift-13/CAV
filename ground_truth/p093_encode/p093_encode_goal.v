@@ -16,6 +16,7 @@ Local Open Scope sets.
 Local Open Scope string_scope.
 Local Open Scope list.
 Import naive_C_Rules.
+Require Import string_bridge.
 Require Import p093_encode.
 Local Open Scope sac.
 From SimpleC.EE.QCP_demos_LLM Require Import char_array_strategy_goal.

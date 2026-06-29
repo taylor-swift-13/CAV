@@ -10,14 +10,7 @@ Contract 把原始题意 + C 实现整理成 verify 友好的入口/出口 funct
 
 ## 0. 职责
 
-- spec 写法、谓词选择、spec 质量判定依照 QCP 官方文档。启动后必须读取这些路径：
-  - `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` — spec-quality 判据；检查外部 Rocq 谓词是否有定义、function contract 是否刻画数学效果。
-  - `.agents/skills/annotation-filling/docs/annotation-rules.md` — C annotation 的语法、位置和基本写法规则。
-  - `.agents/skills/annotation-filling/docs/predicate-first-annotation.md` — 如何优先写数学性质谓词，避免把 C 算法镜像到 Rocq。
-  - `.agents/skills/annotation-filling/docs/array-predicate-selection.md` — 数组/list 相关 spatial predicate 和抽象 list 的选择方式。
-  - `.agents/skills/annotation-filling/docs/reference-cases.md` — 按题型查找可参考的 annotation 案例。
-  - `.agents/skills/annotation-filling/docs/common-annotation-errors.md` — 常见 annotation 错误、symexec 报错形态和修复方向。
-  - `.agents/skills/annotation-filling/docs/builtin-array-string-support.md` — 内置数组/字符串支持、长度和 no-zero 等必要 side condition。
+- spec 写法、谓词选择、spec 质量判定以本 skill 的 Contract 规则和当前任务语义为主。只有缺少 QCP annotation 语法、内置 predicate 或 spec-quality 细节时，才最小读取相关 QCP skill 文档；可选路径见 §1。
 - 本 skill 只规定 CAV 工程约束、产物、gate、退出和日志。
 - 唯一文字产物是 `logs/issues.md` 和 `logs/metrics.md`。
 - 必须按本 skill 的示例检索规则读取具体相关示例；只读 `reference-cases.md` 不够。
@@ -27,6 +20,16 @@ Contract 把原始题意 + C 实现整理成 verify 友好的入口/出口 funct
 - 输入：原始 C 实现 + 题意 / 约束 / 边界 / 示例。
 - 输出：`mid/<dataset>/<name>.c`；仅在确需额外 Coq 定义时写 `mid/<dataset>/<name>.v`。
 - `input/` 只读，contract 阶段不写。
+- 只读当前任务 prompt 列出的输入/输出路径、本 skill、§3 列出的相关示例目录和 `tutorial/`；确实需要 QCP 语法或 spec-quality 细节时，才最小读取相关 QCP skill 文档。
+- QCP skill 文档路径只作为可选参考，不要求启动时读取；Contract 阶段常用路径：
+  - `QualifiedCProgramming/.agents/skills/annotation-filling/SKILL.md`
+  - `QualifiedCProgramming/.agents/skills/annotation-filling/docs/annotation-rules.md`
+  - `QualifiedCProgramming/.agents/skills/annotation-filling/docs/predicate-first-annotation.md`
+  - `QualifiedCProgramming/.agents/skills/annotation-checking/SKILL.md`
+  - `QualifiedCProgramming/.agents/skills/annotation-checking/docs/spec-quality-checklist.md`
+- 禁止读取自己的 harness transcript 或 prompt 产物：`logs/agent_stdout_*.jsonl`、`logs/agent_prompt_*`、`logs/agent_stderr_*`、`logs/agent_last_message_*`。
+- 禁止对仓库根或父目录做广搜：不要运行 `rg .`、`rg ..`、`find .`、`find ..`、`ls ..` 来探索；检索必须限定到本 skill 允许的具体 QCP 文档/示例目录或当前任务文件。
+- 禁止读取 `../scripts/`、其它 `../skills/`、`../output/` 下其它 workspace、`../pipeline_results/`、git history 或未在 prompt 中列出的 repo-level 文件。
 - Contract 不创建、不写 verify QCP mirror：
   - `QualifiedCProgramming/QCP_examples/CAV/`
   - `QualifiedCProgramming/SeparationLogic/examples/CAV/`
@@ -60,7 +63,7 @@ Contract 把原始题意 + C 实现整理成 verify 友好的入口/出口 funct
 
 ## 3. 工作循环
 
-1. 读题意和代码，并先读取 §0 列出的全部 QCP 文档。
+1. 读题意和代码；若当前 contract 写法需要额外 QCP 语法/spec-quality 细节，最小读取相关 QCP skill 文档。
 2. 按题型关键词检索并读取具体相关示例：`QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/`。
 3. 选择性读取 `tutorial/`。
 4. 生成 `mid/<dataset>/<name>.c` 和必要的 `.v`。
@@ -69,11 +72,11 @@ Contract 把原始题意 + C 实现整理成 verify 友好的入口/出口 funct
 
 ## 4. 退出条件
 
-退出和成功的 spec 判定以 QCP `.agents/skills/annotation-filling/` 与 `.agents/skills/annotation-checking/` 为准；CAV 只增加下面的产物、RTE/UB 和 runner gate 要求。
+退出和成功的 spec 判定以本文 Contract 规则、题意语义和 runner gate 为准。
 
 全部满足才写 `Final Result: Success`：
 
-- QCP annotation/spec-quality 检查口径判定入口/出口 function contract 合格。
+- 入口/出口 function contract 按本文 spec-quality 要求判定合格。
 - `mid/.c` 有完整入口/出口 function contract，且无 verify 阶段 annotation。
 - 公共头裸名 include 且保持原名。
 - 字符串相关 function contract 保留长度和中间 no-zero 约束。
@@ -82,7 +85,7 @@ Contract 把原始题意 + C 实现整理成 verify 友好的入口/出口 funct
 - `.v` 如存在，definition-only 且 runner `coqc` gate 通过。
 - `logs/issues.md` 和 `logs/metrics.md` 已更新。
 
-只有按 QCP annotation/spec-quality 检查口径确认题意、原始实现或所需 function contract 本身矛盾，必须用户/上游决策时，才写 `Final Result: Fail`。可通过修改 `mid/.c` / `.v` 修复的 gate 失败必须继续推进。
+只有确认题意、原始实现或所需 function contract 本身矛盾，必须用户/上游决策时，才写 `Final Result: Fail`。可通过修改 `mid/.c` / `.v` 修复的 gate 失败必须继续推进。
 
 ## 5. 日志
 

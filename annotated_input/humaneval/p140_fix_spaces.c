@@ -12,6 +12,7 @@ p140_fix_spaces(" Example   3") == "_Example-3"
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_140_pre: list Z -> Prop)
                (problem_140_spec: list Z -> list Z -> Prop)
                (ascii_range: list Z -> Prop)

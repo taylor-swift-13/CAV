@@ -1,18 +1,3 @@
-(* spec/9 *)
-(* """ From a given list of integers, generate a list of rolling maximum element found until given moment
-in the sequence.
->>> rolling_max([1, 2, 3, 2, 3, 4, 2])
-[1, 2, 3, 3, 3, 4, 4]
-""" *)
-
-(* prefix_max_at(input, i, m) :=
-     m is the maximum value of input[0..i].
-
-   Spec(input, output) :=
-     length(output) = length(input) /\
-     forall i, 0 <= i < length(output) ->
-       prefix_max_at(input, i, output[i]). *)
-
 Require Import Coq.Lists.List Coq.ZArith.ZArith Lia.
 From AUXLib Require Import ListLib.
 From SimpleC.SL Require Import Mem SeparationLogic.

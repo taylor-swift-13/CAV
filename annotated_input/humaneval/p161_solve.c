@@ -8,6 +8,7 @@ If the string contains no letters, reverse the string.
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_161_pre: list Z -> Prop)
                (problem_161_spec: list Z -> list Z -> Prop)
                (ascii_range: list Z -> Prop)

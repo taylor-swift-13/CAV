@@ -19,24 +19,34 @@ int array_is_sorted_csv(char *nums)
       CharArray::full(nums, n + 1, app(l, cons(0, nil)))
 */
 {
-    if (nums[0] == 0) return 1;
+    if (nums[0] == 0) {
+        return 1;
+    }
     int i = 0;
     int sign = 1;
     if (nums[i] == 45) { sign = -1; i++; }
     int prev = 0;
     while (nums[i] >= 48 && nums[i] <= 57) { prev = prev * 10 + (nums[i] - 48); i++; }
     prev *= sign;
-    if (nums[i] == 44) i++;
+    if (nums[i] == 44) {
+        i++;
+    }
     while (1) {
-        if (nums[i] == 0) break;
+        if (nums[i] == 0) {
+            break;
+        }
         sign = 1;
         if (nums[i] == 45) { sign = -1; i++; }
         int v = 0;
         while (nums[i] >= 48 && nums[i] <= 57) { v = v * 10 + (nums[i] - 48); i++; }
         v *= sign;
-        if (v < prev) return 0;
+        if (v < prev) {
+            return 0;
+        }
         prev = v;
-        if (nums[i] == 44) i++;
+        if (nums[i] == 44) {
+            i++;
+        }
     }
     return 1;
 }

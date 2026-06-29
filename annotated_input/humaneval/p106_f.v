@@ -10,7 +10,6 @@ f(5) == [1, 2, 6, 24, 15] *)
 (* 引入 Coq 的自然数和列表库 *)
 Require Import Nat.
 Require Import List.
-Require Import Factorial.
 Import ListNotations.
 
 (* n 为自然数，无额外约束 *)

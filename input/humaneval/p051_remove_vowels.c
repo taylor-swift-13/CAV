@@ -17,6 +17,7 @@ p051_remove_vowels is a function that takes string && returns string without vow
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_51_pre: list Z -> Prop)
                (problem_51_spec: list Z -> list Z -> Prop)
                (remove_vowels_prefix: Z -> list Z -> list Z)

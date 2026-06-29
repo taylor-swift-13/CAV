@@ -13,6 +13,7 @@ p103_rounded_avg(20, 33) => "11010"
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_103_pre: Z -> Z -> Prop)
                (problem_103_spec: Z -> Z -> list Z -> Prop)
                (avg_103: Z -> Z -> Z)

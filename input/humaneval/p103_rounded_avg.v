@@ -52,6 +52,7 @@ Require Import Coq.Lists.List.
 Require Import Coq.Strings.String.
 Require Import Coq.Strings.Ascii.
 Require Import Coq.micromega.Lia.
+Require Import Recdef.
 From AUXLib Require Import Axioms ListLib.
 From SimpleC.SL Require Import IntLib.
 Require Import string_bridge base_conversion_lib.
@@ -77,3 +78,8 @@ Definition binary_count_state (orig t digits : Z) : Prop :=
 Definition binary_fill_full_state
   (orig x digits : Z) (out_l : list Z) : Prop :=
   base_fill_full_state orig 2 x digits out_l.
+
+(* Helper lemmas migrated from the old QCP proof, using input names. *)
+Local Open Scope string_scope.
+Local Open Scope Z_scope.
+Local Open Scope list_scope.

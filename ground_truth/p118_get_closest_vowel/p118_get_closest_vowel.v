@@ -46,7 +46,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Lists.List.
 Require Import Lia.
 From AUXLib Require Import ListLib.
-Require Export string_bridge.
+Require Import string_bridge.
 Import ListNotations.
 
 Local Open Scope string_scope.
@@ -84,60 +84,3 @@ Definition problem_118_spec (word output : list Z) : Prop :=
      output = [Znth i word 0]) \/
   ((forall i, 1 <= i < Zlength word - 1 -> ~ closest_vowel_candidate word i) /\
    output = []).
-
-Lemma no_candidate_after_step : forall i l,
-  ~ closest_vowel_candidate l i ->
-  no_candidate_after i l ->
-  no_candidate_after (i - 1) l.
-Proof.
-  unfold no_candidate_after.
-  intros i l Hnot Hafter j Hj.
-  destruct (Z.eq_dec j i) as [-> | Hne].
-  - exact Hnot.
-  - apply Hafter. lia.
-Qed.
-
-Lemma no_candidate_after_start : forall l,
-  no_candidate_after (Zlength l - 2) l.
-Proof.
-  unfold no_candidate_after.
-  intros l j Hj.
-  lia.
-Qed.
-
-Lemma problem_118_spec_found : forall l i,
-  closest_vowel_candidate l i ->
-  no_candidate_after i l ->
-  problem_118_spec l [Znth i l 0].
-Proof.
-  intros l i Hcand Hafter.
-  unfold problem_118_spec.
-  left.
-  exists i.
-  split; [exact Hcand |].
-  split; [exact Hafter | reflexivity].
-Qed.
-
-Lemma problem_118_spec_not_found : forall l,
-  no_candidate_after 0 l ->
-  problem_118_spec l [].
-Proof.
-  intros l Hnone.
-  unfold problem_118_spec.
-  right.
-  split.
-  - intros i Hi.
-    apply Hnone. lia.
-  - reflexivity.
-Qed.
-
-Lemma alpha_range_nonzero : forall l k,
-  alpha_range l ->
-  0 <= k < Zlength l ->
-  Znth k l 0 <> 0.
-Proof.
-  intros l k Halpha Hk.
-  specialize (Halpha k Hk).
-  unfold is_alpha in Halpha.
-  lia.
-Qed.

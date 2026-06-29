@@ -49,3 +49,6 @@ Definition smallest_change_int_range (arr : list Z) : Prop :=
     2 * i < Zlength arr ->
     INT_MIN <= count_half_mismatches_upto i arr <= INT_MAX /\
     INT_MIN <= count_half_mismatches_upto i arr + 1 <= INT_MAX.
+
+
+(* Ground-truth proof helpers. *)

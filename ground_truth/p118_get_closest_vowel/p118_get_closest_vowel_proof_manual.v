@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -16,9 +17,73 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Coq.Strings.String Coq.Strings.Ascii.
+Require Import Arith.
+Require Import Coq.Logic.FunctionalExtensionality.
+
 Import naive_C_Rules.
 Require Import p118_get_closest_vowel.
 Local Open Scope sac.
+From AUXLib Require Import ListLib.
+Require Import string_bridge.
+
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p118_get_closest_vowel.v so public contract files expose definitions only. *)
+
+Lemma no_candidate_after_step : forall i l,
+  ~ closest_vowel_candidate l i ->
+  no_candidate_after i l ->
+  no_candidate_after (i - 1) l.
+Proof.
+  unfold no_candidate_after.
+  intros i l Hnot Hafter j Hj.
+  destruct (Z.eq_dec j i) as [-> | Hne].
+  - exact Hnot.
+  - apply Hafter. lia.
+Qed.
+Lemma no_candidate_after_start : forall l,
+  no_candidate_after (Zlength l - 2) l.
+Proof.
+  unfold no_candidate_after.
+  intros l j Hj.
+  lia.
+Qed.
+Lemma problem_118_spec_found : forall l i,
+  closest_vowel_candidate l i ->
+  no_candidate_after i l ->
+  problem_118_spec l [Znth i l 0].
+Proof.
+  intros l i Hcand Hafter.
+  unfold problem_118_spec.
+  left.
+  exists i.
+  split; [exact Hcand |].
+  split; [exact Hafter | reflexivity].
+Qed.
+Lemma problem_118_spec_not_found : forall l,
+  no_candidate_after 0 l ->
+  problem_118_spec l [].
+Proof.
+  intros l Hnone.
+  unfold problem_118_spec.
+  right.
+  split.
+  - intros i Hi.
+    apply Hnone. lia.
+  - reflexivity.
+Qed.
+Lemma alpha_range_nonzero : forall l k,
+  alpha_range l ->
+  0 <= k < Zlength l ->
+  Znth k l 0 <> 0.
+Proof.
+  intros l k Halpha Hk.
+  specialize (Halpha k Hk).
+  unfold is_alpha in Halpha.
+  lia.
+Qed.
+
 
 Ltac c118_base :=
   pre_process;

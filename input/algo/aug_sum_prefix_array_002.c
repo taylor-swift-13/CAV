@@ -49,7 +49,12 @@ int aug_sum_prefix_array_002(char *nums)
     }
 
     int sum = 0;
-    int stop = n < 2 ? n : 2;
+    int stop;
+    if (n < 2) {
+        stop = n;
+    } else {
+        stop = 2;
+    }
 
     for (int j = 0; j < stop; j++) {
         sum += values[j];

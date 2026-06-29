@@ -163,3 +163,6 @@ Definition search_outer_add_new_69
   added = 1 /\
   freq_size = Zlength vals /\
   search_outer_state_69 input (i + 1) vals cnts max.
+
+
+(* Ground-truth proof helpers. *)

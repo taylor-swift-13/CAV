@@ -21,14 +21,18 @@ int ex_binary_search_index_csv(const char *nums, int target)
       CharArray::full((char *)nums, n + 1, app(l, cons(0, nil)))
 */
 {
-    if (nums[0] == 0) return -1;
+    if (nums[0] == 0) {
+        return -1;
+    }
 
     int a[128];
     int count = 0;
     int i = 0;
 
     while (1) {
-        if (nums[i] == 0) break;
+        if (nums[i] == 0) {
+            break;
+        }
 
         int sign = 1;
         if (nums[i] == 45) {
@@ -38,7 +42,9 @@ int ex_binary_search_index_csv(const char *nums, int target)
 
         int v = 0;
         while (1) {
-            if (nums[i] < 48 || nums[i] > 57) break;
+            if (nums[i] < 48 || nums[i] > 57) {
+                break;
+            }
             v = v * 10 + (nums[i] - 48);
             i++;
         }
@@ -46,7 +52,9 @@ int ex_binary_search_index_csv(const char *nums, int target)
         a[count] = sign * v;
         count++;
 
-        if (nums[i] == 44) i++;
+        if (nums[i] == 44) {
+            i++;
+        }
     }
 
     int left = 0;
@@ -54,7 +62,9 @@ int ex_binary_search_index_csv(const char *nums, int target)
 
     while (left <= right) {
         int mid = left + (right - left) / 2;
-        if (a[mid] == target) return mid;
+        if (a[mid] == target) {
+            return mid;
+        }
         if (a[mid] < target) {
             left = mid + 1;
         } else {

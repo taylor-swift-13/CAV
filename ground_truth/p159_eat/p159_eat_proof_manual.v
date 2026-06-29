@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -15,9 +16,37 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Lia.
+From AUXLib Require Import ListLib.
+
 Import naive_C_Rules.
 Require Import p159_eat.
 Local Open Scope sac.
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p159_eat.v so public contract files expose definitions only. *)
+
+Lemma problem_159_spec_need_gt_remaining : forall number need remaining,
+  problem_159_pre number need remaining ->
+  need > remaining ->
+  problem_159_spec number need remaining [number + remaining; 0].
+Proof.
+  intros.
+  unfold problem_159_spec.
+  right.
+  split; [lia | reflexivity].
+Qed.
+Lemma problem_159_spec_need_le_remaining : forall number need remaining,
+  problem_159_pre number need remaining ->
+  need <= remaining ->
+  problem_159_spec number need remaining [number + need; remaining - need].
+Proof.
+  intros.
+  unfold problem_159_spec.
+  left.
+  split; [lia | reflexivity].
+Qed.
+
 
 Lemma proof_of_p159_eat_safety_wit_6 : p159_eat_safety_wit_6.
 Proof.

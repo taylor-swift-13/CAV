@@ -102,3 +102,19 @@ Definition problem_123_pre (n : Z) : Prop :=
   0 < n < INT_MAX /\
   forall current output,
     collatz_step_safe n current output.
+
+Inductive collatz_list_to (original : Z) : Z -> list Z -> Prop :=
+| collatz_list_to_init :
+    collatz_list_to original original []
+| collatz_list_to_odd :
+    forall n seq,
+      collatz_list_to original n seq ->
+      n <> 1 ->
+      n mod 2 = 1 ->
+      collatz_list_to original (3 * n + 1) (seq ++ [n])
+| collatz_list_to_even :
+    forall n seq,
+      collatz_list_to original n seq ->
+      n <> 1 ->
+      n mod 2 = 0 ->
+      collatz_list_to original (n / 2) (seq ++ [n]).

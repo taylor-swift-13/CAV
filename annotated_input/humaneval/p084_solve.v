@@ -70,7 +70,7 @@ Require Import Coq.Strings.Ascii.
 From AUXLib Require Import Axioms ListLib.
 From SimpleC.SL Require Import IntLib.
 Require Import string_bridge.
-Require Import base_conversion_lib binary_digits_lib.
+Require Export base_conversion_lib binary_digits_lib.
 Import ListNotations.
 
 Local Open Scope Z_scope.
@@ -104,3 +104,11 @@ Definition decimal_sum_state (orig x sum : Z) : Prop :=
     (Z.to_nat x <= fuel)%nat /\
     sum + decimal_digit_sum_fuel fuel x =
       decimal_digit_sum orig.
+Local Open Scope nat_scope.
+Local Open Scope Z_scope.
+
+
+(* Ground-truth proof helpers from the current list-Z base-conversion proof. *)
+
+
+(* Binary-state wrappers for base 2. *)

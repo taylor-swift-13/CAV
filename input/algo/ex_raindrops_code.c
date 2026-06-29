@@ -19,8 +19,14 @@ int ex_raindrops_code(int n)
 */
 {
     int code = 0;
-    if (n % 3 == 0) code |= 1;
-    if (n % 5 == 0) code |= 2;
-    if (n % 7 == 0) code |= 4;
+    if (n % 3 == 0) {
+        code |= 1;
+    }
+    if (n % 5 == 0) {
+        code |= 2;
+    }
+    if (n % 7 == 0) {
+        code |= 4;
+    }
     return code;
 }

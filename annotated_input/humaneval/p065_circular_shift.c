@@ -11,6 +11,7 @@ If shift > number of digits, return digits reversed.
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_65_pre: Z -> Z -> Prop)
                (problem_65_spec: Z -> Z -> list Z -> Prop)
                (decimal_digits: Z -> list Z)

@@ -9,6 +9,7 @@ Return a string containing space-delimited numbers starting from 0 upto n inclus
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_15_pre: Z -> Prop)
                (problem_15_spec: Z -> list Z -> Prop)
                (sequence_prefix: Z -> list Z)

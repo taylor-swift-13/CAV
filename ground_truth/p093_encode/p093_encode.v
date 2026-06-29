@@ -58,7 +58,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Lia.
 From AUXLib Require Import ListLib.
-Require Export string_bridge.
+Require Import string_bridge.
 
 Local Open Scope Z_scope.
 
@@ -94,48 +94,3 @@ Definition problem_93_spec (input output : list Z) : Prop :=
   Zlength output = Zlength input /\
   forall i, 0 <= i < Zlength input ->
     Znth i output 0 = encode_char (Znth i input 0).
-
-Lemma problem_93_pre_char : forall s k,
-  problem_93_pre s ->
-  ascii_range s ->
-  0 <= k < Zlength s ->
-  is_upper (Znth k s 0) \/ is_lower (Znth k s 0) \/ is_space (Znth k s 0).
-Proof.
-  intros s k Hpre _ Hk.
-  apply Hpre.
-  exact Hk.
-Qed.
-
-Lemma encode_char_nonzero : forall c,
-  is_upper c \/ is_lower c \/ is_space c ->
-  encode_char c <> 0.
-Proof.
-  intros c Hclass.
-  unfold is_upper, is_lower, is_space in Hclass.
-  unfold encode_char, swap_case, is_vowel.
-  repeat match goal with
-  | |- context[Z.leb ?x ?y] =>
-      destruct (Z.leb_spec x y); simpl
-  | |- context[Z.eqb ?x ?y] =>
-      destruct (Z.eqb_spec x y); simpl
-  end;
-  lia.
-Qed.
-
-Lemma problem_93_spec_intro : forall input output n,
-  Zlength input = n ->
-  Zlength output = n ->
-  problem_93_pre input ->
-  ascii_range input ->
-  (forall k, 0 <= k < n ->
-    Znth k output 0 = encode_char (Znth k input 0)) ->
-  problem_93_spec input output.
-Proof.
-  intros input output n Hin Hout _ _ Hpoint.
-  unfold problem_93_spec.
-  split.
-  - lia.
-  - intros k Hk.
-    apply Hpoint.
-    lia.
-Qed.

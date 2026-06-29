@@ -12,6 +12,7 @@ p154_cycpattern_check("himenss","simen") => true
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_154_pre: list Z -> list Z -> Prop)
                (problem_154_spec: list Z -> list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop)

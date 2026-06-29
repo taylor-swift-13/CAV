@@ -109,3 +109,6 @@ Definition strange_output_prefix (size i : Z) (sorted_l : list Z) : list Z :=
 
 Definition strange_output (size : Z) (sorted_l : list Z) : list Z :=
   strange_output_prefix size size sorted_l.
+
+
+(* Ground-truth proof helpers. *)

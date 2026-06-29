@@ -24,7 +24,9 @@ int aug_all_multiple_array_003(char *nums)
     int n = 0;
     int i = 0;
     while (1) {
-        if (nums[i] == 0) break;
+        if (nums[i] == 0) {
+            break;
+        }
         int sign = 1;
         if (nums[i] == 45) {
             sign = -1;
@@ -36,10 +38,14 @@ int aug_all_multiple_array_003(char *nums)
             i++;
         }
         values[n] = sign * v; n++;
-        if (nums[i] == 44) i++;
+        if (nums[i] == 44) {
+            i++;
+        }
     }
     for (int j = 0; j < n; j++) {
-        if (values[j] % 5 != 0) return 0;
+        if (values[j] % 5 != 0) {
+            return 0;
+        }
     }
     return 1;
 }

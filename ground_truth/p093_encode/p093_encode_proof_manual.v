@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -16,9 +17,62 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Coq.Strings.String Coq.Strings.Ascii.
+Require Import Arith.
+
 Import naive_C_Rules.
+Require Import string_bridge.
 Require Import p093_encode.
 Local Open Scope sac.
+From AUXLib Require Import ListLib.
+
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p093_encode.v so public contract files expose definitions only. *)
+
+Lemma problem_93_pre_char : forall s k,
+  problem_93_pre s ->
+  ascii_range s ->
+  0 <= k < Zlength s ->
+  is_upper (Znth k s 0) \/ is_lower (Znth k s 0) \/ is_space (Znth k s 0).
+Proof.
+  intros s k Hpre _ Hk.
+  apply Hpre.
+  exact Hk.
+Qed.
+Lemma encode_char_nonzero : forall c,
+  is_upper c \/ is_lower c \/ is_space c ->
+  encode_char c <> 0.
+Proof.
+  intros c Hclass.
+  unfold is_upper, is_lower, is_space in Hclass.
+  unfold encode_char, swap_case, is_vowel.
+  repeat match goal with
+  | |- context[Z.leb ?x ?y] =>
+      destruct (Z.leb_spec x y); simpl
+  | |- context[Z.eqb ?x ?y] =>
+      destruct (Z.eqb_spec x y); simpl
+  end;
+  lia.
+Qed.
+Lemma problem_93_spec_intro : forall input output n,
+  Zlength input = n ->
+  Zlength output = n ->
+  problem_93_pre input ->
+  ascii_range input ->
+  (forall k, 0 <= k < n ->
+    Znth k output 0 = encode_char (Znth k input 0)) ->
+  problem_93_spec input output.
+Proof.
+  intros input output n Hin Hout _ _ Hpoint.
+  unfold problem_93_spec.
+  split.
+  - lia.
+  - intros k Hk.
+    apply Hpoint.
+    lia.
+Qed.
+
 
 Ltac normalize_input_char :=
   repeat rewrite app_Znth1 in * by lia;

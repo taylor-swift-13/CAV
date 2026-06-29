@@ -50,3 +50,6 @@ Definition will_it_fly_int_range (q : list Z) : Prop :=
   forall i,
     0 <= i <= Zlength q ->
     INT_MIN <= sum (sublist 0 i q) <= INT_MAX.
+
+
+(* Ground-truth proof helpers. *)

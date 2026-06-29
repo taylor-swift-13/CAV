@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -16,9 +17,117 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+From AUXLib Require Import ListLib.
+
 Import naive_C_Rules.
 Require Import p127_intersection.
 Local Open Scope sac.
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p127_intersection.v so public contract files expose definitions only. *)
+
+Lemma prime_prefix_2 : forall n,
+  prime_prefix 2 n.
+Proof.
+  unfold prime_prefix.
+  intros n d H.
+  lia.
+Qed.
+Lemma prime_prefix_step : forall i n,
+  prime_prefix i n ->
+  Z.rem n i <> 0 ->
+  prime_prefix (i + 1) n.
+Proof.
+  unfold prime_prefix.
+  intros i n Hpre Hmod d Hd.
+  destruct (Z.eq_dec d i) as [-> | Hne].
+  - exact Hmod.
+  - apply Hpre. lia.
+Qed.
+Lemma prime_len_false_small : forall n,
+  n < 2 ->
+  ~ prime_len n.
+Proof.
+  unfold prime_len.
+  intros n Hlt H.
+  lia.
+Qed.
+Lemma prime_len_false_divisor : forall i n,
+  2 <= i ->
+  i * i <= n ->
+  Z.rem n i = 0 ->
+  ~ prime_len n.
+Proof.
+  unfold prime_len.
+  intros i n Hi Hsquare Hmod [_ Hprime].
+  specialize (Hprime i ltac:(lia)).
+  contradiction.
+Qed.
+Lemma prime_len_true_from_prefix : forall i n,
+  2 <= n ->
+  2 <= i ->
+  i * i > n ->
+  prime_prefix i n ->
+  prime_len n.
+Proof.
+  unfold prime_prefix, prime_len.
+  intros i n Hn Hi Hexit Hpre.
+  split.
+  - assumption.
+  - intros d [Hd Hsquare].
+    apply Hpre.
+    assert (d < i) by nia.
+    lia.
+Qed.
+Lemma problem_127_spec_true : forall i1 i2,
+  prime_len (inter_len i1 i2) ->
+  problem_127_spec i1 i2 1.
+Proof.
+  intros i1 i2 Hprime_len.
+  unfold problem_127_spec.
+  left.
+  split; [reflexivity |].
+  split.
+  - unfold inter_len in Hprime_len.
+    destruct Hprime_len as [Hlen _].
+    lia.
+  - exact Hprime_len.
+Qed.
+Lemma problem_127_spec_false : forall i1 i2,
+  ~ prime_len (inter_len i1 i2) ->
+  problem_127_spec i1 i2 0.
+Proof.
+  intros i1 i2 Hnot.
+  unfold problem_127_spec.
+  right.
+  split; [reflexivity |].
+  right.
+  exact Hnot.
+Qed.
+Lemma inter_len_range_safe : forall i1 i2,
+  interval_int_range i1 ->
+  interval_int_range i2 ->
+  -2000000000 <= inter_len i1 i2 <= 2000000000.
+Proof.
+  intros i1 i2 [_ Hr1] [_ Hr2].
+  unfold inter_len, inter_start, inter_end.
+  pose proof (Hr1 0 ltac:(lia)).
+  pose proof (Hr1 1 ltac:(lia)).
+  pose proof (Hr2 0 ltac:(lia)).
+  pose proof (Hr2 1 ltac:(lia)).
+  nia.
+Qed.
+Lemma prime_loop_next_bound_127 : forall i n,
+  2 <= i ->
+  i <= 46340 ->
+  n <= 2000000000 ->
+  i * i <= n ->
+  i + 1 <= 46340.
+Proof.
+  intros.
+  nia.
+Qed.
+
 
 Ltac prepare_127 :=
   pre_process;

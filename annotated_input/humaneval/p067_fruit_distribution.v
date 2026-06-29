@@ -242,3 +242,6 @@ Definition spec67_final_num2 (st : Z * Z * Z) : Z :=
 Definition spec67_scan_output (s : string) (n : nat) : Z :=
   let st := spec67_scan_state_full (list_ascii_of_string s) in
   (Z.of_nat n - spec67_final_num1 st - spec67_final_num2 st)%Z.
+
+
+(* Ground-truth proof helpers. *)

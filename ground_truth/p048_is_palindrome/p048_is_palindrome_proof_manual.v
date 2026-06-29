@@ -3,6 +3,7 @@ Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Strings.Ascii.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -16,6 +17,9 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string_scope.
 Local Open Scope list.
+Require Import Lia.
+From AUXLib Require Import ListLib.
+
 Import naive_C_Rules.
 Require Import string_bridge.
 Require Import p048_is_palindrome.

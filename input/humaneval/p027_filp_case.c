@@ -7,6 +7,7 @@ For a given string, flip lowercase characters to uppercase && uppercase to lower
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_27_pre: list Z -> Prop)
                (problem_27_spec: list Z -> list Z -> Prop)
                (flip_char: Z -> Z)

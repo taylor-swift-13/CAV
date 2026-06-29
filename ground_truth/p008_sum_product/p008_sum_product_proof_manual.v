@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -15,9 +16,50 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string_scope.
 Local Open Scope list.
+Require Import Coq.micromega.Lia.
+
 Import naive_C_Rules.
 Require Import p008_sum_product.
 Local Open Scope sac.
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p008_sum_product.v so public contract files expose definitions only. *)
+
+Lemma prefix_sum_snoc : forall l i,
+  0 <= i < Zlength l ->
+  prefix_sum l (i + 1) = prefix_sum l i + Znth i l 0.
+Proof.
+  intros.
+  unfold prefix_sum.
+  rewrite (sublist_split 0 (i + 1) i l) by (try rewrite Zlength_correct in *; lia).
+  rewrite (sublist_single 0 i l) by lia.
+  rewrite fold_left_app.
+  simpl.
+  lia.
+Qed.
+Lemma prefix_product_snoc : forall l i,
+  0 <= i < Zlength l ->
+  prefix_product l (i + 1) = prefix_product l i * Znth i l 0.
+Proof.
+  intros.
+  unfold prefix_product.
+  rewrite (sublist_split 0 (i + 1) i l) by (try rewrite Zlength_correct in *; lia).
+  rewrite (sublist_single 0 i l) by lia.
+  rewrite fold_left_app.
+  simpl.
+  lia.
+Qed.
+Lemma problem_8_spec_of_prefix_full : forall l n,
+  n = Zlength l ->
+  problem_8_spec l (prefix_sum l n) (prefix_product l n).
+Proof.
+  intros.
+  unfold problem_8_spec, prefix_sum, prefix_product.
+  subst n.
+  rewrite sublist_self by reflexivity.
+  auto.
+Qed.
+
 
 Lemma proof_of_p008_sum_product_safety_wit_5 : p008_sum_product_safety_wit_5.
 Proof.

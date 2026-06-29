@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -15,9 +16,125 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Nat.
+Require Import List.
+Require Import Coq.ZArith.Zquot.
+Require Import Coq.Arith.PeanoNat.
+Require Import Coq.micromega.Lia.
+From AUXLib Require Import ListLib.
+
 Import naive_C_Rules.
 Require Import p106_f.
 Local Open Scope sac.
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p106_f.v so public contract files expose definitions only. *)
+
+Lemma triangular_0 :
+  triangular 0 = 0.
+Proof. reflexivity. Qed.
+Lemma factorial_0 :
+  factorial 0 = 1.
+Proof. reflexivity. Qed.
+Lemma triangular_step : forall i,
+  0 <= i ->
+  triangular (i + 1) = triangular i + (i + 1).
+Proof.
+  intros i Hi.
+  unfold triangular.
+  replace (Z.to_nat (i + 1)) with (S (Z.to_nat i)) by lia.
+  simpl.
+  replace (Z.leb (i + 1) 0) with false by (symmetry; apply Z.leb_gt; lia).
+  replace (i + 1 - 1) with i by lia.
+  reflexivity.
+Qed.
+Lemma factorial_step : forall i,
+  0 <= i ->
+  factorial (i + 1) = factorial i * (i + 1).
+Proof.
+  intros i Hi.
+  destruct (Z.eq_dec i 0) as [-> | Hnz].
+  - reflexivity.
+  - unfold factorial.
+    replace (Z.to_nat (i + 1)) with (S (Z.to_nat i)) by lia.
+    simpl.
+    replace (Z.leb (i + 1) 1) with false by (symmetry; apply Z.leb_gt; lia).
+    replace (i + 1 - 1) with i by lia.
+    ring.
+Qed.
+Lemma f_seq_Zlength : forall n,
+  0 <= n ->
+  Zlength (f_seq n) = n.
+Proof.
+  intros n Hn.
+  unfold f_seq.
+  rewrite Zlength_correct.
+  rewrite length_map, Zseq_length.
+  lia.
+Qed.
+Lemma f_seq_Znth : forall n i,
+  0 <= i < n ->
+  Znth i (f_seq n) 0 = f_elem (i + 1).
+Proof.
+  intros n i Hi.
+  unfold f_seq.
+  unfold Znth.
+  eapply nth_error_nth.
+  rewrite nth_error_map.
+  rewrite nth_error_nth' with (d := 0%Z).
+  - rewrite Zseq_nth by lia.
+    rewrite Z2Nat.id by lia.
+    reflexivity.
+  - rewrite Zseq_length.
+    lia.
+Qed.
+Lemma f_seq_sublist_snoc : forall n i,
+  0 <= i < n ->
+  sublist 0 (i + 1) (f_seq n) =
+  sublist 0 i (f_seq n) ++ f_elem (i + 1) :: nil.
+Proof.
+  intros n i Hi.
+  pose proof (f_seq_Zlength n ltac:(lia)) as Hlen.
+  assert (Hsplit_lo : 0 <= 0 <= i) by lia.
+  assert (Hsplit_hi : i <= i + 1 <= Zlength (f_seq n))
+    by (rewrite Hlen; lia).
+  rewrite (@sublist_split Z 0 (i + 1) i (f_seq n) Hsplit_lo Hsplit_hi).
+  rewrite (sublist_single 0 i (f_seq n)).
+  - rewrite f_seq_Znth by lia.
+    reflexivity.
+  - rewrite Hlen.
+    lia.
+Qed.
+Lemma f_elem_even_rem : forall i,
+  Z.rem i 2 = 0 ->
+  f_elem i = factorial i.
+Proof.
+  intros i Hrem.
+  unfold f_elem.
+  rewrite Zeven_rem.
+  rewrite Hrem.
+  reflexivity.
+Qed.
+Lemma f_elem_odd_rem : forall i,
+  Z.rem i 2 <> 0 ->
+  f_elem i = triangular i.
+Proof.
+  intros i Hrem.
+  unfold f_elem.
+  rewrite Zeven_rem.
+  apply Z.eqb_neq in Hrem.
+  rewrite Hrem.
+  reflexivity.
+Qed.
+Lemma problem_106_spec_f_seq : forall n,
+  0 <= n ->
+  problem_106_spec n (f_seq n).
+Proof.
+  intros n Hn.
+  unfold problem_106_spec.
+  split; [lia | reflexivity].
+Qed.
+
 
 Lemma proof_of_p106_f_safety_wit_4 : p106_f_safety_wit_4.
 Proof.

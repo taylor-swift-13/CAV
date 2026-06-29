@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -15,9 +16,73 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Coq.Arith.Arith.
+Require Import Coq.micromega.Lia.
+From AUXLib Require Import ListLib.
+
 Import naive_C_Rules.
 Require Import p100_make_a_pile.
 Local Open Scope sac.
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p100_make_a_pile.v so public contract files expose definitions only. *)
+
+Lemma make_pile_Zlength : forall n,
+  0 <= n ->
+  Zlength (make_pile n) = n.
+Proof.
+  intros n Hn.
+  unfold make_pile.
+  rewrite Zlength_correct.
+  rewrite length_map, Zseq_length.
+  lia.
+Qed.
+Lemma make_pile_Znth : forall n i,
+  0 <= i < n ->
+  Znth i (make_pile n) 0 = n + 2 * i.
+Proof.
+  intros n i Hi.
+  unfold make_pile.
+  unfold Znth.
+  eapply nth_error_nth.
+  rewrite nth_error_map.
+  rewrite nth_error_nth' with (d := 0%Z).
+  - rewrite Zseq_nth by lia.
+    rewrite Z2Nat.id by lia.
+    reflexivity.
+  - rewrite Zseq_length.
+    lia.
+Qed.
+Lemma make_pile_sublist_snoc : forall n i,
+  0 <= i < n ->
+  sublist 0 (i + 1) (make_pile n) =
+  sublist 0 i (make_pile n) ++ (n + 2 * i) :: nil.
+Proof.
+  intros n i Hi.
+  pose proof (make_pile_Zlength n ltac:(lia)) as Hlen.
+  assert (Hsplit_lo : 0 <= 0 <= i) by lia.
+  assert (Hsplit_hi : i <= i + 1 <= Zlength (make_pile n))
+    by (rewrite Hlen; lia).
+  rewrite (@sublist_split Z 0 (i + 1) i (make_pile n) Hsplit_lo Hsplit_hi).
+  rewrite (sublist_single 0 i (make_pile n)).
+  - rewrite make_pile_Znth by lia.
+    reflexivity.
+  - rewrite Hlen.
+    lia.
+Qed.
+Lemma problem_100_spec_make_pile : forall n,
+  n > 0 ->
+  problem_100_spec n (make_pile n).
+Proof.
+  intros n Hn.
+  unfold problem_100_spec.
+  split; [lia |].
+  split.
+  - apply make_pile_Zlength. lia.
+  - intros i Hi.
+    apply make_pile_Znth. lia.
+Qed.
+
 
 Lemma proof_of_p100_make_a_pile_safety_wit_3 : p100_make_a_pile_safety_wit_3.
 Proof.

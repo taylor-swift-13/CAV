@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -16,10 +17,94 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Coq.Strings.Ascii.
+
 Import naive_C_Rules.
 Require Import string_bridge.
 Require Import p050_decode_shift.
 Local Open Scope sac.
+From AUXLib Require Import ListLib.
+
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p050_decode_shift.v so public contract files expose definitions only. *)
+
+Lemma lower_char_from_problem_50_pre : forall s k,
+  problem_50_pre s ->
+  0 <= k < Zlength s ->
+  lower_char (Znth k s 0).
+Proof.
+  intros s k Hpre Hk.
+  apply Hpre; lia.
+Qed.
+Lemma shift_output_range : forall x shift,
+  0 <= x + shift - 97 ->
+  0 <= shift ->
+  shift <= 25 ->
+  lower_char x ->
+  0 <= Z.rem (x + shift - 97) 26 + 97 <= 127.
+Proof.
+  intros x shift Hnonneg Hshift_lo Hshift_hi Hlower.
+  unfold lower_char in Hlower.
+  pose proof (Z.rem_bound_pos (x + shift - 97) 26 ltac:(lia) ltac:(lia)).
+  lia.
+Qed.
+Lemma encode_shift_output_range : forall x,
+  lower_char x ->
+  0 <= encode_shift_char x <= 127.
+Proof.
+  intros x Hlower.
+  unfold encode_shift_char.
+  apply shift_output_range; unfold lower_char in *; lia.
+Qed.
+Lemma decode_shift_output_range : forall x,
+  lower_char x ->
+  0 <= decode_shift_char x <= 127.
+Proof.
+  intros x Hlower.
+  unfold decode_shift_char.
+  apply shift_output_range; unfold lower_char in *; lia.
+Qed.
+Lemma problem_50_encode_spec_intro : forall input output n,
+  Zlength input = n ->
+  Zlength output = n ->
+  (forall k, 0 <= k < n ->
+    Znth k output 0 = encode_shift_char (Znth k input 0)) ->
+  problem_50_encode_spec input output.
+Proof.
+  intros input output n Hin Hout Hpoint.
+  unfold problem_50_encode_spec.
+  split; [lia |].
+  intros k Hk.
+  apply Hpoint.
+  lia.
+Qed.
+Lemma problem_50_spec_intro : forall input output n,
+  Zlength input = n ->
+  Zlength output = n ->
+  (forall k, 0 <= k < n ->
+    Znth k output 0 = decode_shift_char (Znth k input 0)) ->
+  problem_50_spec input output.
+Proof.
+  intros input output n Hin Hout Hpoint.
+  unfold problem_50_spec.
+  split; [lia |].
+  intros k Hk.
+  apply Hpoint.
+  lia.
+Qed.
+Lemma problem_50_decode_spec_intro : forall input output n,
+  Zlength input = n ->
+  Zlength output = n ->
+  (forall k, 0 <= k < n ->
+    Znth k output 0 = decode_shift_char (Znth k input 0)) ->
+  problem_50_decode_spec input output.
+Proof.
+  intros input output n Hin Hout Hpoint.
+  unfold problem_50_decode_spec.
+  eapply problem_50_spec_intro with (n := n); eauto.
+Qed.
+
 
 Ltac shift_pre :=
   pre_process;

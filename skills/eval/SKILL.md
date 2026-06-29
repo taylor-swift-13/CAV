@@ -9,20 +9,27 @@ Eval 判断 C/QCP contract 是否真正、完整刻画目标程序行为。
 
 ## 0. 职责
 
-- spec 质量判据依照 QCP 官方文档。judge 前必须读取下面的路径：
-  - `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` — spec-quality 判据；检查外部 Rocq 谓词是否有定义、function contract 是否刻画数学效果。
-  - `.agents/skills/annotation-filling/docs/predicate-first-annotation.md` — 如何区分数学性质谓词和算法镜像。
+- spec 质量判据以本 skill 的 judge 项、题面语义和 companion `.v` 定义为主。只有缺少 QCP spec-quality 细节时，才最小读取相关 QCP skill 文档；可选路径见 §1。
 - 唯一文字产物：`logs/issues.md`、`logs/metrics.md`、`logs/final_result.md`。
-- 不做示例检索；只依据当前输入、题面语义、companion `.v` 定义和 QCP spec-quality 文档判定。
+- 不做示例检索；只依据当前输入、题面语义、companion `.v` 定义和本文 judge 项判定。
 
 ## 1. 输入输出
 
 - 输入：实现/规格 C、可选 companion `.v`、target function、workspace。
+- 只读当前任务 prompt 列出的输入文件、本 skill；确实需要 QCP spec-quality 细节时，才最小读取相关 QCP skill 文档。
+- QCP skill 文档路径只作为可选参考，不要求启动时读取；Eval 阶段常用路径：
+  - `QualifiedCProgramming/.agents/skills/annotation-checking/SKILL.md`
+  - `QualifiedCProgramming/.agents/skills/annotation-checking/docs/spec-quality-checklist.md`
+- 禁止读取 QCP 示例、proof 文件、自己的 harness transcript 或 prompt 产物：`logs/agent_stdout_*.jsonl`、`logs/agent_prompt_*`、`logs/agent_stderr_*`、`logs/agent_last_message_*`。
+- 禁止对仓库根或父目录做广搜：不要运行 `rg .`、`rg ..`、`find .`、`find ..`、`ls ..` 来探索；检索必须限定到本 skill 允许的具体 QCP 文档或当前任务文件。
+- 禁止读取 `../scripts/`、其它 `../skills/`、`../output/` 下其它 workspace、`../pipeline_results/`、git history 或未在 prompt 中列出的 repo-level 文件。
 - 输出：`output/eval_<ts>_<name>/` 下：
   - `original/<name>.c` 和可选 `.v`
   - `logs/issues.md`
   - `logs/metrics.md`
   - `logs/final_result.md`
+
+`issues.md`、`metrics.md`、`final_result.md` 必须直接写在当前 eval workspace 的顶层 `logs/` 目录。禁止把 verdict 文件写到 `evaluation/logs/`、`original/logs/` 或其它子目录；runner 只读取顶层 `logs/`。
 
 ## 2. Judge 项
 
@@ -54,7 +61,7 @@ Eval 判断 C/QCP contract 是否真正、完整刻画目标程序行为。
 
 ## 3. Verdict 格式
 
-退出和成功的 judge 口径以 `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` 为准；CAV 只规定 verdict 文件和 `Final Result` 映射。
+退出和成功的 judge 口径以本文判定项、题面语义和 companion `.v` 定义为准。
 
 `logs/final_result.md` 必须包含这两行：
 
@@ -75,4 +82,4 @@ Judge verdict: Pass|Fail|Inconclusive
 
 `logs/issues.md` 退出前必须存在。若 verdict 不是 `Correct/Pass`，必须记录具体失败项、对应 contract 位置和原因；若没有 issue，写 `No issues encountered.`。
 
-`logs/metrics.md` 记录最终 verdict、耗时、输入/输出路径、agent/model 和已读取的 QCP spec-quality 文档摘要。
+`logs/metrics.md` 记录最终 verdict、耗时、输入/输出路径、agent/model 和必要依据摘要。

@@ -14,7 +14,7 @@ Require Import Coq.Lists.List.
 Require Import Coq.Strings.Ascii.
 Require Import Coq.Strings.String.
 Import ListNotations.
-Open Scope char_scope.
+Local Open Scope char_scope.
 
 (*
   char_relation 定义了单个输入字符 c_in 和输出字符 c_out 之间的关系。

@@ -108,3 +108,5 @@ Definition problem_154_spec (a b : list Z) (output : Z) : Prop :=
 
 Definition rotation_bytes (shift : Z) (b : list Z) : list Z :=
   sublist shift (Zlength b) b ++ sublist 0 shift b.
+
+(* Helper lemmas migrated from the old proof, with names aligned to the input spec. *)

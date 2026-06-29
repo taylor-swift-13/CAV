@@ -11,7 +11,11 @@ int leap_year(int year)
       emp
 */
 {
-    if (year % 400 == 0) return 1;
-    if (year % 100 == 0) return 0;
+    if (year % 400 == 0) {
+        return 1;
+    }
+    if (year % 100 == 0) {
+        return 0;
+    }
     return year % 4 == 0;
 }

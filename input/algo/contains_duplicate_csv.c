@@ -26,7 +26,9 @@ int contains_duplicate_csv(char *nums)
     int i = 0;
 
     while (1) {
-        if (nums[i] == 0) break;
+        if (nums[i] == 0) {
+            break;
+        }
 
         int sign = 1;
         if (nums[i] == 45) {
@@ -36,7 +38,9 @@ int contains_duplicate_csv(char *nums)
 
         int v = 0;
         while (1) {
-            if (nums[i] < 48 || nums[i] > 57) break;
+            if (nums[i] < 48 || nums[i] > 57) {
+                break;
+            }
             v = v * 10 + (nums[i] - 48);
             i++;
         }
@@ -44,12 +48,16 @@ int contains_duplicate_csv(char *nums)
         values[n] = sign * v;
         n++;
 
-        if (nums[i] == 44) i++;
+        if (nums[i] == 44) {
+            i++;
+        }
     }
 
     for (int a = 0; a < n; a++) {
         for (int b = a + 1; b < n; b++) {
-            if (values[a] == values[b]) return 1;
+            if (values[a] == values[b]) {
+                return 1;
+            }
         }
     }
 

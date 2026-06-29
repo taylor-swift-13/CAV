@@ -14,6 +14,7 @@ Algorithm idea is simple:
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_10_pre: list Z -> Prop)
                (problem_10_spec: list Z -> list Z -> Prop)
                (ascii_range: list Z -> Prop)

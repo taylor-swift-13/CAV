@@ -14,6 +14,7 @@ p079_decimal_to_binary(32)   // returns "db100000db"
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_79_pre: Z -> Prop)
                (problem_79_spec: Z -> list Z -> Prop)
                (binary_digits: Z -> list Z)

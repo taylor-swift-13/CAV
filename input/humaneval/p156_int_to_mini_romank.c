@@ -12,6 +12,7 @@ Examples:
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_156_pre: Z -> Prop)
                (problem_156_spec: Z -> list Z -> Prop)
                (roman_digit: Z -> Z -> Z -> Z -> list Z -> Prop)

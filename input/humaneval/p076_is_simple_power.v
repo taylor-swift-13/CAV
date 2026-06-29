@@ -35,3 +35,6 @@ Definition sp_inv (x n count p : Z) : Prop :=
   0 <= count /\
   p = n ^ count /\
   (forall k : Z, 0 <= k < count -> n ^ k <> x).
+
+
+(* Ground-truth proof helpers. *)

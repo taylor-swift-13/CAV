@@ -91,3 +91,5 @@ Definition problem_155_spec (num : Z) (output : list Z) : Prop :=
   exists even odd,
       output = [Z.of_nat even; Z.of_nat odd] /\
       (((even, odd)) = even_odd_count_impl num).
+
+(* Helper lemmas migrated from the old proof, with names aligned to the input spec. *)

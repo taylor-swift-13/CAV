@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -15,9 +16,160 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Coq.Strings.Ascii.
+Require Import Arith.
+Require Import PeanoNat.
+
 Import naive_C_Rules.
 Require Import p006_parse_nested_parens.
 Local Open Scope sac.
+Require Import Coq.micromega.Lia.
+From AUXLib Require Import ListLib.
+Require Import string_bridge.
+
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p006_parse_nested_parens.v so public contract files expose definitions only. *)
+
+Lemma paren_scan_aux_step : forall prefix ch out in_group level max_level,
+  paren_scan_aux (prefix ++ [ch]) out in_group level max_level =
+  let st := paren_scan_aux prefix out in_group level max_level in
+  paren_scan_aux [ch]
+    (paren_state_out st)
+    (paren_state_in_group st)
+    (paren_state_level st)
+    (paren_state_max st).
+Proof.
+  induction prefix as [| h t IH]; intros ch out in_group level max_level; simpl.
+  - reflexivity.
+  - rewrite IH. reflexivity.
+Qed.
+Lemma paren_scan_aux_one : forall ch out in_group level max_level,
+  paren_scan_aux [ch] out in_group level max_level =
+  (paren_step_output out in_group max_level ch,
+   paren_step_in_group in_group ch,
+   paren_step_level in_group level ch,
+   paren_step_max in_group level max_level ch).
+Proof.
+  reflexivity.
+Qed.
+Lemma paren_prefix_step : forall input i,
+  0 <= i < Zlength input ->
+  paren_prefix_output (i + 1) input =
+    paren_step_output
+      (paren_prefix_output i input)
+      (paren_prefix_in_group i input)
+      (paren_prefix_max i input)
+      (Znth i input 0) /\
+  paren_prefix_in_group (i + 1) input =
+    paren_step_in_group
+      (paren_prefix_in_group i input)
+      (Znth i input 0) /\
+  paren_prefix_level (i + 1) input =
+    paren_step_level
+      (paren_prefix_in_group i input)
+      (paren_prefix_level i input)
+      (Znth i input 0) /\
+  paren_prefix_max (i + 1) input =
+    paren_step_max
+      (paren_prefix_in_group i input)
+      (paren_prefix_level i input)
+      (paren_prefix_max i input)
+      (Znth i input 0).
+Proof.
+  intros input i Hi.
+  unfold paren_prefix_output, paren_prefix_in_group,
+    paren_prefix_level, paren_prefix_max, paren_prefix_state.
+  assert (sublist 0 (i + 1) input = sublist 0 i input ++ [Znth i input 0]) as Hsub.
+  {
+    rewrite (sublist_split 0 (i + 1) i input)
+      by (try rewrite Zlength_correct in *; lia).
+    rewrite (sublist_single 0 i input) by lia.
+    reflexivity.
+  }
+  rewrite Hsub.
+  rewrite paren_scan_aux_step.
+  rewrite paren_scan_aux_one.
+  repeat split; reflexivity.
+Qed.
+Lemma paren_prefix_step_app : forall input i,
+  0 <= i < Zlength input ->
+  paren_prefix_output (i + 1) input =
+    paren_step_output
+      (paren_prefix_output i input)
+      (paren_prefix_in_group i input)
+      (paren_prefix_max i input)
+      (Znth i (app input (cons 0 nil)) 0) /\
+  paren_prefix_in_group (i + 1) input =
+    paren_step_in_group
+      (paren_prefix_in_group i input)
+      (Znth i (app input (cons 0 nil)) 0) /\
+  paren_prefix_level (i + 1) input =
+    paren_step_level
+      (paren_prefix_in_group i input)
+      (paren_prefix_level i input)
+      (Znth i (app input (cons 0 nil)) 0) /\
+  paren_prefix_max (i + 1) input =
+    paren_step_max
+      (paren_prefix_in_group i input)
+      (paren_prefix_level i input)
+      (paren_prefix_max i input)
+      (Znth i (app input (cons 0 nil)) 0).
+Proof.
+  intros input i Hi.
+  pose proof (paren_prefix_step input i Hi) as Hstep.
+  replace (Znth i (app input (cons 0 nil)) 0) with (Znth i input 0).
+  - exact Hstep.
+  - rewrite app_Znth1; lia.
+Qed.
+Lemma paren_prefix_full_final : forall input len,
+  len = Zlength input ->
+  paren_final_output
+    (paren_prefix_output len input)
+    (paren_prefix_in_group len input)
+    (paren_prefix_max len input) =
+  paren_output input.
+Proof.
+  intros input len Hlen.
+  unfold paren_prefix_output, paren_prefix_in_group,
+    paren_prefix_max, paren_prefix_state, paren_output.
+  rewrite (sublist_self input len Hlen).
+  destruct (paren_scan_aux input [] 0 0 0) as [[[out in_group] level] max_level].
+  reflexivity.
+Qed.
+Lemma paren_step_level_nonneg : forall in_group level ch,
+  0 <= level ->
+  0 <= paren_step_level in_group level ch.
+Proof.
+  intros in_group level ch Hlevel.
+  unfold paren_step_level.
+  destruct (Z.eqb ch 32).
+  - destruct (Z.eqb in_group 0); lia.
+  - destruct (Z.eqb ch 40).
+    + lia.
+    + destruct (Z.ltb_spec 0 level); lia.
+Qed.
+Lemma paren_scan_aux_level_nonneg : forall chars out in_group level max_level,
+  0 <= level ->
+  0 <= paren_state_level (paren_scan_aux chars out in_group level max_level).
+Proof.
+  induction chars as [| ch rest IH]; intros out in_group level max_level Hlevel.
+  - simpl. lia.
+  - simpl.
+    apply IH.
+    apply paren_step_level_nonneg.
+    exact Hlevel.
+Qed.
+Lemma paren_prefix_level_nonneg : forall i input,
+  0 <= i ->
+  0 <= paren_prefix_level i input.
+Proof.
+  intros i input Hi.
+  unfold paren_prefix_level, paren_prefix_state.
+  apply paren_scan_aux_level_nonneg.
+  lia.
+Qed.
+
 
 Ltac prepare_paren_prefix_step :=
   let Hout := fresh "Hout" in

@@ -101,3 +101,5 @@ Definition roman_output (number : Z) (out_l : list Z) : Prop :=
 Definition problem_156_spec (number : Z) (output : list Z) : Prop :=
   1 <= number <= 1000 /\
   output = roman_output_list number.
+
+(* Helper lemmas migrated from the old proof, with names aligned to the input spec. *)

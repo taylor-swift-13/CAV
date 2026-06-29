@@ -16,6 +16,7 @@ p119_match_parens({")", ")"}) == "No"
 #include "verification_list.h"
 #include "char_array_def.h"
 
+/*@ Import Coq Require Import string_bridge */
 /*@ Extern Coq (problem_119_pre: list Z -> list Z -> Prop)
                (problem_119_spec: list Z -> list Z -> Z -> Prop)
                (ascii_range: list Z -> Prop)

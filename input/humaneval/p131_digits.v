@@ -68,3 +68,6 @@ Definition problem_131_spec (n r : Z) : Prop :=
   n > 0 /\ r = digits_state n 1 0.
 
 Local Open Scope Z_scope.
+
+Require Import Coq.ZArith.Zwf.
+Require Import Coq.Init.Wf.

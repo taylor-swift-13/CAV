@@ -28,14 +28,20 @@ int array_min_csv(char *nums)
     }
     int best = 0;
     while (1) {
-        if (nums[i] < 48 || nums[i] > 57) break;
+        if (nums[i] < 48 || nums[i] > 57) {
+            break;
+        }
         best = best * 10 + (nums[i] - 48);
         i++;
     }
     best = best * sign;
-    if (nums[i] == 44) i++;
+    if (nums[i] == 44) {
+        i++;
+    }
     while (1) {
-        if (nums[i] == 0) break;
+        if (nums[i] == 0) {
+            break;
+        }
         sign = 1;
         if (nums[i] == 45) {
             sign = -1;
@@ -43,13 +49,19 @@ int array_min_csv(char *nums)
         }
         int v = 0;
         while (1) {
-            if (nums[i] < 48 || nums[i] > 57) break;
+            if (nums[i] < 48 || nums[i] > 57) {
+                break;
+            }
             v = v * 10 + (nums[i] - 48);
             i++;
         }
         v = v * sign;
-        if (v < best) best = v;
-        if (nums[i] == 44) i++;
+        if (v < best) {
+            best = v;
+        }
+        if (nums[i] == 44) {
+            i++;
+        }
     }
     return best;
 }

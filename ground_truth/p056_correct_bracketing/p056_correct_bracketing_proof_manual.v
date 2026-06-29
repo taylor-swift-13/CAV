@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -17,9 +18,147 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import string_bridge.
+
 Import naive_C_Rules.
 Require Import p056_correct_bracketing.
 Local Open Scope sac.
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p056_correct_bracketing.v so public contract files expose definitions only. *)
+
+Lemma Znth_In_range_56 : forall (l : list Z) k d,
+  0 <= k < Zlength l ->
+  In (Znth k l d) l.
+Proof.
+  intros l k d Hk.
+  unfold Znth.
+  apply nth_In.
+  rewrite Zlength_correct in Hk.
+  lia.
+Qed.
+Lemma angle_level_upto_0 : forall l,
+  angle_level_upto 0 l = 0.
+Proof.
+  intros l.
+  unfold angle_level_upto.
+  reflexivity.
+Qed.
+Lemma angle_nonnegative_prefix_0 : forall l,
+  angle_nonnegative_prefix 0 l.
+Proof.
+  unfold angle_nonnegative_prefix.
+  intros l k Hk.
+  lia.
+Qed.
+Lemma angle_level_upto_step_open : forall i l,
+  0 <= i ->
+  Znth i l 0 = 60 ->
+  angle_level_upto (i + 1) l = angle_level_upto i l + 1.
+Proof.
+  intros i l Hi Hx.
+  unfold angle_level_upto.
+  replace (Z.to_nat (i + 1)) with (S (Z.to_nat i)) by lia.
+  simpl.
+  replace (Z.of_nat (Z.to_nat i)) with i by lia.
+  unfold angle_delta.
+  rewrite Hx.
+  rewrite Z.eqb_refl.
+  reflexivity.
+Qed.
+Lemma angle_level_upto_step_close : forall i l,
+  0 <= i ->
+  Znth i l 0 = 62 ->
+  angle_level_upto (i + 1) l = angle_level_upto i l - 1.
+Proof.
+  intros i l Hi Hx.
+  unfold angle_level_upto.
+  replace (Z.to_nat (i + 1)) with (S (Z.to_nat i)) by lia.
+  simpl.
+  replace (Z.of_nat (Z.to_nat i)) with i by lia.
+  unfold angle_delta.
+  rewrite Hx.
+  replace (Z.eqb 62 60) with false by reflexivity.
+  replace (Z.eqb 62 62) with true by reflexivity.
+  lia.
+Qed.
+Lemma angle_nonnegative_prefix_step : forall i l level,
+  angle_nonnegative_prefix i l ->
+  angle_level_upto (i + 1) l = level ->
+  0 <= level ->
+  angle_nonnegative_prefix (i + 1) l.
+Proof.
+  unfold angle_nonnegative_prefix.
+  intros i l level Hprefix Hlevel Hnonneg k Hk.
+  destruct (Z_lt_ge_dec k i).
+  - apply Hprefix. lia.
+  - assert (k = i) by lia.
+    subst k.
+    rewrite Hlevel.
+    lia.
+Qed.
+Lemma problem_56_pre_char : forall l k,
+  problem_56_pre l ->
+  0 <= k < Zlength l ->
+  Znth k l 0 = 60 \/ Znth k l 0 = 62.
+Proof.
+  intros l k Hpre Hk.
+  unfold problem_56_pre in Hpre.
+  rewrite Forall_forall in Hpre.
+  apply Hpre.
+  apply Znth_In_range_56.
+  exact Hk.
+Qed.
+Lemma problem_56_pre_nonzero : forall l n,
+  Zlength l = n ->
+  problem_56_pre l ->
+  forall k, 0 <= k < n -> Znth k l 0 <> 0.
+Proof.
+  intros l n Hlen Hpre k Hk.
+  destruct (problem_56_pre_char l k Hpre ltac:(lia)); lia.
+Qed.
+Lemma problem_56_spec_true : forall l,
+  angle_level_upto (Zlength l) l = 0 ->
+  angle_nonnegative_prefix (Zlength l) l ->
+  problem_56_spec l 1.
+Proof.
+  intros l Hlevel Hprefix.
+  unfold problem_56_spec, bool_of, angle_balanced.
+  simpl.
+  split.
+  - intros _. split; assumption.
+  - intros _. reflexivity.
+Qed.
+Lemma problem_56_spec_false_negative : forall l i,
+  0 <= i ->
+  i < Zlength l ->
+  angle_level_upto (i + 1) l < 0 ->
+  problem_56_spec l 0.
+Proof.
+  intros l i Hi Hbound Hneg.
+  unfold problem_56_spec, bool_of, angle_balanced.
+  simpl.
+  split.
+  - discriminate.
+  - intros [_ Hprefix].
+    specialize (Hprefix i ltac:(lia)).
+    lia.
+Qed.
+Lemma problem_56_spec_false_final : forall l level,
+  angle_level_upto (Zlength l) l = level ->
+  level <> 0 ->
+  problem_56_spec l 0.
+Proof.
+  intros l level Hlevel Hneq.
+  unfold problem_56_spec, bool_of, angle_balanced.
+  simpl.
+  split.
+  - discriminate.
+  - intros [Hbalanced _].
+    rewrite Hlevel in Hbalanced.
+    lia.
+Qed.
+
 
 Ltac c56_pre :=
   pre_process;

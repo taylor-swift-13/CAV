@@ -119,3 +119,5 @@ Definition problem_161_pre (s : list Z) : Prop :=
 
 Definition problem_161_spec (input output : list Z) : Prop :=
   string_of_list output = solve_impl (string_of_list input).
+
+(* Helper lemmas migrated from the old proof, with names aligned to the input spec. *)

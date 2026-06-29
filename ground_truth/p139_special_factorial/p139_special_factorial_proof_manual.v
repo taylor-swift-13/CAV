@@ -2,6 +2,7 @@ Require Import Coq.ZArith.ZArith.
 Require Import Coq.Bool.Bool.
 Require Import Coq.Strings.String.
 Require Import Coq.Lists.List.
+Import ListNotations.
 Require Import Coq.Classes.RelationClasses.
 Require Import Coq.Classes.Morphisms.
 Require Import Coq.micromega.Psatz.
@@ -15,9 +16,53 @@ Local Open Scope Z_scope.
 Local Open Scope sets.
 Local Open Scope string.
 Local Open Scope list.
+Require Import Coq.Init.Nat.
+
 Import naive_C_Rules.
 Require Import p139_special_factorial.
 Local Open Scope sac.
+Require Import Coq.micromega.Lia.
+
+Local Open Scope list_scope.
+
+(* Proof helpers moved from p139_special_factorial.v so public contract files expose definitions only. *)
+
+Lemma factorial_0 : factorial 0 = 1.
+Proof.
+  reflexivity.
+Qed.
+Lemma bfact_coq_0 : bfact_coq 0 = 1.
+Proof.
+  reflexivity.
+Qed.
+Lemma factorial_step :
+  forall i,
+    1 <= i ->
+    factorial (i - 1) * i = factorial i.
+Proof.
+  intros i Hi.
+  destruct (Z.eq_dec i 1) as [-> | Hneq].
+  - reflexivity.
+  - assert (Hi_gt : 1 < i) by lia.
+    unfold factorial.
+    replace (Z.to_nat i) with (S (Z.to_nat (i - 1))) by lia.
+    simpl.
+    destruct (Z.leb_spec0 i 1); [lia | ring].
+Qed.
+Lemma bfact_coq_step :
+  forall i,
+    1 <= i ->
+    bfact_coq (i - 1) * factorial i = bfact_coq i.
+Proof.
+  intros i Hi.
+  unfold bfact_coq.
+  replace (Z.to_nat i) with (S (Z.to_nat (i - 1))) by lia.
+  simpl.
+  destruct (Z.leb_spec0 i 0); [lia |].
+  fold (factorial i).
+  reflexivity.
+Qed.
+
 
 Lemma proof_of_p139_special_factorial_safety_wit_4 : p139_special_factorial_safety_wit_4.
 Proof.

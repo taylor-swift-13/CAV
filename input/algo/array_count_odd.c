@@ -20,7 +20,9 @@ int array_count_odd(int n, int *a)
     int count = 0;
 
     while (i < n) {
-        if (a[i] % 2 != 0) count++;
+        if (a[i] % 2 != 0) {
+            count++;
+        }
         i++;
     }
 

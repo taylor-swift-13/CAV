@@ -114,3 +114,25 @@ Definition remove_duplicates_second_loop
   (input has2 : list Z) (i : Z) (output : list Z) : Prop :=
   0 <= i <= Zlength input /\
   output = filter_not_in has2 (sublist 0 i input).
+
+
+(* Duplicate-tracking specification helpers. *)
+
+Definition problem_26_spec_by_nth (input output : list Z) : Prop :=
+  (forall j v,
+    nth_error output j = Some v ->
+    exists i,
+      nth_error input i = Some v /\
+      forall k, nth_error input k = Some v -> k = i) /\
+  (forall i v,
+    nth_error input i = Some v ->
+    (forall k, nth_error input k = Some v -> k = i) ->
+    In v output) /\
+  (forall j1 j2 v1 v2,
+    nth_error output j1 = Some v1 ->
+    nth_error output j2 = Some v2 ->
+    (j1 < j2)%nat ->
+    exists i1 i2,
+      nth_error input i1 = Some v1 /\
+      nth_error input i2 = Some v2 /\
+      (i1 < i2)%nat).
