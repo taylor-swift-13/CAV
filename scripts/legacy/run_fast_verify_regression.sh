@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SUMMARY_ROOT="${SUMMARY_ROOT:-/tmp/cav_verify_efficiency_regression}"
 LABEL="run"
 JOBS=1

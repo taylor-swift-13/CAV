@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Import a C-friendly MBPP subset into raw/mbpp.
+"""Import a C-friendly MBPP validation subset into raw/mbpp.
 
-The local MultiPL-E MBPP split has two useful sources:
+The importer uses two MBPP sources:
 
-* datasets/sanitized-mbpp.json: prompt, Python reference implementation, tests.
+* Google Research full mbpp.jsonl: prompt, Python reference implementation, tests.
 * datasets/mbpp-typed/*.py: function name and type signature, but body is pass.
 
-This script joins them by task id and mechanically translates the Python reference
-implementation for the scalar/list-of-int subset that maps cleanly to the C raw
-format used by this repository. Unsupported problems are recorded in an import
-report instead of emitting placeholder C.
+This script joins them by task id and translates the Python reference
+implementation for the C raw format used by this repository. The common
+scalar/list-of-int subset is translated mechanically; validation tasks outside
+that subset use explicit manual C translations. By default, it only considers
+the official MBPP validation task id range 511..600. Unsupported or missing
+problems are recorded in an import report instead of emitting placeholder C.
 """
 
 from __future__ import annotations
@@ -21,18 +23,39 @@ import re
 import subprocess
 import tempfile
 import textwrap
+import urllib.request
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
+import mbpp_validation_manual
 
-ROOT = Path(__file__).resolve().parents[1]
+
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MULTIPLE = (
     Path("/home/yangfp/CAV/OS/CAV/.tools/benchmark_sources/MultiPL-E/datasets")
 )
-DEFAULT_JSON = DEFAULT_MULTIPLE / "sanitized-mbpp.json"
+DEFAULT_JSONL = DEFAULT_MULTIPLE / "mbpp.jsonl"
+DEFAULT_JSONL_URL = (
+    "https://raw.githubusercontent.com/google-research/google-research/master/mbpp/mbpp.jsonl"
+)
 DEFAULT_TYPED = DEFAULT_MULTIPLE / "mbpp-typed"
 DEFAULT_OUT = ROOT / "raw" / "mbpp"
+DEFAULT_TASK_ID_MIN = 511
+DEFAULT_TASK_ID_MAX = 600
+
+EXCLUDED_VALIDATION_TASKS = {
+    512: "multi-function source: flatten + count_element_freq; nested tuple helper is a separate exposed top-level function",
+    520: "multi-function source: find_lcm + get_lcm; gcd/lcm helper logic is exposed as a separate top-level function",
+    541: "multi-function source: get_sum + check_abundant",
+    545: "multi-function source: take_L_and_F_set_bits + toggle_F_and_L_bits",
+    550: "overlaps HumanEval p035_max_element: maximum element of an integer array",
+    557: "overlaps HumanEval p027_filp_case: toggle character case in a string",
+    567: "overlaps HumanEval p126_is_sorted: sorted-list predicate",
+    580: "multi-function source: even_ele + extract_even; nested tuple traversal helper is a separate exposed top-level function",
+    592: "multi-function source: binomial_Coeff + sum_Of_product",
+    599: "overlaps HumanEval p060_sum_to_n: sum of first n natural numbers is a primary returned component",
+}
 
 C_KEYWORDS = {
     "auto",
@@ -643,6 +666,118 @@ def parse_typed(path: Path) -> TypedProblem:
     return TypedProblem(int(match.group(1)), path, func.name, args, returns)
 
 
+def infer_literal_annotation(node: ast.AST) -> str:
+    if isinstance(node, ast.Constant):
+        if isinstance(node.value, bool):
+            return "bool"
+        if isinstance(node.value, int):
+            return "int"
+        if isinstance(node.value, float):
+            return "float"
+        if isinstance(node.value, str):
+            return "str"
+        if node.value is None:
+            return "None"
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub):
+        return infer_literal_annotation(node.operand)
+    if isinstance(node, ast.List):
+        types = {infer_literal_annotation(item) for item in node.elts}
+        if types <= {"int"}:
+            return "List[int]"
+        if types <= {"int", "float"}:
+            return "List[float]"
+        if types <= {"str"}:
+            return "List[str]"
+        return "List[Any]"
+    if isinstance(node, ast.Tuple):
+        types = [infer_literal_annotation(item) for item in node.elts]
+        return "Tuple[" + ", ".join(types) + "]"
+    if isinstance(node, ast.Dict):
+        return "Dict[Any, Any]"
+    if isinstance(node, ast.Set):
+        return "Set[Any]"
+    return "Any"
+
+
+def parse_assert_signature(test: str) -> tuple[str, list[str], str]:
+    module = ast.parse(test)
+    if len(module.body) != 1 or not isinstance(module.body[0], ast.Assert):
+        raise Unsupported("unsupported test statement")
+    expr = module.body[0].test
+    if not isinstance(expr, ast.Compare) or not expr.comparators:
+        raise Unsupported("unsupported test expression")
+    call = expr.left
+    if not isinstance(call, ast.Call) or not isinstance(call.func, ast.Name):
+        raise Unsupported("unsupported candidate call in test")
+    return (
+        call.func.id,
+        [infer_literal_annotation(arg) for arg in call.args],
+        infer_literal_annotation(expr.comparators[0]),
+    )
+
+
+def merge_test_annotations(annotations: list[str], *, is_return: bool) -> str:
+    types = set(annotations)
+    if types <= {"int"}:
+        return "int"
+    if types <= {"bool"}:
+        return "bool"
+    if types <= {"int", "float"}:
+        return "float"
+    if not is_return and types <= {"List[int]"}:
+        return "List[int]"
+    raise Unsupported("unsupported inferred type: " + " | ".join(sorted(types)))
+
+
+def problem_stub(task_id: int, item: dict | None, reason_name: str = "unknown") -> TypedProblem:
+    function_name = reason_name
+    if item is not None:
+        try:
+            defs = find_function_defs(ast.parse(item["code"]))
+            if defs:
+                function_name = defs[-1].name
+        except (KeyError, SyntaxError):
+            pass
+    return TypedProblem(task_id, Path("<mbpp.jsonl>"), function_name, tuple(), "int")
+
+
+def infer_problem_from_item(item: dict) -> TypedProblem:
+    task_id = int(item["task_id"])
+    parsed_tests = [parse_assert_signature(test) for test in item["test_list"]]
+    names = {name for name, _, _ in parsed_tests}
+    if len(names) != 1:
+        raise Unsupported("inconsistent candidate names in tests")
+    function_name = next(iter(names))
+    arities = {len(args) for _, args, _ in parsed_tests}
+    if len(arities) != 1:
+        raise Unsupported("inconsistent candidate arities in tests")
+
+    module = ast.parse(item["code"])
+    defs = find_function_defs(module)
+    fn = next((node for node in defs if node.name == function_name), None)
+    if fn is None:
+        raise Unsupported("target function missing from Python code")
+    arity = next(iter(arities))
+    if len(fn.args.args) != arity:
+        raise Unsupported(
+            f"code/test arity mismatch: code has {len(fn.args.args)}, tests have {arity}"
+        )
+
+    args: list[Arg] = []
+    for index, arg in enumerate(fn.args.args):
+        annotation = merge_test_annotations(
+            [test_args[index] for _, test_args, _ in parsed_tests],
+            is_return=False,
+        )
+        if not supported_annotation(annotation, is_return=False):
+            raise Unsupported(f"unsupported inferred parameter type: {annotation}")
+        args.append(Arg(arg.arg, annotation))
+    returns = merge_test_annotations([ret for _, _, ret in parsed_tests], is_return=True)
+    if not supported_annotation(returns, is_return=True):
+        raise Unsupported(f"unsupported inferred return type: {returns}")
+    return TypedProblem(task_id, Path("<mbpp.jsonl>"), function_name, tuple(args), returns)
+
+
 def find_function_defs(module: ast.Module) -> list[ast.FunctionDef]:
     return [node for node in module.body if isinstance(node, ast.FunctionDef)]
 
@@ -708,8 +843,8 @@ def check_c_syntax(code: str) -> tuple[bool, str]:
 
 
 def external_calls_from_c(code: str) -> list[str]:
-    found = set(re.findall(r"\bmbpp_external_(isqrt|sqrt|floor|ceil|round)\s*\(", code))
-    return [name for name in ("isqrt", "sqrt", "floor", "ceil", "round") if name in found]
+    found = set(re.findall(r"\bmbpp_external_(isqrt|sqrt|floor|ceil|round|atan2)\s*\(", code))
+    return [name for name in ("isqrt", "sqrt", "floor", "ceil", "round", "atan2") if name in found]
 
 
 def external_stub_section(code: str) -> str:
@@ -722,6 +857,7 @@ def external_stub_section(code: str) -> str:
         "floor": "`int mbpp_external_floor(double x);`",
         "ceil": "`int mbpp_external_ceil(double x);`",
         "round": "`int mbpp_external_round(double x);`",
+        "atan2": "`double mbpp_external_atan2(double y, double x);`",
     }
     bullets = "\n".join(f"- {signatures[name]}" for name in calls)
     specs: list[str] = []
@@ -787,6 +923,25 @@ def external_stub_section(code: str) -> str:
                 """
             ).strip()
         )
+    if "atan2" in calls:
+        specs.append(
+            textwrap.dedent(
+                """
+                ### `mbpp_external_atan2`
+
+                Coq model: define the polar angle relation for the chosen real-number model.
+
+                Function contract shape:
+
+                ```c
+                double mbpp_external_atan2(double y, double x)
+                /*@ Require emp
+                    Ensure mbpp_atan2_spec(y, x, __return)
+                */;
+                ```
+                """
+            ).strip()
+        )
     spec_text = "\n\n".join(specs)
     if spec_text:
         spec_text += "\n\n"
@@ -808,28 +963,32 @@ def markdown(
     problem: TypedProblem,
     item: dict,
     c_code: str,
+    *,
+    source_name: str,
+    translation_note: str,
 ) -> str:
     title = problem.function_name.replace("_", " ").title()
     args = ", ".join(f"{a.name}: {a.annotation}" for a in problem.args)
     tests = "\n".join(f"- `{test}`" for test in item["test_list"])
     external_section = external_stub_section(c_code)
+    prompt = item.get("prompt") or item.get("text") or ""
     return (
         f"# MBPP {problem.task_id} {title}\n\n"
         "## Problem\n\n"
-        f"{item['prompt'].strip()}\n\n"
+        f"{prompt.strip()}\n\n"
         "## Signature\n\n"
         f"- Python: `{problem.function_name}({args}) -> {problem.returns}`\n"
         f"- C entrypoint: `mbpp_{problem.task_id}_{problem.function_name}`\n"
-        "- C translation: `List[int]` parameters are represented as "
-        "`int *name, int name_size`; `bool` results are represented as `int` "
-        "where `0` is false and nonzero is true.\n\n"
+        "- C translation: scalar Python `int`/`bool` values use C `int`, "
+        "`float` uses `double`, `List[int]` parameters are represented as "
+        "`int *name, int name_size`, and non-scalar Python containers use "
+        "the explicit structs shown in the C code.\n\n"
         "## Tests\n\n"
         f"{tests}\n\n"
         "## Source\n\n"
-        "- Source: MBPP sanitized task from local MultiPL-E benchmark sources.\n"
+        f"- Source: {source_name}.\n"
         f"- Task id: {problem.task_id}.\n"
-        "- Translation note: Python reference implementation mechanically translated "
-        "to C for the scalar and `List[int]` input subset.\n\n"
+        f"- Translation note: {translation_note}\n\n"
         f"{external_section}"
         "## Original Python Implementation\n\n"
         f"```python\n{item['code'].rstrip()}\n```\n\n"
@@ -838,22 +997,88 @@ def markdown(
     )
 
 
-def load_json_by_id(path: Path) -> dict[int, dict]:
-    data = json.loads(path.read_text())
-    return {int(item["task_id"]): item for item in data}
+def read_task_source(path: Path, url: str) -> tuple[str, str]:
+    if path.exists():
+        return path.read_text(), f"Google Research full MBPP source from `{path}`"
+    with urllib.request.urlopen(url, timeout=30) as response:
+        text = response.read().decode("utf-8")
+    return text, f"Google Research full MBPP source from `{url}`"
 
 
-def write_report(out_dir: Path, imported: list[TypedProblem], skipped: list[tuple[TypedProblem, str]]) -> None:
-    reasons = Counter(reason.split(":", 1)[0] for _, reason in skipped)
+def load_tasks_by_id(path: Path, url: str) -> tuple[dict[int, dict], str]:
+    text, source_name = read_task_source(path, url)
+    stripped = text.lstrip()
+    if stripped.startswith("["):
+        data = json.loads(text)
+    else:
+        data = [json.loads(line) for line in text.splitlines() if line.strip()]
+    return {int(item["task_id"]): item for item in data}, source_name
+
+
+def write_report(
+    out_dir: Path,
+    imported: list[TypedProblem],
+    skipped: list[tuple[TypedProblem, str]],
+    excluded: list[tuple[int, str]],
+    *,
+    task_id_min: int | None,
+    task_id_max: int | None,
+    source_typed_count: int,
+    source_task_count: int,
+    source_name: str,
+    selected_typed_count: int,
+    selected_source_count: int,
+    missing_typed_ids: list[int],
+    missing_source_ids: list[int],
+) -> None:
+    def reason_key(reason: str) -> str:
+        for prefix in ("inferred: ", "typed: "):
+            if reason.startswith(prefix):
+                reason = reason[len(prefix) :]
+                break
+        return reason.split(":", 1)[0]
+
+    reasons = Counter(reason_key(reason) for _, reason in skipped)
+    selected_count = 0
+    if task_id_min is not None and task_id_max is not None:
+        selected_count = task_id_max - task_id_min + 1
     lines = [
         "# MBPP Import Report",
         "",
+        "## Selection",
+        "",
+        (
+            f"- Task id range: {task_id_min}-{task_id_max} "
+            f"({selected_count} ids)"
+            if task_id_min is not None and task_id_max is not None
+            else "- Task id range: all typed tasks"
+        ),
+        f"- Source typed tasks: {source_typed_count}",
+        f"- Source MBPP tasks: {source_task_count}",
+        f"- Source: {source_name}",
+        f"- Selected typed tasks present locally before exclusion: {selected_typed_count}",
+        f"- Selected MBPP source tasks present before exclusion: {selected_source_count}",
+        "",
+        "## Results",
+        "",
         f"- Imported: {len(imported)}",
+        f"- Excluded: {len(excluded)}",
         f"- Skipped: {len(skipped)}",
         "",
-        "## Skipped Reason Counts",
+        "## Missing Source Tasks",
+        "",
+        "- Missing from local typed source: "
+        + (", ".join(str(task_id) for task_id in missing_typed_ids) if missing_typed_ids else "none"),
+        "- Missing from MBPP source: "
+        + (", ".join(str(task_id) for task_id in missing_source_ids) if missing_source_ids else "none"),
         "",
     ]
+    if excluded:
+        lines.extend(["## Excluded Problems", ""])
+        for task_id, reason in excluded:
+            lines.append(f"- `mbpp_{task_id}`: {reason}")
+        lines.append("")
+    lines.extend(["## Skipped Reason Counts", ""])
     for reason, count in reasons.most_common():
         lines.append(f"- `{reason}`: {count}")
     lines.extend(["", "## Skipped Problems", ""])
@@ -874,41 +1099,165 @@ def clean_output(out_dir: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--json", type=Path, default=DEFAULT_JSON)
+    parser.add_argument(
+        "--jsonl",
+        type=Path,
+        default=DEFAULT_JSONL,
+        help="Full MBPP JSONL path. If missing, the official Google Research URL is used.",
+    )
+    parser.add_argument("--jsonl-url", default=DEFAULT_JSONL_URL)
     parser.add_argument("--typed-dir", type=Path, default=DEFAULT_TYPED)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT)
+    parser.add_argument(
+        "--task-id-min",
+        type=int,
+        default=DEFAULT_TASK_ID_MIN,
+        help="Minimum MBPP task id to import. Defaults to the official validation split start.",
+    )
+    parser.add_argument(
+        "--task-id-max",
+        type=int,
+        default=DEFAULT_TASK_ID_MAX,
+        help="Maximum MBPP task id to import. Defaults to the official validation split end.",
+    )
     parser.add_argument("--clean", action="store_true", help="Remove previous generated raw/mbpp files first.")
     args = parser.parse_args()
+    if args.task_id_min > args.task_id_max:
+        parser.error("--task-id-min must be <= --task-id-max")
 
     if args.clean:
         clean_output(args.out_dir)
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
-    json_by_id = load_json_by_id(args.json)
-    typed = [parse_typed(path) for path in sorted(args.typed_dir.glob("mbpp_*.py"))]
+    json_by_id, source_name = load_tasks_by_id(args.jsonl, args.jsonl_url)
+    typed_all = [parse_typed(path) for path in sorted(args.typed_dir.glob("mbpp_*.py"))]
+    selected_ids = set(range(args.task_id_min, args.task_id_max + 1))
+    typed = [problem for problem in typed_all if problem.task_id in selected_ids]
+    typed_by_id = {problem.task_id: problem for problem in typed_all}
+    typed_ids = {problem.task_id for problem in typed_all}
+    json_ids = set(json_by_id)
+    missing_typed_ids = sorted(selected_ids - typed_ids)
+    missing_source_ids = sorted(selected_ids - json_ids)
 
     imported: list[TypedProblem] = []
     skipped: list[tuple[TypedProblem, str]] = []
-    for problem in typed:
-        item = json_by_id.get(problem.task_id)
-        if item is None:
-            skipped.append((problem, "missing sanitized MBPP JSON item"))
+    excluded = [
+        (task_id, EXCLUDED_VALIDATION_TASKS[task_id])
+        for task_id in sorted(selected_ids & set(EXCLUDED_VALIDATION_TASKS))
+    ]
+    for task_id in sorted(selected_ids):
+        if task_id in EXCLUDED_VALIDATION_TASKS:
             continue
-        try:
-            c_code = translate_problem(problem, item["code"])
+        item = json_by_id.get(task_id)
+        if item is None:
+            skipped.append((typed_by_id.get(task_id) or problem_stub(task_id, item), "missing MBPP source item"))
+            continue
+
+        manual = mbpp_validation_manual.manual_translation(task_id)
+        if manual is not None:
+            manual_args = tuple(Arg(str(name), str(annotation)) for name, annotation in manual["args"])
+            problem = TypedProblem(
+                task_id,
+                Path("<manual>"),
+                str(manual["function_name"]),
+                manual_args,
+                str(manual["returns"]),
+            )
+            c_code = str(manual["code"])
             ok, detail = check_c_syntax(c_code)
             if not ok:
-                raise Unsupported("C syntax check failed: " + detail)
-        except (SyntaxError, Unsupported) as exc:
-            skipped.append((problem, str(exc).replace("\n", " ")))
+                skipped.append((problem, "manual C syntax check failed: " + detail.replace("\n", " ")))
+                continue
+            name = f"mbpp_{problem.task_id}_{problem.function_name}.md"
+            (args.out_dir / name).write_text(
+                markdown(
+                    problem,
+                    item,
+                    c_code,
+                    source_name=source_name,
+                    translation_note=(
+                        "Manual C reference translation for the official validation "
+                        "task; Python containers and library values are represented "
+                        "with explicit C structs."
+                    ),
+                )
+            )
+            imported.append(problem)
             continue
-        name = f"mbpp_{problem.task_id}_{problem.function_name}.md"
-        (args.out_dir / name).write_text(markdown(problem, item, c_code))
-        imported.append(problem)
 
-    write_report(args.out_dir, imported, skipped)
+        candidates: list[tuple[str, TypedProblem]] = []
+        infer_error: str | None = None
+        try:
+            candidates.append(("inferred", infer_problem_from_item(item)))
+        except (SyntaxError, Unsupported) as exc:
+            infer_error = str(exc).replace("\n", " ")
+        typed_problem = typed_by_id.get(task_id)
+        if typed_problem is not None and all(problem.task_id != task_id for _, problem in candidates):
+            candidates.append(("typed", typed_problem))
+        if not candidates:
+            skipped.append((problem_stub(task_id, item), infer_error or "missing typed signature"))
+            continue
+
+        failure_reasons: list[str] = []
+        for label, problem in candidates:
+            try:
+                c_code = translate_problem(problem, item["code"])
+                ok, detail = check_c_syntax(c_code)
+                if not ok:
+                    raise Unsupported("C syntax check failed: " + detail)
+            except (SyntaxError, Unsupported) as exc:
+                failure_reasons.append(f"{label}: {str(exc).replace(chr(10), ' ')}")
+                continue
+            name = f"mbpp_{problem.task_id}_{problem.function_name}.md"
+            if label == "inferred":
+                translation_note = (
+                    "C reference generated from the official Python implementation "
+                    "using a signature inferred from official tests."
+                )
+            else:
+                translation_note = (
+                    "C reference generated from the official Python implementation "
+                    "using the local typed MBPP signature."
+                )
+            (args.out_dir / name).write_text(
+                markdown(
+                    problem,
+                    item,
+                    c_code,
+                    source_name=source_name,
+                    translation_note=translation_note,
+                )
+            )
+            imported.append(problem)
+            break
+        else:
+            skipped.append((candidates[0][1], "; ".join(failure_reasons)))
+
+    write_report(
+        args.out_dir,
+        imported,
+        skipped,
+        excluded,
+        task_id_min=args.task_id_min,
+        task_id_max=args.task_id_max,
+        source_typed_count=len(typed_all),
+        source_task_count=len(json_by_id),
+        source_name=source_name,
+        selected_typed_count=len(typed),
+        selected_source_count=len(selected_ids & json_ids),
+        missing_typed_ids=missing_typed_ids,
+        missing_source_ids=missing_source_ids,
+    )
     print(f"imported {len(imported)} MBPP raw files into {args.out_dir}")
-    print(f"skipped {len(skipped)} unsupported MBPP files; see {args.out_dir / '_import_report.md'}")
+    print(
+        f"selected MBPP task ids {args.task_id_min}-{args.task_id_max}; "
+        f"typed present {len(typed)}/{len(selected_ids)}, "
+        f"source present {len(selected_ids & json_ids)}/{len(selected_ids)}"
+    )
+    print(
+        f"excluded {len(excluded)} overlapping or multi-function MBPP files; "
+        f"skipped {len(skipped)} unsupported MBPP files; see {args.out_dir / '_import_report.md'}"
+    )
     return 0
 
 

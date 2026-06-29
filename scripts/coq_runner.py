@@ -31,6 +31,7 @@ BASE_LOAD_PATH: list[tuple[str, str]] = [
     ("compcert_lib", "compcert.lib"),
     ("auxlibs", "AUXLib"),
     ("examples", "SimpleC.EE"),
+    ("stdlib", "SimpleC.StdLib"),
     ("StrategyLib", "SimpleC.StrategyLib"),
     ("Common", "SimpleC.Common"),
     ("fixedpoints", "FP"),

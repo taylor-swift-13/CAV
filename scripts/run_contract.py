@@ -17,6 +17,7 @@ import coq_runner
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+QCP_ROOT = REPO_ROOT / "QualifiedCProgramming"
 DEFAULT_SKILL = REPO_ROOT / "skills" / "contract" / "SKILL.md"
 OUTPUT_ROOT = REPO_ROOT / "output"
 MID_ROOT = REPO_ROOT / "mid"
@@ -138,6 +139,10 @@ def bootstrap_workspace(workspace_path: Path, raw_path: Path) -> dict[str, Path]
     }
 
 
+def qcp_rel(path: Path) -> str:
+    return Path(os.path.relpath(path.resolve(), QCP_ROOT)).as_posix()
+
+
 def build_prompt(
     skill_path: Path,
     raw_path: Path,
@@ -148,15 +153,32 @@ def build_prompt(
     attempt: int,
     restart_context: str | None = None,
 ) -> str:
+    skill_rel = qcp_rel(skill_path)
     lines = [
-        f"Follow this skill as the complete workflow: {skill_path}",
+        "Use the repo-level CAV contract skill plus QCP official workflow rules.",
+        "First read exactly this repo-level skill file, and no other repo-level skill files:",
+        f"- `{skill_rel}`",
+        "Do not read `../skills/COMMON.md`, `../skills/eval/`, `../skills/verify/`, `../scripts/`, git history, or unrelated workspaces.",
+        "Do not read your harness transcript or prompt artifacts: `logs/agent_stdout_*.jsonl`, `logs/agent_prompt_*`, `logs/agent_stderr_*`, or `logs/agent_last_message_*`.",
+        "Do not run broad repository searches such as `rg .`, `rg ..`, `find .`, `find ..`, or `ls ..`; every search must name a specific allowed QCP doc/example directory or the current task file.",
+        "",
+        "Before editing, read these QCP docs:",
+        "- `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` — spec-quality criteria; external Rocq predicates must have definitions and function contracts must state the mathematical effect.",
+        "- `.agents/skills/annotation-filling/docs/annotation-rules.md` — syntax and placement rules for C annotations.",
+        "- `.agents/skills/annotation-filling/docs/predicate-first-annotation.md` — how to define mathematical predicates instead of mirroring the C algorithm.",
+        "- `.agents/skills/annotation-filling/docs/array-predicate-selection.md` — how to choose array/list predicates and spatial resources.",
+        "- `.agents/skills/annotation-filling/docs/reference-cases.md` — known reference patterns to consult by task shape.",
+        "- `.agents/skills/annotation-filling/docs/common-annotation-errors.md` — common annotation mistakes and fixes.",
+        "- `.agents/skills/annotation-filling/docs/builtin-array-string-support.md` — built-in array/string predicate support and required side conditions.",
+        "",
+        "Use paths exactly as relative paths from the current QCP root. Do not use absolute paths in commands, logs, or generated documentation.",
         "",
         "Inputs:",
-        f"- Raw markdown: `{raw_path}`",
+        f"- Raw markdown: `{qcp_rel(raw_path)}`",
         f"- Target function: `{function_name}`",
-        f"- Workspace: `{workspace_path}`",
-        f"- Output C: `{target_c_path}`",
-        f"- Optional output V: `{target_v_path}`",
+        f"- Workspace: `{qcp_rel(workspace_path)}`",
+        f"- Output C: `{qcp_rel(target_c_path)}`",
+        f"- Optional output V: `{qcp_rel(target_v_path)}`",
     ]
     if attempt > 1:
         lines += ["", f"Attempt: {attempt} (retry — the previous contract attempt failed its syntax check)."]
@@ -437,7 +459,7 @@ def contract_retry_feedback(
         ])
     lines.extend([
         "",
-        "Required next action: regenerate or edit the contract so input C has no verify-stage Inv/Assert/which-implies annotations, root headers use ../<header> from input/, optional input V contains definitions only, and the QCP wellformed gate passes before eval or verify starts.",
+        "Required next action: regenerate or edit the contract so mid C has no verify-stage Inv/Assert/which-implies annotations, root headers use bare includes, optional mid V contains definitions only, and the QCP wellformed gate passes before eval or verify starts.",
     ])
     return "\n".join(lines)
 
@@ -505,7 +527,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--claude-bin", default=None, help="Claude CLI binary.")
     parser.add_argument("--kimicode-bin", default=None, help="Kimi Code CLI binary.")
     parser.add_argument("--timeout-seconds", type=int, default=300, help="Kill the external agent run if it exceeds this wall-clock timeout.")
-    parser.add_argument("--restart-context-file", default=None, help="File whose content (e.g. eval critic findings) is injected into the prompt on a re-run.")
+    parser.add_argument("--restart-context-file", default=None, help="File whose content is injected into the prompt on a re-run.")
     parser.add_argument("--keep-mid-output", action="store_true", help=argparse.SUPPRESS)
     return parser
 
@@ -569,12 +591,12 @@ def main() -> int:
     logs_dir = workspace_path / "logs"
     agent_env = build_agent_env(logs_dir)
     reasoning_effort_supported = (
-        codex_supports_reasoning_effort(codex_bin, REPO_ROOT, agent_env)
+        codex_supports_reasoning_effort(codex_bin, QCP_ROOT, agent_env)
         if agent == "codex"
         else False
     )
     claude_effort_supported = (
-        agent_config.claude_supports_flag(claude_bin, REPO_ROOT, agent_env, "--effort")
+        agent_config.claude_supports_flag(claude_bin, QCP_ROOT, agent_env, "--effort")
         if agent == "claude"
         else False
     )
@@ -704,7 +726,7 @@ def main() -> int:
                         text=True,
                         stdout=out_f,
                         stderr=err_f,
-                        cwd=REPO_ROOT,
+                        cwd=QCP_ROOT,
                         timeout=round_timeout,
                         env=agent_env,
                     )
@@ -721,7 +743,7 @@ def main() -> int:
                     "--yolo",
                     "--afk",
                     "--work-dir",
-                    str(REPO_ROOT),
+                    str(QCP_ROOT),
                     "--add-dir",
                     str(REPO_ROOT),
                     "--input-format",
@@ -739,7 +761,7 @@ def main() -> int:
                         text=True,
                         stdout=out_f,
                         stderr=err_f,
-                        cwd=REPO_ROOT,
+                        cwd=QCP_ROOT,
                         timeout=round_timeout,
                         env=agent_env,
                     )
@@ -754,7 +776,7 @@ def main() -> int:
                     "--json",
                     "--skip-git-repo-check",
                     "-C",
-                    str(REPO_ROOT),
+                    str(QCP_ROOT),
                     "-o",
                     str(last_message_path),
                 ]
@@ -770,7 +792,7 @@ def main() -> int:
                         text=True,
                         stdout=out_f,
                         stderr=err_f,
-                        cwd=REPO_ROOT,
+                        cwd=QCP_ROOT,
                         timeout=round_timeout,
                         env=agent_env,
                     )

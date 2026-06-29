@@ -154,6 +154,7 @@ def write_qcp_proof_audit_script(
         "-R", "compcert_lib", "compcert.lib",
         "-R", "auxlibs", "AUXLib",
         "-R", "examples", "SimpleC.EE",
+        "-R", "stdlib", "SimpleC.StdLib",
         "-R", "StrategyLib", "SimpleC.StrategyLib",
         "-R", "Common", "SimpleC.Common",
         "-R", "fixedpoints", "FP",
@@ -249,6 +250,9 @@ def build_run_proof_prompt(
         f"--proof-auto-file={coq_dir_rel}/{function_name}_proof_auto.v "
         f"--proof-manual-file={coq_dir_rel}/{function_name}_proof_manual.v "
         f"--coq-logic-path=SimpleC.EE.CAV.{workspace} "
+        f"-IQCP_examples/stdlib/ "
+        f"-slp QCP_examples/stdlib/ SimpleC.StdLib "
+        f"-IQCP_examples/QCP_demos_LLM/ "
         f"-slp QCP_examples/QCP_demos_LLM/ SimpleC.EE.QCP_demos_LLM "
         f"--input-file={qcp_c_rel} --no-exec-info"
     )
@@ -260,6 +264,7 @@ def build_run_proof_prompt(
         "-R compcert_lib compcert.lib "
         "-R auxlibs AUXLib "
         "-R examples SimpleC.EE "
+        "-R stdlib SimpleC.StdLib "
         "-R StrategyLib SimpleC.StrategyLib "
         "-R Common SimpleC.Common "
         "-R fixedpoints FP "

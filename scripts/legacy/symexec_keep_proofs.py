@@ -18,12 +18,12 @@ On symexec failure the original generated files are restored, so the workspace
 is never left worse than before.
 
 Usage (drop-in for the canonical symexec command):
-  python3 scripts/symexec_keep_proofs.py --name <NAME> --stamp <STAMP>
+  python3 scripts/legacy/symexec_keep_proofs.py --name <NAME> --stamp <STAMP>
 """
 import argparse, re, shutil, subprocess, sys, tempfile, time
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SYMEXEC_BIN = REPO_ROOT / "QualifiedCProgramming" / "linux-binary" / "symexec"
 GEN_SUFFIXES = ("goal", "proof_auto", "proof_manual", "goal_check", "proof_check")
 
@@ -124,9 +124,11 @@ def main() -> int:
         f"--proof-auto-file={gen / f'{name}_proof_auto.v'}",
         f"--proof-manual-file={gen / f'{name}_proof_manual.v'}",
         f"--coq-logic-path={logic_path}",
-        # MUST match run_verify.run_symexec: canonical QCP_demos_LLM strategies
-        # qualified to SimpleC.EE.QCP_demos_LLM so goal.v emits prefixed strategy
-        # requires (unique, no `matches several files`). Keep these two in sync.
+        # MUST match run_verify.run_symexec: stdlib first for string strategies,
+        # then canonical QCP_demos_LLM strategies for generated strategy imports.
+        f"-I{REPO_ROOT / 'QualifiedCProgramming' / 'QCP_examples' / 'stdlib'}/",
+        "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "stdlib") + "/", "SimpleC.StdLib",
+        f"-I{REPO_ROOT / 'QualifiedCProgramming' / 'QCP_examples' / 'QCP_demos_LLM'}/",
         "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "QCP_demos_LLM") + "/", "SimpleC.EE.QCP_demos_LLM",
         f"--input-file={annotated}",
         "--no-exec-info",

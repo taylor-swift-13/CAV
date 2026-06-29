@@ -6,14 +6,14 @@
 # flow from raw/<name>.md regenerates a correct, RTE-free input C.
 #
 # Usage:
-#   scripts/rerun_overflow_fixed.sh                 # serial, default timeouts
-#   scripts/rerun_overflow_fixed.sh -j 4            # 4 tasks concurrently
-#   scripts/rerun_overflow_fixed.sh -j 4 --verify-timeout 5400   # extra flags pass through
+#   scripts/legacy/rerun_overflow_fixed.sh                 # serial, default timeouts
+#   scripts/legacy/rerun_overflow_fixed.sh -j 4            # 4 tasks concurrently
+#   scripts/legacy/rerun_overflow_fixed.sh -j 4 --verify-timeout 5400   # extra flags pass through
 #
 # Any extra args are forwarded to run_pipeline_many.sh.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 NAMES=(
   aug_first_ge_stream_001

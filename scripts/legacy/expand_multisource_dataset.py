@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 DATASETS = ROOT / "datasets"
 LANGUAGES = ("c", "java", "rust")
 DIFFICULTIES = ("easy", "medium", "hard")
@@ -2868,7 +2868,7 @@ def write_manifest_and_readme(problems: list[dict]) -> None:
         f"- Difficulty counts: easy {counts['easy']}, medium {counts['medium']}, hard {counts['hard']}.\n"
         f"- Source counts: CAV-JAVA local dataset {source_counts['CAV-JAVA local dataset']}, LeetCode {source_counts['LeetCode']}, Luogu {source_counts['Luogu']}, FormalBench {source_counts['FormalBench']}, SpecGenBench {source_counts['SpecGenBench']}, Exercism {source_counts['Exercism']}.\n"
         "- Source attribution: every problem includes a `source` field in `tests/*.json` and `manifest.json`.\n"
-        "- Generation: `python3 scripts/expand_multisource_dataset.py`\n",
+        "- Generation: `python3 scripts/legacy/expand_multisource_dataset.py`\n",
         encoding="utf-8",
     )
 

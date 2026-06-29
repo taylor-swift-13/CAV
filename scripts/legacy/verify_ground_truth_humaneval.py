@@ -28,6 +28,8 @@ QCP_INPUT_ROOT = QCP_ROOT / "QCP_examples" / "CAV"
 QCP_COQ_ROOT = QCP_ROOT / "SeparationLogic" / "examples" / "CAV"
 STRATEGY_SOURCE_PATH = os.environ.get("QCP_STRATEGY_SOURCE_PATH", "QCP_examples/QCP_demos_LLM/")
 STRATEGY_COQ_PATH = os.environ.get("QCP_STRATEGY_COQ_PATH", "SimpleC.EE.QCP_demos_LLM")
+STDLIB_SOURCE_PATH = os.environ.get("QCP_STDLIB_SOURCE_PATH", "QCP_examples/stdlib/")
+STDLIB_COQ_PATH = os.environ.get("QCP_STDLIB_COQ_PATH", "SimpleC.StdLib")
 
 LOCAL_REQ_RE = re.compile(r"^\s*Require\s+(?:Import|Export)\s+([A-Za-z0-9_ ]+)\s*\.", re.M)
 LOCAL_FROM_REQ_RE = re.compile(r"^\s*From\s+[A-Za-z0-9_.]+\s+Require\s+(?:Import|Export)\s+([A-Za-z0-9_ ]+)\s*\.", re.M)
@@ -62,6 +64,9 @@ def coq_common_args(workspace: str, deps_flag: list[str] | None = None) -> list[
             "-R",
             str(QCP_ROOT / "SeparationLogic" / "examples"),
             "SimpleC.EE",
+            "-R",
+            str(QCP_ROOT / "SeparationLogic" / "stdlib"),
+            "SimpleC.StdLib",
             "-R",
             str(QCP_ROOT / "SeparationLogic" / "StrategyLib"),
             "SimpleC.StrategyLib",
@@ -287,6 +292,11 @@ def verify_case(case_dir: Path, *, timeout: int, keep: bool) -> dict:
         f"--proof-auto-file=SeparationLogic/examples/CAV/{workspace}/{stem}_proof_auto.v",
         f"--proof-manual-file=SeparationLogic/examples/CAV/{workspace}/{stem}_proof_manual.v",
         f"--coq-logic-path=SimpleC.EE.CAV.{workspace}",
+        f"-I{STDLIB_SOURCE_PATH}",
+        "-slp",
+        STDLIB_SOURCE_PATH,
+        STDLIB_COQ_PATH,
+        f"-I{STRATEGY_SOURCE_PATH}",
         "-slp",
         STRATEGY_SOURCE_PATH,
         STRATEGY_COQ_PATH,

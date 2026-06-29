@@ -331,6 +331,7 @@ def _qcp_final_check_commands(
         "-R compcert_lib compcert.lib "
         "-R auxlibs AUXLib "
         "-R examples SimpleC.EE "
+        "-R stdlib SimpleC.StdLib "
         "-R StrategyLib SimpleC.StrategyLib "
         "-R Common SimpleC.Common "
         "-R fixedpoints FP "
@@ -338,7 +339,7 @@ def _qcp_final_check_commands(
         "-R listlib ListLib"
     )
     commands = [
-        f"linux-binary/symexec --goal-file={coq_dir_rel}/{function_name}_goal.v --proof-auto-file={coq_dir_rel}/{function_name}_proof_auto.v --proof-manual-file={coq_dir_rel}/{function_name}_proof_manual.v --coq-logic-path=SimpleC.EE.CAV.{workspace} -slp QCP_examples/QCP_demos_LLM/ SimpleC.EE.QCP_demos_LLM --input-file={qcp_c_rel} --no-exec-info",
+        f"linux-binary/symexec --goal-file={coq_dir_rel}/{function_name}_goal.v --proof-auto-file={coq_dir_rel}/{function_name}_proof_auto.v --proof-manual-file={coq_dir_rel}/{function_name}_proof_manual.v --coq-logic-path=SimpleC.EE.CAV.{workspace} -IQCP_examples/stdlib/ -slp QCP_examples/stdlib/ SimpleC.StdLib -IQCP_examples/QCP_demos_LLM/ -slp QCP_examples/QCP_demos_LLM/ SimpleC.EE.QCP_demos_LLM --input-file={qcp_c_rel} --no-exec-info",
     ]
     for source in original_v_dependency_closure(input_path, input_v_path):
         commands.append(f"cd SeparationLogic && coqc {sl_coq_args} examples/CAV/{workspace}/deps/{source.name}")
@@ -389,7 +390,7 @@ def build_prompt(
         "",
         "Repository read/write boundary: after reading this prompt, the repo-level CAV skill files listed above, and the read-only QCP `.agents/skills/` docs, write only the active QCP annotated C, active QCP Coq directory, and issues.md/metrics.md in active QCP logs. The active QCP deps directory is read-only. Do not read or write output/, annotated/, scripts/, input/, QCP source files outside `.agents/skills/`, unrelated QCP mirror workspaces, git history, or agent stdout logs. The only repo-level files you may read are the listed `../skills/...` files.",
         "",
-        "Read boundary: the current QCP mirror directories listed in Inputs are in scope, along with the listed repo-level CAV skill files, QCP `.agents/skills/`, `tutorial/`, `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/`, and `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` for required related examples. The output workspace is runner-owned and must not be read by the agent.",
+        "Read boundary: the current QCP mirror directories listed in Inputs are in scope, along with the listed repo-level CAV skill files, QCP `.agents/skills/`, `tutorial/`, `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM,stdlib}/`, `SeparationLogic/stdlib/`, and `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` for required related examples. The output workspace is runner-owned and must not be read by the agent.",
         "",
         "Symexec rerun rule: work in the QCP mirror. If you rerun symexec after annotation changes, preserve the previous target .v files inside the current QCP mirror for reference before regenerating, then manually reuse old proof structure where witness statements still match.",
         "",
@@ -427,7 +428,7 @@ def build_proof_only_prompt(
         "",
         "Repository read/write boundary: after reading this prompt, the repo-level CAV skill files listed above, and the read-only QCP `.agents/skills/` docs, write only the active QCP annotated C, active QCP Coq directory, and issues.md/metrics.md in active QCP logs. The active QCP deps directory is read-only. Do not read or write output/, annotated/, scripts/, input/, QCP source files outside `.agents/skills/`, unrelated QCP mirror workspaces, git history, or agent stdout logs. The only repo-level files you may read are the listed `../skills/...` files.",
         "",
-        "Read boundary: the current QCP mirror directories listed in Inputs are in scope, along with the listed repo-level CAV skill files, QCP `.agents/skills/`, `tutorial/`, `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/`, and `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` for required related examples. The output workspace is runner-owned and must not be read by the agent.",
+        "Read boundary: the current QCP mirror directories listed in Inputs are in scope, along with the listed repo-level CAV skill files, QCP `.agents/skills/`, `tutorial/`, `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM,stdlib}/`, `SeparationLogic/stdlib/`, and `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` for required related examples. The output workspace is runner-owned and must not be read by the agent.",
         "",
         "Do not rerun symexec in proof-only mode. If a prior generated snapshot exists under coq/last, it is read-only reference material for proof structure.",
         "",
@@ -676,6 +677,7 @@ def write_qcp_agent_audit_script(
         "-R", "compcert_lib", "compcert.lib",
         "-R", "auxlibs", "AUXLib",
         "-R", "examples", "SimpleC.EE",
+        "-R", "stdlib", "SimpleC.StdLib",
         "-R", "StrategyLib", "SimpleC.StrategyLib",
         "-R", "Common", "SimpleC.Common",
         "-R", "fixedpoints", "FP",
@@ -688,6 +690,9 @@ def write_qcp_agent_audit_script(
         f"--proof-auto-file={coq_dir_rel}/{function_name}_proof_auto.v",
         f"--proof-manual-file={coq_dir_rel}/{function_name}_proof_manual.v",
         f"--coq-logic-path=SimpleC.EE.CAV.{workspace}",
+        "-IQCP_examples/stdlib/",
+        "-slp", "QCP_examples/stdlib/", "SimpleC.StdLib",
+        "-IQCP_examples/QCP_demos_LLM/",
         "-slp", "QCP_examples/QCP_demos_LLM/", "SimpleC.EE.QCP_demos_LLM",
         f"--input-file={qcp_c_rel}",
         "--no-exec-info",
@@ -1008,11 +1013,14 @@ def run_symexec(
         f"--proof-auto-file={generated_dir / f'{function_name}_proof_auto.v'}",
         f"--proof-manual-file={generated_dir / f'{function_name}_proof_manual.v'}",
         f"--coq-logic-path={logic_path}",
+        f"-I{REPO_ROOT / 'QualifiedCProgramming' / 'QCP_examples' / 'stdlib'}/",
+        "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "stdlib") + "/", "SimpleC.StdLib",
         # Strategy lib path = canonical QCP_demos_LLM strategies, qualified to
         # SimpleC.EE.QCP_demos_LLM so generated goal.v emits prefixed requires
         # (`From SimpleC.EE.QCP_demos_LLM Require Import int_array_strategy_goal`),
         # which resolve uniquely even with duplicate demo dirs on the load-path.
         # humaneval cases reuse the generic, pre-built int/char-array strategies.
+        f"-I{REPO_ROOT / 'QualifiedCProgramming' / 'QCP_examples' / 'QCP_demos_LLM'}/",
         "-slp", str(REPO_ROOT / "QualifiedCProgramming" / "QCP_examples" / "QCP_demos_LLM") + "/", "SimpleC.EE.QCP_demos_LLM",
         f"--input-file={annotated_c_path}",
         "--no-exec-info",
@@ -1320,6 +1328,9 @@ def compile_generated_via_qcp_mirror(
             f"--proof-auto-file=SeparationLogic/examples/CAV/{workspace_name}/{function_name}_proof_auto.v",
             f"--proof-manual-file=SeparationLogic/examples/CAV/{workspace_name}/{function_name}_proof_manual.v",
             f"--coq-logic-path={logic_path}",
+            "-IQCP_examples/stdlib/",
+            "-slp", "QCP_examples/stdlib/", "SimpleC.StdLib",
+            "-IQCP_examples/QCP_demos_LLM/",
             "-slp", "QCP_examples/QCP_demos_LLM/", "SimpleC.EE.QCP_demos_LLM",
             f"--input-file=QCP_examples/CAV/{workspace_name}/{qcp_annotated.name}",
             "--no-exec-info",
