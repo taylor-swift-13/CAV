@@ -24,7 +24,7 @@
 
 普通的 `proof_manual.v` 仍有未完成手工义务、`coqc` 报错、tactic 暂时失败，都不是 proof-only 退出理由。只要能继续编辑 `proof_manual.v` 或添加允许范围内的 local helper，就必须继续证明并重新编译。
 
-proof-only 模式也必须遵守 `../skills/verify/SKILL.md` 的相关示例检索规则。应先读取同型 QCP C/annotation 示例和对应证明示例，再补全 `proof_manual.v` 并运行 `coqc`。当具体 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败暴露后，必须围绕该失败点到 `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` 和 `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` 检索并读取相似例子；CAV 历史 workspace 只能作为补充。未基于具体失败点完成相似 proof 的检索与迁移，不得写 `Final Result: Fail`。
+proof-only 模式也必须遵守 `../skills/verify/SKILL.md` 的相关示例检索规则。应先读取同型 QCP C/annotation 示例和对应证明示例，再补全 `proof_manual.v` 并运行 `coqc`。当具体 proof theorem、`Cannot find witness`、rewrite/unification 或 tactic 失败暴露后，必须围绕该失败点到 `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM,stdlib}/`、`SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` 和 `SeparationLogic/stdlib/` 检索并读取相似例子；CAV 历史 workspace 只能作为补充。未基于具体失败点完成相似 proof 的检索与迁移，不得写 `Final Result: Fail`。
 
 ## 工作流仍按主 SKILL
 

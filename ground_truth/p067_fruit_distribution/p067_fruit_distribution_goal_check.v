@@ -1,7 +1,0 @@
-From SimpleC.EE.CAV.ground_truth_p067_fruit_distribution Require Import p067_fruit_distribution_goal p067_fruit_distribution_proof_auto p067_fruit_distribution_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include char_array_strategy_proof.
-  Include p067_fruit_distribution_proof_auto.
-  Include p067_fruit_distribution_proof_manual.
-End VC_Correctness.

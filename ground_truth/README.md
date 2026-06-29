@@ -1,44 +1,65 @@
-# Humaneval Ground Truth 标准
+# DLC Humaneval Ground Truth 标准
 
 `ground_truth/<problem>` 是最终可验证证明库，不是中间导入缓存。每个 case 入库前必须在新版 QCP 下完整编译通过。
 
 ## 来源
 
-- 题目全集以 `/home/yangfp/CAV/C/CAV/input/humaneval` 为准，共 102 题。
-- C 函数签名、函数 contract、`Require`/`Ensure` 的 spec 以 `input/humaneval/<problem>.c` 为准。
-- Coq spec 辅助文件优先使用 `input/humaneval/<problem>.v`。
-- 证明优先从 `/home/yangfp/QualifiedCProgramming/QCP_examples/humaneval` 的完整证明迁移。
+- DLC 只保留主分支 `/home/yangfp/CAV/C/CAV/ground_truth` 中没有的 case。
+- 当前 DLC 数据来自 `/home/yangfp/QualifiedCProgramming/QCP_examples/humaneval/multi_dimensional_arrays` 中已证明通过的 11 个多维数组 case。
+- C 输入、annotation、ground truth、QCP workspace 必须只覆盖这 11 个 case；102 题旧数据不能保留。
+- DLC 的 QCP 子模块使用原版 `/home/yangfp/CAV/DLC/CAV/QualifiedCProgramming`，remote 为 `QinxiangCao/QualifiedCProgramming`。不要把子模块切到 `lixing-hust/QualifiedCProgramming`。
+- 可以从 `/home/yangfp/QualifiedCProgramming/QCP_examples/humaneval/multi_dimensional_arrays` 迁移证明代码，但不能把 lixing 版 QCP 库改动迁移到 DLC 子模块库文件。
+- `input/humaneval` 是模型输入，只保留题目 contract、`Extern Coq` 和 `Import Coq` 等必要接口；循环 invariant、内部 `Assert`、库调用处的 `where` hint 应由模型填写，不能预先放在 input 中。
+- `annotated_input/humaneval` 和 `ground_truth/<problem>` 保留已验证 annotation。
 
 ## 迁移规则
 
-- 先复制 `input/humaneval` 中对应题目的 C 输入，再补 annotation。
-- annotation 可以参考旧 QCP humaneval case，但不能改变 input 的函数签名和函数 contract。
-- 如果旧 QCP proof 的 contract 与 input 不一致，以 input 为准改写 proof。
-- 只有 contract 不同、函数名/变量名不同、annotation 形状不同，或新版 QCP API 不兼容时，才修改旧证明。
-- 旧证明中的 helper lemma 要尽量复用；例如 `coins_N.v` 中真正用于证明的定义和 lemma 可以迁移成 case 根目录下的 `<problem>.v`。
-- 旧 QCP `deps/` 不作为 ground truth 内容保留，除非确实是该题必要且已验证的本地 support 文件。
+- 每个问题目录使用真实题名，例如 `p087_get_row`，不要保留 `coins_N` 文件名。
+- 旧证明中的 helper lemma 要尽量复用；例如 `coins_N.v` 中真正用于证明的定义和 lemma 迁移成 case 根目录下的 `<problem>.v`。
+- 不在原版 QCP `string_lib.v` 等库文件里的定义，必须放到问题私有 `<problem>.v` 中，例如 p007 的 `substring_at` / `strstr_result`。
+- 旧 QCP `deps/` 不作为 ground truth 内容保留；QCP workspace 中的 `deps/<problem>.v` 只是编译 staging。
 - 新版 QCP 生成的 assertion 使用引号形式，旧 `[| ... |]` 不能直接入库。
 - `proof_auto.v` 是 symexec 生成的占位证明文件，可以保留生成的 `Admitted`，不要手写 auto 证明。
 - 人工迁移和修改的目标是 `proof_manual.v` 以及必要的 support `.v`；`proof_manual.v` 不允许出现 `Admitted`、`admit`、`Abort` 或自造 `Axiom`。
 
 ## 验收
 
-每个 case 必须用新版 QCP 重新跑 symexec 并编译：
+每个 case 必须在 DLC 子模块的原版 QCP 下编译对应 workspace：
 
 ```bash
-python3 scripts/verify_ground_truth_humaneval.py --problem <problem> --timeout 180 --keep-workspace
+cd /home/yangfp/CAV/DLC/CAV/QualifiedCProgramming/SeparationLogic
+coqc \
+  -Q examples/CAV/<workspace>/deps "" \
+  -R SeparationLogic SimpleC.SL \
+  -R unifysl Logic \
+  -R sets SetsClass \
+  -R compcert_lib compcert.lib \
+  -R auxlibs AUXLib \
+  -R examples SimpleC.EE \
+  -R stdlib SimpleC.StdLib \
+  -R StrategyLib SimpleC.StrategyLib \
+  -R Common SimpleC.Common \
+  -R fixedpoints FP \
+  -R MonadLib MonadLib \
+  -R listlib ListLib \
+  examples/CAV/<workspace>/<file>.v
 ```
 
-只有输出 `Success stage=verified` 才算通过。只迁移文件、只跑旧 QCP、或只通过 `run_verify` 的 proof-only fast path 都不算 ground truth 通过。
-验证脚本始终使用 fresh symexec 生成的 `proof_auto.v`，只用 ground truth 中的 `proof_manual.v` 覆盖 generated manual proof。
+每个 workspace 需要依次编译：
 
-批量完成时运行：
+- `deps/<problem>.v`
+- `<problem>_goal.v`
+- `<problem>_proof_auto.v`
+- `<problem>_proof_manual.v`
+- `<problem>_goal_check.v`
 
-```bash
-python3 scripts/verify_ground_truth_humaneval.py --timeout 180
+编译结果必须放在对应问题目录内：
+
+```text
+ground_truth/<problem>/verify_ground_truth.log
 ```
 
-要求 102 题全部 `Success`。
+每个 log 必须包含 5 个 `[OK]`，且不能包含 `[FAIL]` 或 `Error:`。不要只在 `ground_truth/` 根目录放总 log。
 
 ## 目录内容
 
@@ -53,3 +74,17 @@ python3 scripts/verify_ground_truth_humaneval.py --timeout 180
 - `verify_ground_truth.log`
 
 不保留 `manifest.json`，也不把冗余旧 QCP workspace/deps 作为完成标准。
+
+## 当前 Case
+
+- `p007_filter_by_substring`
+- `p012_longest`
+- `p014_all_prefixes`
+- `p028_concatenate`
+- `p029_filter_by_prefix`
+- `p074_total_match`
+- `p087_get_row`
+- `p095_check_dict_case`
+- `p115_max_fill`
+- `p129_minPath`
+- `p158_find_max`

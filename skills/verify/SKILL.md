@@ -39,8 +39,8 @@ Verify 在 QCP C 程序上完成 annotation + proof + compile，不修改 functi
 Runner prompt 提供当前 case 的 QCP mirror 路径、QCP final-check 摘要和 CAV 边界。本 skill 和当前 runner prompt 是 CAV 侧规则来源。
 
 - 进入 annotation/proof 修改前，必须按本 skill 检索并读取具体相关示例：
-  - C/annotation 示例来自 `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/`；
-  - 对应证明来自 `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/`；
+  - C/annotation 示例来自 `QCP_examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM,stdlib}/`；
+  - 对应证明来自 `SeparationLogic/examples/{Applications_human,LLM_bench,QCP_demos_human,QCP_demos_LLM}/` 和 `SeparationLogic/stdlib/`；
   - 相关教程来自 `tutorial/`；
   - CAV 历史同型 workspace 只能作为补充参考，不能替代上述官方示例源。
 - QCP skill 文档路径只作为可选参考，不要求启动时读取；annotation 语法、symexec 报错、proof tactic、final-check 细节不确定时，只读取一个最相关的小文件或章节：
@@ -95,6 +95,9 @@ linux-binary/symexec \
   --proof-auto-file=SeparationLogic/examples/CAV/<workspace>/<name>_proof_auto.v \
   --proof-manual-file=SeparationLogic/examples/CAV/<workspace>/<name>_proof_manual.v \
   --coq-logic-path=SimpleC.EE.CAV.<workspace> \
+  -IQCP_examples/stdlib/ \
+  -slp QCP_examples/stdlib/ SimpleC.StdLib \
+  -IQCP_examples/QCP_demos_LLM/ \
   -slp QCP_examples/QCP_demos_LLM/ SimpleC.EE.QCP_demos_LLM \
   --input-file=QCP_examples/CAV/<workspace>/<annotated>.c \
   --no-exec-info
@@ -111,11 +114,18 @@ cd SeparationLogic && coqc \
   -R compcert_lib compcert.lib \
   -R auxlibs AUXLib \
   -R examples SimpleC.EE \
+  -R stdlib SimpleC.StdLib \
   -R StrategyLib SimpleC.StrategyLib \
   -R Common SimpleC.Common \
   -R fixedpoints FP \
   -R MonadLib MonadLib \
   -R listlib ListLib \
+  -R MaxMinLib MaxMinLib \
+  -R GraphLib GraphLib \
+  -R SumLib SumLib \
+  -R tracelib TraceLib \
+  -R coq-record-update/src RecordUpdate \
+  -Q algorithms Algorithms \
   examples/CAV/<workspace>/deps/<dep>.v
 
 cd SeparationLogic && coqc <same load-path args> examples/CAV/<workspace>/<name>_goal.v
