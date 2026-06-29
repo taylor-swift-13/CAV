@@ -9,6 +9,7 @@ annotated/
 __pycache__/
 mid/
 config/ark_api/ark.config.toml
+config/ark_api/profiles.json
 *.vo
 *.vok
 *.vos

@@ -1,124 +1,201 @@
-# Verify Agent Result Batch
+# Batch-Safe Run Scripts
 
-This run compares Codex `gpt-5.4 high` and Kimi on relatively simple
-HumanEval verify tasks.
+当前批量入口只有三个：
 
-`scripts/verify_agent_copy_results.sh` runs one verify agent/model config, copies
-finished workspaces into `results/<agent>/<model>/<effort>/`, then removes the
-matching `output/`, `annotated/`, and QCP mirror workspaces. Existing matching
-results are skipped unless `--force` is passed.
+- `scripts/batch_safe_verify.sh`
+- `scripts/batch_safe_proof.sh`
+- `scripts/batch_safe_pipeline.sh`
 
-## Selection Rule
+三个脚本都按问题串行运行。`--jobs` 可以传，但实际按 `1` 处理。
 
-For every model/config, select new problems by comparing only against that
-same model/config's own result directory. Do not exclude a problem merely
-because another model or agent has already run it.
+## 通用参数
 
-Examples:
-
-- Codex `gpt-5.4 high` must not repeat problems already present under
-  `results/codex/gpt-5.4/high`.
-- Kimi `kimi-code/kimi-for-coding` with `thinking` must not repeat problems
-  already present under
-  `results/kimicode/kimi-code__kimi-for-coding/thinking`.
-
-This rule applies to every model/config: use that config's own
-`results/<agent>/<model>/<effort>/` directory as its deduplication set. Two
-different configs may run the same problem unless a run explicitly says
-otherwise.
-
-Within the remaining candidates, prefer smaller
-`input/humaneval/<name>.c` plus `input/humaneval/<name>.v` total file size as
-the simple-task heuristic.
-
-## Historical Selected Problems
-
-The original comparison list below was chosen from problems missing in both:
-
-- `results/codex/gpt-5.4/high`
-- `results/kimicode/kimi-code__kimi-for-coding/thinking`
-
-The heuristic was smaller `input/humaneval/<name>.c` plus `<name>.v` size.
+常用环境变量：
 
 ```bash
-PROBLEMS=(
-  p150_x_or_y
-  p052_below_threshold
-  p055_fib
-  p076_is_simple_power
-  p135_can_arrange
-  p082_prime_length
-  p085_add
-  p048_is_palindrome
-  p131_digits
-  p100_make_a_pile
-)
-
-REVERSED_PROBLEMS=(
-  p100_make_a_pile
-  p131_digits
-  p048_is_palindrome
-  p085_add
-  p082_prime_length
-  p135_can_arrange
-  p076_is_simple_power
-  p055_fib
-  p052_below_threshold
-  p150_x_or_y
-)
+MAX_PROBLEMS=10
+FAST_FAIL_SECONDS=120
+MAX_FAST_RETRIES=0
+QUOTA_SLEEP_SECONDS=18000
 ```
 
-## Run Commands
+含义：
 
-Use `tmux` so the runs survive shell/session exits.
+- `MAX_PROBLEMS`: 本次最多启动多少个新问题。
+- `FAST_FAIL_SECONDS`: 在这个秒数内失败，按 quota/network 快失败处理。
+- `MAX_FAST_RETRIES`: 快失败后最多重试几次。
+- `QUOTA_SLEEP_SECONDS`: 快失败重试前等待多久。
+- `--force`: 忽略已有结果，强制重新跑。
 
-Codex uses two workers and the normal order:
+推荐 quota 敏感运行：
 
 ```bash
-tmux new-session -d -s verify_codex_54_high_10 \
-  "cd /home/yangfp/CAV/C/CAV && ./scripts/verify_agent_copy_results.sh --jobs 2 codex-54-high p150_x_or_y p052_below_threshold p055_fib p076_is_simple_power p135_can_arrange p082_prime_length p085_add p048_is_palindrome p131_digits p100_make_a_pile"
+FAST_FAIL_SECONDS=120 MAX_FAST_RETRIES=0
 ```
 
-Kimi uses one worker and the reverse order:
+建议用 `tmux`：
 
 ```bash
-tmux new-session -d -s verify_kimi_thinking_10 \
-  "cd /home/yangfp/CAV/C/CAV && ./scripts/verify_agent_copy_results.sh --jobs 1 kimi-thinking p100_make_a_pile p131_digits p048_is_palindrome p085_add p082_prime_length p135_can_arrange p076_is_simple_power p055_fib p052_below_threshold p150_x_or_y"
+tmux new-session -d -s verify54 \
+  "FAST_FAIL_SECONDS=120 MAX_FAST_RETRIES=0 scripts/batch_safe_verify.sh codex-54-medium"
 ```
 
-## Current Run
-
-Started in tmux at `2026-06-13 06:49:31 +0800`.
-
-Sessions:
+停止标记：
 
 ```bash
-tmux ls
-tmux attach -t verify_codex_54_high_10
-tmux attach -t verify_kimi_thinking_10
+touch output/stop_<config>.flag
+touch output/stop_proof_<config>.flag
+touch output/stop_pipeline_<config>.flag
+touch output/stop_all_batch_safe.flag
 ```
 
-Current expected first tasks:
+## Verify
 
-- Codex: `p150_x_or_y`, `p052_below_threshold`
-- Kimi: `p100_make_a_pile`
-
-Logs:
+命令：
 
 ```bash
-tail -f output/verify_batch_codex_54_high.out
-tail -f output/verify_batch_kimi_thinking.out
+scripts/batch_safe_verify.sh [options] <config> [problem_name ...]
 ```
 
-Check active processes:
+输入：
+
+- `input/<dataset>/<name>.c`
+- `input/<dataset>/<name>.v` 如果存在
+
+结果目录：
+
+- `results/<agent>/<model>/<effort>/verify_*_<name>`
+
+示例：
 
 ```bash
-ps -ef | rg 'verify_agent_copy_results|run_verify.py|agent_loop.py'
+scripts/batch_safe_verify.sh codex-54-medium p087_get_row
+scripts/batch_safe_verify.sh codex-55-xhigh
+scripts/batch_safe_verify.sh kimi-thinking p014_all_prefixes
+scripts/batch_safe_verify.sh ark-1-glm p029_filter_by_prefix
 ```
 
-Stop the runs if needed:
+常用参数：
 
 ```bash
-tmux kill-session -t verify_codex_54_high_10
-tmux kill-session -t verify_kimi_thinking_10
+DATASET=humaneval
+RESULTS_ROOT=/path/to/results
+TIMEOUT=5400
+```
+
+## Proof
+
+命令：
+
+```bash
+scripts/batch_safe_proof.sh [options] <config> [problem_name ...]
+```
+
+输入：
+
+- `annotated_input/<dataset>/<name>.c`
+- `annotated_input/<dataset>/<name>.v` 如果存在
+
+结果目录：
+
+- `proof_results/<agent>/<model>/<effort>/proof_*_<name>`
+
+示例：
+
+```bash
+scripts/batch_safe_proof.sh codex-54-medium p087_get_row
+scripts/batch_safe_proof.sh codex-55-medium
+scripts/batch_safe_proof.sh kimi-thinking p014_all_prefixes
+```
+
+常用参数：
+
+```bash
+DATASET=humaneval
+ANNOTATED_ROOT=/path/to/annotated_input
+RESULTS_ROOT=/path/to/proof_results
+TIMEOUT=5400
+```
+
+## Pipeline
+
+命令：
+
+```bash
+scripts/batch_safe_pipeline.sh [options] [config|all] [problem_name ...]
+```
+
+输入：
+
+- `raw/<dataset>/<name>.md`
+
+结果目录：
+
+- `pipeline_results/<agent>/<model>/<effort>/pipeline_*_<name>`
+- `pipeline_results/<agent>/<model>/<effort>/contract_*_<name>`
+- `pipeline_results/<agent>/<model>/<effort>/eval_*_<name>`
+- `pipeline_results/<agent>/<model>/<effort>/verify_*_<name>`
+
+流程：
+
+```text
+contract -> eval -> verify
+```
+
+示例：
+
+```bash
+scripts/batch_safe_pipeline.sh codex-54-medium p014_all_prefixes
+scripts/batch_safe_pipeline.sh --dataset mbpp codex-54-mini-medium mbpp_511_find_Min_Sum
+scripts/batch_safe_pipeline.sh --skip-eval codex-54-medium p012_longest
+```
+
+常用参数：
+
+```bash
+DATASET=humaneval
+PIPELINE_RESULTS_ROOT=/path/to/pipeline_results
+CONTRACT_TIMEOUT=1800
+EVAL_TIMEOUT=900
+VERIFY_TIMEOUT=3600
+```
+
+## DLC Scheduler
+
+DLC 自动调度入口：
+
+```bash
+scripts/cav_auto_scheduler.sh
+```
+
+调度器会直接启动：
+
+- `scripts/batch_safe_verify.sh`
+- `scripts/batch_safe_proof.sh`
+- `scripts/batch_safe_pipeline.sh`
+
+日志写到：
+
+```bash
+output/batch_safe_*_auto_<timestamp>.out
+```
+
+## 清理
+
+清理 `output/` 和 CAV mirror 的规则与本次结果见 [clean.md](clean.md)。
+
+## 检查
+
+查看正在跑的批量/runner 进程：
+
+```bash
+ps -eo pid=,ppid=,stat=,etime=,args= | rg 'batch_safe_|run_verify.py|run_proof.py|run_pipeline.py|run_contract.py'
+```
+
+统计结果：
+
+```bash
+find results/codex/gpt-5.4/medium -maxdepth 1 -type d -name 'verify_*' | wc -l
+find proof_results/codex/gpt-5.4/medium -maxdepth 1 -type d -name 'proof_*' | wc -l
+find pipeline_results/codex/gpt-5.4/medium -maxdepth 1 -type d -name 'pipeline_*' | wc -l
 ```

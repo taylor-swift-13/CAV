@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Run one verify agent/model configuration for one or more problems.
-# Finished output workspaces are copied to results/<agent>/<model>/<effort>/,
-# then the corresponding output/QCP/annotated workspaces are removed.
+# Run verify jobs one problem at a time, copy completed workspaces to results,
+# and stop/retry conservatively on likely quota exhaustion.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -16,14 +15,20 @@ CLAUDE_JOBS="${CLAUDE_JOBS:-$JOBS}"
 KIMI_JOBS="${KIMI_JOBS:-$JOBS}"
 FOREGROUND="${FOREGROUND:-1}"
 FORCE=0
+MODEL_OVERRIDE="${MODEL_OVERRIDE:-${ARK_MODEL:-${MODEL:-}}}"
+ARK_PROFILE_CONFIG="${ARK_PROFILE_CONFIG:-$ROOT/config/ark_api/profiles.json}"
+ARK_PROFILE_SELECTED="${ARK_PROFILE:-}"
+FAST_FAIL_SECONDS="${FAST_FAIL_SECONDS:-120}"
+QUOTA_SLEEP_SECONDS="${QUOTA_SLEEP_SECONDS:-18000}"
+MAX_FAST_RETRIES="${MAX_FAST_RETRIES:-1}"
+MAX_PROBLEMS="${MAX_PROBLEMS:-10}"
 
 usage() {
   cat <<'EOF'
-usage: scripts/verify_agent_copy_results.sh [options] <config> [problem_name ...]
+usage: scripts/batch_safe_verify.sh [options] <config> [problem_name ...]
 
-Runs exactly one verify agent/model configuration. Multiple problem names run
-concurrently according to that config's jobs value. If no problem names are
-provided, all input/<dataset>/*.c problems are considered.
+Runs exactly one verify agent/model configuration, one problem at a time. If no
+problem names are provided, all input/<dataset>/*.c problems are considered.
 
 Results are saved under:
   results/<agent>/<model>/<effort>/
@@ -31,14 +36,25 @@ Results are saved under:
 After a workspace is copied to results, the matching output/, annotated/, and
 QCP mirror directories are removed.
 
+Fast failing runs retry up to MAX_FAST_RETRIES after QUOTA_SLEEP_SECONDS. Each
+invocation starts at most MAX_PROBLEMS new problems.
+
 Configs:
-  claude-ark-api
+  ark-1-deepseek
+  ark-1-glm
+  ark-2-deepseek
+  ark-2-glm
+  ark-3-deepseek
+  ark-3-glm
+  ark-4-deepseek
+  ark-4-glm
   codex-ark-api       (disabled: third-party APIs must use Claude Code)
   codex-54-high
   codex-54-medium
   codex-54-low
   codex-54-mini-medium
   codex-55-medium
+  codex-55-xhigh
   claude-haiku-medium
   claude-opus-medium
   claude-sonnet-high
@@ -47,7 +63,11 @@ Configs:
   kimi-thinking
 
 Aliases:
-  ark     -> claude-ark-api
+  ark, ark-api -> ark-1-deepseek
+  deepseek-v4-pro -> ark-2-deepseek
+  glm-5.2 -> ark-2-glm
+  key4-deepseek -> ark-4-deepseek
+  key4-glm -> ark-4-glm
   high    -> codex-54-high
   medium  -> codex-54-medium
   low     -> codex-54-low
@@ -56,8 +76,9 @@ Aliases:
 
 Options:
   --dataset NAME       Read input/<dataset>/*.c. Default: humaneval.
-  --jobs N, -j N       Override concurrency for this run.
+  --jobs N, -j N       Accepted for compatibility; batch-safe runs use jobs=1.
   --timeout N          Per-problem verify timeout in seconds. Default: 5400.
+  --model MODEL        Optional model override for Ark profiles.
   --results-root DIR   Archive root. Default: ./results.
   --background         Start the batch in background.
   --foreground         Run in foreground. Default.
@@ -65,8 +86,8 @@ Options:
   -h, --help           Show this help.
 
 Examples:
-  scripts/verify_agent_copy_results.sh codex-54-high p127_intersection
-  scripts/verify_agent_copy_results.sh --jobs 3 codex-54-high p001_separate_paren_groups p002_truncate_number
+  scripts/batch_safe_verify.sh codex-54-high p127_intersection
+  scripts/batch_safe_verify.sh codex-55-medium
 EOF
 }
 
@@ -83,28 +104,40 @@ result_dir_for() {
 }
 
 build_run_configs() {
-  local ark_agent_config="$ROOT/config/ark_api/agents_ark.json"
-  local claude_ark_agent_config="$ROOT/config/ark_api/agents_ark_claude.json"
+  local ark_model="${MODEL_OVERRIDE:-}"
+  local ark_label="${ARK_PROFILE_SELECTED:-ark-profile}"
+  if [[ -n "$ARK_PROFILE_SELECTED" && -z "$ark_model" ]]; then
+    ark_model="$(python3 "$ROOT/scripts/ark_profile_env.py" --config "$ARK_PROFILE_CONFIG" --field model "$ARK_PROFILE_SELECTED")"
+  fi
   RUN_CONFIGS=(
     "claude-haiku-medium|claude|haiku|medium|$(result_dir_for "$RESULTS_ROOT" claude haiku medium)|output/verify_batch_claude_haiku_medium.out|$CLAUDE_JOBS|"
     "claude-opus-medium|claude|opus|medium|$(result_dir_for "$RESULTS_ROOT" claude opus medium)|output/verify_batch_claude_opus_medium.out|$CLAUDE_JOBS|"
     "claude-sonnet-high|claude|sonnet|high|$(result_dir_for "$RESULTS_ROOT" claude sonnet high)|output/verify_batch_claude_sonnet_high.out|$CLAUDE_JOBS|"
     "claude-sonnet-low|claude|sonnet|low|$(result_dir_for "$RESULTS_ROOT" claude sonnet low)|output/verify_batch_claude_sonnet_low.out|$CLAUDE_JOBS|"
     "claude-sonnet-medium|claude|sonnet|medium|$(result_dir_for "$RESULTS_ROOT" claude sonnet medium)|output/verify_batch_claude_sonnet_medium.out|$CLAUDE_JOBS|"
-    "claude-ark-api|claude|ark-code-latest|api|$(result_dir_for "$RESULTS_ROOT" claude ark-code-latest api)|output/verify_batch_claude_ark_api.out|$CLAUDE_JOBS|$claude_ark_agent_config"
-    "codex-ark-api|codex|ark-code-latest|api|$(result_dir_for "$RESULTS_ROOT" codex ark-code-latest api)|output/verify_batch_codex_ark_api.out|$CODEX_JOBS|$ark_agent_config"
+    "$ark_label|claude|$ark_model|api|$(result_dir_for "$RESULTS_ROOT" claude "$ark_model" api)|output/verify_batch_${ark_label}.out|$CLAUDE_JOBS|"
     "codex-54-mini-medium|codex|gpt-5.4-mini|medium|$(result_dir_for "$RESULTS_ROOT" codex gpt-5.4-mini medium)|output/verify_batch_codex_54_mini_medium.out|$CODEX_JOBS|"
     "codex-54-high|codex|gpt-5.4|high|$(result_dir_for "$RESULTS_ROOT" codex gpt-5.4 high)|output/verify_batch_codex_54_high.out|$CODEX_JOBS|"
     "codex-54-low|codex|gpt-5.4|low|$(result_dir_for "$RESULTS_ROOT" codex gpt-5.4 low)|output/verify_batch_codex_54_low.out|$CODEX_JOBS|"
     "codex-54-medium|codex|gpt-5.4|medium|$(result_dir_for "$RESULTS_ROOT" codex gpt-5.4 medium)|output/verify_batch_codex_54_medium.out|$CODEX_JOBS|"
     "codex-55-medium|codex|gpt-5.5|medium|$(result_dir_for "$RESULTS_ROOT" codex gpt-5.5 medium)|output/verify_batch_codex_55_medium.out|$CODEX_JOBS|"
+    "codex-55-xhigh|codex|gpt-5.5|xhigh|$(result_dir_for "$RESULTS_ROOT" codex gpt-5.5 xhigh)|output/verify_batch_codex_55_xhigh.out|$CODEX_JOBS|"
     "kimi-thinking|kimicode|kimi-code/kimi-for-coding|thinking|$(result_dir_for "$RESULTS_ROOT" kimicode kimi-code/kimi-for-coding thinking)|output/verify_batch_kimi_thinking.out|$KIMI_JOBS|"
   )
 }
 
 canonical_config() {
   case "$1" in
-    ark|ark-api) printf '%s\n' "claude-ark-api" ;;
+    ark|ark-api|old-ark|claude-ark-api) printf '%s\n' "ark-1-deepseek" ;;
+    claude-ark-old-api|old-deepseek|deepseek-old|ark-old-deepseek|claude-ark-old-deepseek-api|ark-1-deepseek) printf '%s\n' "ark-1-deepseek" ;;
+    old-glm|glm-old|ark-old-glm|ark-1-glm) printf '%s\n' "ark-1-glm" ;;
+    new-ark|ark-new|claude-ark-new-api|ark-new-deepseek|ark-2-deepseek) printf '%s\n' "ark-2-deepseek" ;;
+    ark-deepseek|deepseek-ark|deepseek-v4-pro|claude-ark-deepseek-plan-api) printf '%s\n' "ark-2-deepseek" ;;
+    ark-glm|glm-ark|glm-5.2|claude-ark-glm-5-2-plan-api|ark-new-glm|ark-2-glm) printf '%s\n' "ark-2-glm" ;;
+    key3-deepseek|third-deepseek|ark-third-deepseek|ark-3-deepseek) printf '%s\n' "ark-3-deepseek" ;;
+    key3-glm|third-glm|ark-third-glm|ark-3-glm) printf '%s\n' "ark-3-glm" ;;
+    key4-deepseek|fourth-deepseek|ark-fourth-deepseek|ark-4-deepseek) printf '%s\n' "ark-4-deepseek" ;;
+    key4-glm|fourth-glm|ark-fourth-glm|ark-4-glm) printf '%s\n' "ark-4-glm" ;;
     codex-ark|codex-ark-api)
       echo "third-party API runs via Codex are disabled; add/use a Claude Code config instead" >&2
       exit 2
@@ -276,7 +309,7 @@ start_batch() {
     problem_lock_root="$lock_dir/problems"
     mkdir -p "$problem_lock_root"
 
-    export ROOT DATASET TIMEOUT
+    export ROOT DATASET TIMEOUT ARK_PROFILE_SELECTED ARK_PROFILE_CONFIG
     export agent model effort result_dir label problem_lock_root agent_config
     export -f cleanup_workspace_after_result_copy
     export -f copy_workspace_to_result_dir
@@ -316,11 +349,19 @@ start_batch() {
       if [[ -n "${agent_config:-}" ]]; then
         export CAV_AGENT_CONFIG="$agent_config"
       fi
+      extra_agent_args=()
+      if [[ -n "${ARK_PROFILE_SELECTED:-}" ]]; then
+        export ARK_PROFILE="$ARK_PROFILE_SELECTED"
+        export ARK_PROFILE_CONFIG="$ARK_PROFILE_CONFIG"
+        export ARK_MODEL="$model"
+        extra_agent_args+=(--claude-bin "$ROOT/scripts/claude_ark_wrapper.sh")
+      fi
       python3 scripts/run_verify.py "$c" \
         --function-name "$name" --workspace-name "$name" \
         --timestamp "$ts" \
         --agent "$agent" --model "$model" --reasoning-effort "$effort" \
         --timeout-seconds "$TIMEOUT" \
+        "${extra_agent_args[@]}" \
         >> "$problem_log" 2>&1
       rc=$?
 
@@ -373,6 +414,194 @@ start_batch() {
   echo "[$label] pid=$! log=$log_file final_log=$result_dir/$(basename "$log_file")"
 }
 
+latest_metrics_for_problem() {
+  local result_dir="$1"
+  local name="$2"
+  local latest
+  latest="$(find "$result_dir" -maxdepth 1 -type d -name "verify_*_${name}" -printf '%T@ %p\n' 2>/dev/null \
+    | sort -nr \
+    | awk 'NR == 1 { $1=""; sub(/^ /, ""); print }')"
+  [[ -n "$latest" && -f "$latest/logs/metrics.md" ]] || return 1
+  printf '%s\n' "$latest/logs/metrics.md"
+}
+
+delete_result_for_metrics() {
+  local metrics="$1"
+  local result_dir="$2"
+  local workspace
+  workspace="$(cd "$(dirname "$metrics")/.." && pwd)"
+  case "$workspace" in
+    "$result_dir"/verify_*)
+      echo "[$(date '+%F %T %z')] DELETE_FAST_FAIL_WORKSPACE $workspace"
+      rm -rf "$workspace"
+      ;;
+    *)
+      echo "refusing to delete unexpected workspace path: $workspace" >&2
+      return 1
+      ;;
+  esac
+}
+
+CLAIMED_PROBLEM=""
+CLAIMED_RESULT_DIR=""
+
+claim_problem() {
+  local result_dir="$1"
+  local name="$2"
+  local claim_root="$result_dir/.inflight"
+  local claim_dir="$claim_root/$name.lock"
+  local claim_pid
+
+  mkdir -p "$claim_root"
+  if mkdir "$claim_dir" 2>/dev/null; then
+    printf '%s\n' "$$" > "$claim_dir/pid"
+    CLAIMED_PROBLEM="$name"
+    CLAIMED_RESULT_DIR="$result_dir"
+    return 0
+  fi
+
+  claim_pid="$(cat "$claim_dir/pid" 2>/dev/null || true)"
+  if [[ -n "$claim_pid" ]] && kill -0 "$claim_pid" 2>/dev/null; then
+    return 1
+  fi
+
+  rm -rf "$claim_dir"
+  if mkdir "$claim_dir" 2>/dev/null; then
+    printf '%s\n' "$$" > "$claim_dir/pid"
+    CLAIMED_PROBLEM="$name"
+    CLAIMED_RESULT_DIR="$result_dir"
+    return 0
+  fi
+  return 1
+}
+
+release_problem() {
+  local result_dir="$1"
+  local name="$2"
+  local claim_dir="$result_dir/.inflight/$name.lock"
+  local claim_pid
+
+  claim_pid="$(cat "$claim_dir/pid" 2>/dev/null || true)"
+  if [[ "$claim_pid" == "$$" ]]; then
+    rm -rf "$claim_dir"
+  fi
+  if [[ "$CLAIMED_PROBLEM" == "$name" && "$CLAIMED_RESULT_DIR" == "$result_dir" ]]; then
+    CLAIMED_PROBLEM=""
+    CLAIMED_RESULT_DIR=""
+  fi
+}
+
+release_claim_on_exit() {
+  if [[ -n "$CLAIMED_PROBLEM" && -n "$CLAIMED_RESULT_DIR" ]]; then
+    release_problem "$CLAIMED_RESULT_DIR" "$CLAIMED_PROBLEM"
+  fi
+}
+
+single_job_config() {
+  local config="$1"
+  local label agent model effort result_dir log_file jobs agent_config
+  IFS='|' read -r label agent model effort result_dir log_file jobs agent_config <<< "$config"
+  printf '%s|%s|%s|%s|%s|%s|1|%s\n' "$label" "$agent" "$model" "$effort" "$result_dir" "$log_file" "$agent_config"
+}
+
+run_one_problem_safe() {
+  local config="$1"
+  local result_dir="$2"
+  local label="$3"
+  local name="$4"
+  local attempt="$5"
+  local start end elapsed rc metrics status wall safe_label
+
+  start="$(date +%s)"
+  safe_label="${label//[^A-Za-z0-9_]/_}"
+  echo "[$(date '+%F %T %z')] START config=$label problem=$name attempt=$attempt"
+  set +e
+  BATCH_LOG_SUFFIX="batch_safe_${safe_label}_${name}_$(date +%Y%m%d_%H%M%S)" \
+    start_batch "$config" "$name"
+  rc=$?
+  set -e
+  end="$(date +%s)"
+  elapsed=$((end - start))
+
+  status="unknown"
+  wall="$elapsed"
+  metrics=""
+  if metrics="$(latest_metrics_for_problem "$result_dir" "$name")"; then
+    status="$(metric_value "$metrics" "Status")"
+    wall="$(metric_value "$metrics" "Wall-clock time (seconds)")"
+  fi
+
+  echo "[$(date '+%F %T %z')] DONE config=$label problem=$name attempt=$attempt rc=$rc status=$status elapsed=${elapsed}s wall=${wall}s"
+
+  if [[ "$status" == "Fail" && "$elapsed" -le "$FAST_FAIL_SECONDS" ]]; then
+    [[ -n "$metrics" ]] && delete_result_for_metrics "$metrics" "$result_dir"
+    return 75
+  fi
+  if [[ "$rc" -ne 0 && "$elapsed" -le "$FAST_FAIL_SECONDS" ]]; then
+    [[ -n "$metrics" ]] && delete_result_for_metrics "$metrics" "$result_dir"
+    return 75
+  fi
+  return 0
+}
+
+run_batch_safe() {
+  local config="$1"
+  shift
+  local label agent model effort result_dir log_file jobs agent_config problem fast_retries rc started_count=0
+  IFS='|' read -r label agent model effort result_dir log_file jobs agent_config <<< "$config"
+  config="$(single_job_config "$config")"
+  mkdir -p "$result_dir"
+  trap release_claim_on_exit EXIT
+
+  for problem in "$@"; do
+    if [[ "$started_count" -ge "$MAX_PROBLEMS" ]]; then
+      echo "[$(date '+%F %T %z')] STOP config=$label reason=max_problems count=$started_count"
+      return 0
+    fi
+    if [[ -f "$ROOT/output/stop_${label}.flag" || -f "$ROOT/output/stop_all_batch_safe.flag" ]]; then
+      echo "[$(date '+%F %T %z')] STOP config=$label reason=stop_flag"
+      return 0
+    fi
+    if [[ "$FORCE" -eq 0 ]] && latest_metrics_for_problem "$result_dir" "$problem" >/dev/null; then
+      echo "[$(date '+%F %T %z')] SKIP config=$label problem=$problem reason=existing_result"
+      continue
+    fi
+    if ! claim_problem "$result_dir" "$problem"; then
+      echo "[$(date '+%F %T %z')] SKIP config=$label problem=$problem reason=inflight"
+      continue
+    fi
+
+    fast_retries=0
+    while true; do
+      started_count=$((started_count + 1))
+      set +e
+      run_one_problem_safe "$config" "$result_dir" "$label" "$problem" "$((fast_retries + 1))"
+      rc=$?
+      set -e
+      if [[ "$rc" -eq 0 ]]; then
+        break
+      fi
+      if [[ "$rc" -ne 75 ]]; then
+        release_problem "$result_dir" "$problem"
+        echo "[$(date '+%F %T %z')] STOP config=$label problem=$problem rc=$rc"
+        return "$rc"
+      fi
+      if [[ "$fast_retries" -ge "$MAX_FAST_RETRIES" ]]; then
+        release_problem "$result_dir" "$problem"
+        echo "[$(date '+%F %T %z')] STOP config=$label problem=$problem reason=second_fast_failure"
+        return 75
+      fi
+      fast_retries=$((fast_retries + 1))
+      started_count=$((started_count - 1))
+      echo "[$(date '+%F %T %z')] FAST_FAIL config=$label problem=$problem; sleeping ${QUOTA_SLEEP_SECONDS}s before retry"
+      sleep "$QUOTA_SLEEP_SECONDS"
+    done
+    release_problem "$result_dir" "$problem"
+  done
+
+  echo "[$(date '+%F %T %z')] COMPLETE config=$label started=$started_count problems=$#"
+}
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -392,6 +621,11 @@ while [[ $# -gt 0 ]]; do
     --timeout)
       [[ $# -ge 2 ]] || { echo "missing value for --timeout" >&2; exit 2; }
       TIMEOUT="$2"
+      shift 2
+      ;;
+    --model)
+      [[ $# -ge 2 ]] || { echo "missing value for --model" >&2; exit 2; }
+      MODEL_OVERRIDE="$2"
       shift 2
       ;;
     --results-root)
@@ -442,8 +676,13 @@ if [[ ${#POSITIONAL[@]} -lt 1 ]]; then
   exit 2
 fi
 
-requested="$(canonical_config "${POSITIONAL[0]}")"
+original_config="${POSITIONAL[0]}"
+requested="$(canonical_config "$original_config")"
 REQUESTED_NAMES=("${POSITIONAL[@]:1}")
+
+if python3 "$ROOT/scripts/ark_profile_env.py" --config "$ARK_PROFILE_CONFIG" --field model "$requested" >/dev/null 2>&1; then
+  ARK_PROFILE_SELECTED="$requested"
+fi
 
 case "$requested" in
   all)
@@ -466,4 +705,4 @@ else
   mapfile -t names < <(input_names)
 fi
 
-start_batch "$config" "${names[@]}"
+run_batch_safe "$config" "${names[@]}"

@@ -30,6 +30,7 @@ import agent_config
 import agent_metrics
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+QCP_ROOT = REPO_ROOT / "QualifiedCProgramming"
 import coq_runner
 
 DEFAULT_SKILL = REPO_ROOT / "skills" / "eval" / "SKILL.md"
@@ -79,7 +80,7 @@ def codex_supports_reasoning_effort(codex_bin: str, env: dict[str, str]) -> bool
     try:
         proc = subprocess.run(
             [codex_bin, "exec", "--help"], stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT, text=True, cwd=REPO_ROOT, env=env, timeout=10,
+            stderr=subprocess.STDOUT, text=True, cwd=QCP_ROOT, env=env, timeout=10,
         )
     except (subprocess.SubprocessError, OSError):
         return False
@@ -112,33 +113,50 @@ def bootstrap_workspace(workspace_path: Path, input_c: Path, input_v: Path | Non
         shutil.copy2(input_v, workspace_path / "original" / input_v.name)
 
 
+def qcp_rel(path: Path) -> str:
+    return Path(os.path.relpath(path.resolve(), QCP_ROOT)).as_posix()
+
+
 def build_prompt(
     *, skill_path: Path, input_c: Path, input_v: Path | None, function_name: str,
     workspace_path: Path, compute_results: Path | None,
 ) -> str:
-    v_line = f"- Companion V: `{input_v}`\n" if input_v and input_v.exists() else ""
+    v_line = f"- Companion V: `{qcp_rel(input_v)}`\n" if input_v and input_v.exists() else ""
+    skill_rel = qcp_rel(skill_path)
     lines = [
-        f"Follow this skill as the complete workflow: {skill_path}",
+        "Use the repo-level CAV eval skill plus QCP official spec-quality rules.",
+        "First read exactly this repo-level skill file, and no other repo-level skill files:",
+        f"- `{skill_rel}`",
+        "Do not read `../skills/COMMON.md`, `../skills/contract/`, `../skills/verify/`, `../scripts/`, git history, QCP examples, proof files, or unrelated workspaces.",
+        "Do not read your harness transcript or prompt artifacts: `logs/agent_stdout_*.jsonl`, `logs/agent_prompt_*`, `logs/agent_stderr_*`, or `logs/agent_last_message_*`.",
+        "Do not run broad repository searches such as `rg .`, `rg ..`, `find .`, `find ..`, or `ls ..`; every search must name a specific allowed QCP doc path or the current task file.",
+        "",
+        "Before judging, read these QCP docs:",
+        "- `.agents/skills/annotation-checking/docs/spec-quality-checklist.md` — spec-quality criteria for judging whether contracts fully state the mathematical effect.",
+        "- `.agents/skills/annotation-filling/docs/predicate-first-annotation.md` — how to distinguish mathematical predicates from algorithm mirrors.",
+        "",
+        "Use paths exactly as relative paths from the current QCP root. Do not use absolute paths in commands, logs, or generated documentation.",
         "",
         "Inputs:",
-        f"- Implementation/spec C: `{input_c}`",
+        f"- Implementation/spec C: `{qcp_rel(input_c)}`",
     ]
     if v_line:
         lines.append(v_line.rstrip())
     lines += [
         f"- Target function: `{function_name}`",
-        f"- Workspace: `{workspace_path}`",
-        f"- Evaluation directory: `{workspace_path / 'evaluation'}`",
+        f"- Workspace: `{qcp_rel(workspace_path)}`",
+        f"- Required logs directory: `{qcp_rel(workspace_path / 'logs')}`",
         "",
         "Stage boundary:",
         "- Eval only judges semantic adequacy by final LLM judge and optional compute_queries/vm_compute.",
-        "- Contract runner owns check_spec_wellformed, coqc parse/compile gate for input/<name>.v, verify-annotation scan, and forbidden-assumption scan.",
+        "- Contract runner owns check_spec_wellformed, coqc parse/compile gate for the companion .v file, verify-annotation scan, and forbidden-assumption scan.",
         "- Eval no longer generates or gates on positive/negative test cases.",
+        "- Write `issues.md`, `metrics.md`, and `final_result.md` directly under the required logs directory above. Do not create `evaluation/logs/` for verdict files.",
     ]
     if compute_results is not None:
         lines += [
             "",
-            f"Compute results: `{compute_results}` (FINALIZE pass — also follow MODE_FINALIZE.md per SKILL.md §8).",
+            f"Compute results: `{qcp_rel(compute_results)}` (FINALIZE pass — also follow MODE_FINALIZE.md per SKILL.md §8).",
         ]
     return "\n".join(lines) + "\n"
 
@@ -171,7 +189,7 @@ def run_agent_once(
             "--yolo",
             "--afk",
             "--work-dir",
-            str(REPO_ROOT),
+            str(QCP_ROOT),
             "--add-dir",
             str(REPO_ROOT),
             "--input-format",
@@ -184,7 +202,7 @@ def run_agent_once(
         cmd.append("--no-thinking" if reasoning_effort == "no-thinking" else "--thinking")
     else:
         cmd = [codex_bin, "--dangerously-bypass-approvals-and-sandbox", "exec",
-               "--json", "--skip-git-repo-check", "-C", str(REPO_ROOT),
+               "--json", "--skip-git-repo-check", "-C", str(QCP_ROOT),
                "-o", str(last_message_path)]
         if model:
             cmd.extend(["--model", model])
@@ -196,7 +214,7 @@ def run_agent_once(
     try:
         with stdout_jsonl.open("w", encoding="utf-8") as out_f, stderr_log.open("w", encoding="utf-8") as err_f:
             proc = subprocess.run(cmd, input=prompt, text=True, stdout=out_f,
-                                  stderr=err_f, cwd=REPO_ROOT, env=env, timeout=timeout_seconds)
+                                  stderr=err_f, cwd=QCP_ROOT, env=env, timeout=timeout_seconds)
         rc = proc.returncode
     except subprocess.TimeoutExpired:
         rc = 124
@@ -357,7 +375,7 @@ def write_metrics(path: Path, *, status: str, exit_code: int, start_iso: str,
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Run the eval critic over a C/QCP contract.")
-    p.add_argument("input_c", help="Path to the contract C file (default input/<name>.c).")
+    p.add_argument("input_c", help="Path to the contract C file.")
     p.add_argument("--function-name", help="Target function; defaults to file stem.")
     p.add_argument("--num-positive", type=int, default=None, help=argparse.SUPPRESS)
     p.add_argument("--num-negative", type=int, default=None, help=argparse.SUPPRESS)
@@ -417,7 +435,7 @@ def main() -> int:
         else False
     )
     claude_effort_supported = (
-        agent_config.claude_supports_flag(claude_bin, REPO_ROOT, env, "--effort")
+        agent_config.claude_supports_flag(claude_bin, QCP_ROOT, env, "--effort")
         if agent == "claude" and reasoning_effort
         else False
     )

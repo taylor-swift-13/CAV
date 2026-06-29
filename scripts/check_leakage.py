@@ -317,8 +317,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "paths",
         nargs="*",
-        default=["results/claude/ark-code-latest/api"],
-        help="Result/workspace/log paths to scan. Default: results/claude/ark-code-latest/api",
+        default=["results/claude/deepseek-v4-pro/api"],
+        help="Result/workspace/log paths to scan. Default: results/claude/deepseek-v4-pro/api",
     )
     parser.add_argument(
         "--strict-current-output",
